@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
-import 'package:tgpl_network/utils/extensions.dart';
+import 'package:tgpl_network/utils/screen_size_extension.dart';
 
 class CustomButton extends StatelessWidget {
   final void Function()? onPressed;

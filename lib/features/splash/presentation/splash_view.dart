@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/common/providers/shared_prefs_provider.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
@@ -28,10 +29,28 @@ class _SplashViewState extends ConsumerState<SplashView> {
     ]).then((_) {
       Future.delayed(const Duration(seconds: 4), () {
         if (mounted) {
-          ref.read(goRouterProvider).go(AppRoutes.onboarding);
+          _handleStartup();
         }
       });
     });
+  }
+
+  Future<void> _handleStartup() async {
+    final prefs = ref.read(sharedPreferencesProvider);
+    final goRouter = ref.read(goRouterProvider);
+    final isOnboardingCompleted =
+        prefs.getBool(SharedPrefsKeys.onboardingCompleted) ?? false;
+
+    final isLoggedIn = false; // later auth
+
+    if (!isOnboardingCompleted) {
+      goRouter.go(AppRoutes.onboarding);
+    } else if (!isLoggedIn) {
+      goRouter.go(AppRoutes.welcome);
+    }
+    // else {
+    //   goRouter.go(AppRoutes.home);
+    // }
   }
 
   @override

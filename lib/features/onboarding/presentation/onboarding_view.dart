@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/features/onboarding/presentation/onboarding_controller.dart';
 import 'package:tgpl_network/features/onboarding/presentation/widgets/onboarding_content_section.dart';
-import 'package:tgpl_network/utils/extensions.dart';
+import 'package:tgpl_network/utils/screen_size_extension.dart';
 
 class OnboardingView extends ConsumerWidget {
   const OnboardingView({super.key});
