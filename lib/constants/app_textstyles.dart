@@ -45,6 +45,18 @@ class AppTextstyles {
               fontWeight: FontWeight.w400,
             );
 
+  static TextStyle googleInter400LightGrey12 = GoogleFonts.inter(
+              fontSize: 12,
+              color: AppColors.extraInformationColor,
+              fontWeight: FontWeight.w400,
+            );
+
+  static TextStyle googleInter500LabelColor14 = GoogleFonts.inter(
+              fontSize: 14,
+              color: AppColors.textFieldLabelColor,
+              fontWeight: FontWeight.w500,
+            );
+
   static TextStyle googleJakarta500Grey12 = GoogleFonts.plusJakartaSans(
               fontSize: 12,
               color: AppColors.textFieldLabelColor,

@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-class CustomDropDown extends StatelessWidget {
-  final List<Object> items;
-  final String Function(Object item)? showItem;
-  final void Function(Object?) onChanged;
-  final String? Function(Object?)? validator;
+class CustomDropDown<T> extends StatelessWidget {
+  final List<T> items;
+  final String Function(T item)? displayString;
+  final void Function(T?) onChanged;
+  final String? Function(T?)? validator;
   final String? hintText;
-  final Object? selectedItem;
-  const CustomDropDown({super.key, required this.items, this.showItem, required this.onChanged, this.validator, this.hintText, required this.selectedItem});
+  final T? selectedItem;
+  const CustomDropDown({super.key, required this.items, this.displayString, required this.onChanged, this.validator, this.hintText, required this.selectedItem});
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<Object>(
+    return DropdownButtonFormField<T>(
       initialValue: selectedItem,
-      items: items.map((item) => DropdownMenuItem<Object>(
+      items: items.map((item) => DropdownMenuItem<T>(
         value: item,
-        child: Text(showItem != null ? showItem!(item) : item.toString()))).toList(),
+        child: Text(displayString != null ? displayString!(item) : item.toString()))).toList(),
       onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hintText,

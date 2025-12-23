@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
@@ -25,7 +24,7 @@ class CustomButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
-        fixedSize: Size(context.screenWidth * 0.7, 55),
+        fixedSize: Size(context.screenWidth * 0.75, 55),
       ),
       child:
           child ??

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/features/station_form/forms/step1/step1_form_view.dart';
-import 'package:tgpl_network/features/station_form/forms/step2/step2_form_view.dart';
-import 'package:tgpl_network/features/station_form/forms/step3/step3_form_view.dart';
+import 'package:tgpl_network/features/station_form/presentation/forms/step1/step1_form_controller.dart';
+import 'package:tgpl_network/features/station_form/presentation/forms/step1/step1_form_view.dart';
+import 'package:tgpl_network/features/station_form/presentation/forms/step2/step2_form_controller.dart';
+import 'package:tgpl_network/features/station_form/presentation/forms/step2/step2_form_view.dart';
+import 'package:tgpl_network/features/station_form/presentation/forms/step3/step3_form_controller.dart';
+import 'package:tgpl_network/features/station_form/presentation/forms/step3/step3_form_view.dart';
 import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/routes/app_routes.dart';
 
 final stationFormControllerProvider =
     NotifierProvider.autoDispose<StationFormController, StationFormState>(() {
@@ -15,6 +19,8 @@ class StationFormController extends Notifier<StationFormState> {
 
   PageController get pageController => _pageController;
 
+  String? applicationId;
+
   List<Widget> get steps => const [
     Step1FormView(),
     Step2FormView(),
@@ -24,6 +30,9 @@ class StationFormController extends Notifier<StationFormState> {
   @override
   StationFormState build() {
     _pageController = PageController();
+    ref.onDispose((){
+      _pageController.dispose();
+    });
     return StationFormState(currentStep: 0);
   }
 
@@ -54,7 +63,13 @@ class StationFormController extends Notifier<StationFormState> {
         curve: Curves.easeInOut,
       );
     } else {
-      
+      // final step1Controller = ref.read(step1FormControllerProvider);
+      // final step2State = ref.read(step2FormControllerProvider);
+      // final step2Controller = ref.read(step2FormControllerProvider.notifier);
+      // final step3Controller = ref.read(step3FormControllerProvider);
+      // submit the form
+      // save application Id coming from server to applicationId
+      ref.read(goRouterProvider).replace(AppRoutes.stationFormConfirmation);
     }
   }
 }

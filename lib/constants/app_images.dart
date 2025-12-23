@@ -6,4 +6,8 @@ class AppImages {
   static const String tajLogoSvg = "assets/icons/taj_logo.svg";
   static const String applyNewStationIconSvg = "assets/icons/apply_new_station_icon.svg";
   static const String redLocationIconSvg = "assets/icons/red_location_icon.svg";
+  static const String tickWithCircleIconSvg = "assets/icons/tick_with_circle_icon.svg";
+  static const String helplineIconSvg = "assets/icons/helpline_icon.svg";
+  static const String messageIconSvg = "assets/icons/message_icon.svg";
+  static const String emailIconSvg = "assets/icons/email_icon.svg";
 }

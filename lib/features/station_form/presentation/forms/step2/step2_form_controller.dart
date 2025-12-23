@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/station_form/presentation/station_form_controller.dart';
 
-final step2FormControllerProvider = NotifierProvider.autoDispose<Step2FormController, Step2FormState>(() => Step2FormController());
+final step2FormControllerProvider =
+    NotifierProvider.autoDispose<Step2FormController, Step2FormState>(
+      () => Step2FormController(),
+    );
 
 class Step2FormState {
   String? selectedCity;
@@ -32,8 +36,14 @@ class Step2FormController extends Notifier<Step2FormState> {
   TextEditingController sourceController = TextEditingController();
   TextEditingController sourceNameController = TextEditingController();
 
+  void dispose() {
+    sourceController.dispose();
+    sourceNameController.dispose();
+  }
+
   @override
   Step2FormState build() {
+    ref.onDispose(dispose);
     return Step2FormState();
   }
 
@@ -47,5 +57,11 @@ class Step2FormController extends Notifier<Step2FormState> {
 
   void onPriorityChange(String newPriority) {
     state = state.copyWith(selectedPriority: newPriority);
+  }
+
+  void validateAndContinue() {
+    if (formKey.currentState!.validate()) {
+      ref.read(stationFormControllerProvider.notifier).onActionButtonPressed();
+    }
   }
 }

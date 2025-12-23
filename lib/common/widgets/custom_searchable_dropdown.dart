@@ -1,31 +1,84 @@
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:tgpl_network/common/widgets/custom_textfield.dart';
 
-class CustomSearchableDropDown extends StatelessWidget {
-  final List<Object> items;
-  final Object? selectedItem;
-  final String Function(Object item)? showItem;
-  final void Function(Object?) onChanged;
-  final String? Function(Object?)? validator;
+class CustomSearchableDropDown<T extends Object> extends StatelessWidget {
+  final List<T> items;
+
+  /// What to show in the text field & selected value
+  final String Function(T item)? displayString;
+
+  /// Fields used for searching (id, email, name, etc.)
+  final List<String> Function(T item)? searchableStrings;
+
+  final void Function(T?) onChanged;
+  final String? Function(T?)? validator;
   final String? hintText;
-  const CustomSearchableDropDown({super.key, required this.items, this.showItem, required this.onChanged, this.validator, this.hintText, required this.selectedItem});
+  final T? initialValue;
+
+  const CustomSearchableDropDown({
+    super.key,
+    required this.items,
+    required this.displayString,
+    required this.searchableStrings,
+    required this.onChanged,
+    this.validator,
+    this.hintText,
+    this.initialValue,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return DropdownSearch<Object>(
-      items:(filter, loadProps) => items,
-      compareFn: (item1, item2) {
-        return item1 == item2;
-      },
-      selectedItem: selectedItem,
-      onChanged: onChanged,
-      decoratorProps: DropDownDecoratorProps(
-        decoration: InputDecoration(
-        hintText: hintText,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-      ),
+    return FormField<T>(
+      initialValue: initialValue,
       validator: validator,
+      builder: (state) {
+        return Autocomplete<T>(
+          initialValue: initialValue != null
+              ? TextEditingValue(text: displayString != null ? displayString!(initialValue!): initialValue.toString())
+              : const TextEditingValue(),
+
+          displayStringForOption: displayString ?? RawAutocomplete.defaultStringForOption,
+
+          optionsBuilder: (textEditingValue) {
+            if (textEditingValue.text.isEmpty) {
+              return items;
+            }
+
+            final query = textEditingValue.text.toLowerCase();
+
+            return items.where((item) {
+              if (searchableStrings != null) {
+
+              return searchableStrings!(item).any(
+                (field) => field.toLowerCase().contains(query),
+              );
+              } else {
+                return item.toString().toLowerCase().contains(query);
+              }
+            });
+          },
+
+          onSelected: (selection) {
+            state.didChange(selection);
+            onChanged(selection);
+          },
+
+          fieldViewBuilder: (
+            context,
+            controller,
+            focusNode,
+            onFieldSubmitted,
+          ) {
+            return CustomTextField(
+              controller: controller,
+              focusNode: focusNode,
+              hintText: hintText,
+              errorText: state.errorText,
+              onFieldSubmitted: onFieldSubmitted,
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -3,23 +3,25 @@ import 'package:tgpl_network/common/widgets/custom_dropdown.dart';
 import 'package:tgpl_network/common/widgets/custom_searchable_dropdown.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 
-class CustomDropDownWithTitle extends StatelessWidget {
+class CustomDropDownWithTitle<T extends Object> extends StatelessWidget {
   final String title;
-  final List<Object> items;
-  final String Function(Object item)? showItem;
-  final void Function(Object?) onChanged;
-  final String? Function(Object?)? validator;
+  final List<T> items;
+  final String Function(T item)? displayString;
+  final void Function(T?) onChanged;
+  final String? Function(T?)? validator;
   final String? hintText;
   final bool enableSearch;
-  final Object? selectedItem;
+  final T? selectedItem;
+  final List<String> Function(T)? searchableStrings;
   const CustomDropDownWithTitle({
     super.key,
     required this.title,
     required this.items,
-    this.showItem,
+    this.displayString,
     required this.onChanged,
     this.validator,
     this.hintText,
+    this.searchableStrings,
     this.enableSearch = false, required this.selectedItem,
   });
 
@@ -36,8 +38,9 @@ class CustomDropDownWithTitle extends StatelessWidget {
           CustomSearchableDropDown(
             items: items,
             onChanged: onChanged,
-            selectedItem: selectedItem,
-            showItem: showItem,
+            initialValue: selectedItem,
+            displayString: displayString,
+            searchableStrings: searchableStrings,
             validator: validator,
             hintText: hintText,
           )
@@ -46,7 +49,7 @@ class CustomDropDownWithTitle extends StatelessWidget {
             items: items,
             selectedItem: selectedItem,
             onChanged: onChanged,
-            showItem: showItem,
+            displayString: displayString,
             validator: validator,
             hintText: hintText,
           ),
