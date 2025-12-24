@@ -1,7 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tgpl_network/common/presentation/home_shell_view.dart';
+import 'package:tgpl_network/features/applications/presentation/applications_view.dart';
+import 'package:tgpl_network/features/dashboard/presentation/dashboard_view.dart';
 import 'package:tgpl_network/features/login/presentation/login_view.dart';
+import 'package:tgpl_network/features/map/presentation/map_view.dart';
 import 'package:tgpl_network/features/onboarding/presentation/onboarding_view.dart';
+import 'package:tgpl_network/features/profile/presentation/profile_view.dart';
 import 'package:tgpl_network/features/splash/presentation/splash_view.dart';
 import 'package:tgpl_network/features/station_form/presentation/confirmation/station_form_confirmation_view.dart';
 import 'package:tgpl_network/features/station_form/presentation/station_form_view.dart';
@@ -10,7 +16,7 @@ import 'package:tgpl_network/routes/app_routes.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: AppRoutes.login,
+    initialLocation: AppRoutes.dashboard,
     routes: [
       GoRoute(
         path: AppRoutes.splash,
@@ -35,6 +41,45 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.login,
         builder: (context, state) => const LoginView(),
+      ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return HomeShellView(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.dashboard,
+                builder: (context, state) => DashboardView(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.applications,
+                builder: (context, state) => ApplicationsView(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.map,
+                builder: (context, state) => MapView(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.profile,
+                builder: (context, state) => ProfileView(),
+              ),
+            ],
+          ),
+        ],
       ),
     ],
   );

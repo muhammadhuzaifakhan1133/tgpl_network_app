@@ -9,24 +9,35 @@ class AppTextstyles {
                     fontWeight: FontWeight.w500,
                     color: AppColors.white,
                   );
+
   static const TextStyle neutra700black32 = TextStyle(
                     fontFamily: 'NeutraText',
                     fontSize: 32,
                     fontWeight: FontWeight.w700,
                     color: AppColors.black,
                   );
+
   static const TextStyle neutra500white22 = TextStyle(
                     fontFamily: 'NeutraText',
                     fontSize: 22,
                     fontWeight: FontWeight.w500,
                     color: AppColors.white,
                   );
+
   static const TextStyle neutra500white18 = TextStyle(
                     fontFamily: 'NeutraText',
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                     color: AppColors.white,
                   );
+
+  static const TextStyle neutra500grey12 = TextStyle(
+                    fontFamily: 'NeutraText',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.subHeadingColor,
+                  );
+
   static TextStyle googleInter700black28 = GoogleFonts.inter(
               fontSize: 28,
               color: AppColors.black,

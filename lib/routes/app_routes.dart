@@ -5,4 +5,8 @@ class AppRoutes {
   static const String stationForm = '/station_form';
   static const String stationFormConfirmation = '/station_form_confirmation';
   static const String login = '/login';
+  static const String dashboard = "/dashboard";
+  static const String applications = "/applications";
+  static const String map = "/map";
+  static const String profile = "/profile";
 }

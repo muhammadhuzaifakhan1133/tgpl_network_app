@@ -20,4 +20,12 @@ class AppColors {
   static const nextStep2Color = Color(0xff1FB996);
   static const nextStep3Color = Color(0xffF5A623);
   static const emailUsIconColor = Color(0xffE84C3D);
+  static const scaffoldBackgroundColor = Color(0xffF4F4F4);
+  static const headerDarkBlueColor = Color(0xff003C9E);
+  static const inProcessCountColor = Color(0xffF5A623);
+  static const inProcessCountDarkColor = Color(0xffE89917);
+  static const inauguratedCountColor = Color(0xff1FB996);
+  static const inauguratedCountDarkColor = Color(0xff189980);
+  static const rejectedCountColor = Color(0xffE84C3D);
+  static const rejectedCountDarkColor = Color(0xffD43D2F);
 }
