@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
-import 'package:tgpl_network/features/dashboard/presentation/widgets/all_dashboard_count_containers.dart';
 import 'package:tgpl_network/utils/get_greeting.dart';
 
 class DashbaordGreetingText extends StatelessWidget {
@@ -26,11 +25,7 @@ class DashbaordGreetingText extends StatelessWidget {
           style: AppTextstyles.neutra500grey12.copyWith(
             fontSize: 16,
           ),
-        ),
-        const SizedBox(height: 10),
-        AllDashboardCountContainers(),
-        const SizedBox(height: 10),
-        
+        ),        
       ],
     );
   }

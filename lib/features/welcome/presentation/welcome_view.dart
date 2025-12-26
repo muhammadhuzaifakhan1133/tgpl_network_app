@@ -45,7 +45,7 @@ class WelcomeView extends ConsumerWidget {
               ),
               const SizedBox(height: 25),
               WelcomeCard(
-                iconPath: AppImages.redLocationIconSvg,
+                iconPath: AppImages.locationIconSvg,
                 iconColor: AppColors.redLocationIconColor,
                 title: "I am an Employee",
                 subtitle: "Login to TGPL Field Operations",

@@ -28,4 +28,6 @@ class AppColors {
   static const inauguratedCountDarkColor = Color(0xff189980);
   static const rejectedCountColor = Color(0xffE84C3D);
   static const rejectedCountDarkColor = Color(0xffD43D2F);
+  static const expandIconColor = Color(0xffCCCCCC);
+  static const commissioningColor = Color(0xff9B59B6);
 }

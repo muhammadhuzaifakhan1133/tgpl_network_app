@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
-import 'package:tgpl_network/constants/app_images.dart';
-import 'package:tgpl_network/constants/app_textstyles.dart';
-import 'package:tgpl_network/features/dashboard/presentation/widgets/all_dashboard_count_containers.dart';
+import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_count_containers.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_greeting_text.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_header_profile.dart';
+import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_module_sections.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/regional_managers_section.dart';
-import 'package:tgpl_network/utils/get_greeting.dart';
-import 'package:tgpl_network/utils/screen_size_extension.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
@@ -33,16 +29,21 @@ class DashboardView extends StatelessWidget {
                 DashboardHeaderProfile(),
                 const SizedBox(height: 30),
                 DashbaordGreetingText(),
+                const SizedBox(height: 10),
+                DashboardCountContainers(),
+                const SizedBox(height: 10),
               ],
             ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-            child: Column(children: [
-              RegionalManagersSection(),
-
-              
-              ]),
+            child: Column(
+              children: [
+                RegionalManagersSection(),
+                const SizedBox(height: 5),
+                DashboardModulesSection(),
+              ],
+            ),
           ),
         ],
       ),
