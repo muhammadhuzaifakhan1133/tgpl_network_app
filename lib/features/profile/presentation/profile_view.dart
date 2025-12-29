@@ -1,12 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tgpl_network/constants/app_colors.dart';
+import 'package:tgpl_network/constants/app_images.dart';
+import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/features/profile/presentation/widgets/account_settings_section.dart';
+import 'package:tgpl_network/features/profile/presentation/widgets/contact_information_section.dart';
+import 'package:tgpl_network/features/profile/presentation/widgets/profile_header.dart';
+import 'package:tgpl_network/features/profile/presentation/widgets/support_section.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text("Profile"),
+    return Column(
+      children: [
+        ProfileHeader(),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  const SizedBox(height: 30),
+                  ContactInformationSection(),
+                  const SizedBox(height: 28),
+                  AccountSettingsSection(),
+                  const SizedBox(height: 28),
+                  SupportSection(),
+                  const SizedBox(height: 30),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

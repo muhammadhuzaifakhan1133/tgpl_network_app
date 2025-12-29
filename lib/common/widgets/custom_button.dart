@@ -7,11 +7,23 @@ class CustomButton extends StatelessWidget {
   final void Function()? onPressed;
   final String text;
   final Widget? child;
+  final double height;
+  final double topPadding;
+  final double bottomPadding;
+  final double rightPadding;
+  final double leftPadding;
+  final Color backgroundColor;
   const CustomButton({
     super.key,
     required this.onPressed,
     required this.text,
     this.child,
+    this.height = 55,
+    this.topPadding = 10,
+    this.bottomPadding = 10,
+    this.rightPadding = 50,
+    this.leftPadding = 50,
+    this.backgroundColor = AppColors.primary,
   });
 
   @override
@@ -19,12 +31,17 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primary,
-        padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 15.0),
+        backgroundColor: backgroundColor,
+        padding: EdgeInsets.only(
+          top: topPadding,
+          bottom: bottomPadding,
+          right: rightPadding,
+          left: leftPadding,
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
-        fixedSize: Size(context.screenWidth * 0.75, 55),
+        fixedSize: Size(context.screenWidth * 0.75, height),
       ),
       child:
           child ??

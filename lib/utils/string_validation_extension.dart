@@ -36,4 +36,16 @@ extension StringValidation on String? {
     }
     return null;
   }
+
+  String? validateSameValue({
+    required String value,
+    required String message,
+  }) {
+    String? error = validate();
+    if (error != null) return error;
+    if (value != this) {
+      return message;
+    }
+    return null;
+  }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tgpl_network/common/presentation/home_shell_view.dart';
 import 'package:tgpl_network/features/applications/presentation/applications_view.dart';
+import 'package:tgpl_network/features/change_password/change_password_view.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_view.dart';
 import 'package:tgpl_network/features/login/presentation/login_view.dart';
 import 'package:tgpl_network/features/map/presentation/map_view.dart';
@@ -80,6 +81,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: AppRoutes.changePassword,
+        builder: (context, state) => ChangePasswordView(),
       ),
     ],
   );

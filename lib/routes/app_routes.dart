@@ -9,4 +9,5 @@ class AppRoutes {
   static const String applications = "/applications";
   static const String map = "/map";
   static const String profile = "/profile";
+  static const String changePassword = "/change_password";
 }

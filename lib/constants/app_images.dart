@@ -30,4 +30,10 @@ class AppImages {
   static const String constructionIconSvg = "assets/icons/construction_icon.svg";
   static const String layoutIconSvg = "assets/icons/layout_icon.svg";
   static const String feasibilityIconSvg = "assets/icons/feasibility_icon.svg";
+  static const String calendarIconSvg = "assets/icons/calendar_icon.svg";
+  static const String crossIconSvg = "assets/icons/cross_icon.svg";
+  static const String phoneIconSvg = "assets/icons/phone_icon.svg";
+  static const String lockIconSvg = "assets/icons/lock_icon.svg";
+  static const String helpIconSvg = "assets/icons/help_icon.svg";
+  static const String logoutIconSvg = "assets/icons/logout_icon.svg";
 }

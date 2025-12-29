@@ -1,66 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
-import 'package:tgpl_network/constants/app_colors.dart';
-import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/features/applications/presentation/application_controller.dart';
+import 'package:tgpl_network/features/applications/presentation/widgets/application_status_container.dart';
 
-class ApplicationsView extends StatelessWidget {
+class ApplicationsView extends ConsumerWidget {
   const ApplicationsView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final applicationController = ref.read(
+      applicationControllerProvider.notifier,
+    );
     return Column(
       children: [
-        CustomAppBar(
-          title: "Applications",
-          subtitle: "Process status tracking",
+        Builder(
+          builder: (context) {
+            return CustomAppBar(
+              title: "Applications",
+              subtitle: "Process status tracking",
+              showSearchIcon: true,
+              showFilterIcon: true,
+            );
+          },
         ),
         const SizedBox(height: 10),
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 10,
-          ),
-          child: Column(
-            children: [
-              
-            ],
-          ),
-        ),
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16.4),
-            color: AppColors.white,
-          ),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      "APP-2025-001",
-                      style: AppTextstyles.googleInter400LightGrey12.copyWith(
-                        color: AppColors.subHeadingColor,
-                      ),
+        Expanded(
+          child: ListView.separated(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            itemCount: applicationController.applications.length,
+            itemBuilder: (context, index) {
+              return Consumer(
+                builder: (context, ref, child) {
+                  final isExpanded = ref.watch(
+                    applicationControllerProvider.select(
+                      (state) => state.isApplicationsExpanded[index],
                     ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.emailUsIconColor.withOpacity(0.082),
+                  );
+                  return GestureDetector(
+                    onTap: () {
+                      applicationController.onExpand(index);
+                    },
+                    child: ApplicationStatusContainer(
+                      isExpanded: isExpanded,
+                      application: applicationController.applications[index],
                     ),
-                    child: Center(
-                      child: Text(
-                        "High",
-                        style: AppTextstyles.googleInter400LightGrey12.copyWith(
-                          color: AppColors.emailUsIconColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                  );
+                },
+              );
+            },
+            separatorBuilder: (context, index) {
+              return SizedBox(height: 20);
+            },
           ),
         ),
       ],

@@ -3,10 +3,8 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/utils/get_greeting.dart';
 
-class DashbaordGreetingText extends StatelessWidget {
-  const DashbaordGreetingText({
-    super.key,
-  });
+class DashboardGreetingText extends StatelessWidget {
+  const DashboardGreetingText({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +20,8 @@ class DashbaordGreetingText extends StatelessWidget {
         ),
         Text(
           "Here's what's happening with your operations today",
-          style: AppTextstyles.neutra500grey12.copyWith(
-            fontSize: 16,
-          ),
-        ),        
+          style: AppTextstyles.neutra500grey12.copyWith(fontSize: 16),
+        ),
       ],
     );
   }

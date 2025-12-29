@@ -28,7 +28,7 @@ class DashboardView extends StatelessWidget {
                 const SizedBox(height: 10),
                 DashboardHeaderProfile(),
                 const SizedBox(height: 30),
-                DashbaordGreetingText(),
+                DashboardGreetingText(),
                 const SizedBox(height: 10),
                 DashboardCountContainers(),
                 const SizedBox(height: 10),

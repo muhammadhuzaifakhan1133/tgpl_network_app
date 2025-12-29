@@ -58,17 +58,26 @@ class _DashboardModuleContainer extends ConsumerWidget {
             controller.onModuleExpand(index);
           },
         ),
-        if (isExpanded)
-          for (var subModule in module.subModules) ...[
-            _DashboardModuleContainerComponent(
-              color: module.color,
-              title: subModule.title,
-              noOfActiveItems: subModule.count,
-              onTap: () {
-                // navigate to sub module screen;
-              },
-            ),
-          ],
+        AnimatedSize(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          child: isExpanded
+              ? Column(
+                  children: [
+                    for (var subModule in module.subModules) ...[
+                      _DashboardModuleContainerComponent(
+                        color: module.color,
+                        title: subModule.title,
+                        noOfActiveItems: subModule.count,
+                        onTap: () {
+                          // navigate to sub module screen;
+                        },
+                      ),
+                    ],
+                  ],
+                )
+              : SizedBox(),
+        ),
       ],
     );
   }

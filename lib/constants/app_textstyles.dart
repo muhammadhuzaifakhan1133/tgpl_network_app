@@ -17,6 +17,13 @@ class AppTextstyles {
                     color: AppColors.black,
                   );
 
+  static const TextStyle neutra700black224 = TextStyle(
+                    fontFamily: 'NeutraText',
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.black2Color,
+                  );
+
   static const TextStyle neutra500white22 = TextStyle(
                     fontFamily: 'NeutraText',
                     fontSize: 22,
@@ -66,6 +73,12 @@ class AppTextstyles {
               fontSize: 14,
               color: AppColors.textFieldLabelColor,
               fontWeight: FontWeight.w500,
+            );
+
+  static TextStyle googleInter600black18 = GoogleFonts.inter(
+              fontSize: 18,
+              color: AppColors.black2Color,
+              fontWeight: FontWeight.w600,
             );
 
   static TextStyle googleJakarta500Grey12 = GoogleFonts.plusJakartaSans(

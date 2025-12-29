@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
 
-class DashboardHeaderProfile extends StatelessWidget {
+class DashboardHeaderProfile extends ConsumerWidget {
   const DashboardHeaderProfile({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.read(userProvider);
     return Row(
       children: [
         Container(
@@ -19,15 +22,12 @@ class DashboardHeaderProfile extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                AppColors.nextStep1Color,
-                AppColors.headerDarkBlueColor,
-              ],
+              colors: [AppColors.nextStep1Color, AppColors.headerDarkBlueColor],
             ),
           ),
           child: Center(
             child: Text(
-              "A",
+              user.name[0],
               style: AppTextstyles.googleInter700black28.copyWith(
                 fontSize: 20,
                 color: AppColors.white,
@@ -42,14 +42,14 @@ class DashboardHeaderProfile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Ahmed Hassan",
+                user.name,
                 style: AppTextstyles.googleInter700black28.copyWith(
                   fontSize: 20,
                   color: AppColors.black2Color,
                 ),
               ),
               Text(
-                "Regional Manager",
+                user.title,
                 style: AppTextstyles.googleInter400Grey14.copyWith(
                   fontSize: 16,
                   color: AppColors.black2Color,

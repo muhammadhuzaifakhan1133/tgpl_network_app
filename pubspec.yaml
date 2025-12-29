@@ -39,6 +39,7 @@ dependencies:
   google_fonts: ^6.3.3
   flutter_svg: ^2.2.3
   shared_preferences: ^2.5.4
+  google_maps_flutter: ^2.14.0
 
 dev_dependencies:
   flutter_test:

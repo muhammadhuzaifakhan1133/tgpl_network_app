@@ -1,9 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
+import 'package:tgpl_network/features/dashboard/models/user_model.dart';
 import 'package:tgpl_network/features/dashboard/presentation/module_provider.dart';
 
+final userProvider = Provider<User>((ref) {
+  return User(name: "Ahmed Hassan", title: "Regional Manager", id: "EMP-2025-001");
+});
+
 final dashboardControllerProvider =
-    NotifierProvider<DashboardController, DashboardState>(() {
+    NotifierProvider.autoDispose<DashboardController, DashboardState>(() {
       return DashboardController();
     });
 
@@ -30,8 +35,11 @@ class DashboardController extends Notifier<DashboardState> {
   }
 
   void onModuleExpand(int index) {
-    final isModulesExpanded = state.isModulesExpanded;
-    isModulesExpanded[index] = !isModulesExpanded[index];
-    state = state.copyWith(isModulesExpanded: isModulesExpanded);
+    final newExpandedList = List<bool>.generate(
+      state.isModulesExpanded.length,
+      (i) => i == index ? !state.isModulesExpanded[i] : false,
+    );
+
+    state = state.copyWith(isModulesExpanded: newExpandedList);
   }
 }
