@@ -1,5 +1,3 @@
-import 'package:tgpl_network/features/applications/models/application_status.dart';
-
 class Application {
   final String id;
   final String priority;
