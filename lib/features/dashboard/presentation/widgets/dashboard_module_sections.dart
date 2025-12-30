@@ -164,7 +164,7 @@ class _DashboardModuleContainerComponent extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: onTap,
                     icon: AnimatedRotation(
                       turns: icon == null ? -0.25 : (isExpanded ? 0.5 : 0),
                       duration: const Duration(milliseconds: 500),

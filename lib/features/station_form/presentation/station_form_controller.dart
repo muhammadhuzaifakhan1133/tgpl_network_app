@@ -30,7 +30,7 @@ class StationFormController extends Notifier<StationFormState> {
   @override
   StationFormState build() {
     _pageController = PageController();
-    ref.onDispose((){
+    ref.onDispose(() {
       _pageController.dispose();
     });
     return StationFormState(currentStep: 0);
@@ -63,13 +63,16 @@ class StationFormController extends Notifier<StationFormState> {
         curve: Curves.easeInOut,
       );
     } else {
-      // final step1Controller = ref.read(step1FormControllerProvider);
-      // final step2State = ref.read(step2FormControllerProvider);
-      // final step2Controller = ref.read(step2FormControllerProvider.notifier);
-      // final step3Controller = ref.read(step3FormControllerProvider);
+      final step1Controller = ref.read(step1FormControllerProvider);
+      final step2State = ref.read(step2FormControllerProvider);
+      final step2Controller = ref.read(step2FormControllerProvider.notifier);
+      final step3Controller = ref.read(step3FormControllerProvider);
       // submit the form
       // save application Id coming from server to applicationId
       ref.read(goRouterProvider).replace(AppRoutes.stationFormConfirmation);
+      step1Controller.dispose();
+      step2Controller.dispose();
+      step3Controller.dispose();
     }
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/features/station_form/presentation/station_form_controller.dart';
 
-final step1FormControllerProvider = Provider.autoDispose<Step1FormController>((ref) {
+final step1FormControllerProvider = Provider<Step1FormController>((ref) {
   final controller =  Step1FormController(ref);
   ref.onDispose(controller.dispose);
   return controller;

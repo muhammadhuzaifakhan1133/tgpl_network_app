@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/features/station_form/presentation/station_form_controller.dart';
 
 final step2FormControllerProvider =
-    NotifierProvider.autoDispose<Step2FormController, Step2FormState>(
+    NotifierProvider<Step2FormController, Step2FormState>(
       () => Step2FormController(),
     );
 

@@ -49,7 +49,9 @@ class WelcomeView extends ConsumerWidget {
                 iconColor: AppColors.redLocationIconColor,
                 title: "I am an Employee",
                 subtitle: "Login to TGPL Field Operations",
-                onTap: () {},
+                onTap: () {
+                  ref.read(goRouterProvider).push(AppRoutes.login);
+                },
               ),
             ],
           ),

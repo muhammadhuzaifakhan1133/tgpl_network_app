@@ -13,13 +13,15 @@ class CustomAppBar extends ConsumerStatefulWidget {
   final bool showBackButton;
   final bool showSearchIcon;
   final bool showFilterIcon;
+  final void Function()? onTapFilterIcon;
   const CustomAppBar({
     super.key,
     required this.title,
     required this.subtitle,
     this.showBackButton = false,
     this.showSearchIcon = false,
-    this.showFilterIcon = false,
+    this.showFilterIcon = false, 
+    this.onTapFilterIcon,
   });
 
   @override
@@ -110,17 +112,20 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                         ),
                       if (widget.showFilterIcon) ...[
                         const SizedBox(width: 8),
-                        Container(
-                          height: 48,
-                          width: 48,
-                          decoration: BoxDecoration(
-                            color: AppColors.actionContainerColor,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.filter_alt_outlined,
-                              color: AppColors.subHeadingColor,
+                        GestureDetector(
+                          onTap: widget.onTapFilterIcon,
+                          child: Container(
+                            height: 48,
+                            width: 48,
+                            decoration: BoxDecoration(
+                              color: AppColors.actionContainerColor,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.filter_alt_outlined,
+                                color: AppColors.subHeadingColor,
+                              ),
                             ),
                           ),
                         ),
