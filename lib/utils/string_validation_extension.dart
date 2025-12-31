@@ -27,16 +27,6 @@ extension StringValidation on String? {
     return null;
   }
 
-  String? validateEmail([String message = "Please enter a valid email"]) {
-    String? error = validate();
-    if (error != null) return error;
-    final emailRegex = RegExp(r'^[\w\.-]+@([\w-]+\.)+[a-zA-Z]{2,}$');
-    if (!emailRegex.hasMatch(this!)) {
-      return message;
-    }
-    return null;
-  }
-
   String? validateSameValue({
     required String value,
     required String message,

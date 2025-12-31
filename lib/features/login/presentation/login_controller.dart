@@ -26,7 +26,7 @@ class LoginState {
 
 class LoginController extends Notifier<LoginState> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController emailController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   @override
@@ -36,7 +36,7 @@ class LoginController extends Notifier<LoginState> {
   }
 
   void dispose() {
-    emailController.dispose();
+    usernameController.dispose();
     passwordController.dispose();
   }
 

@@ -61,10 +61,10 @@ class LoginView extends ConsumerWidget {
                   child: Column(
                     children: [
                       CustomTextFieldWithTitle(
-                        title: "Email",
-                        hintText: "muhammadhuzaifakhan1133@gmail.com",
-                        controller: controller.emailController,
-                        validator: (v) => v.validateEmail(),
+                        title: "Username",
+                        hintText: "muhammadhuzaifakhan",
+                        controller: controller.usernameController,
+                        validator: (v) => v.validate(),
                         keyboardType: TextInputType.emailAddress,
                       ),
                       const SizedBox(height: 16),
