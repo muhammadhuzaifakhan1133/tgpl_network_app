@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/routes/app_router.dart';
 
 class CustomAppBar extends ConsumerStatefulWidget {
   final String title;
+  final Widget? subtitleWidget;
   final String subtitle;
   final bool showBackButton;
   final bool showSearchIcon;
   final bool showFilterIcon;
   final void Function()? onTapFilterIcon;
+  final void Function()? onTapBackButton;
   const CustomAppBar({
     super.key,
     required this.title,
+    this.subtitleWidget,
     required this.subtitle,
     this.showBackButton = false,
     this.showSearchIcon = false,
-    this.showFilterIcon = false, 
+    this.showFilterIcon = false,
     this.onTapFilterIcon,
+    this.onTapBackButton,
   });
 
   @override
@@ -45,19 +50,14 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
       child: Row(
         children: [
           if (widget.showBackButton)
-            Container(
-              height: 48,
-              width: 48,
-              decoration: BoxDecoration(
-                color: AppColors.actionContainerColor,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.arrow_back_ios,
-                  color: AppColors.subHeadingColor,
-                ),
-              ),
+            actionContainer(
+              icon: AppImages.backIconSvg,
+              onTap:
+                  widget.onTapBackButton ??
+                  () {
+                    ref.read(goRouterProvider).pop();
+                  },
+              padding: 12,
             ),
           const SizedBox(width: 12),
           if (!isSearchFieldActive)
@@ -71,17 +71,21 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                       children: [
                         Text(
                           widget.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: AppTextstyles.googleInter700black28.copyWith(
                             fontSize: 20,
                             color: AppColors.black2Color,
                           ),
                         ),
-                        Text(
-                          widget.subtitle,
-                          style: AppTextstyles.googleInter400Grey14.copyWith(
-                            fontSize: 16,
-                          ),
-                        ),
+                        widget.subtitleWidget ??
+                            Text(
+                              widget.subtitle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextstyles.googleInter400Grey14
+                                  .copyWith(fontSize: 16),
+                            ),
                       ],
                     ),
                   ),

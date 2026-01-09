@@ -6,6 +6,7 @@ import 'package:tgpl_network/utils/screen_size_extension.dart';
 class CustomButton extends StatelessWidget {
   final void Function()? onPressed;
   final String text;
+  final TextStyle? textStyle;
   final Widget? child;
   final double height;
   final double topPadding;
@@ -23,7 +24,7 @@ class CustomButton extends StatelessWidget {
     this.bottomPadding = 10,
     this.rightPadding = 50,
     this.leftPadding = 50,
-    this.backgroundColor = AppColors.primary,
+    this.backgroundColor = AppColors.primary, this.textStyle,
   });
 
   @override
@@ -48,7 +49,7 @@ class CustomButton extends StatelessWidget {
           Text(
             text,
             textAlign: TextAlign.center,
-            style: AppTextstyles.neutra500white22,
+            style: textStyle ?? AppTextstyles.neutra500white22,
           ),
     );
   }

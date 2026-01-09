@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/features/applications/models/application.dart';
+import 'package:tgpl_network/common/models/application_model.dart';
+import 'package:tgpl_network/common/providers/application_provider.dart';
 import 'package:tgpl_network/features/applications/models/application_status.dart';
 
 final appStatusesProvider = Provider.family
@@ -27,39 +28,6 @@ final appStatusesProvider = Provider.family
       ];
     });
 
-final applicationsProvider = Provider.autoDispose<List<Application>>((ref) {
-  return [
-    Application(
-      id: "APP-2025-001",
-      priority: "High",
-      name: "Muhammad Ali",
-      city: "Karachi",
-      date: "15 Jan",
-    ),
-    Application(
-      id: "APP-2025-002",
-      priority: "Medium",
-      name: "Fatima Siddiqui",
-      city: "Lahore",
-      date: "14 Jan",
-    ),
-    Application(
-      id: "APP-2025-003",
-      priority: "High",
-      name: "Zain Malik",
-      city: "Hyderabad",
-      date: "13 Jan",
-    ),
-    Application(
-      id: "APP-2025-004",
-      priority: "Low",
-      name: "Sarah Khan",
-      city: "Sukkur",
-      date: "12 Jan",
-    ),
-  ];
-});
-
 class ApplicationStates {
   final List<bool> isApplicationsExpanded;
 
@@ -79,7 +47,7 @@ final applicationControllerProvider =
     });
 
 class ApplicationController extends Notifier<ApplicationStates> {
-  List<Application> get applications => ref.read(applicationsProvider);
+  List<ApplicationModel> get applications => ref.read(applicationsProvider);
 
   @override
   ApplicationStates build() {

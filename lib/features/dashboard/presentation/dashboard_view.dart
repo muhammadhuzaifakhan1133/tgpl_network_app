@@ -4,7 +4,6 @@ import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_c
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_greeting_text.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_header_profile.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_module_sections.dart';
-import 'package:tgpl_network/features/dashboard/presentation/widgets/regional_managers_section.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
@@ -39,8 +38,8 @@ class DashboardView extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
             child: Column(
               children: [
-                RegionalManagersSection(),
-                const SizedBox(height: 5),
+                // RegionalManagersSection(),
+                // const SizedBox(height: 5),
                 DashboardModulesSection(),
               ],
             ),

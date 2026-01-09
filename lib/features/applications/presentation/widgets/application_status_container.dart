@@ -1,34 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:tgpl_network/common/models/application_model.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
-import 'package:tgpl_network/features/applications/models/application.dart';
 import 'package:tgpl_network/features/applications/presentation/application_controller.dart';
+import 'package:tgpl_network/utils/get_priority_color.dart';
 
 class ApplicationStatusContainer extends ConsumerWidget {
   final bool isExpanded;
-  final Application application;
+  final ApplicationModel application;
   const ApplicationStatusContainer({
     super.key,
     required this.isExpanded,
     required this.application,
   });
-
-  Color _getPriorityColor(String priority) {
-    switch (priority) {
-      case "High":
-        return AppColors.emailUsIconColor;
-      case "Medium":
-        return AppColors.nextStep3Color;
-      case "Low":
-        return AppColors.nextStep2Color;
-      default:
-        return AppColors.inactiveStatusColor;
-    }
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -57,7 +45,7 @@ class ApplicationStatusContainer extends ConsumerWidget {
                 padding: EdgeInsets.symmetric(horizontal: 8.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25),
-                  color: _getPriorityColor(
+                  color: getPriorityColor(
                     application.priority,
                   ).withOpacity(0.082),
                 ),
@@ -65,7 +53,7 @@ class ApplicationStatusContainer extends ConsumerWidget {
                   child: Text(
                     application.priority,
                     style: AppTextstyles.googleInter400LightGrey12.copyWith(
-                      color: _getPriorityColor(application.priority),
+                      color: getPriorityColor(application.priority),
                     ),
                   ),
                 ),
@@ -82,7 +70,7 @@ class ApplicationStatusContainer extends ConsumerWidget {
             ],
           ),
           Text(
-            application.name,
+            application.applicantName,
             style: AppTextstyles.googleInter700black28.copyWith(fontSize: 20),
           ),
           Row(
@@ -105,7 +93,7 @@ class ApplicationStatusContainer extends ConsumerWidget {
               ),
               const SizedBox(width: 5),
               Text(
-                application.date,
+                application.receivedDate,
                 style: AppTextstyles.googleInter400Grey14.copyWith(
                   fontSize: 13,
                 ),

@@ -6,6 +6,8 @@ import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
 import 'package:tgpl_network/features/dashboard/presentation/module_provider.dart';
+import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/routes/app_routes.dart';
 
 class DashboardModulesSection extends ConsumerWidget {
   const DashboardModulesSection({super.key});
@@ -67,7 +69,11 @@ class _DashboardModuleContainer extends ConsumerWidget {
                         title: subModule.title,
                         noOfActiveItems: subModule.count,
                         onTap: () {
-                          // navigate to sub module screen;
+                          ref
+                              .read(goRouterProvider)
+                              .push(
+                                AppRoutes.moduleApplications(module.title, subModule.title),
+                              );
                         },
                       ),
                     ],

@@ -161,4 +161,48 @@ class FilterSelectionDialogController
   void onChangeStatus(String status) {
     state = state.copyWith(selectedStatus: status);
   }
+
+  void onChangeYesNoField({
+    YesNo? surveyProfile,
+    YesNo? trafficTrade,
+    YesNo? feasibility,
+    YesNo? negotiation,
+    YesNo? mouSign,
+    YesNo? joiningFee,
+    YesNo? franchiseAgreement,
+    YesNo? feasibilityFinalization,
+    YesNo? explosiveLayout,
+    YesNo? drawing,
+    YesNo? topography,
+    YesNo? issuanceOfDrawing,
+    YesNo? appliedInExplosive,
+    YesNo? dcNoc,
+    YesNo? capex,
+    YesNo? leaseAgreement,
+    YesNo? hoto,
+    YesNo? construction,
+    YesNo? inauguration,
+  }) {
+    state = state.copyWith(
+      surveyProfile: surveyProfile,
+      trafficTrade: trafficTrade,
+      feasibility: feasibility,
+      negotiation: negotiation,
+      mouSign: mouSign,
+      joiningFee: joiningFee,
+      franchiseAgreement: franchiseAgreement,
+      feasibilityFinalization: feasibilityFinalization,
+      explosiveLayout: explosiveLayout,
+      drawing: drawing,
+      topography: topography,
+      issuanceOfDrawing: issuanceOfDrawing,
+      appliedInExplosive: appliedInExplosive,
+      dcNoc: dcNoc,
+      capex: capex,
+      leaseAgreement: leaseAgreement,
+      hoto: hoto,
+      construction: construction,
+      inauguration: inauguration,
+    );
+  }
 }

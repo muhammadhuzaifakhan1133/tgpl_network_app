@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
-import 'package:tgpl_network/common/widgets/custom_textfield.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
+import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/station_form/presentation/forms/step3/step3_form_controller.dart';
 import 'package:tgpl_network/utils/string_validation_extension.dart';
@@ -95,7 +96,11 @@ class Step3FormView extends ConsumerWidget {
                 enabled: false,
                 controller: controller.locationController,
                 extraInformation: "Use GPS to mark exact location of your plot",
-                suffixIcon: _locationSuffixIcon(ref),
+                suffixIcon: actionContainer(
+                  icon: AppImages.locationIconSvg,
+                  iconColor: AppColors.black,
+                  onTap: () {},
+                ),
                 validator: (v) => v.validate(),
                 isChangeStyleOnDisable: false,
               ),
@@ -115,22 +120,6 @@ class Step3FormView extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _locationSuffixIcon(WidgetRef ref) {
-    return Container(
-      padding: EdgeInsets.all(8),
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      decoration: BoxDecoration(
-        color: AppColors.extraInformationColor.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Icon(
-        Icons.location_on_outlined,
-        // size: 16,
-        color: AppColors.black,
       ),
     );
   }

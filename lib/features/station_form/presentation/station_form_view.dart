@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
@@ -71,25 +72,19 @@ class StationFormView extends StatelessWidget {
                 top: 0,
                 child: Consumer(
                   builder: (context, ref, child) {
-                    return InkWell(
+                    return actionContainer(
+                      padding: 12,
+                      icon: AppImages.backIconSvg,
                       onTap: () {
                         final controller = ref.read(
                           stationFormControllerProvider.notifier,
                         );
                         controller.onPreviousButtonPressed();
                       },
-                      child: Container(
-                        width: 35,
-                        height: 35,
-                        color: AppColors.actionContainerColor,
-                        child: Center(
-                          child: Icon(Icons.arrow_back_ios_new, size: 16, color: AppColors.black),
-                        ),
-                      ),
                     );
-                  }
+                  },
                 ),
-              )
+              ),
             ],
           ),
         ),

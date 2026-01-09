@@ -64,7 +64,7 @@ class StationFormController extends Notifier<StationFormState> {
       );
     } else {
       final step1Controller = ref.read(step1FormControllerProvider);
-      final step2State = ref.read(step2FormControllerProvider);
+      // final step2State = ref.read(step2FormControllerProvider);
       final step2Controller = ref.read(step2FormControllerProvider.notifier);
       final step3Controller = ref.read(step3FormControllerProvider);
       // submit the form

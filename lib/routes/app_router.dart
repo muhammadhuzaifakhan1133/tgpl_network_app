@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tgpl_network/common/presentation/home_shell_view.dart';
@@ -7,6 +6,7 @@ import 'package:tgpl_network/features/change_password/change_password_view.dart'
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_view.dart';
 import 'package:tgpl_network/features/login/presentation/login_view.dart';
 import 'package:tgpl_network/features/map/presentation/map_view.dart';
+import 'package:tgpl_network/features/module_applications/module_applications_view.dart';
 import 'package:tgpl_network/features/onboarding/presentation/onboarding_view.dart';
 import 'package:tgpl_network/features/profile/presentation/profile_view.dart';
 import 'package:tgpl_network/features/splash/presentation/splash_view.dart';
@@ -17,7 +17,7 @@ import 'package:tgpl_network/routes/app_routes.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: AppRoutes.dashboard,
+    initialLocation: AppRoutes.splash,
     routes: [
       GoRoute(
         path: AppRoutes.splash,
@@ -85,6 +85,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.changePassword,
         builder: (context, state) => ChangePasswordView(),
+      ),
+      GoRoute(
+        path: AppRoutes.moduleApplications(),
+        builder: (context, state) => ModuleApplicationsView(
+          module: state.pathParameters['module'] ?? '',
+          subModule: state.pathParameters['subModule'] ?? '',
+        ),
       ),
     ],
   );

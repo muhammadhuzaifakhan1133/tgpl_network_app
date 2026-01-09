@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:tgpl_network/constants/app_colors.dart';
-import 'package:tgpl_network/constants/app_images.dart';
-import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/profile/presentation/widgets/account_settings_section.dart';
 import 'package:tgpl_network/features/profile/presentation/widgets/contact_information_section.dart';
 import 'package:tgpl_network/features/profile/presentation/widgets/profile_header.dart';

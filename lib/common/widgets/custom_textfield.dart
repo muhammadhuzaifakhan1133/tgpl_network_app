@@ -19,6 +19,7 @@ class CustomTextField extends StatelessWidget {
   final double? width;
   final double? height;
   final Color? backgroundColor;
+  final Widget? hint;
   const CustomTextField({
     super.key,
     this.controller,
@@ -38,12 +39,11 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     this.width,
     this.height,
-    this.backgroundColor,
+    this.backgroundColor, this.hint,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isMultiline = multiline;
     return SizedBox(
       width: width,
       height: height,
@@ -54,6 +54,7 @@ class CustomTextField extends StatelessWidget {
         focusNode: focusNode,
         decoration: InputDecoration(
           fillColor: backgroundColor,
+          hint: hint,
           filled: backgroundColor != null ? true : false,
           hintText: hintText,
           errorText: errorText,
@@ -64,13 +65,13 @@ class CustomTextField extends StatelessWidget {
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         ),
         validator: validator,
-        keyboardType: isMultiline ? TextInputType.multiline : keyboardType,
-        textInputAction: isMultiline
+        keyboardType: multiline ? TextInputType.multiline : keyboardType,
+        textInputAction: multiline
             ? TextInputAction.newline
             : (textInputAction ?? TextInputAction.next),
 
-        minLines: isMultiline ? (minLines ?? 3) : 1,
-        maxLines: isMultiline ? (maxLines ?? 5) : 1,
+        minLines: multiline ? (minLines ?? 3) : 1,
+        maxLines: multiline ? (maxLines ?? 5) : 1,
         onFieldSubmitted: (_) => onFieldSubmitted?.call(),
       ),
     );

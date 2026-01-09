@@ -27,7 +27,8 @@ class AppImages {
   static const String totalActiveIconSvg = "assets/icons/total_active_icon.svg";
   static const String historyIconSvg = "assets/icons/history_icon.svg";
   static const String commissionIconSvg = "assets/icons/commission_icon.svg";
-  static const String constructionIconSvg = "assets/icons/construction_icon.svg";
+  static const String constructionIconSvg =
+      "assets/icons/construction_icon.svg";
   static const String layoutIconSvg = "assets/icons/layout_icon.svg";
   static const String feasibilityIconSvg = "assets/icons/feasibility_icon.svg";
   static const String calendarIconSvg = "assets/icons/calendar_icon.svg";
@@ -36,4 +37,9 @@ class AppImages {
   static const String lockIconSvg = "assets/icons/lock_icon.svg";
   static const String helpIconSvg = "assets/icons/help_icon.svg";
   static const String logoutIconSvg = "assets/icons/logout_icon.svg";
+  static const String eyeIconSvg = "assets/icons/eye_icon.svg";
+  static const String formIconSvg = "assets/icons/form_icon.svg";
+  static const String uploadIconSvg = "assets/icons/documents_icon.svg";
+  static const String downloadIconSvg = "assets/icons/download_icon.svg";
+  static const String backIconSvg = "assets/icons/back_icon.svg";
 }

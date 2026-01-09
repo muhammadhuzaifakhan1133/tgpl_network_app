@@ -4,6 +4,7 @@ class AppColors {
   static const primary = Color(0xffE91A20);
   static const transparent = Colors.transparent;
   static const white = Color(0xffffffff);
+  static const grey = Colors.grey;
   static const halfWhite = Color(0x80ffffff);
   static const black = Color(0xff000000);
   static const applyNewStationIconColor = Color(0xffeaf1fc);
