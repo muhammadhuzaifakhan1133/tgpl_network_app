@@ -7,6 +7,8 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/station_form/presentation/forms/step3/step3_form_controller.dart';
+import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/routes/app_routes.dart';
 import 'package:tgpl_network/utils/string_validation_extension.dart';
 
 class Step3FormView extends ConsumerWidget {
@@ -85,25 +87,24 @@ class Step3FormView extends ConsumerWidget {
               multiline: true,
             ),
             const SizedBox(height: 16),
-            InkWell(
-              onTap: () {
-                ref.read(step3FormControllerProvider).locationController.text =
-                    "Temporary location";
-              },
-              child: CustomTextFieldWithTitle(
-                title: "Google Location*",
-                hintText: "Tap to select locaiton",
-                enabled: false,
-                controller: controller.locationController,
-                extraInformation: "Use GPS to mark exact location of your plot",
-                suffixIcon: actionContainer(
-                  icon: AppImages.locationIconSvg,
-                  iconColor: AppColors.black,
-                  onTap: () {},
-                ),
-                validator: (v) => v.validate(),
-                isChangeStyleOnDisable: false,
+            CustomTextFieldWithTitle(
+              title: "Google Location*",
+              hintText: "Tap to select locaiton",
+              // enabled: false,
+              controller: controller.locationController,
+              extraInformation: "Use GPS to mark exact location of your plot",
+              suffixIcon: actionContainer(
+                icon: AppImages.locationIconSvg,
+                iconColor: AppColors.black,
+                rightMargin: 5,
+                onTap: () {
+                  ref
+                      .read(goRouterProvider)
+                      .push(AppRoutes.siteLocationSelection);
+                },
               ),
+              validator: (v) => v.validate(),
+              isChangeStyleOnDisable: false,
             ),
             const SizedBox(height: 20),
             Row(

@@ -11,13 +11,14 @@ import 'package:tgpl_network/features/onboarding/presentation/onboarding_view.da
 import 'package:tgpl_network/features/profile/presentation/profile_view.dart';
 import 'package:tgpl_network/features/splash/presentation/splash_view.dart';
 import 'package:tgpl_network/features/station_form/presentation/confirmation/station_form_confirmation_view.dart';
+import 'package:tgpl_network/features/station_form/presentation/forms/step3/site_location_selection/site_location_selection_view.dart';
 import 'package:tgpl_network/features/station_form/presentation/station_form_view.dart';
 import 'package:tgpl_network/features/welcome/presentation/welcome_view.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: AppRoutes.splash,
+    initialLocation: AppRoutes.dashboard,
     routes: [
       GoRoute(
         path: AppRoutes.splash,
@@ -34,6 +35,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.stationForm,
         builder: (context, state) => const StationFormView(),
+      ),
+      GoRoute(
+        path: AppRoutes.siteLocationSelection,
+        builder: (context, state) => const SiteLocationSelectionView(),
       ),
       GoRoute(
         path: AppRoutes.stationFormConfirmation,

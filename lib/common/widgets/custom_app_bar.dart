@@ -17,6 +17,7 @@ class CustomAppBar extends ConsumerStatefulWidget {
   final bool showFilterIcon;
   final void Function()? onTapFilterIcon;
   final void Function()? onTapBackButton;
+  final List<Widget> actions;
   const CustomAppBar({
     super.key,
     required this.title,
@@ -26,7 +27,7 @@ class CustomAppBar extends ConsumerStatefulWidget {
     this.showSearchIcon = false,
     this.showFilterIcon = false,
     this.onTapFilterIcon,
-    this.onTapBackButton,
+    this.onTapBackButton,  this.actions = const <Widget>[],
   });
 
   @override
@@ -134,6 +135,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                           ),
                         ),
                       ],
+                      ...widget.actions,
                     ],
                   ),
                 ],
