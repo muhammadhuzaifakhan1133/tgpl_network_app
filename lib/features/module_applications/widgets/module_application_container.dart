@@ -128,7 +128,14 @@ class ModuleApplicationContainer extends ConsumerWidget {
                 },
               ),
               const SizedBox(width: 8),
-              actionContainer(icon: AppImages.formIconSvg, onTap: () {}),
+              actionContainer(
+                icon: AppImages.formIconSvg,
+                onTap: () {
+                  ref
+                      .read(goRouterProvider)
+                      .push(AppRoutes.surveyForm(application.id));
+                },
+              ),
               const SizedBox(width: 8),
               actionContainer(
                 icon: AppImages.uploadIconSvg,

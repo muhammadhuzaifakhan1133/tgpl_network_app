@@ -13,4 +13,5 @@ class AppRoutes {
   static String moduleApplications([String moduleId = ":module", String subModule = ":subModule"]) => "/module_applications/$moduleId/$subModule";
   static const String siteLocationSelection = "/site_location_selection";
   static String applicationDetail([String appId = ":appId"]) => "/application_detail/$appId";
+  static String surveyForm([String appId = ":appId"]) => "/survey_form/$appId";
 }
