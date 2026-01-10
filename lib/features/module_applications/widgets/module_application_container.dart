@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/common/models/application_model.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
@@ -6,14 +7,16 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/module_applications/widgets/document_bottom_sheet.dart';
+import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/routes/app_routes.dart';
 import 'package:tgpl_network/utils/get_application_category_color.dart';
 
-class ModuleApplicationContainer extends StatelessWidget {
+class ModuleApplicationContainer extends ConsumerWidget {
   final ApplicationModel application;
   const ModuleApplicationContainer({super.key, required this.application});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 13, vertical: 8),
       margin: EdgeInsets.only(bottom: 14),
@@ -112,7 +115,18 @@ class ModuleApplicationContainer extends StatelessWidget {
               ),
               actionContainer(icon: AppImages.locationIconSvg, onTap: () {}),
               const SizedBox(width: 8),
-              actionContainer(icon: AppImages.eyeIconSvg, onTap: () {}),
+              actionContainer(
+                icon: AppImages.eyeIconSvg,
+                onTap: () {
+                  // send section to the detail view
+                  ref
+                      .read(goRouterProvider)
+                      .push(
+                        AppRoutes.applicationDetail(application.id),
+                        extra: application.statusId,
+                      );
+                },
+              ),
               const SizedBox(width: 8),
               actionContainer(icon: AppImages.formIconSvg, onTap: () {}),
               const SizedBox(width: 8),

@@ -18,38 +18,35 @@ class HomeShellView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      bottom: true,
-      child: Scaffold(
-        body: navigationShell,
-        backgroundColor: AppColors.scaffoldBackgroundColor,
-        bottomNavigationBar: Container(
-          // margin: const EdgeInsets.all(20), // Creates the floating effect
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            // borderRadius: BorderRadius.circular(30),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.08),
-                blurRadius: 15,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(0, AppImages.dashboardInactiveSvg, "Dashboard"),
-              _buildNavItem(
-                1,
-                AppImages.applicationsInactiveSvg,
-                "Application",
-              ),
-              _buildNavItem(2, AppImages.mapInactiveSvg, "Map"),
-              _buildNavItem(3, AppImages.profileInactiveSvg, "Profiles"),
-            ],
-          ),
+    return Scaffold(
+      body: navigationShell,
+      backgroundColor: AppColors.scaffoldBackgroundColor,
+      bottomNavigationBar: Container(
+        // margin: const EdgeInsets.all(20), // Creates the floating effect
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          // borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 15,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildNavItem(0, AppImages.dashboardInactiveSvg, "Dashboard"),
+            _buildNavItem(
+              1,
+              AppImages.applicationsInactiveSvg,
+              "Application",
+            ),
+            _buildNavItem(2, AppImages.mapInactiveSvg, "Map"),
+            _buildNavItem(3, AppImages.profileInactiveSvg, "Profiles"),
+          ],
         ),
       ),
     );

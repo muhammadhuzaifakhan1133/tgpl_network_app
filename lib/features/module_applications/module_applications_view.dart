@@ -16,42 +16,39 @@ class ModuleApplicationsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      bottom: true,
-      child: Scaffold(
-        body: Column(
-          children: [
-            Builder(
-              builder: (context) {
-                return _moduleApplicationCustomBar();
+    return Scaffold(
+      body: Column(
+        children: [
+          Builder(
+            builder: (context) {
+              return _moduleApplicationCustomBar();
+            },
+          ),
+          const SizedBox(height: 15),
+          Expanded(
+            child: Consumer(
+              builder: (context, ref, child) {
+                final state = ref.watch(
+                  moduleApplicationsAsyncControllerProvider(subModule),
+                );
+    
+                return state.when(
+                  data: (data) => ListView.builder(
+                    itemCount: data.length,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    itemBuilder: (context, index) {
+                      return ModuleApplicationContainer(
+                        application: data[index],
+                      );
+                    },
+                  ),
+                  error: (e, s) => Text("Error: $e"),
+                  loading: () => Center(child: CircularProgressIndicator()),
+                );
               },
             ),
-            const SizedBox(height: 15),
-            Expanded(
-              child: Consumer(
-                builder: (context, ref, child) {
-                  final state = ref.watch(
-                    moduleApplicationsAsyncControllerProvider(subModule),
-                  );
-
-                  return state.when(
-                    data: (data) => ListView.builder(
-                      itemCount: data.length,
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      itemBuilder: (context, index) {
-                        return ModuleApplicationContainer(
-                          application: data[index],
-                        );
-                      },
-                    ),
-                    error: (e, s) => Text("Error: $e"),
-                    loading: () => Center(child: CircularProgressIndicator()),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

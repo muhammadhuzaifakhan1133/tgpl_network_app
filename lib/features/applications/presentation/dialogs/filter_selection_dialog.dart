@@ -71,27 +71,25 @@ Future<dynamic> filterSelectionDialog(BuildContext context) {
                     Row(
                       children: [
                         Expanded(
-                          child: GestureDetector(
+                          child: CustomTextFieldWithTitle(
                             onTap: () {
                               controller.onSelectDate(
-                                context: context,
-                                onUserSelectedDate: (date) {
-                                  controller.fromDateController.text = date
-                                      .formatToDDMMYYY();
-                                },
-                              );
+                              context: context,
+                              onUserSelectedDate: (date) {
+                                controller.fromDateController.text = date
+                                    .formatToDDMMYYY();
+                              },
+                            );
                             },
-                            child: CustomTextFieldWithTitle(
-                              title: "Date From",
-                              hintText: "dd/mm/yyyy",
-                              enabled: false,
-                              controller: controller.fromDateController,
-                            ),
+                            title: "Date From",
+                            hintText: "dd/mm/yyyy",
+                            readOnly: true,
+                            controller: controller.fromDateController,
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: GestureDetector(
+                          child: CustomTextFieldWithTitle(
                             onTap: () {
                               controller.onSelectDate(
                                 context: context,
@@ -101,12 +99,10 @@ Future<dynamic> filterSelectionDialog(BuildContext context) {
                                 },
                               );
                             },
-                            child: CustomTextFieldWithTitle(
-                              title: "Date To",
-                              hintText: "dd/mm/yyyy",
-                              enabled: false,
-                              controller: controller.toDateController,
-                            ),
+                            title: "Date To",
+                            hintText: "dd/mm/yyyy",
+                            readOnly: true,
+                            controller: controller.toDateController,
                           ),
                         ),
                       ],
@@ -198,42 +194,38 @@ Future<dynamic> filterSelectionDialog(BuildContext context) {
                     Row(
                       children: [
                         Expanded(
-                          child: GestureDetector(
+                          child: CustomTextFieldWithTitle(
                             onTap: () {
                               controller.onSelectDate(
-                                context: context,
-                                onUserSelectedDate: (date) {
-                                  controller.receiveDateController.text = date
-                                      .formatToDDMMYYY();
-                                },
-                              );
+                              context: context,
+                              onUserSelectedDate: (date) {
+                                controller.receiveDateController.text = date
+                                    .formatToDDMMYYY();
+                              },
+                            );
                             },
-                            child: CustomTextFieldWithTitle(
-                              title: "Recev. Date",
-                              hintText: "dd/mm/yyyy",
-                              enabled: false,
-                              controller: controller.receiveDateController,
-                            ),
+                            title: "Recev. Date",
+                            hintText: "dd/mm/yyyy",
+                            readOnly: true,
+                            controller: controller.receiveDateController,
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: GestureDetector(
+                          child: CustomTextFieldWithTitle(
                             onTap: () {
                               controller.onSelectDate(
-                                context: context,
-                                onUserSelectedDate: (date) {
-                                  controller.condDateController.text = date
-                                      .formatToDDMMYYY();
-                                },
-                              );
+                              context: context,
+                              onUserSelectedDate: (date) {
+                                controller.condDateController.text = date
+                                    .formatToDDMMYYY();
+                              },
+                            );
                             },
-                            child: CustomTextFieldWithTitle(
-                              title: "Cond. Date",
-                              hintText: "dd/mm/yyyy",
-                              enabled: false,
-                              controller: controller.condDateController,
-                            ),
+                            title: "Cond. Date",
+                            hintText: "dd/mm/yyyy",
+                            readOnly: true,
+                            controller: controller.condDateController,
                           ),
                         ),
                       ],

@@ -27,7 +27,8 @@ class CustomAppBar extends ConsumerStatefulWidget {
     this.showSearchIcon = false,
     this.showFilterIcon = false,
     this.onTapFilterIcon,
-    this.onTapBackButton,  this.actions = const <Widget>[],
+    this.onTapBackButton,
+    this.actions = const <Widget>[],
   });
 
   @override
@@ -40,7 +41,12 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: MediaQuery.of(context).padding.top + 20,
+        bottom: 20,
+      ),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.only(

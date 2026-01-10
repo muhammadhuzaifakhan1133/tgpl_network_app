@@ -6,6 +6,7 @@ import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/features/station_form/presentation/forms/step3/site_location_selection/site_location_selection_controller.dart';
 import 'package:tgpl_network/features/station_form/presentation/forms/step3/step3_form_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
@@ -17,6 +18,18 @@ class Step3FormView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(step3FormControllerProvider);
+
+    Future<void> navigateToSiteLocationSelection() async {
+      LocationData? selectedLocation = await ref
+          .read(goRouterProvider)
+          .push(AppRoutes.siteLocationSelection);
+      if (selectedLocation != null) {
+        controller.locationController.text =
+            "${selectedLocation.position.latitude.toStringAsFixed(6)}, ${selectedLocation.position.longitude.toStringAsFixed(6)}";
+        controller.addressController.text = selectedLocation.address ?? '';
+      }
+    }
+
     return SingleChildScrollView(
       child: Form(
         key: controller.formKey,
@@ -80,31 +93,27 @@ class Step3FormView extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             CustomTextFieldWithTitle(
+              title: "Google Location*",
+              hintText: "Tap to select locaiton",
+              readOnly: true,
+              controller: controller.locationController,
+              extraInformation: "Use GPS to mark exact location of your plot",
+              onTap: navigateToSiteLocationSelection,
+              suffixIcon: actionContainer(
+                icon: AppImages.locationIconSvg,
+                iconColor: AppColors.black,
+                rightMargin: 5,
+                onTap: navigateToSiteLocationSelection,
+              ),
+              validator: (v) => v.validate(),
+            ),
+            const SizedBox(height: 16),
+            CustomTextFieldWithTitle(
               title: "Complete Site Address*",
               hintText: "Enter complete address with landmarks",
               controller: controller.addressController,
               validator: (v) => v.validate(),
               multiline: true,
-            ),
-            const SizedBox(height: 16),
-            CustomTextFieldWithTitle(
-              title: "Google Location*",
-              hintText: "Tap to select locaiton",
-              // enabled: false,
-              controller: controller.locationController,
-              extraInformation: "Use GPS to mark exact location of your plot",
-              suffixIcon: actionContainer(
-                icon: AppImages.locationIconSvg,
-                iconColor: AppColors.black,
-                rightMargin: 5,
-                onTap: () {
-                  ref
-                      .read(goRouterProvider)
-                      .push(AppRoutes.siteLocationSelection);
-                },
-              ),
-              validator: (v) => v.validate(),
-              isChangeStyleOnDisable: false,
             ),
             const SizedBox(height: 20),
             Row(

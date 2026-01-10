@@ -5,6 +5,7 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/features/station_form/presentation/forms/step3/site_location_selection/selected_location_card.dart';
 import 'package:tgpl_network/features/station_form/presentation/forms/step3/site_location_selection/site_location_selection_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/utils/show_snackbar.dart';
 
 class SiteLocationSelectionView extends ConsumerStatefulWidget {
   final LatLng? initialPosition;
@@ -96,7 +97,9 @@ class _SiteLocationSelectionViewState
         ),
       );
     } else {
-      _showSnackBar('Failed to get location. Please check permissions.');
+      if (context.mounted) {
+        showSnackBar(context, 'Failed to get location. Please check permissions.');
+      }
     }
 
     ref.read(isLoadingProvider.notifier).state = false;
@@ -134,12 +137,6 @@ class _SiteLocationSelectionViewState
 
     ref.read(markersProvider.notifier).state = updatedMarkers;
     ref.read(isLoadingProvider.notifier).state = false;
-  }
-
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -205,8 +202,8 @@ class _SiteLocationSelectionViewState
                       .toSet();
                 },
                 onConfirm: () {
-                  _showSnackBar('Location selected successfully!');
-                  ref.read(goRouterProvider).pop(selectedLocation.position);
+                  showSnackBar(context, 'Location selected successfully!');
+                  ref.read(goRouterProvider).pop(selectedLocation);
                 },
               ),
             ),

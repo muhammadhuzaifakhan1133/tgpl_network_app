@@ -12,4 +12,5 @@ class AppRoutes {
   static const String changePassword = "/change_password";
   static String moduleApplications([String moduleId = ":module", String subModule = ":subModule"]) => "/module_applications/$moduleId/$subModule";
   static const String siteLocationSelection = "/site_location_selection";
+  static String applicationDetail([String appId = ":appId"]) => "/application_detail/$appId";
 }

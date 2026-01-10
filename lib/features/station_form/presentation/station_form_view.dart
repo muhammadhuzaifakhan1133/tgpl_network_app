@@ -73,6 +73,7 @@ class StationFormView extends StatelessWidget {
                   builder: (context, ref, child) {
                     return actionContainer(
                       padding: 12,
+                      leftMargin: 0,
                       icon: AppImages.backIconSvg,
                       onTap: () {
                         final controller = ref.read(

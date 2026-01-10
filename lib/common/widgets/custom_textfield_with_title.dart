@@ -14,9 +14,9 @@ class CustomTextFieldWithTitle extends StatelessWidget {
   final int? minLines;
   final int? maxLines;
   final Widget? suffixIcon;
-  final bool? enabled;
-  final bool isChangeStyleOnDisable;
   final bool obscureText;
+  final bool readOnly;
+  final void Function()? onTap;
   const CustomTextFieldWithTitle({
     super.key,
     required this.title,
@@ -25,14 +25,14 @@ class CustomTextFieldWithTitle extends StatelessWidget {
     this.validator,
     this.textInputAction,
     this.keyboardType,
-    this.isChangeStyleOnDisable = true,
     this.extraInformation,
     this.multiline = false,
     this.minLines,
     this.maxLines,
     this.suffixIcon,
-    this.enabled,
     this.obscureText = false,
+    this.readOnly = false,
+    this.onTap,
   });
 
   @override
@@ -47,8 +47,10 @@ class CustomTextFieldWithTitle extends StatelessWidget {
         CustomTextField(
           controller: controller,
           obscureText: obscureText,
-          enabled: enabled,
           hintText: hintText,
+          readOnly: readOnly,
+          onTap: onTap,
+          title: title,
           validator: validator,
           textInputAction: textInputAction,
           keyboardType: keyboardType,
@@ -56,7 +58,6 @@ class CustomTextFieldWithTitle extends StatelessWidget {
           minLines: minLines,
           multiline: multiline,
           suffixIcon: suffixIcon,
-          isChangeStyleOnDisable: isChangeStyleOnDisable,
         ),
         if (extraInformation != null) ...[
           const SizedBox(height: 2),
