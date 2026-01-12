@@ -9,6 +9,7 @@ class CustomButton extends StatelessWidget {
   final TextStyle? textStyle;
   final Widget? child;
   final double height;
+  final double? width;
   final double topPadding;
   final double bottomPadding;
   final double rightPadding;
@@ -19,6 +20,7 @@ class CustomButton extends StatelessWidget {
     required this.onPressed,
     required this.text,
     this.child,
+    this.width,
     this.height = 55,
     this.topPadding = 10,
     this.bottomPadding = 10,
@@ -42,7 +44,7 @@ class CustomButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
-        fixedSize: Size(context.screenWidth * 0.75, height),
+        fixedSize: Size(width ?? context.screenWidth * 0.75, height),
       ),
       child:
           child ??

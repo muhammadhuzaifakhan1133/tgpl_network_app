@@ -14,7 +14,8 @@ import 'package:tgpl_network/features/splash/presentation/splash_view.dart';
 import 'package:tgpl_network/features/station_form/presentation/confirmation/station_form_confirmation_view.dart';
 import 'package:tgpl_network/features/station_form/presentation/forms/step3/site_location_selection/site_location_selection_view.dart';
 import 'package:tgpl_network/features/station_form/presentation/station_form_view.dart';
-import 'package:tgpl_network/features/survey_form/survey_form_view.dart';
+import 'package:tgpl_network/features/survey_form/presentation/survey_form_view.dart';
+import 'package:tgpl_network/features/traffic_trade_form/presentation/traffic_trade_form_view.dart';
 import 'package:tgpl_network/features/welcome/presentation/welcome_view.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 
@@ -113,6 +114,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.surveyForm(),
         builder: (context, state) {
           return SurveyFormView(
+            appId: state.pathParameters['appId'] ?? '',
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.trafficTradeForm(),
+        builder: (context, state) {
+          return TrafficTradeFormView(
             appId: state.pathParameters['appId'] ?? '',
           );
         },

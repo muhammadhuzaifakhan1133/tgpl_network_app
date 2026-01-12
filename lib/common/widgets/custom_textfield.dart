@@ -24,6 +24,7 @@ class CustomTextField extends StatelessWidget {
   final void Function()? onTap;
   final bool readOnly;
   final String? title;
+  final void Function(String)? onChanged;
   const CustomTextField({
     super.key,
     this.controller,
@@ -45,7 +46,7 @@ class CustomTextField extends StatelessWidget {
     this.hint,
     this.onTap,
     this.readOnly = false,
-    this.title,
+    this.title, this.onChanged,
   });
 
   @override
@@ -56,6 +57,7 @@ class CustomTextField extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         readOnly: readOnly,
+        onChanged: onChanged,
         contextMenuBuilder: readOnly
             ? (context, editableTextState) {
                 return AdaptiveTextSelectionToolbar.buttonItems(

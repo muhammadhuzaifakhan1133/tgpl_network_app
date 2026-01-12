@@ -133,7 +133,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
                 onTap: () {
                   ref
                       .read(goRouterProvider)
-                      .push(AppRoutes.surveyForm(application.id));
+                      .push(AppRoutes.trafficTradeForm(application.id));
                 },
               ),
               const SizedBox(width: 8),

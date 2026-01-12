@@ -12,6 +12,7 @@ import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/applications/presentation/dialogs/filter_selection_dialog_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/utils/custom_date_picker.dart';
 import 'package:tgpl_network/utils/datetime_extension.dart';
 import 'package:tgpl_network/utils/yes_no_enum_with_extension.dart';
 
@@ -73,13 +74,13 @@ Future<dynamic> filterSelectionDialog(BuildContext context) {
                         Expanded(
                           child: CustomTextFieldWithTitle(
                             onTap: () {
-                              controller.onSelectDate(
-                              context: context,
-                              onUserSelectedDate: (date) {
-                                controller.fromDateController.text = date
-                                    .formatToDDMMYYY();
-                              },
-                            );
+                              customDatePicker(
+                                context: context,
+                                onUserSelectedDate: (date) {
+                                  controller.fromDateController.text = date
+                                      .formatToDDMMYYY();
+                                },
+                              );
                             },
                             title: "Date From",
                             hintText: "dd/mm/yyyy",
@@ -91,7 +92,7 @@ Future<dynamic> filterSelectionDialog(BuildContext context) {
                         Expanded(
                           child: CustomTextFieldWithTitle(
                             onTap: () {
-                              controller.onSelectDate(
+                              customDatePicker(
                                 context: context,
                                 onUserSelectedDate: (date) {
                                   controller.toDateController.text = date
@@ -196,13 +197,13 @@ Future<dynamic> filterSelectionDialog(BuildContext context) {
                         Expanded(
                           child: CustomTextFieldWithTitle(
                             onTap: () {
-                              controller.onSelectDate(
-                              context: context,
-                              onUserSelectedDate: (date) {
-                                controller.receiveDateController.text = date
-                                    .formatToDDMMYYY();
-                              },
-                            );
+                              customDatePicker(
+                                context: context,
+                                onUserSelectedDate: (date) {
+                                  controller.receiveDateController.text = date
+                                      .formatToDDMMYYY();
+                                },
+                              );
                             },
                             title: "Recev. Date",
                             hintText: "dd/mm/yyyy",
@@ -214,13 +215,13 @@ Future<dynamic> filterSelectionDialog(BuildContext context) {
                         Expanded(
                           child: CustomTextFieldWithTitle(
                             onTap: () {
-                              controller.onSelectDate(
-                              context: context,
-                              onUserSelectedDate: (date) {
-                                controller.condDateController.text = date
-                                    .formatToDDMMYYY();
-                              },
-                            );
+                              customDatePicker(
+                                context: context,
+                                onUserSelectedDate: (date) {
+                                  controller.condDateController.text = date
+                                      .formatToDDMMYYY();
+                                },
+                              );
                             },
                             title: "Cond. Date",
                             hintText: "dd/mm/yyyy",

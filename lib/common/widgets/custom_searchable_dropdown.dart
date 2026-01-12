@@ -10,7 +10,7 @@ class CustomSearchableDropDown<T extends Object> extends StatelessWidget {
   /// Fields used for searching (id, email, name, etc.)
   final List<String> Function(T item)? searchableStrings;
 
-  final void Function(T?) onChanged;
+  final void Function(T?)? onChanged;
   final String? Function(T?)? validator;
   final String? hintText;
   final T? initialValue;
@@ -60,7 +60,7 @@ class CustomSearchableDropDown<T extends Object> extends StatelessWidget {
 
           onSelected: (selection) {
             state.didChange(selection);
-            onChanged(selection);
+            onChanged?.call(selection);
           },
 
           fieldViewBuilder: (

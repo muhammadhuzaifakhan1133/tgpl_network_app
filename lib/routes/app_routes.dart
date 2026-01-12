@@ -14,4 +14,5 @@ class AppRoutes {
   static const String siteLocationSelection = "/site_location_selection";
   static String applicationDetail([String appId = ":appId"]) => "/application_detail/$appId";
   static String surveyForm([String appId = ":appId"]) => "/survey_form/$appId";
+  static String trafficTradeForm([String appId = ":appId"]) => "/traffic_trade_form/$appId";
 }

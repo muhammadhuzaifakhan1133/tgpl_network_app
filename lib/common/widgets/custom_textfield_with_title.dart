@@ -17,6 +17,7 @@ class CustomTextFieldWithTitle extends StatelessWidget {
   final bool obscureText;
   final bool readOnly;
   final void Function()? onTap;
+  final void Function(String)? onChanged;
   const CustomTextFieldWithTitle({
     super.key,
     required this.title,
@@ -32,7 +33,7 @@ class CustomTextFieldWithTitle extends StatelessWidget {
     this.suffixIcon,
     this.obscureText = false,
     this.readOnly = false,
-    this.onTap,
+    this.onTap, this.onChanged,
   });
 
   @override
@@ -47,6 +48,7 @@ class CustomTextFieldWithTitle extends StatelessWidget {
         CustomTextField(
           controller: controller,
           obscureText: obscureText,
+          onChanged: onChanged,
           hintText: hintText,
           readOnly: readOnly,
           onTap: onTap,
