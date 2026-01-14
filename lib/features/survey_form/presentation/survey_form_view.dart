@@ -24,25 +24,21 @@ class SurveyFormView extends ConsumerWidget {
               showBackButton: true,
             ),
             Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Form(
-                    key: ref
-                        .read(surveyFormControllerProvider.notifier)
-                        .formKey,
-                    child: Column(
-                      children: [
-                        ApplicantInfoFormCard(),
-                        const SizedBox(height: 20),
-                        ContactAndDealerFormCard(),
-                        const SizedBox(height: 20),
-                        DealerProfileFormCard(),
-                        const SizedBox(height: 20),
-                        SurveyRecommendationFormCard(),
-                      ],
-                    ),
-                  ),
+              child: Form(
+                key: ref
+                    .read(surveyFormControllerProvider.notifier)
+                    .formKey,
+                child: ListView(
+                   padding: const EdgeInsets.all(20.0),
+                  children: [
+                    ApplicantInfoFormCard(),
+                    const SizedBox(height: 20),
+                    ContactAndDealerFormCard(),
+                    const SizedBox(height: 20),
+                    DealerProfileFormCard(),
+                    const SizedBox(height: 20),
+                    SurveyRecommendationFormCard(),
+                  ],
                 ),
               ),
             ),

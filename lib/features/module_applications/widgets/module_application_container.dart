@@ -13,7 +13,12 @@ import 'package:tgpl_network/utils/get_application_category_color.dart';
 
 class ModuleApplicationContainer extends ConsumerWidget {
   final ApplicationModel application;
-  const ModuleApplicationContainer({super.key, required this.application});
+  final String submodule;
+  const ModuleApplicationContainer({
+    super.key,
+    required this.application,
+    required this.submodule,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -69,7 +74,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
                       AppImages.phoneIconSvg,
                       color: AppColors.subHeadingColor,
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         application.contactNumber,
@@ -88,7 +93,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
                       AppImages.locationIconSvg,
                       color: AppColors.subHeadingColor,
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         application.city,
@@ -127,15 +132,25 @@ class ModuleApplicationContainer extends ConsumerWidget {
                       );
                 },
               ),
-              const SizedBox(width: 8),
-              actionContainer(
-                icon: AppImages.formIconSvg,
-                onTap: () {
-                  ref
-                      .read(goRouterProvider)
-                      .push(AppRoutes.trafficTradeForm(application.id));
-                },
-              ),
+              if (submodule == "Survey & Dealer Profile" ||
+                  submodule == "Traffic & Trade") ...[
+                const SizedBox(width: 8),
+                actionContainer(
+                  icon: AppImages.formIconSvg,
+                  onTap: () {
+                    if (submodule == "Survey & Dealer Profile") {
+                      ref
+                          .read(goRouterProvider)
+                          .push(AppRoutes.surveyForm(application.id));
+                      return;
+                    } else {
+                      ref
+                          .read(goRouterProvider)
+                          .push(AppRoutes.trafficTradeForm(application.id));
+                    }
+                  },
+                ),
+              ],
               const SizedBox(width: 8),
               actionContainer(
                 icon: AppImages.uploadIconSvg,

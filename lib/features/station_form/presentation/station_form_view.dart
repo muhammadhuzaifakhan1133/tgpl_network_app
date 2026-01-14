@@ -14,7 +14,6 @@ class StationFormView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -23,48 +22,52 @@ class StationFormView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 50),
           child: Stack(
             children: [
-              Column(
-                children: [
-                  SvgPicture.asset(AppImages.tajLogoSvg, width: 50, height: 50),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Welcome to\nTaj Gasoline",
-                    textAlign: TextAlign.center,
-                    style: AppTextstyles.neutra700black32.copyWith(height: 1),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Apply for a new TGPL retail station. Fill in the details below and our team will contact you shortly.",
-                    textAlign: TextAlign.center,
-                    style: AppTextstyles.googleInter400Grey14,
-                  ),
-                  const SizedBox(height: 12),
-                  // steps indicator
-                  FormStepsIndicator(),
-                  const SizedBox(height: 12),
-                  FormStepsTitle(),
-                  const SizedBox(height: 20),
-                  Expanded(
-                    child: Consumer(
-                      builder: (context, ref, child) {
-                        final controller = ref.read(
-                          stationFormControllerProvider.notifier,
-                        );
-                        return PageView.builder(
-                          controller: controller.pageController,
-                          itemCount: controller.steps.length,
-                          physics: const NeverScrollableScrollPhysics(),
-                          onPageChanged: (value) {
-                            controller.goToStep(value);
-                          },
-                          itemBuilder: (context, index) {
-                            return controller.steps[index];
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ],
+              Consumer(
+                builder: (context, ref, child) {
+                  final controller = ref.read(
+                    stationFormControllerProvider.notifier,
+                  );
+                  return PageView.builder(
+                    controller: controller.pageController,
+                    itemCount: controller.steps.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    onPageChanged: (value) {
+                      controller.goToStep(value);
+                    },
+                    itemBuilder: (context, index) {
+                      return ListView(
+                        children: [
+                          SvgPicture.asset(
+                            AppImages.tajLogoSvg,
+                            width: 50,
+                            height: 50,
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            "Welcome to\nTaj Gasoline",
+                            textAlign: TextAlign.center,
+                            style: AppTextstyles.neutra700black32.copyWith(
+                              height: 1,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            "Apply for a new TGPL retail station. Fill in the details below and our team will contact you shortly.",
+                            textAlign: TextAlign.center,
+                            style: AppTextstyles.googleInter400Grey14,
+                          ),
+                          const SizedBox(height: 12),
+                          // steps indicator
+                          FormStepsIndicator(),
+                          const SizedBox(height: 12),
+                          FormStepsTitle(),
+                          const SizedBox(height: 20),
+                          controller.steps[index],
+                        ],
+                      );
+                    },
+                  );
+                },
               ),
               Positioned(
                 left: 0,

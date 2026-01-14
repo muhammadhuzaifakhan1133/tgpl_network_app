@@ -25,13 +25,6 @@ class AccountSettingsSection extends ConsumerWidget {
             ref.read(goRouterProvider).push(AppRoutes.changePassword);
           },
         ),
-        const SizedBox(height: 14),
-        AccountSettingAndSupportCard(
-          title: "Notification",
-          icon: AppImages.notificationIconSvg,
-          color: AppColors.nextStep3Color,
-          onTap: () {},
-        ),
       ],
     );
   }

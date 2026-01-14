@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step3/site_location_selection/site_location_selection_controller.dart';
+import 'package:tgpl_network/features/site_location_selection/presentation/site_location_selection_controller.dart';
 
 class SelectedLocationCard extends StatelessWidget {
   final LocationData locationData;
@@ -86,7 +86,7 @@ class SelectedLocationCard extends StatelessWidget {
                 _buildInfoRow(
                   Icons.place,
                   'Address',
-                  locationData.address ?? 'Loading address...',
+                  locationData.address ?? 'Fetching address...'
                 ),
                 const SizedBox(height: 12),
 
@@ -101,7 +101,7 @@ class SelectedLocationCard extends StatelessWidget {
                 // Action button
                 SizedBox(
                   width: double.infinity,
-                  child: CustomButton(onPressed: onConfirm, text: "Confirm Location"),
+                  child: CustomButton(onPressed: locationData.address == null ? null : onConfirm, text: "Confirm Location"),
                 ),
               ],
             ),

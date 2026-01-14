@@ -13,21 +13,17 @@ class ProfileView extends StatelessWidget {
       children: [
         ProfileHeader(),
         Expanded(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  const SizedBox(height: 30),
-                  ContactInformationSection(),
-                  const SizedBox(height: 28),
-                  AccountSettingsSection(),
-                  const SizedBox(height: 28),
-                  SupportSection(),
-                  const SizedBox(height: 30),
-                ],
-              ),
-            ),
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            children: [
+              const SizedBox(height: 30),
+              ContactInformationSection(),
+              const SizedBox(height: 28),
+              AccountSettingsSection(),
+              const SizedBox(height: 28),
+              SupportSection(),
+              const SizedBox(height: 30),
+            ],
           ),
         ),
       ],

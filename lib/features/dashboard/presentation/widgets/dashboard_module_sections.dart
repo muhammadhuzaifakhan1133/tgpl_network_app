@@ -5,7 +5,7 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
-import 'package:tgpl_network/features/dashboard/presentation/module_provider.dart';
+import 'package:tgpl_network/features/dashboard/presentation/data/module_provider.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 
@@ -79,7 +79,7 @@ class _DashboardModuleContainer extends ConsumerWidget {
                     ],
                   ],
                 )
-              : SizedBox(),
+              : const SizedBox(),
         ),
       ],
     );
@@ -129,9 +129,9 @@ class _DashboardModuleContainerComponent extends StatelessWidget {
                   ),
                   child: Center(child: SvgPicture.asset(icon!, color: color)),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
               ],
-              if (icon == null) SizedBox(width: 8),
+              if (icon == null) const SizedBox(width: 8),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

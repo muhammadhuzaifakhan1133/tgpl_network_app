@@ -39,6 +39,7 @@ class ModuleApplicationsView extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return ModuleApplicationContainer(
                         application: data[index],
+                        submodule: subModule,
                       );
                     },
                   ),

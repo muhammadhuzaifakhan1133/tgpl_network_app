@@ -67,16 +67,16 @@ class DashboardHeaderProfile extends ConsumerWidget {
           ),
           child: Center(child: SvgPicture.asset(AppImages.searchIconSvg)),
         ),
-        const SizedBox(width: 8),
-        Container(
-          height: 44,
-          width: 44,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16.4),
-            color: AppColors.actionContainerColor,
-          ),
-          child: Center(child: SvgPicture.asset(AppImages.notificationIconSvg)),
-        ),
+        // const SizedBox(width: 8),
+        // Container(
+        //   height: 44,
+        //   width: 44,
+        //   decoration: BoxDecoration(
+        //     borderRadius: BorderRadius.circular(16.4),
+        //     color: AppColors.actionContainerColor,
+        //   ),
+        //   child: Center(child: SvgPicture.asset(AppImages.notificationIconSvg)),
+        // ),
       ],
     );
   }

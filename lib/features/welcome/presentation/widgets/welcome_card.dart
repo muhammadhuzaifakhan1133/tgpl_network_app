@@ -40,7 +40,7 @@ class WelcomeCard extends StatelessWidget {
                 ),
                 child: Center(child: SvgPicture.asset(iconPath)),
               ),
-              SizedBox(width: 15),
+              const SizedBox(width: 15),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +51,7 @@ class WelcomeCard extends StatelessWidget {
                         fontSize: 15,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       subtitle,
                       style: AppTextstyles.googleInter400black16.copyWith(

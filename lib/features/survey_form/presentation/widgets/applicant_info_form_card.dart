@@ -9,7 +9,7 @@ import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step3/site_location_selection/site_location_selection_controller.dart';
+import 'package:tgpl_network/features/site_location_selection/presentation/site_location_selection_controller.dart';
 import 'package:tgpl_network/features/survey_form/presentation/survey_form_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
@@ -100,6 +100,7 @@ class ApplicantInfoFormCard extends ConsumerWidget {
               onTap: navigateToSiteLocationSelection,
             ),
           ),
+          const SizedBox(height: 10),
           Consumer(
             builder: (context, ref, child) {
               final selectedCity = ref.watch(

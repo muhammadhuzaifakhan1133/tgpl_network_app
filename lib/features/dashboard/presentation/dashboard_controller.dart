@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/dashboard/models/user_model.dart';
-import 'package:tgpl_network/features/dashboard/presentation/module_provider.dart';
+import 'package:tgpl_network/features/dashboard/presentation/data/module_provider.dart';
 
 final userProvider = Provider<User>((ref) {
   return User(name: "Ahmed Hassan", title: "Regional Manager", id: "EMP-2025-001");
@@ -11,6 +11,7 @@ final dashboardControllerProvider =
     NotifierProvider.autoDispose<DashboardController, DashboardState>(() {
       return DashboardController();
     });
+
 
 class DashboardState {
   List<bool> isModulesExpanded;

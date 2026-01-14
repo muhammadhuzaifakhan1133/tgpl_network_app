@@ -44,4 +44,5 @@ class AppImages {
   static const String backIconSvg = "assets/icons/back_icon.svg";
   static const String myLocationIconSvg = "assets/icons/my_location_icon.svg";
   static const String deleteIconSvg = "assets/icons/delete_icon.svg";
+  static const String syncIconSvg = "assets/icons/sync_icon.svg";
 }

@@ -22,11 +22,9 @@ class HomeShellView extends StatelessWidget {
       body: navigationShell,
       backgroundColor: AppColors.scaffoldBackgroundColor,
       bottomNavigationBar: Container(
-        // margin: const EdgeInsets.all(20), // Creates the floating effect
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           color: AppColors.white,
-          // borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.08),
@@ -36,16 +34,13 @@ class HomeShellView extends StatelessWidget {
           ],
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             _buildNavItem(0, AppImages.dashboardInactiveSvg, "Dashboard"),
-            _buildNavItem(
-              1,
-              AppImages.applicationsInactiveSvg,
-              "Application",
-            ),
+            _buildNavItem(1, AppImages.applicationsInactiveSvg, "Application"),
             _buildNavItem(2, AppImages.mapInactiveSvg, "Map"),
-            _buildNavItem(3, AppImages.profileInactiveSvg, "Profiles"),
+            _buildNavItem(3, AppImages.syncIconSvg, "Sync Data"),
+            _buildNavItem(4, AppImages.profileInactiveSvg, "Profiles"),
           ],
         ),
       ),
@@ -79,6 +74,8 @@ class HomeShellView extends StatelessWidget {
               child: SvgPicture.asset(
                 icon,
                 color: isSelected ? AppColors.primary : null,
+                width: 24,
+                height: 24,
               ),
             ),
             const SizedBox(height: 4),

@@ -32,4 +32,7 @@ class AppColors {
   static const expandIconColor = Color(0xffCCCCCC);
   static const commissioningColor = Color(0xff9B59B6);
   static const inactiveStatusColor = Color(0xffE0E0E0);
+  static const onlineStatusColor =  Color(0xFF10B981);
+  static const offlineStatusColor =  Color(0xFFFF8C42);
+  static const syncedCountColor =  Color(0xFF2196F3);
 }

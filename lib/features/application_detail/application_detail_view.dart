@@ -29,35 +29,31 @@ class ApplicationDetailView extends StatelessWidget {
             showBackButton: true,
           ),
           Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: [
-                    ApplicantInfoCard(),
-                    const SizedBox(height: 20),
-                    SiteDetailCard(),
-                    const SizedBox(height: 20),
-                    ContactDealerTGPLCard(),
-                    const SizedBox(height: 20),
-                    DealerProfileCard(),
-                    const SizedBox(height: 20),
-                    RecommendationCard(),
-                    if (statusId >= 3) ...[
-                      const SizedBox(height: 20),
-                      TrafficCountCard(),
-                      const SizedBox(height: 20),
-                      VolumAndFinancialEstimationCard(),
-                      const SizedBox(height: 20),
-                      RecommendationCard(),
-                    ],
-                    if (statusId >= 4) ...[
-                      const SizedBox(height: 20),
-                      FeasibilityCard(),
-                    ],
-                  ],
-                ),
-              ),
+            child: ListView(
+              padding: const EdgeInsets.all(20.0),
+              children: [
+                ApplicantInfoCard(),
+                const SizedBox(height: 20),
+                SiteDetailCard(),
+                const SizedBox(height: 20),
+                ContactDealerTGPLCard(),
+                const SizedBox(height: 20),
+                DealerProfileCard(),
+                const SizedBox(height: 20),
+                RecommendationCard(),
+                if (statusId >= 3) ...[
+                  const SizedBox(height: 20),
+                  TrafficCountCard(),
+                  const SizedBox(height: 20),
+                  VolumAndFinancialEstimationCard(),
+                  const SizedBox(height: 20),
+                  RecommendationCard(),
+                ],
+                if (statusId >= 4) ...[
+                  const SizedBox(height: 20),
+                  FeasibilityCard(),
+                ],
+              ],
             ),
           ),
         ],

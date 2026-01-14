@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step3/site_location_selection/selected_location_card.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step3/site_location_selection/site_location_selection_controller.dart';
+import 'package:tgpl_network/constants/app_keys.dart';
+import 'package:tgpl_network/features/site_location_selection/data/location_service.dart';
+import 'package:tgpl_network/features/site_location_selection/presentation/widgets/selected_location_card.dart';
+import 'package:tgpl_network/features/site_location_selection/presentation/site_location_selection_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/utils/show_snackbar.dart';
 
@@ -33,7 +35,8 @@ class _SiteLocationSelectionViewState
   }
 
   Future<void> _setInitialPosition(LatLng position) async {
-    ref.read(isLoadingProvider.notifier).state = true;
+    ref.read(locationActionProvider.notifier).state =
+    const AsyncLoading();
 
     final locationService = ref.read(locationServiceProvider);
     final address = await locationService.getAddressFromCoordinates(position);
@@ -47,7 +50,7 @@ class _SiteLocationSelectionViewState
     // Add marker
     ref.read(markersProvider.notifier).state = {
       Marker(
-        markerId: const MarkerId('selected_location'),
+        markerId: MarkerId(AppKeys.selectedMarkerId),
         position: position,
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         infoWindow: InfoWindow(
@@ -65,11 +68,13 @@ class _SiteLocationSelectionViewState
       ),
     );
 
-    ref.read(isLoadingProvider.notifier).state = false;
+    ref.read(locationActionProvider.notifier).state =
+    const AsyncData(null);
   }
 
   Future<void> _getCurrentLocation() async {
-    ref.read(isLoadingProvider.notifier).state = true;
+    ref.read(locationActionProvider.notifier).state =
+    const AsyncLoading();
 
     final locationService = ref.read(locationServiceProvider);
     final position = await locationService.getCurrentLocation();
@@ -82,7 +87,7 @@ class _SiteLocationSelectionViewState
       markers.state = {
         ...markers.state,
         Marker(
-          markerId: const MarkerId('current_location'),
+          markerId: MarkerId(AppKeys.currentMarkerId),
           position: position,
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
           infoWindow: const InfoWindow(title: 'Your Location'),
@@ -102,11 +107,13 @@ class _SiteLocationSelectionViewState
       }
     }
 
-    ref.read(isLoadingProvider.notifier).state = false;
+    ref.read(locationActionProvider.notifier).state =
+    const AsyncData(null);
   }
 
   Future<void> _onMapTapped(LatLng position) async {
-    ref.read(isLoadingProvider.notifier).state = true;
+    ref.read(locationActionProvider.notifier).state =
+    const AsyncLoading();
 
     final locationService = ref.read(locationServiceProvider);
     final address = await locationService.getAddressFromCoordinates(position);
@@ -120,12 +127,12 @@ class _SiteLocationSelectionViewState
     // Update markers
     final currentMarkers = ref.read(markersProvider);
     final updatedMarkers = currentMarkers
-        .where((m) => m.markerId.value != 'selected_location')
+        .where((m) => m.markerId.value != AppKeys.selectedMarkerId)
         .toSet();
 
     updatedMarkers.add(
       Marker(
-        markerId: const MarkerId('selected_location'),
+        markerId: MarkerId(AppKeys.selectedMarkerId),
         position: position,
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         infoWindow: InfoWindow(
@@ -136,7 +143,8 @@ class _SiteLocationSelectionViewState
     );
 
     ref.read(markersProvider.notifier).state = updatedMarkers;
-    ref.read(isLoadingProvider.notifier).state = false;
+    ref.read(locationActionProvider.notifier).state =
+    const AsyncData(null);
   }
 
   @override
@@ -144,7 +152,6 @@ class _SiteLocationSelectionViewState
     final currentPosition = ref.watch(currentLocationProvider);
     final selectedLocation = ref.watch(selectedLocationProvider);
     final markers = ref.watch(markersProvider);
-    final isLoading = ref.watch(isLoadingProvider);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -180,11 +187,11 @@ class _SiteLocationSelectionViewState
           ),
 
           // Loading indicator
-          if (isLoading)
-            Container(
-              color: Colors.black26,
-              child: const Center(child: CircularProgressIndicator()),
-            ),
+          // if (isLoading)
+          //   Container(
+          //     color: Colors.black26,
+          //     child: const Center(child: CircularProgressIndicator()),
+          //   ),
 
           // Location details card
           if (selectedLocation != null)
@@ -192,19 +199,23 @@ class _SiteLocationSelectionViewState
               bottom: 0,
               left: 0,
               right: 0,
-              child: SelectedLocationCard(
-                locationData: selectedLocation,
-                onClose: () {
-                  ref.read(selectedLocationProvider.notifier).state = null;
-                  final currentMarkers = ref.read(markersProvider);
-                  ref.read(markersProvider.notifier).state = currentMarkers
-                      .where((m) => m.markerId.value != 'selected_location')
-                      .toSet();
-                },
-                onConfirm: () {
-                  showSnackBar(context, 'Location selected successfully!');
-                  ref.read(goRouterProvider).pop(selectedLocation);
-                },
+              child: AnimatedScale(
+                duration: const Duration(milliseconds: 300),
+                scale: 1,
+                child: SelectedLocationCard(
+                  locationData: selectedLocation,
+                  onClose: () {
+                    ref.read(selectedLocationProvider.notifier).state = null;
+                    final currentMarkers = ref.read(markersProvider);
+                    ref.read(markersProvider.notifier).state = currentMarkers
+                        .where((m) => m.markerId.value != AppKeys.selectedMarkerId)
+                        .toSet();
+                  },
+                  onConfirm: () {
+                    showSnackBar(context, 'Location selected successfully!');
+                    ref.read(goRouterProvider).pop(selectedLocation);
+                  },
+                ),
               ),
             ),
         ],

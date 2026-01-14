@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tgpl_network/common/providers/sync_status_provider.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/utils/sync_enum.dart';
 
 class CustomAppBar extends ConsumerStatefulWidget {
   final String title;
@@ -18,6 +20,7 @@ class CustomAppBar extends ConsumerStatefulWidget {
   final void Function()? onTapFilterIcon;
   final void Function()? onTapBackButton;
   final List<Widget> actions;
+  final bool showResyncButton;
   const CustomAppBar({
     super.key,
     required this.title,
@@ -29,6 +32,7 @@ class CustomAppBar extends ConsumerStatefulWidget {
     this.onTapFilterIcon,
     this.onTapBackButton,
     this.actions = const <Widget>[],
+    this.showResyncButton = false,
   });
 
   @override
@@ -104,7 +108,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                             setState(() {
                               isSearchFieldActive = true;
                             });
-                            print(isSearchFieldActive);
+                            debugPrint("$isSearchFieldActive");
                           },
                           child: Container(
                             height: 48,
@@ -141,7 +145,63 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                           ),
                         ),
                       ],
-                      ...widget.actions,
+                      if (widget.showResyncButton) ...[
+                        Consumer(
+                          builder: (context, ref, _) {
+                            final state = ref.watch(syncStatusProvider);
+                            debugPrint(
+                              "Resync Button State: ${state.isLoading}",
+                            );
+                            return ElevatedButton.icon(
+                              onPressed: () {
+                                ref
+                                    .read(syncStatusProvider.notifier)
+                                    .resyncData();
+                              },
+                              label: const Text("Resync"),
+                              icon: state.when(
+                                data: (status) => status == SyncStatus.syncing
+                                    ? const SizedBox(
+                                        width: 16,
+                                        height: 16,
+                                        child: CircularProgressIndicator(
+                                          color: AppColors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Icon(Icons.refresh, size: 20),
+                                loading: () => const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                                error: (e, st) =>
+                                    const Icon(Icons.refresh, size: 20),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                // backgroundColor: AppColors.primary,
+                                backgroundColor: AppColors.headerDarkBlueColor,
+                                foregroundColor: AppColors.white,
+                                textStyle: AppTextstyles.neutra700black32
+                                    .copyWith(
+                                      fontSize: 16,
+                                      color: AppColors.white,
+                                    ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 15,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ],
                   ),
                 ],

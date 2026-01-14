@@ -16,28 +16,6 @@ class ChangePasswordView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(changePasswordControllerProvider.notifier);
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      resizeToAvoidBottomInset: false,
-      floatingActionButton: Consumer(
-        builder: (context, ref, child) {
-          final changePasswordAsync = ref.watch(
-            changePasswordAsyncControllerProvider,
-          );
-          return CustomButton(
-            onPressed: () {
-              ref
-                  .read(changePasswordAsyncControllerProvider.notifier)
-                  .changePassword();
-            },
-            text: "Confirm Change",
-            child: changePasswordAsync.isLoading
-                ? Center(
-                    child: CircularProgressIndicator(color: AppColors.white),
-                  )
-                : null,
-          );
-        },
-      ),
       backgroundColor: AppColors.white,
       body: Stack(
         children: [
@@ -45,105 +23,129 @@ class ChangePasswordView extends ConsumerWidget {
             onTap: () => FocusScope.of(context).unfocus(),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 50),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(height: context.screenHeight * 0.15),
-                    // SvgPicture.asset(AppImages.tajLogoSvg, width: 50, height: 50),
-                    const SizedBox(height: 28),
-                    Text(
-                      "Change Password",
-                      style: AppTextstyles.googleInter700black28,
+              child: ListView(
+                children: [
+                  SizedBox(height: context.screenHeight * 0.15),
+                  // SvgPicture.asset(AppImages.tajLogoSvg, width: 50, height: 50),
+                  const SizedBox(height: 28),
+                  Text(
+                    "Change Password",
+                    style: AppTextstyles.googleInter700black28,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Type your old and new password",
+                    style: AppTextstyles.googleInter400black16,
+                  ),
+                  const SizedBox(height: 28),
+                  Form(
+                    key: controller.formKey,
+                    child: Column(
+                      children: [
+                        Consumer(
+                          builder: (context, ref, child) {
+                            final isPasswordObscure = ref.watch(
+                              changePasswordControllerProvider.select(
+                                (state) => state.isPasswordObscure,
+                              ),
+                            );
+                            return CustomTextFieldWithTitle(
+                              title: "Old Passwrod",
+                              hintText: "*******",
+                              controller: controller.passwordController,
+                              obscureText: isPasswordObscure,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  controller.togglePasswordObscure();
+                                },
+                                icon: Icon(
+                                  isPasswordObscure
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                              ),
+                              validator: (v) => v.validate(),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        Consumer(
+                          builder: (context, ref, child) {
+                            final isPasswordObscure = ref.watch(
+                              changePasswordControllerProvider.select(
+                                (state) => state.isNewPasswordObscure,
+                              ),
+                            );
+                            return CustomTextFieldWithTitle(
+                              title: "New Passwrod",
+                              hintText: "*******",
+                              controller: controller.newPasswordController,
+                              obscureText: isPasswordObscure,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  controller.toggleNewPasswordObscure();
+                                },
+                                icon: Icon(
+                                  isPasswordObscure
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                              ),
+                              validator: (v) => v.validate(),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        Consumer(
+                          builder: (context, ref, child) {
+                            final isPasswordObscure = ref.watch(
+                              changePasswordControllerProvider.select(
+                                (state) => state.isNewPasswordObscure,
+                              ),
+                            );
+                            return CustomTextFieldWithTitle(
+                              title: "Confirm Passwrod",
+                              hintText: "*******",
+                              controller:
+                                  controller.passwordConfirmationController,
+                              obscureText: isPasswordObscure,
+                              validator: (v) => v.validateSameValue(
+                                value: controller.newPasswordController.text,
+                                message: "Password does not match",
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 28),
+                        Consumer(
+                          builder: (context, ref, child) {
+                            final changePasswordAsync = ref.watch(
+                              changePasswordAsyncControllerProvider,
+                            );
+                            return CustomButton(
+                              onPressed: () {
+                                ref
+                                    .read(
+                                      changePasswordAsyncControllerProvider
+                                          .notifier,
+                                    )
+                                    .changePassword();
+                              },
+                              text: "Confirm Change",
+                              child: changePasswordAsync.isLoading
+                                  ? Center(
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.white,
+                                      ),
+                                    )
+                                  : null,
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "Type your old and new password",
-                      style: AppTextstyles.googleInter400black16,
-                    ),
-                    const SizedBox(height: 28),
-                    Form(
-                      key: controller.formKey,
-                      child: Column(
-                        children: [
-                          Consumer(
-                            builder: (context, ref, child) {
-                              final isPasswordObscure = ref.watch(
-                                changePasswordControllerProvider.select(
-                                  (state) => state.isPasswordObscure,
-                                ),
-                              );
-                              return CustomTextFieldWithTitle(
-                                title: "Old Passwrod",
-                                hintText: "*******",
-                                controller: controller.passwordController,
-                                obscureText: isPasswordObscure,
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    controller.togglePasswordObscure();
-                                  },
-                                  icon: Icon(
-                                    isPasswordObscure
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                  ),
-                                ),
-                                validator: (v) => v.validate(),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          Consumer(
-                            builder: (context, ref, child) {
-                              final isPasswordObscure = ref.watch(
-                                changePasswordControllerProvider.select(
-                                  (state) => state.isNewPasswordObscure,
-                                ),
-                              );
-                              return CustomTextFieldWithTitle(
-                                title: "New Passwrod",
-                                hintText: "*******",
-                                controller: controller.newPasswordController,
-                                obscureText: isPasswordObscure,
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    controller.toggleNewPasswordObscure();
-                                  },
-                                  icon: Icon(
-                                    isPasswordObscure
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                  ),
-                                ),
-                                validator: (v) => v.validate(),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          Consumer(
-                            builder: (context, ref, child) {
-                              final isPasswordObscure = ref.watch(
-                                changePasswordControllerProvider.select(
-                                  (state) => state.isNewPasswordObscure,
-                                ),
-                              );
-                              return CustomTextFieldWithTitle(
-                                title: "Confirm Passwrod",
-                                hintText: "*******",
-                                controller:
-                                    controller.passwordConfirmationController,
-                                obscureText: isPasswordObscure,
-                                validator: (v) => v.validateSameValue(
-                                  value: controller.newPasswordController.text,
-                                  message: "Password does not match",
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

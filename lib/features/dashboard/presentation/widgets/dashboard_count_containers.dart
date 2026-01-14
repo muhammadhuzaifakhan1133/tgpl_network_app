@@ -22,7 +22,7 @@ class DashboardCountContainers extends StatelessWidget {
                 count: 124,
               ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: _DashboardCountContainer(
                 icon: AppImages.inauguratedIconSvg,
@@ -46,7 +46,7 @@ class DashboardCountContainers extends StatelessWidget {
                 count: 15,
               ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: _DashboardCountContainer(
                 icon: AppImages.totalActiveIconSvg,

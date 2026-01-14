@@ -24,25 +24,21 @@ class TrafficTradeFormView extends ConsumerWidget {
               showBackButton: true,
             ),
             Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
+              child: Form(
+                key: ref
+                    .read(trafficTradeFormControllerProvider.notifier)
+                    .formKey,
+                child: ListView(
                   padding: const EdgeInsets.all(20.0),
-                  child: Form(
-                    key: ref
-                        .read(trafficTradeFormControllerProvider.notifier)
-                        .formKey,
-                    child: Column(
-                      children: [
-                        NearbySitesFormSection(),
-                        const SizedBox(height: 20),
-                        TrafficCountCardForm(),
-                        const SizedBox(height: 20),
-                        VolumAndFinancialEstimationCardForm(),
-                        const SizedBox(height: 20),
-                        TrafficRecommendationCardForm(),
-                      ],
-                    ),
-                  ),
+                  children: [
+                    NearbySitesFormSection(),
+                    const SizedBox(height: 20),
+                    TrafficCountCardForm(),
+                    const SizedBox(height: 20),
+                    VolumAndFinancialEstimationCardForm(),
+                    const SizedBox(height: 20),
+                    TrafficRecommendationCardForm(),
+                  ],
                 ),
               ),
             ),

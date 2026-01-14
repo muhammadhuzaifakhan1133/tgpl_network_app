@@ -208,7 +208,7 @@ class ApplicationStatusContainer extends ConsumerWidget {
                       ),
                     ],
                   )
-                : SizedBox(),
+                : const SizedBox(),
           ),
         ],
       ),

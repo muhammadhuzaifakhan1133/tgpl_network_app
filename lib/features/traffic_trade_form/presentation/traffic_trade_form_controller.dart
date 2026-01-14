@@ -64,8 +64,12 @@ class TrafficTradeFormController extends Notifier<TrafficTradeFormState> {
   TextEditingController trafficCountBikeController = TextEditingController();
   TextEditingController dailyDieselSalesController = TextEditingController();
   TextEditingController dailySuperSalesController = TextEditingController();
+  TextEditingController dailyHOBCSalesController = TextEditingController();
   TextEditingController dailyLubricantSalesController = TextEditingController();
   TextEditingController rentExpectationController = TextEditingController();
+  TextEditingController tmRemarksController = TextEditingController();
+  TextEditingController rmRemarksController = TextEditingController();
+  
 
   @override
   TrafficTradeFormState build() {
@@ -96,5 +100,33 @@ class TrafficTradeFormController extends Notifier<TrafficTradeFormState> {
   void addNearbySite() {
     final updatedSites = [...state.nearbyTrafficSites, TrafficSiteModel()];
     state = state.copyWith(nearbyTrafficSites: updatedSites);
+  }
+
+  void setTruckPortPotential(String? value) {
+    state = state.copyWith(truckPortPotential: value);
+  }
+
+  void setSalamMartPotential(String? value) {
+    state = state.copyWith(salamMartPotential: value);
+  }
+
+  void setResturantPotential(String? value) {
+    state = state.copyWith(resturantPotential: value);
+  }
+
+  void onChangeTM(String value) {
+    state = state.copyWith(selectedTm: value);
+  }
+
+  void onChangeRM(String value) {
+    state = state.copyWith(selectedRm: value);
+  }
+
+  void onChangeTMRecommendation(String value) {
+    state = state.copyWith(selectedTMRecommendation: value);
+  }
+
+  void onChangeRMRecommendation(String value) {
+    state = state.copyWith(selectedRMRecommendation: value);
   }
 }

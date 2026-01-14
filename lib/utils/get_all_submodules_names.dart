@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/features/dashboard/presentation/module_provider.dart';
+import 'package:tgpl_network/features/dashboard/presentation/data/module_provider.dart';
 
 List<String> getAllSubmodulesList(WidgetRef ref) {
     final modules = ref.read(modulesProvider);
