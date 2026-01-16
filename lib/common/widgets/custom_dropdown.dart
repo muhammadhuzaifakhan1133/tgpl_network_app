@@ -12,6 +12,8 @@ class CustomDropDown<T> extends StatefulWidget {
   final List<T>? selectedItems;
   final bool isMultiSelect;
   final int? maxSelection;
+  final bool showClearButton;
+  final VoidCallback? onClear;
 
   const CustomDropDown({
     super.key,
@@ -26,9 +28,10 @@ class CustomDropDown<T> extends StatefulWidget {
     this.selectedItems,
     this.isMultiSelect = false,
     this.maxSelection,
+    this.showClearButton = false,
+    this.onClear,
   }) : assert(
           isMultiSelect ? onMultiChanged != null : onChanged != null,
-          'Provide onMultiChanged for multi-select or onChanged for single-select',
         );
 
   @override
@@ -39,6 +42,11 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
   List<T> _selectedItems = [];
   final TextEditingController _textController = TextEditingController();
 
+  bool get _hasValue =>
+      widget.isMultiSelect
+          ? _selectedItems.isNotEmpty
+          : widget.selectedItem != null;
+
   @override
   void initState() {
     super.initState();
@@ -48,143 +56,61 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
     }
   }
 
-  @override
-  void didUpdateWidget(CustomDropDown<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.isMultiSelect && widget.selectedItems != oldWidget.selectedItems) {
-      _selectedItems = List.from(widget.selectedItems ?? []);
-      _updateDisplayText();
-    }
-  }
-
   void _updateDisplayText() {
     if (_selectedItems.isEmpty) {
       _textController.clear();
     } else {
-      final displayTexts = _selectedItems.map((item) {
-        return widget.displayString != null
-            ? widget.displayString!(item)
-            : item.toString();
-      }).toList();
-      _textController.text = displayTexts.join(', ');
+      _textController.text = _selectedItems
+          .map((e) =>
+              widget.displayString != null ? widget.displayString!(e) : e.toString())
+          .join(', ');
     }
   }
 
-  void _showMultiSelectDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              title: Text(widget.hintText ?? 'Select Items'),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: widget.items.map((item) {
-                    final isSelected = _selectedItems.contains(item);
-                    final displayText = widget.displayString != null
-                        ? widget.displayString!(item)
-                        : item.toString();
-
-                    return CheckboxListTile(
-                      title: Text(displayText),
-                      value: isSelected,
-                      onChanged: (bool? checked) {
-                        setDialogState(() {
-                          if (checked == true) {
-                            if (widget.maxSelection == null ||
-                                _selectedItems.length < widget.maxSelection!) {
-                              _selectedItems.add(item);
-                            }
-                          } else {
-                            _selectedItems.remove(item);
-                          }
-                        });
-                      },
-                    );
-                  }).toList(),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _selectedItems.clear();
-                      _updateDisplayText();
-                    });
-                    Navigator.of(context).pop();
-                    widget.onMultiChanged?.call(_selectedItems);
-                  },
-                  child: const Text('Clear'),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _updateDisplayText();
-                    });
-                    Navigator.of(context).pop();
-                    widget.onMultiChanged?.call(_selectedItems);
-                  },
-                  child: const Text('Done'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
+  void _clear() {
+    setState(() {
+      _selectedItems.clear();
+      _textController.clear();
+    });
+    widget.onChanged?.call(null);
+    widget.onMultiChanged?.call([]);
+    widget.onClear?.call();
   }
 
   @override
   Widget build(BuildContext context) {
     if (widget.isMultiSelect) {
       return FormField<List<T>>(
-        validator: (value) =>
-            widget.multiValidator?.call(_selectedItems),
-        initialValue: _selectedItems,
-        builder: (FormFieldState<List<T>> state) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              InkWell(
-                onTap: _showMultiSelectDialog,
-                child: InputDecorator(
-                  decoration: InputDecoration(
-                    hintText: widget.hintText,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    suffixIcon: const Icon(Icons.arrow_drop_down),
-                    errorText: state.errorText,
-                  ),
-                  child: Text(
-                    _selectedItems.isEmpty
-                        ? ''
-                        : _textController.text,
-                    style: _selectedItems.isEmpty
-                        ? Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).hintColor,
-                            )
-                        : null,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+        validator: (_) => widget.multiValidator?.call(_selectedItems),
+        builder: (state) {
+          return InkWell(
+            onTap: _showMultiSelectDialog,
+            child: InputDecorator(
+              decoration: InputDecoration(
+                hintText: widget.hintText,
+                errorText: state.errorText,
+                suffixIcon: widget.showClearButton && _hasValue
+                    ? IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: _clear,
+                      )
+                    : const Icon(Icons.arrow_drop_down),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-            ],
+              child: Text(
+                _textController.text,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           );
         },
       );
     }
 
-    // Single select mode (original functionality)
     return DropdownButtonFormField<T>(
       isExpanded: true,
-      isDense: true,
       value: widget.selectedItem,
       items: widget.items
           .map(
@@ -199,11 +125,75 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
           )
           .toList(),
       onChanged: widget.onChanged,
+      validator: widget.validator,
       decoration: InputDecoration(
         hintText: widget.hintText,
+        suffixIcon: widget.showClearButton && _hasValue
+            ? IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: _clear,
+              )
+            : null,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
-      validator: widget.validator,
+    );
+  }
+
+  void _showMultiSelectDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final tempSelectedItems = List<T>.from(_selectedItems);
+        return AlertDialog(
+          title: const Text('Select Items'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: widget.items.map((item) {
+                final isSelected = tempSelectedItems.contains(item);
+                return CheckboxListTile(
+                  value: isSelected,
+                  title: Text(
+                    widget.displayString != null
+                        ? widget.displayString!(item)
+                        : item.toString(),
+                  ),
+                  onChanged: (selected) {
+                    setState(() {
+                      if (selected == true) {
+                        if (widget.maxSelection == null ||
+                            tempSelectedItems.length < widget.maxSelection!) {
+                          tempSelectedItems.add(item);
+                        }
+                      } else {
+                        tempSelectedItems.remove(item);
+                      }
+                    });
+                  },
+                );
+              }).toList(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _selectedItems = tempSelectedItems;
+                  _updateDisplayText();
+                });
+                widget.onMultiChanged?.call(_selectedItems);
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -213,38 +203,3 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
     super.dispose();
   }
 }
-
-// Example usage:
-/*
-// Single Select
-CustomDropDown<String>(
-  items: ['Option 1', 'Option 2', 'Option 3'],
-  hintText: 'Select an option',
-  selectedItem: selectedValue,
-  onChanged: (value) {
-    setState(() {
-      selectedValue = value;
-    });
-  },
-)
-
-// Multi Select
-CustomDropDown<String>(
-  items: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
-  hintText: 'Select multiple options',
-  selectedItems: selectedValues,
-  isMultiSelect: true,
-  maxSelection: 3, // Optional: limit number of selections
-  onMultiChanged: (values) {
-    setState(() {
-      selectedValues = values;
-    });
-  },
-  multiValidator: (values) {
-    if (values == null || values.isEmpty) {
-      return 'Please select at least one option';
-    }
-    return null;
-  },
-)
-*/

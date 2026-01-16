@@ -1,132 +1,123 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:developer';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/features/traffic_trade_form/models/traffic_site_model.dart';
+import 'package:tgpl_network/features/traffic_trade_form/models/traffic_trade_form_model.dart';
+import 'package:tgpl_network/features/traffic_trade_form/presentation/traffic_trade_form_assembler.dart';
 
 final trafficTradeFormControllerProvider =
-    NotifierProvider<TrafficTradeFormController, TrafficTradeFormState>(
-      () => TrafficTradeFormController(),
-    );
+    AsyncNotifierProvider.autoDispose<TrafficTradeFormController, void>(
+  TrafficTradeFormController.new,
+);
 
-class TrafficTradeFormState {
-  List<TrafficSiteModel> nearbyTrafficSites = [TrafficSiteModel()];
-  String? truckPortPotential;
-  String? salamMartPotential;
-  String? resturantPotential;
-  String? selectedTm;
-  String? selectedRm;
-  String? selectedTMRecommendation;
-  String? selectedRMRecommendation;
-
-  TrafficTradeFormState({
-    this.nearbyTrafficSites = const [],
-    this.truckPortPotential,
-    this.salamMartPotential,
-    this.resturantPotential,
-    this.selectedTm,
-    this.selectedRm,
-    this.selectedTMRecommendation,
-    this.selectedRMRecommendation,
-  }) {
-    if (nearbyTrafficSites.isEmpty) {
-      nearbyTrafficSites = [TrafficSiteModel()];
-    }
-  }
-
-  TrafficTradeFormState copyWith({
-    List<TrafficSiteModel>? nearbyTrafficSites,
-    String? truckPortPotential,
-    String? salamMartPotential,
-    String? resturantPotential,
-    String? selectedTm,
-    String? selectedRm,
-    String? selectedTMRecommendation,
-    String? selectedRMRecommendation,
-  }) {
-    return TrafficTradeFormState(
-      nearbyTrafficSites: nearbyTrafficSites ?? this.nearbyTrafficSites,
-      truckPortPotential: truckPortPotential ?? this.truckPortPotential,
-      salamMartPotential: salamMartPotential ?? this.salamMartPotential,
-      resturantPotential: resturantPotential ?? this.resturantPotential,
-      selectedTm: selectedTm ?? this.selectedTm,
-      selectedRm: selectedRm ?? this.selectedRm,
-      selectedTMRecommendation:
-          selectedTMRecommendation ?? this.selectedTMRecommendation,
-      selectedRMRecommendation:
-          selectedRMRecommendation ?? this.selectedRMRecommendation,
-    );
-  }
-}
-
-class TrafficTradeFormController extends Notifier<TrafficTradeFormState> {
-  final formKey = GlobalKey<FormState>();
-  TextEditingController trafficCountTruckController = TextEditingController();
-  TextEditingController trafficCountCarController = TextEditingController();
-  TextEditingController trafficCountBikeController = TextEditingController();
-  TextEditingController dailyDieselSalesController = TextEditingController();
-  TextEditingController dailySuperSalesController = TextEditingController();
-  TextEditingController dailyHOBCSalesController = TextEditingController();
-  TextEditingController dailyLubricantSalesController = TextEditingController();
-  TextEditingController rentExpectationController = TextEditingController();
-  TextEditingController tmRemarksController = TextEditingController();
-  TextEditingController rmRemarksController = TextEditingController();
+class TrafficTradeFormController extends AsyncNotifier<void> {
   
 
   @override
-  TrafficTradeFormState build() {
-    return TrafficTradeFormState();
+  FutureOr<void> build() {
+    // Initialize empty state
   }
 
-  void onChangeIsNfrFacilityAvailable(int index, String value) {
-    final updatedSites = [...state.nearbyTrafficSites];
-    updatedSites[index] = updatedSites[index].copyWith(isNfrFacility: value);
-    state = state.copyWith(nearbyTrafficSites: updatedSites);
+  /// Initialize form with data (for edit mode)
+  Future<void> initialize(String appId) async {
+    state = const AsyncValue.loading();
+
+    state = await AsyncValue.guard(() async {
+      // TODO: Fetch existing data from API if editing
+      // Example:
+      // final data = await ref.read(trafficTradeRepositoryProvider).getTrafficTradeForm(appId);
+      // if (data != null) {
+      //   _prefillFormData(data);
+      // }
+
+      // For now, just complete successfully
+      await Future.delayed(const Duration(milliseconds: 500));
+    });
   }
 
-  void onChangeNfrFacilities(int siteIndex, List<String> values) {
-    final updatedSites = [...state.nearbyTrafficSites];
-    updatedSites[siteIndex] =
-        updatedSites[siteIndex].copyWith(nfrFacilities: values);
-    state = state.copyWith(nearbyTrafficSites: updatedSites);
-  }
+  /// Submit the traffic trade form
+  Future<bool> submitTrafficTradeForm() async {
+    // Validate form using FormKey
+    
 
-  void removeNearbySite(int index) {
-    final updatedSites = [...state.nearbyTrafficSites];
-    if (index >= 0 && index < updatedSites.length) {
-      updatedSites.removeAt(index);
-      state = state.copyWith(nearbyTrafficSites: updatedSites);
+    state = const AsyncValue.loading();
+
+    try {
+      // Gather all form data
+      final trafficTradeFormData = TrafficTradeFormAssembler.assemble(ref);
+
+      // Additional custom validation if needed
+      if (!_validateFormData(trafficTradeFormData)) {
+        state = const AsyncValue.data(null);
+        return false;
+      }
+
+      // TODO: Submit to API
+      // Example:
+      // await ref.read(trafficTradeRepositoryProvider).submitTrafficTradeForm(trafficTradeFormData);
+
+      // Simulate API call
+      await Future.delayed(const Duration(seconds: 2));
+
+      log('Traffic Trade Form Data: ${trafficTradeFormData.toJson()}');
+
+      state = const AsyncValue.data(null);
+      return true;
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+      log('Error submitting form: $e');
+      return false;
     }
   }
 
-  void addNearbySite() {
-    final updatedSites = [...state.nearbyTrafficSites, TrafficSiteModel()];
-    state = state.copyWith(nearbyTrafficSites: updatedSites);
+  /// Additional custom validation (optional)
+  bool _validateFormData(TrafficTradeFormModel data) {
+    // Add custom validation logic here if needed
+
+    // Example: Validate at least one nearby site exists
+    if (data.nearbyTrafficSites.isEmpty) {
+      log('Validation failed: At least one nearby site is required');
+      return false;
+    }
+
+    // Add more custom validation as needed
+
+    return true;
   }
 
-  void setTruckPortPotential(String? value) {
-    state = state.copyWith(truckPortPotential: value);
-  }
+  /// Prefill form data (for edit mode)
+  // void _prefillFormData(TrafficTradeFormModel data) {
+  //   // Prefill nearby sites
+  //   ref.read(nearbySitesControllerProvider.notifier).prefillFormData(
+  //         nearbyTrafficSites: data.nearbyTrafficSites,
+  //       );
 
-  void setSalamMartPotential(String? value) {
-    state = state.copyWith(salamMartPotential: value);
-  }
+  //   // Prefill traffic count
+  //   ref.read(trafficCountControllerProvider.notifier).prefillFormData(
+  //         trafficCountTruck: data.trafficCountTruck ?? '',
+  //         trafficCountCar: data.trafficCountCar ?? '',
+  //         trafficCountBike: data.trafficCountBike ?? '',
+  //       );
 
-  void setResturantPotential(String? value) {
-    state = state.copyWith(resturantPotential: value);
-  }
+  //   // Prefill volume & financial
+  //   ref.read(volumeFinancialControllerProvider.notifier).prefillFormData(
+  //         dailyDieselSales: data.dailyDieselSales ?? '',
+  //         dailySuperSales: data.dailySuperSales ?? '',
+  //         dailyHOBCSales: data.dailyHOBCSales ?? '',
+  //         dailyLubricantSales: data.dailyLubricantSales ?? '',
+  //         rentExpectation: data.rentExpectation ?? '',
+  //         truckPortPotential: data.truckPortPotential ?? '',
+  //         salamMartPotential: data.salamMartPotential ?? '',
+  //         restaurantPotential: data.restaurantPotential ?? '',
+  //       );
 
-  void onChangeTM(String value) {
-    state = state.copyWith(selectedTm: value);
-  }
-
-  void onChangeRM(String value) {
-    state = state.copyWith(selectedRm: value);
-  }
-
-  void onChangeTMRecommendation(String value) {
-    state = state.copyWith(selectedTMRecommendation: value);
-  }
-
-  void onChangeRMRecommendation(String value) {
-    state = state.copyWith(selectedRMRecommendation: value);
-  }
+  //   // Prefill recommendation
+  //   ref.read(recommendationControllerProvider.notifier).prefillFormData(
+  //         selectedTM: data.selectedTM ?? '',
+  //         selectedRM: data.selectedRM ?? '',
+  //         selectedTMRecommendation: data.selectedTMRecommendation ?? '',
+  //         selectedRMRecommendation: data.selectedRMRecommendation ?? '',
+  //         tmRemarks: data.tmRemarks ?? '',
+  //         rmRemarks: data.rmRemarks ?? '',
+  //       );
+  // }
 }

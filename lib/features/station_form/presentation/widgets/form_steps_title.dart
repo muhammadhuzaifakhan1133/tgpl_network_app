@@ -9,10 +9,7 @@ class FormStepsTitle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentStep = ref.watch(stationFormControllerProvider).currentStep;
-    final totalSteps = ref
-        .read(stationFormControllerProvider.notifier)
-        .steps
-        .length;
+    final totalSteps = ref.watch(stationFormControllerProvider).totalSteps;
     return Text(
       "Step ${currentStep + 1} of $totalSteps",
       style: AppTextstyles.googleInter400black16.copyWith(fontSize: 16),

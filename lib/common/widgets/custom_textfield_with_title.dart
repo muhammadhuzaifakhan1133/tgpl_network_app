@@ -19,6 +19,12 @@ class CustomTextFieldWithTitle extends StatelessWidget {
   final void Function()? onTap;
   final void Function(String)? onChanged;
   final String? initialValue;
+
+  /// 🔹 NEW
+  final bool showClearButton;
+  final VoidCallback? onClear;
+  final bool showClearWhenReadOnly;
+
   const CustomTextFieldWithTitle({
     super.key,
     required this.title,
@@ -34,44 +40,46 @@ class CustomTextFieldWithTitle extends StatelessWidget {
     this.suffixIcon,
     this.obscureText = false,
     this.readOnly = false,
-    this.onTap, this.onChanged,
+    this.onTap,
+    this.onChanged,
     this.initialValue,
+    this.showClearButton = false,
+    this.onClear,
+    this.showClearWhenReadOnly = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(title, style: AppTextstyles.googleJakarta500Grey12),
-        ),
+        Text(title, style: AppTextstyles.googleJakarta500Grey12),
         const SizedBox(height: 8),
         CustomTextField(
           controller: controller,
-          obscureText: obscureText,
-          onChanged: onChanged,
           hintText: hintText,
-          readOnly: readOnly,
-          onTap: onTap,
-          title: title,
           validator: validator,
           textInputAction: textInputAction,
           keyboardType: keyboardType,
-          maxLines: maxLines,
-          minLines: minLines,
           multiline: multiline,
+          minLines: minLines,
+          maxLines: maxLines,
           suffixIcon: suffixIcon,
+          obscureText: obscureText,
+          readOnly: readOnly,
+          onTap: onTap,
+          onChanged: onChanged,
           initialValue: initialValue,
+          title: title,
+          showClearButton: showClearButton,
+          onClear: onClear,
+          showClearWhenReadOnly: showClearWhenReadOnly,
         ),
         if (extraInformation != null) ...[
           const SizedBox(height: 2),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              extraInformation!,
-              style: AppTextstyles.googleInter400LightGrey12,
-            ),
+          Text(
+            extraInformation!,
+            style: AppTextstyles.googleInter400LightGrey12,
           ),
         ],
       ],

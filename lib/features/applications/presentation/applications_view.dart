@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
 import 'package:tgpl_network/features/applications/presentation/application_controller.dart';
-import 'package:tgpl_network/features/applications/presentation/dialogs/filter_selection_dialog.dart';
 import 'package:tgpl_network/features/applications/presentation/widgets/application_status_container.dart';
+import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/routes/app_routes.dart';
 
 class ApplicationsView extends ConsumerWidget {
   const ApplicationsView({super.key});
@@ -23,7 +24,9 @@ class ApplicationsView extends ConsumerWidget {
               showSearchIcon: true,
               showFilterIcon: true,
               onTapFilterIcon: () {
-                filterSelectionDialog(context);
+                ref.read(goRouterProvider).push(
+                      AppRoutes.applicationsFilter,
+                    );
               },
             );
           },

@@ -1,88 +1,86 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step1/step1_form_controller.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step1/step1_form_view.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step2/step2_form_controller.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step2/step2_form_view.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step3/step3_form_controller.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step3/step3_form_view.dart';
-import 'package:tgpl_network/routes/app_router.dart';
-import 'package:tgpl_network/routes/app_routes.dart';
+import 'package:tgpl_network/features/station_form/presentation/station_form_assembler.dart';
 
 final stationFormControllerProvider =
-    NotifierProvider.autoDispose<StationFormController, StationFormState>(() {
-      return StationFormController();
-    });
+    NotifierProvider.autoDispose<StationFormController, StationFormState>(
+  StationFormController.new,
+);
 
-class StationFormController extends Notifier<StationFormState> {
-  late final PageController _pageController;
+final stationSubmissionProvider = AsyncNotifierProvider<
+    StationSubmissionController, void>(
+  StationSubmissionController.new,
+);
 
-  PageController get pageController => _pageController;
-
-  String? applicationId;
-
-  List<Widget> get steps => const [
-    Step1FormView(),
-    Step2FormView(),
-    Step3FormView(),
-  ];
-
+class StationSubmissionController extends AsyncNotifier<void> {
   @override
-  StationFormState build() {
-    _pageController = PageController();
-    ref.onDispose(() {
-      _pageController.dispose();
-    });
-    return StationFormState(currentStep: 0);
+  Future<void> build() async {
+    // Initialization if needed
   }
 
-  // max step 3
+  Future<void> submitStationForm() async {
+    // Logic to submit the station form
+    state = const AsyncValue.loading();
+    try {
+      // final stationFormData = StationFormAssembler.assemble(ref);
+      // Simulate a network call or form submission
+      await Future.delayed(const Duration(seconds: 2));
+      state = const AsyncValue.data(null);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+}
+
+class StationFormController extends Notifier<StationFormState> {
+  @override
+  StationFormState build() {
+    return const StationFormState(
+      currentStep: 0,
+      totalSteps: 3,
+    );
+  }
+
   void goToStep(int step) {
+    if (step < 0 || step >= state.totalSteps) return;
     state = state.copyWith(currentStep: step);
   }
 
-  void onPreviousButtonPressed() {
-    if (state.currentStep > 0) {
-      goToStep(state.currentStep - 1);
-      _pageController.animateToPage(
-        state.currentStep,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    } else {
-      ref.read(goRouterProvider).pop();
+  void nextStep() {
+    if (!state.isLastStep) {
+      goToStep(state.currentStep + 1);
     }
   }
 
-  void onActionButtonPressed() {
-    if (state.currentStep < 2) {
-      goToStep(state.currentStep + 1);
-      _pageController.animateToPage(
-        state.currentStep,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    } else {
-      final step1Controller = ref.read(step1FormControllerProvider);
-      // final step2State = ref.read(step2FormControllerProvider);
-      final step2Controller = ref.read(step2FormControllerProvider.notifier);
-      final step3Controller = ref.read(step3FormControllerProvider);
-      // submit the form
-      // save application Id coming from server to applicationId
-      ref.read(goRouterProvider).replace(AppRoutes.stationFormConfirmation);
-      step1Controller.dispose();
-      step2Controller.dispose();
-      step3Controller.dispose();
+  void previousStep() {
+    if (!state.isFirstStep) {
+      goToStep(state.currentStep - 1);
     }
   }
+
+  bool canSubmit() => state.isLastStep;
 }
+
 
 class StationFormState {
   final int currentStep;
+  final int totalSteps;
 
-  StationFormState({required this.currentStep});
+  const StationFormState({
+    required this.currentStep,
+    required this.totalSteps,
+  });
 
-  StationFormState copyWith({int? currentStep}) {
-    return StationFormState(currentStep: currentStep ?? this.currentStep);
+  bool get isFirstStep => currentStep == 0;
+  bool get isLastStep => currentStep == totalSteps - 1;
+
+  StationFormState copyWith({
+    int? currentStep,
+    int? totalSteps,
+  }) {
+    return StationFormState(
+      currentStep: currentStep ?? this.currentStep,
+      totalSteps: totalSteps ?? this.totalSteps,
+    );
   }
 }
+

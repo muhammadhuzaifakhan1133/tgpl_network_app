@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
@@ -13,31 +11,26 @@ final loginControllerProvider =
 class LoginState {
   bool isPasswordObscure;
   bool rememberMe;
+  String? username;
+  String? password;
 
-  LoginState({required this.isPasswordObscure, required this.rememberMe});
+  LoginState({required this.isPasswordObscure, required this.rememberMe, this.username, this.password});
 
-  LoginState copyWith({bool? isPasswordObscure, bool? rememberMe}) {
+  LoginState copyWith({bool? isPasswordObscure, bool? rememberMe, String? username, String? password}) {
     return LoginState(
       isPasswordObscure: isPasswordObscure ?? this.isPasswordObscure,
       rememberMe: rememberMe ?? this.rememberMe,
+      username: username ?? this.username,
+      password: password ?? this.password,
     );
   }
 }
 
 class LoginController extends Notifier<LoginState> {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
 
   @override
   LoginState build() {
-    ref.onDispose(dispose);
     return LoginState(isPasswordObscure: true, rememberMe: false);
-  }
-
-  void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
   }
 
   void togglePasswordObscure() {
@@ -46,6 +39,14 @@ class LoginController extends Notifier<LoginState> {
 
   void toggleRememberMe() {
     state = state.copyWith(rememberMe: !state.rememberMe);
+  }
+
+  void setUsername(String username) {
+    state = state.copyWith(username: username);
+  }
+
+  void setPassword(String password) {
+    state = state.copyWith(password: password);
   }
 }
 
@@ -59,13 +60,6 @@ class LoginAsyncController extends AsyncNotifier<void> {
   FutureOr<void> build() async {}
 
   Future<void> login() async {
-    if (!ref
-        .read(loginControllerProvider.notifier)
-        .formKey
-        .currentState!
-        .validate()) {
-      return;
-    }
     state = AsyncLoading();
     state = await AsyncValue.guard(() async {
       // await ref.read(loginRepositoryProvider).login();

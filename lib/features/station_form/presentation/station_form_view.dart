@@ -4,15 +4,52 @@ import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/features/station_form/presentation/forms/step1/step1_form_view.dart';
+import 'package:tgpl_network/features/station_form/presentation/forms/step2/step2_form_view.dart';
+import 'package:tgpl_network/features/station_form/presentation/forms/step3/step3_form_view.dart';
 import 'package:tgpl_network/features/station_form/presentation/station_form_controller.dart';
 import 'package:tgpl_network/features/station_form/presentation/widgets/form_steps_indicator.dart';
 import 'package:tgpl_network/features/station_form/presentation/widgets/form_steps_title.dart';
 
-class StationFormView extends StatelessWidget {
+class StationFormView extends ConsumerStatefulWidget {
   const StationFormView({super.key});
 
   @override
+  ConsumerState<StationFormView> createState() => _StationFormViewState();
+}
+
+class _StationFormViewState extends ConsumerState<StationFormView> {
+  late final PageController _pageController;
+
+  final List<Widget> _steps = const [
+    Step1FormView(),
+    Step2FormView(),
+    Step3FormView(),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    ref.listen(stationFormControllerProvider, (prev, next) {
+      if (prev?.currentStep != next.currentStep) {
+        _pageController.animateToPage(
+          next.currentStep,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
     return Scaffold(
       body: GestureDetector(
         onTap: () {
@@ -28,8 +65,8 @@ class StationFormView extends StatelessWidget {
                     stationFormControllerProvider.notifier,
                   );
                   return PageView.builder(
-                    controller: controller.pageController,
-                    itemCount: controller.steps.length,
+                    controller: _pageController,
+                    itemCount: _steps.length,
                     physics: const NeverScrollableScrollPhysics(),
                     onPageChanged: (value) {
                       controller.goToStep(value);
@@ -62,7 +99,7 @@ class StationFormView extends StatelessWidget {
                           const SizedBox(height: 12),
                           FormStepsTitle(),
                           const SizedBox(height: 20),
-                          controller.steps[index],
+                          _steps[index],
                         ],
                       );
                     },
@@ -82,7 +119,7 @@ class StationFormView extends StatelessWidget {
                         final controller = ref.read(
                           stationFormControllerProvider.notifier,
                         );
-                        controller.onPreviousButtonPressed();
+                        controller.previousStep();
                       },
                     );
                   },

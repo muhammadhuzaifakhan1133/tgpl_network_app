@@ -1,22 +1,24 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final surveyRecommendationFormControllerProvider =
-    NotifierProvider<SurveyRecommendationFormController,
-        SurveyRecommendationFormState>(
-        SurveyRecommendationFormController.new);
+final surveyRecommendationFormControllerProvider = NotifierProvider<
+    SurveyRecommendationFormController,
+    SurveyRecommendationFormState>(SurveyRecommendationFormController.new);
 
 class SurveyRecommendationFormState {
   final String? selectedTM;
   final String? selectedRM;
   final String? selectedTMRecommendation;
   final String? selectedRMRecommendation;
+  final String? tmRemarks;
+  final String? rmRemarks;
 
   const SurveyRecommendationFormState({
     this.selectedTM,
     this.selectedRM,
     this.selectedTMRecommendation,
     this.selectedRMRecommendation,
+    this.tmRemarks,
+    this.rmRemarks,
   });
 
   SurveyRecommendationFormState copyWith({
@@ -24,6 +26,8 @@ class SurveyRecommendationFormState {
     String? selectedRM,
     String? selectedTMRecommendation,
     String? selectedRMRecommendation,
+    String? tmRemarks,
+    String? rmRemarks,
   }) {
     return SurveyRecommendationFormState(
       selectedTM: selectedTM ?? this.selectedTM,
@@ -32,18 +36,21 @@ class SurveyRecommendationFormState {
           selectedTMRecommendation ?? this.selectedTMRecommendation,
       selectedRMRecommendation:
           selectedRMRecommendation ?? this.selectedRMRecommendation,
+      tmRemarks: tmRemarks ?? this.tmRemarks,
+      rmRemarks: rmRemarks ?? this.rmRemarks,
     );
+  }
+
+  @override
+  String toString() {
+    return 'SurveyRecommendationFormState(selectedTM: $selectedTM, selectedRM: $selectedRM, selectedTMRecommendation: $selectedTMRecommendation, selectedRMRecommendation: $selectedRMRecommendation, tmRemarks: $tmRemarks, rmRemarks: $rmRemarks)';
   }
 }
 
 class SurveyRecommendationFormController
     extends Notifier<SurveyRecommendationFormState> {
-  final tmRemarksController = TextEditingController();
-  final rmRemarksController = TextEditingController();
-
   @override
   SurveyRecommendationFormState build() {
-    ref.onDispose(_disposeControllers);
     return const SurveyRecommendationFormState();
   }
 
@@ -63,9 +70,12 @@ class SurveyRecommendationFormController
     state = state.copyWith(selectedRMRecommendation: recommendation);
   }
 
-  void _disposeControllers() {
-    tmRemarksController.dispose();
-    rmRemarksController.dispose();
+  void updateTMRemarks(String remarks) {
+    state = state.copyWith(tmRemarks: remarks);
+  }
+
+  void updateRMRemarks(String remarks) {
+    state = state.copyWith(rmRemarks: remarks);
   }
 
   void prefillFormData({
@@ -81,9 +91,8 @@ class SurveyRecommendationFormController
       selectedRM: selectedRM,
       selectedTMRecommendation: selectedTMRecommendation,
       selectedRMRecommendation: selectedRMRecommendation,
+      tmRemarks: tmRemarks,
+      rmRemarks: rmRemarks,
     );
-    
-    tmRemarksController.text = tmRemarks;
-    rmRemarksController.text = rmRemarks;
   }
 }

@@ -10,11 +10,18 @@ import 'package:tgpl_network/features/login/presentation/login_controller.dart';
 import 'package:tgpl_network/utils/screen_size_extension.dart';
 import 'package:tgpl_network/utils/string_validation_extension.dart';
 
-class LoginView extends ConsumerWidget {
+class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends ConsumerState<LoginView> {
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
     final controller = ref.read(loginControllerProvider.notifier);
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -38,15 +45,17 @@ class LoginView extends ConsumerWidget {
               ),
               const SizedBox(height: 28),
               Form(
-                key: controller.formKey,
+                key: _formKey,
                 child: Column(
                   children: [
                     CustomTextFieldWithTitle(
                       title: "Username",
                       hintText: "muhammadhuzaifakhan",
-                      controller: controller.usernameController,
                       validator: (v) => v.validate(),
                       keyboardType: TextInputType.emailAddress,
+                      onChanged: (v) {
+                        controller.setUsername(v);
+                      },
                     ),
                     const SizedBox(height: 16),
                     Consumer(
@@ -57,9 +66,8 @@ class LoginView extends ConsumerWidget {
                           ),
                         );
                         return CustomTextFieldWithTitle(
-                          title: "Passwrod",
+                          title: "Password",
                           hintText: "*******",
-                          controller: controller.passwordController,
                           obscureText: isPasswordObscure,
                           suffixIcon: IconButton(
                             onPressed: () {
@@ -72,6 +80,9 @@ class LoginView extends ConsumerWidget {
                             ),
                           ),
                           validator: (v) => v.validate(),
+                          onChanged: (v) {
+                            controller.setPassword(v);
+                          },
                         );
                       },
                     ),
@@ -118,9 +129,11 @@ class LoginView extends ConsumerWidget {
                         );
                         return CustomButton(
                           onPressed: () {
-                            ref
-                                .read(loginAuthControllerProvider.notifier)
-                                .login();
+                            if (_formKey.currentState!.validate()) {
+                              ref
+                                  .read(loginAuthControllerProvider.notifier)
+                                  .login();
+                            }
                           },
                           text: "Login",
                           child: loginAuth.isLoading

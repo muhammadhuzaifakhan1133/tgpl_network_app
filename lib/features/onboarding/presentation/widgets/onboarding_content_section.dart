@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/widgets/animated_text.dart';
@@ -16,11 +15,11 @@ class OnboardingContentSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final showAnimation = ref.watch(onboardingEntryAnimationProvider);
-    final onBoardingController = ref.read(
-      onboardingControllerProvider.notifier,
-    );
-    final onboardingState = ref.watch(onboardingControllerProvider);
-    final data = onBoardingController.getData(onboardingState.currentPageIndex);
+    final controller = ref.read(onboardingControllerProvider.notifier);
+    final currentPageIndex = ref.watch(onboardingControllerProvider);
+    final data = controller.currentPageData;
+    final totalPages = controller.totalPages;
+
     return AnimatedSlide(
       offset: showAnimation ? Offset.zero : const Offset(0, 1),
       duration: const Duration(milliseconds: 700),
@@ -34,7 +33,6 @@ class OnboardingContentSection extends ConsumerWidget {
             filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
             child: Container(
               width: context.screenWidth,
-              // constraints: BoxConstraints(minHeight: context.screenHeight * 0.45),
               color: Colors.white.withOpacity(0.15),
               padding: const EdgeInsets.only(
                 right: 20.0,
@@ -44,7 +42,6 @@ class OnboardingContentSection extends ConsumerWidget {
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-
                 children: [
                   AnimatedText(
                     child: Text(
@@ -65,7 +62,7 @@ class OnboardingContentSection extends ConsumerWidget {
                   ),
                   const SizedBox(height: 35.0),
                   CustomButton(
-                    onPressed: onBoardingController.onActionButtonPressed,
+                    onPressed: controller.onActionButtonPressed,
                     text: "",
                     child: AnimatedText(
                       child: Text(
@@ -77,18 +74,10 @@ class OnboardingContentSection extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: List.generate(
-                      onBoardingController.dataLength,
-                      (index) => onboardingPageIndicator(
-                        index: index,
-                        currentPageIndex: onboardingState.currentPageIndex,
-                        onTap: () {
-                          onBoardingController.jumpToPage(index);
-                        },
-                      ),
-                    ),
+                  _PageIndicators(
+                    totalPages: totalPages,
+                    currentPageIndex: currentPageIndex,
+                    onPageTap: controller.jumpToPage,
                   ),
                 ],
               ),
@@ -98,23 +87,59 @@ class OnboardingContentSection extends ConsumerWidget {
       ),
     );
   }
+}
 
-  GestureDetector onboardingPageIndicator({
-    required int index,
-    required int currentPageIndex,
-    required void Function() onTap,
-  }) {
+class _PageIndicators extends StatelessWidget {
+  final int totalPages;
+  final int currentPageIndex;
+  final void Function(int) onPageTap;
+
+  const _PageIndicators({
+    required this.totalPages,
+    required this.currentPageIndex,
+    required this.onPageTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(
+        totalPages,
+        (index) => _PageIndicator(
+          index: index,
+          currentPageIndex: currentPageIndex,
+          onTap: () => onPageTap(index),
+        ),
+      ),
+    );
+  }
+}
+
+class _PageIndicator extends StatelessWidget {
+  final int index;
+  final int currentPageIndex;
+  final VoidCallback onTap;
+
+  const _PageIndicator({
+    required this.index,
+    required this.currentPageIndex,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isActive = index == currentPageIndex;
+
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         margin: const EdgeInsets.symmetric(horizontal: 4),
         height: 5,
-        width: index == currentPageIndex ? 30 : 15,
+        width: isActive ? 30 : 15,
         decoration: BoxDecoration(
-          color: index == currentPageIndex
-              ? AppColors.white
-              : AppColors.halfWhite,
+          color: isActive ? AppColors.white : AppColors.halfWhite,
           borderRadius: BorderRadius.circular(11),
         ),
       ),

@@ -1,67 +1,73 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/features/station_form/presentation/station_form_controller.dart';
 
 final step2FormControllerProvider =
-    NotifierProvider<Step2FormController, Step2FormState>(
-      () => Step2FormController(),
-    );
+    NotifierProvider.autoDispose<Step2FormController, Step2FormState>(
+  Step2FormController.new,
+);
 
 class Step2FormState {
-  String? selectedCity;
-  String? selectedSiteStatus;
-  String? selectedPriority;
+  final String selectedCity;
+  final String selectedSiteStatus;
+  final String selectedPriority;
+  final String source;
+  final String sourceName;
 
-  Step2FormState({
-    this.selectedCity,
-    this.selectedPriority,
-    this.selectedSiteStatus,
+  const Step2FormState({
+    this.selectedCity = '',
+    this.selectedSiteStatus = '',
+    this.selectedPriority = '',
+    this.source = '',
+    this.sourceName = '',
   });
 
   Step2FormState copyWith({
     String? selectedCity,
-    String? selectedPriority,
     String? selectedSiteStatus,
+    String? selectedPriority,
+    String? source,
+    String? sourceName,
   }) {
     return Step2FormState(
       selectedCity: selectedCity ?? this.selectedCity,
-      selectedPriority: selectedPriority ?? this.selectedPriority,
       selectedSiteStatus: selectedSiteStatus ?? this.selectedSiteStatus,
+      selectedPriority: selectedPriority ?? this.selectedPriority,
+      source: source ?? this.source,
+      sourceName: sourceName ?? this.sourceName,
     );
   }
 }
 
 class Step2FormController extends Notifier<Step2FormState> {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController sourceController = TextEditingController();
-  TextEditingController sourceNameController = TextEditingController();
-
-  void dispose() {
-    sourceController.dispose();
-    sourceNameController.dispose();
-  }
-
   @override
   Step2FormState build() {
-    ref.onDispose(dispose);
-    return Step2FormState();
+    return const Step2FormState();
   }
 
-  void onCityChange(String newCity) {
-    state = state.copyWith(selectedCity: newCity);
+  void updateCity(String value) {
+    state = state.copyWith(selectedCity: value);
   }
 
-  void onSiteStatusChange(String newSiteStatus) {
-    state = state.copyWith(selectedSiteStatus: newSiteStatus);
+  void updateSiteStatus(String value) {
+    state = state.copyWith(selectedSiteStatus: value);
   }
 
-  void onPriorityChange(String newPriority) {
-    state = state.copyWith(selectedPriority: newPriority);
+  void updatePriority(String value) {
+    state = state.copyWith(selectedPriority: value);
   }
 
-  void validateAndContinue() {
-    if (formKey.currentState!.validate()) {
-      ref.read(stationFormControllerProvider.notifier).onActionButtonPressed();
-    }
+  void updateSource(String value) {
+    state = state.copyWith(source: value);
+  }
+
+  void updateSourceName(String value) {
+    state = state.copyWith(sourceName: value);
+  }
+
+  bool isValid() {
+    return state.selectedCity.isNotEmpty &&
+        state.selectedSiteStatus.isNotEmpty &&
+        state.selectedPriority.isNotEmpty &&
+        state.source.isNotEmpty &&
+        state.sourceName.isNotEmpty;
   }
 }

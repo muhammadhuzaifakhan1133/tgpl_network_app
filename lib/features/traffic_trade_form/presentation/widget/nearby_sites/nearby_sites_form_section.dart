@@ -9,13 +9,17 @@ import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
-import 'package:tgpl_network/features/traffic_trade_form/presentation/traffic_trade_form_controller.dart';
+import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/nearby_sites/nearby_sites_form_controller.dart';
 
 class NearbySitesFormSection extends ConsumerWidget {
   const NearbySitesFormSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final sitesLength = ref.watch(
+      nearbySitesControllerProvider.select((s) => s.nearbyTrafficSites.length),
+    );
+
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -29,14 +33,11 @@ class NearbySitesFormSection extends ConsumerWidget {
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemBuilder: (context, index) {
-              return _SiteFormCard(index: index);
+              // Use ValueKey with index to ensure Flutter tracks the correct widget
+              return _SiteFormCard(key: ValueKey('site_$index'), index: index);
             },
             separatorBuilder: (context, index) => const SizedBox(height: 20),
-            itemCount: ref.watch(
-              trafficTradeFormControllerProvider.select(
-                (s) => s.nearbyTrafficSites.length,
-              ),
-            ),
+            itemCount: sitesLength,
           ),
           const SizedBox(height: 10),
           Align(
@@ -53,7 +54,7 @@ class NearbySitesFormSection extends ConsumerWidget {
               textStyle: AppTextstyles.neutra500white22.copyWith(fontSize: 14),
               onPressed: () {
                 ref
-                    .read(trafficTradeFormControllerProvider.notifier)
+                    .read(nearbySitesControllerProvider.notifier)
                     .addNearbySite();
               },
             ),
@@ -66,29 +67,29 @@ class NearbySitesFormSection extends ConsumerWidget {
 
 class _SiteFormCard extends ConsumerWidget {
   final int index;
-  const _SiteFormCard({
-    super.key,
-    required this.index});
+  const _SiteFormCard({super.key, required this.index});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-   final site = ref.watch(
-      trafficTradeFormControllerProvider.select(
-        (s) => s.nearbyTrafficSites.length > index 
-            ? s.nearbyTrafficSites[index] 
+    final site = ref.watch(
+      nearbySitesControllerProvider.select(
+        (s) => s.nearbyTrafficSites.length > index
+            ? s.nearbyTrafficSites[index]
             : null,
       ),
     );
-    
+
     // If site is null (index out of bounds), don't render
     if (site == null) {
       return const SizedBox.shrink();
     }
-    
+
     final sitesLength = ref
-        .read(trafficTradeFormControllerProvider)
+        .read(nearbySitesControllerProvider)
         .nearbyTrafficSites
         .length;
+    final controller = ref.read(nearbySitesControllerProvider.notifier);
+
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -120,77 +121,101 @@ class _SiteFormCard extends ConsumerWidget {
                     : AppColors.emailUsIconColor.withOpacity(0.1),
                 onTap: () {
                   if (sitesLength <= 1) return;
-                  ref
-                      .read(trafficTradeFormControllerProvider.notifier)
-                      .removeNearbySite(index);
+                  controller.removeNearbySite(index);
                 },
               ),
             ],
           ),
-          // site name textfield
           const SizedBox(height: 10),
           CustomTextFieldWithTitle(
+            key: ValueKey('site_name_$index'),
             title: "Site Name",
             hintText: "Enter site name",
-            controller: site.siteNameController,
+            initialValue: site.siteName,
+            onChanged: (value) {
+              controller.updateSite(index: index, siteName: value);
+            },
           ),
-          // daily diesel sales textfield
           const SizedBox(height: 10),
           CustomTextFieldWithTitle(
+            key: ValueKey('diesel_sale_$index'),
             title: "Estimated Daily Diesel Sale",
             hintText: "Enter daily diesel sale",
             keyboardType: TextInputType.number,
-            controller: site.estimatedDailyDieselSaleController,
+            initialValue: site.estimatedDailyDieselSale,
+            onChanged: (value) {
+              controller.updateSite(
+                index: index,
+                estimatedDailyDieselSale: value,
+              );
+            },
           ),
-          // daily super sales textfield
           const SizedBox(height: 10),
           CustomTextFieldWithTitle(
+            key: ValueKey('super_sale_$index'),
             title: "Estimated Daily Super Sale",
             hintText: "Enter daily super sale",
             keyboardType: TextInputType.number,
-            controller: site.estimatedDailySuperSaleController,
+            initialValue: site.estimatedDailySuperSale,
+            onChanged: (value) {
+              controller.updateSite(
+                index: index,
+                estimatedDailySuperSale: value,
+              );
+            },
           ),
-          // daily lubricant sales textfield
           const SizedBox(height: 10),
           CustomTextFieldWithTitle(
+            key: ValueKey('lubricant_sale_$index'),
             title: "Estimated Lubricant Sale",
             hintText: "Enter daily lubricant sale",
             keyboardType: TextInputType.number,
-            controller: site.estimatedDailyLubricantSaleController,
+            initialValue: site.estimatedDailyLubricantSale,
+            onChanged: (value) {
+              controller.updateSite(
+                index: index,
+                estimatedDailyLubricantSale: value,
+              );
+            },
           ),
-          // omc name textfield
           const SizedBox(height: 10),
           CustomTextFieldWithTitle(
+            key: ValueKey('omc_name_$index'),
             title: "OMC Name",
             hintText: "Enter OMC name",
-            controller: site.omcNameController,
+            initialValue: site.omcName,
+            onChanged: (value) {
+              controller.updateSite(index: index, omcName: value);
+            },
           ),
-          // is nfr facility dropdown yes no
           const SizedBox(height: 10),
           CustomDropDownWithTitle(
+            key: ValueKey('nfr_facility_$index'),
             title: "Is NFR Facility Available?",
             hintText: "Select an option",
             selectedItem: site.isNfrFacility,
             items: ref.read(yesNoValuesProvider),
             onChanged: (value) {
               if (value == null) return;
-              ref
-                  .read(trafficTradeFormControllerProvider.notifier)
-                  .onChangeIsNfrFacilityAvailable(index, value.toString());
+              controller.updateSite(
+                index: index,
+                isNfrFacility: value.toString(),
+              );
             },
           ),
-          // select nfr facilities (dropdown with multiselect true)
           const SizedBox(height: 10),
           CustomDropDownWithTitle(
+            key: ValueKey('nfr_facilities_list_$index'),
             title: "Select NFR Facilities",
             hintText: "Select nfr facilities",
             isMultiSelect: true,
             selectedItems: site.nfrFacilities,
             items: ref.read(nfrFacilitiesProvider),
             onMultiChanged: (values) {
-              ref
-                  .read(trafficTradeFormControllerProvider.notifier)
-                  .onChangeNfrFacilities(index, values);
+              controller.updateSite(
+                index: index,
+                nfrFacilities: values,
+              );
             },
           ),
         ],

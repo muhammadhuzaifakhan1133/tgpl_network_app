@@ -9,10 +9,7 @@ class FormStepsIndicator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentStep = ref.watch(stationFormControllerProvider).currentStep;
-    final totalSteps = ref
-        .read(stationFormControllerProvider.notifier)
-        .steps
-        .length;
+    final totalSteps = ref.watch(stationFormControllerProvider).totalSteps;
     return Row(
       children: [
         for (int i = 0; i < totalSteps; i++)

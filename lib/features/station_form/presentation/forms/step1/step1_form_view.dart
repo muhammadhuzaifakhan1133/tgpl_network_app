@@ -4,91 +4,125 @@ import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/station_form/presentation/forms/step1/step1_form_controller.dart';
+import 'package:tgpl_network/features/station_form/presentation/station_form_controller.dart';
 import 'package:tgpl_network/utils/string_validation_extension.dart';
 
-class Step1FormView extends ConsumerWidget {
+class Step1FormView extends ConsumerStatefulWidget {
   const Step1FormView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.read(step1FormControllerProvider);
-    return Form(
-      key: controller.formKey,
-      child: Column(
-        children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Basic Details",
-              style: AppTextstyles.googleInter700black28.copyWith(
-                fontSize: 24,
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Let's start with your contact information",
-              style: AppTextstyles.googleInter400black16,
-            ),
-          ),
-          const SizedBox(height: 24),
-          CustomTextFieldWithTitle(
-            title: "Applicant Name*",
-            hintText: "M Huzaifa Khan",
-            controller: controller.applicantNameController,
-            validator: (v) => v.validate(),
-            keyboardType: TextInputType.name,
-          ),
-          const SizedBox(height: 16),
-          CustomTextFieldWithTitle(
-            title: "Contact Person*",
-            hintText: "Basit",
-            controller: controller.contactPersonController,
-            validator: (v) => v.validate(),
-            keyboardType: TextInputType.name,
-          ),
-          const SizedBox(height: 15),
-          CustomTextFieldWithTitle(
-            title: "Currently Presence*",
-            hintText: "Currently Presence",
-            controller: controller.currentlyPresenceController,
-            validator: (v) => v.validate(),
-            keyboardType: TextInputType.name,
-          ),
-          const SizedBox(height: 15),
-          CustomTextFieldWithTitle(
-            title: "Contact Number*",
-            hintText: "03001234567",
-            controller: controller.contactNumberController,
-            validator: (v) => v.validatePhoneNumber(),
-            keyboardType: TextInputType.phone,
-          ),
-          const SizedBox(height: 15),
-          CustomTextFieldWithTitle(
-            title: "WhatsApp Number*",
-            hintText: "03725847514",
-            controller: controller.whatsappNumberController,
-            validator: (v) => v.validatePhoneNumber(),
-            keyboardType: TextInputType.phone,
-            textInputAction: TextInputAction.done,
-            extraInformation: "We'll use WhatsApp for quick updates",
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: CustomButton(
-                  onPressed: () {
-                    controller.validateAndContinue();
-                  },
-                  text: "Next",
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+  ConsumerState<Step1FormView> createState() => _Step1FormViewState();
+}
+
+class _Step1FormViewState extends ConsumerState<Step1FormView> {
+  final _formKey = GlobalKey<FormState>();
+
+  late final TextEditingController _applicantNameController;
+  late final TextEditingController _contactPersonController;
+  late final TextEditingController _currentlyPresenceController;
+  late final TextEditingController _contactNumberController;
+  late final TextEditingController _whatsappNumberController;
+
+  @override
+  void initState() {
+    super.initState();
+    final state = ref.read(step1FormControllerProvider);
+
+    _applicantNameController =
+        TextEditingController(text: state.applicantName);
+    _contactPersonController =
+        TextEditingController(text: state.contactPerson);
+    _currentlyPresenceController =
+        TextEditingController(text: state.currentlyPresence);
+    _contactNumberController =
+        TextEditingController(text: state.contactNumber);
+    _whatsappNumberController =
+        TextEditingController(text: state.whatsappNumber);
   }
+
+  @override
+  void dispose() {
+    _applicantNameController.dispose();
+    _contactPersonController.dispose();
+    _currentlyPresenceController.dispose();
+    _contactNumberController.dispose();
+    _whatsappNumberController.dispose();
+    super.dispose();
+  }
+
+  @override
+Widget build(BuildContext context) {
+  final step1Controller =
+      ref.read(step1FormControllerProvider.notifier);
+  final stationController =
+      ref.read(stationFormControllerProvider.notifier);
+
+  return Form(
+    key: _formKey,
+    child: Column(
+      children: [
+        Text(
+          "Basic Details",
+          style: AppTextstyles.googleInter700black28.copyWith(fontSize: 24),
+        ),
+        const SizedBox(height: 24),
+
+        CustomTextFieldWithTitle(
+          title: "Applicant Name*",
+          controller: _applicantNameController,
+          validator: (v) => v.validate(),
+          onChanged: step1Controller.updateApplicantName,
+        ),
+
+        const SizedBox(height: 16),
+
+        CustomTextFieldWithTitle(
+          title: "Contact Person*",
+          controller: _contactPersonController,
+          validator: (v) => v.validate(),
+          onChanged: step1Controller.updateContactPerson,
+        ),
+
+        const SizedBox(height: 16),
+
+        CustomTextFieldWithTitle(
+          title: "Currently Presence*",
+          controller: _currentlyPresenceController,
+          validator: (v) => v.validate(),
+          onChanged: step1Controller.updateCurrentlyPresence,
+        ),
+
+        const SizedBox(height: 16),
+
+        CustomTextFieldWithTitle(
+          title: "Contact Number*",
+          controller: _contactNumberController,
+          validator: (v) => v.validatePhoneNumber(),
+          onChanged: step1Controller.updateContactNumber,
+        ),
+
+        const SizedBox(height: 16),
+
+        CustomTextFieldWithTitle(
+          title: "WhatsApp Number*",
+          controller: _whatsappNumberController,
+          validator: (v) => v.validatePhoneNumber(),
+          onChanged: step1Controller.updateWhatsappNumber,
+        ),
+
+        const SizedBox(height: 20),
+
+        CustomButton(
+          text: "Next",
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              stationController.nextStep();
+            }
+          },
+        ),
+      ],
+    ),
+  );
+}
+
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
@@ -18,7 +20,7 @@ class SurveyFormView extends ConsumerStatefulWidget {
 
 class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
   final _formKey = GlobalKey<FormState>();
-
+  
   @override
   void initState() {
     super.initState();
@@ -31,6 +33,7 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
   @override
   Widget build(BuildContext context) {
     final asyncValue = ref.watch(surveyFormControllerProvider);
+    final controller = ref.read(surveyFormControllerProvider.notifier);
 
     return Scaffold(
       body: GestureDetector(
@@ -44,7 +47,7 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
             ),
             Expanded(
               child: asyncValue.when(
-                data: (_) => _buildForm(),
+                data: (_) => _buildForm(controller),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stack) => Center(
                   child: Column(
@@ -53,7 +56,8 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
                       Text('Error: $error'),
                       const SizedBox(height: 16),
                       ElevatedButton(
-                        onPressed: () => ref.refresh(surveyFormControllerProvider),
+                        onPressed: () =>
+                            ref.refresh(surveyFormControllerProvider),
                         child: const Text('Retry'),
                       ),
                     ],
@@ -67,57 +71,56 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
     );
   }
 
-  Widget _buildForm() {
+  Widget _buildForm(SurveyFormController controller) {
     final isSubmitting = ref.watch(
       surveyFormControllerProvider.select((state) => state.isLoading),
     );
 
     return Form(
       key: _formKey,
-      child: ListView(
-        padding: const EdgeInsets.all(20.0),
-        children: [
-          const ApplicantInfoFormCard(),
-          const SizedBox(height: 20),
-          const ContactAndDealerFormCard(),
-          const SizedBox(height: 20),
-          const DealerProfileFormCard(),
-          const SizedBox(height: 20),
-          const SurveyRecommendationFormCard(),
-          const SizedBox(height: 30),
-          CustomButton(
-            onPressed: isSubmitting ? null : _handleSubmit,
-            text: isSubmitting ? "Submitting..." : "Submit",
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              const ApplicantInfoFormCard(),
+              const SizedBox(height: 20),
+              const ContactAndDealerFormCard(),
+              const SizedBox(height: 20),
+              const DealerProfileFormCard(),
+              const SizedBox(height: 20),
+              const SurveyRecommendationFormCard(),
+              const SizedBox(height: 30),
+              CustomButton(
+                onPressed: isSubmitting
+                    ? null
+                    : () => _handleSubmit(controller),
+                text: isSubmitting ? "Submitting..." : "Submit",
+              ),
+              const SizedBox(height: 20),
+            ],
           ),
-          const SizedBox(height: 20),
-        ],
+        ),
       ),
     );
   }
 
-  Future<void> _handleSubmit() async {
+  Future<void> _handleSubmit(SurveyFormController controller) async {
     // Unfocus any active text field
     FocusScope.of(context).unfocus();
 
+    bool? success ;
+    
     // Validate form
-    if (!_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please correct the errors in the form.'),
-          backgroundColor: Colors.red,
-        ),
-      );
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      success = await controller.submitSurveyForm();
       return;
     }
 
-    // Submit form
-    final success = await ref
-        .read(surveyFormControllerProvider.notifier)
-        .submitSurveyForm();
 
     if (!mounted) return;
 
-    if (success) {
+    if (success == true) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Form submitted successfully!'),
@@ -129,7 +132,7 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Failed to submit form. Please try again.'),
+          content: Text('Please correct the errors in the form.'),
           backgroundColor: Colors.red,
         ),
       );

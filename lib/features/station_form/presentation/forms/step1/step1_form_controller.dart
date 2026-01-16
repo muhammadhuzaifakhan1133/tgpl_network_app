@@ -1,35 +1,74 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/features/station_form/presentation/station_form_controller.dart';
 
-final step1FormControllerProvider = Provider<Step1FormController>((ref) {
-  final controller =  Step1FormController(ref);
-  ref.onDispose(controller.dispose);
-  return controller;
-});
+final step1FormControllerProvider =
+    NotifierProvider.autoDispose<Step1FormController, Step1FormState>(
+  Step1FormController.new,
+);
 
-class Step1FormController {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController applicantNameController = TextEditingController();
-  TextEditingController contactPersonController = TextEditingController();
-  TextEditingController currentlyPresenceController = TextEditingController();
-  TextEditingController contactNumberController = TextEditingController();
-  TextEditingController whatsappNumberController = TextEditingController();
-  late Ref ref;
+class Step1FormState {
+  final String applicantName;
+  final String contactPerson;
+  final String currentlyPresence;
+  final String contactNumber;
+  final String whatsappNumber;
 
-  Step1FormController(this.ref);
+  const Step1FormState({
+    this.applicantName = '',
+    this.contactPerson = '',
+    this.currentlyPresence = '',
+    this.contactNumber = '',
+    this.whatsappNumber = '',
+  });
 
-  void dispose() {
-    applicantNameController.dispose();
-    contactPersonController.dispose();
-    currentlyPresenceController.dispose();
-    contactNumberController.dispose();
-    whatsappNumberController.dispose();
-  }
-
-  void validateAndContinue() {
-    if (formKey.currentState!.validate()) {
-      ref.read(stationFormControllerProvider.notifier).onActionButtonPressed();
-    }
+  Step1FormState copyWith({
+    String? applicantName,
+    String? contactPerson,
+    String? currentlyPresence,
+    String? contactNumber,
+    String? whatsappNumber,
+  }) {
+    return Step1FormState(
+      applicantName: applicantName ?? this.applicantName,
+      contactPerson: contactPerson ?? this.contactPerson,
+      currentlyPresence: currentlyPresence ?? this.currentlyPresence,
+      contactNumber: contactNumber ?? this.contactNumber,
+      whatsappNumber: whatsappNumber ?? this.whatsappNumber,
+    );
   }
 }
+
+class Step1FormController extends Notifier<Step1FormState> {
+  @override
+  Step1FormState build() {
+    return const Step1FormState();
+  }
+
+  void updateApplicantName(String value) {
+    state = state.copyWith(applicantName: value);
+  }
+
+  void updateContactPerson(String value) {
+    state = state.copyWith(contactPerson: value);
+  }
+
+  void updateCurrentlyPresence(String value) {
+    state = state.copyWith(currentlyPresence: value);
+  }
+
+  void updateContactNumber(String value) {
+    state = state.copyWith(contactNumber: value);
+  }
+
+  void updateWhatsappNumber(String value) {
+    state = state.copyWith(whatsappNumber: value);
+  }
+
+  bool isValid() {
+    return state.applicantName.isNotEmpty &&
+        state.contactPerson.isNotEmpty &&
+        state.currentlyPresence.isNotEmpty &&
+        state.contactNumber.isNotEmpty &&
+        state.whatsappNumber.isNotEmpty;
+  }
+}
+

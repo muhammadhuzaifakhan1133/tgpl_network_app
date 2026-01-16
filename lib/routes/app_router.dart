@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tgpl_network/common/presentation/home_shell_view.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_view.dart';
+import 'package:tgpl_network/features/applications/presentation/applications_filter/appplications_filter_view.dart';
 import 'package:tgpl_network/features/applications/presentation/applications_view.dart';
 import 'package:tgpl_network/features/change_password/change_password_view.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_view.dart';
@@ -45,8 +46,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const SiteLocationSelectionView(),
       ),
       GoRoute(
-        path: AppRoutes.stationFormConfirmation,
-        builder: (context, state) => const StationFormConfirmationView(),
+        path: AppRoutes.stationFormConfirmation(),
+        builder: (context, state) {
+          return StationFormConfirmationView(
+            applicationId: state.pathParameters['applicationId'] ?? '',
+          );
+        }
       ),
       GoRoute(
         path: AppRoutes.login,
@@ -132,6 +137,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             appId: state.pathParameters['appId'] ?? '',
           );
         },
+      ),
+      GoRoute(
+        path: AppRoutes.applicationsFilter,
+        builder: (context, state) => const FilterScreen(),
       ),
     ],
   );

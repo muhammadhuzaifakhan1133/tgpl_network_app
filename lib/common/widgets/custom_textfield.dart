@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:tgpl_network/constants/app_colors.dart';
-import 'package:tgpl_network/utils/show_snackbar.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final String? hintText;
@@ -26,6 +23,10 @@ class CustomTextField extends StatelessWidget {
   final String? title;
   final void Function(String)? onChanged;
   final String? initialValue;
+  final bool showClearButton;
+  final VoidCallback? onClear;
+  final bool showClearWhenReadOnly;
+
   const CustomTextField({
     super.key,
     this.controller,
@@ -47,110 +48,108 @@ class CustomTextField extends StatelessWidget {
     this.hint,
     this.onTap,
     this.readOnly = false,
-    this.title, this.onChanged,
+    this.title,
+    this.onChanged,
     this.initialValue,
+    this.showClearButton = false,
+    this.onClear,
+    this.showClearWhenReadOnly = true,
   });
+
+  @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  late String _currentValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentValue = widget.controller?.text ??
+        widget.initialValue ??
+        '';
+
+    widget.controller?.addListener(_controllerListener);
+  }
+
+  void _controllerListener() {
+    setState(() {
+      _currentValue = widget.controller?.text ?? '';
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.controller?.removeListener(_controllerListener);
+    super.dispose();
+  }
+
+  bool get _hasValue => _currentValue.isNotEmpty;
+
+  Widget? _buildSuffixIcon() {
+    if (widget.showClearButton &&
+        widget.onClear != null &&
+        _hasValue &&
+        (widget.showClearWhenReadOnly || !widget.readOnly)) {
+      return IconButton(
+        icon: const Icon(Icons.close, size: 18),
+        splashRadius: 18,
+        onPressed: () {
+          widget.onClear?.call();
+
+          if (widget.controller == null) {
+            setState(() {
+              _currentValue = '';
+            });
+          }
+        },
+      );
+    }
+    return widget.suffixIcon;
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width,
-      height: height,
+      width: widget.width,
+      height: widget.height,
       child: TextFormField(
-        controller: controller,
-        initialValue: initialValue,
-        readOnly: readOnly,
-        onChanged: onChanged,
-        contextMenuBuilder: readOnly
-            ? (context, editableTextState) {
-                return AdaptiveTextSelectionToolbar.buttonItems(
-                  anchors: editableTextState.contextMenuAnchors,
-                  buttonItems: [
-                    ContextMenuButtonItem(
-                      onPressed: () {
-                        Clipboard.setData(ClipboardData(text: hintText ?? ""));
-                        showSnackBar(context, "Copied to clipboard");
-                      },
-                      label: 'Copy',
-                    ),
-                    // view detail
-                    ContextMenuButtonItem(
-                      onPressed: () {
-                        _showReadOnlyFieldContent(
-                          context,
-                          title ?? "",
-                          hintText ?? "",
-                        );
-                      },
-                      label: 'View Full Text',
-                    ),
-                  ],
-                );
-              }
-            : null,
-        onTap: onTap,
-        obscureText: obscureText,
-        focusNode: focusNode,
+        controller: widget.controller,
+        initialValue: widget.controller == null ? widget.initialValue : null,
+        readOnly: widget.readOnly,
+        onTap: widget.onTap,
+        obscureText: widget.obscureText,
+        focusNode: widget.focusNode,
+        onChanged: (v) {
+          if (widget.controller == null) {
+            setState(() {
+              _currentValue = v;
+            });
+          }
+          widget.onChanged?.call(v);
+        },
         decoration: InputDecoration(
-          fillColor: backgroundColor,
-          hint: hint,
-          filled: backgroundColor != null ? true : false,
-          hintText: hintText,
-
-          errorText: errorText,
-          suffixIcon: suffixIcon,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          fillColor: widget.backgroundColor,
+          filled: widget.backgroundColor != null,
+          hint: widget.hint,
+          hintText: widget.hintText,
+          errorText: widget.errorText,
+          suffixIcon: _buildSuffixIcon(),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
-        validator: validator,
-        keyboardType: multiline ? TextInputType.multiline : keyboardType,
-        textInputAction: multiline
+        validator: widget.validator,
+        keyboardType:
+            widget.multiline ? TextInputType.multiline : widget.keyboardType,
+        textInputAction: widget.multiline
             ? TextInputAction.newline
-            : (textInputAction ?? TextInputAction.next),
-
-        minLines: multiline ? (minLines ?? 3) : 1,
-        maxLines: multiline ? (maxLines ?? 5) : 1,
-        onFieldSubmitted: (_) => onFieldSubmitted?.call(),
+            : (widget.textInputAction ?? TextInputAction.next),
+        minLines: widget.multiline ? (widget.minLines ?? 3) : 1,
+        maxLines: widget.multiline ? (widget.maxLines ?? 5) : 1,
+        onFieldSubmitted: (_) => widget.onFieldSubmitted?.call(),
       ),
-    );
-  }
-
-  void _showReadOnlyFieldContent(
-    BuildContext context,
-    String title,
-    String value,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (_) {
-        return Container(
-          width: double.infinity,
-          padding: EdgeInsets.fromLTRB(
-            16,
-            16,
-            16,
-            MediaQuery.of(context).viewInsets.bottom + 16,
-          ),
-          color: AppColors.white,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: 12),
-              SingleChildScrollView(
-                child: SelectableText(
-                  value,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

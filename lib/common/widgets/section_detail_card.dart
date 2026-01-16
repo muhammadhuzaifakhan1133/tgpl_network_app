@@ -36,7 +36,7 @@ class SectionDetailCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                title,
+                Expanded(child: title),
                 IconButton(
                   icon: Icon(
                     isExpanded! ? Icons.expand_less : Icons.expand_more,

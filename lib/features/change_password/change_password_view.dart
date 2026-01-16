@@ -9,11 +9,18 @@ import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/utils/screen_size_extension.dart';
 import 'package:tgpl_network/utils/string_validation_extension.dart';
 
-class ChangePasswordView extends ConsumerWidget {
+class ChangePasswordView extends ConsumerStatefulWidget {
   const ChangePasswordView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ChangePasswordView> createState() => _ChangePasswordViewState();
+}
+
+class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
     final controller = ref.read(changePasswordControllerProvider.notifier);
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -39,7 +46,7 @@ class ChangePasswordView extends ConsumerWidget {
                   ),
                   const SizedBox(height: 28),
                   Form(
-                    key: controller.formKey,
+                    key: _formKey,
                     child: Column(
                       children: [
                         Consumer(
@@ -52,7 +59,9 @@ class ChangePasswordView extends ConsumerWidget {
                             return CustomTextFieldWithTitle(
                               title: "Old Passwrod",
                               hintText: "*******",
-                              controller: controller.passwordController,
+                              onChanged: (v) {
+                                controller.setOldPassword(v);
+                              },
                               obscureText: isPasswordObscure,
                               suffixIcon: IconButton(
                                 onPressed: () {
@@ -79,7 +88,9 @@ class ChangePasswordView extends ConsumerWidget {
                             return CustomTextFieldWithTitle(
                               title: "New Passwrod",
                               hintText: "*******",
-                              controller: controller.newPasswordController,
+                              onChanged: (v) {
+                                controller.setNewPassword(v);
+                              },
                               obscureText: isPasswordObscure,
                               suffixIcon: IconButton(
                                 onPressed: () {
@@ -106,11 +117,16 @@ class ChangePasswordView extends ConsumerWidget {
                             return CustomTextFieldWithTitle(
                               title: "Confirm Passwrod",
                               hintText: "*******",
-                              controller:
-                                  controller.passwordConfirmationController,
+                              onChanged: (v) {
+                                controller.setPasswordConfirmation(v);
+                              },
                               obscureText: isPasswordObscure,
                               validator: (v) => v.validateSameValue(
-                                value: controller.newPasswordController.text,
+                                value:
+                                    ref
+                                        .read(changePasswordControllerProvider)
+                                        .newPassword ??
+                                    '',
                                 message: "Password does not match",
                               ),
                             );
@@ -124,12 +140,14 @@ class ChangePasswordView extends ConsumerWidget {
                             );
                             return CustomButton(
                               onPressed: () {
-                                ref
-                                    .read(
-                                      changePasswordAsyncControllerProvider
-                                          .notifier,
-                                    )
-                                    .changePassword();
+                                if (_formKey.currentState!.validate()) {
+                                  ref
+                                      .read(
+                                        changePasswordAsyncControllerProvider
+                                            .notifier,
+                                      )
+                                      .changePassword();
+                                }
                               },
                               text: "Confirm Change",
                               child: changePasswordAsync.isLoading

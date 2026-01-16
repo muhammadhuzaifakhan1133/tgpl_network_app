@@ -41,21 +41,21 @@ class ApplicantInfoFormCard extends ConsumerWidget {
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
-  readOnly: true,
-  title: "Date Conducted",
-  hintText: state.dateConducted ?? "01/01/2024",
-  onTap: () {
-    customDatePicker(
-      context: context,
-      onUserSelectedDate: (date) {
-        controller.updateConductedInfo(
-          dateConducted: date.formatToDDMMYYY(),
-        );
-      },
-    );
-  },
-)
-,
+          readOnly: true,
+          title: "Date Conducted",
+          hintText: "01/01/2024",
+          controller: TextEditingController(text: state.dateConducted ?? ""),
+          onTap: () {
+            customDatePicker(
+              context: context,
+              onUserSelectedDate: (date) {
+                controller.updateConductedInfo(
+                  dateConducted: date.formatToDDMMYYY(),
+                );
+              },
+            );
+          },
+        ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           title: "Conducted By",
@@ -68,28 +68,27 @@ class ApplicantInfoFormCard extends ConsumerWidget {
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
-  title: "Google Location*",
-  hintText: state.googleLocation ?? "Tap to select location",
-  readOnly: true,
-  suffixIcon: actionContainer(
-    icon: AppImages.locationIconSvg,
-    iconColor: AppColors.black,
-    rightMargin: 5,
-    onTap: () async {
-      final selectedLocation = await ref
-          .read(goRouterProvider)
-          .push(AppRoutes.siteLocationSelection);
-
-      if (selectedLocation != null) {
-        controller.updateLocation(
-          googleLocation:
-              "${selectedLocation.position.latitude}, ${selectedLocation.position.longitude}",
-        );
-      }
-    },
-  ),
-)
-,
+          title: "Google Location*",
+          hintText: "Tap to select location",
+          readOnly: true,
+          controller: TextEditingController(text: state.googleLocation ?? ""),
+          suffixIcon: actionContainer(
+            icon: AppImages.locationIconSvg,
+            iconColor: AppColors.black,
+            rightMargin: 5,
+            onTap: () async {
+              LocationData? selectedLocation = await ref
+                  .read(goRouterProvider)
+                  .push(AppRoutes.siteLocationSelection);
+              if (selectedLocation != null) {
+                controller.updateLocation(
+                  googleLocation:
+                      "${selectedLocation.position.latitude}, ${selectedLocation.position.longitude}",
+                );
+              }
+            },
+          ),
+        ),
         const SizedBox(height: 10),
         CustomDropDownWithTitle(
           title: "City",

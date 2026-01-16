@@ -10,7 +10,8 @@ import 'package:tgpl_network/features/station_form/presentation/confirmation/wid
 import 'package:tgpl_network/routes/app_router.dart';
 
 class StationFormConfirmationView extends ConsumerWidget {
-  const StationFormConfirmationView({super.key});
+  final String applicationId;
+  const StationFormConfirmationView({super.key, required this.applicationId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,7 +45,7 @@ class StationFormConfirmationView extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              ApplicationIdContainer(),
+              ApplicationIdContainer(applicationId: applicationId),
               const SizedBox(height: 24),
               Align(
                 alignment: Alignment.centerLeft,
