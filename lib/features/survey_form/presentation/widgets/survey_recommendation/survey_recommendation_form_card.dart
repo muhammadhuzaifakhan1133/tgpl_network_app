@@ -4,9 +4,8 @@ import 'package:tgpl_network/common/providers/tm_names_provider.dart';
 import 'package:tgpl_network/common/providers/yes_no_na_values_provider.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
-import 'package:tgpl_network/constants/app_colors.dart';
-import 'package:tgpl_network/constants/app_textstyles.dart';
-import 'package:tgpl_network/features/survey_form/presentation/survey_form_controller.dart';
+import 'package:tgpl_network/common/widgets/section_detail_card.dart';
+import 'package:tgpl_network/features/survey_form/presentation/widgets/survey_recommendation/survey_recommendation_form_controller.dart';
 import 'package:tgpl_network/utils/string_validation_extension.dart';
 
 class SurveyRecommendationFormCard extends ConsumerWidget {
@@ -14,30 +13,14 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.read(surveyFormControllerProvider.notifier);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Recommendation",
-            style: AppTextstyles.googleInter700black28.copyWith(
-              fontSize: 24,
-              color: AppColors.black2Color,
-            ),
-          ),
-          // TM (dropdown)
-          const SizedBox(height: 10),
-          Consumer(
+    final controller = ref.read(surveyRecommendationFormControllerProvider.notifier);
+    return SectionDetailCard(
+      title: "Recommendation",
+      children: [
+        Consumer(
             builder: (context, ref, child) {
               final selectedTm = ref.watch(
-                surveyFormControllerProvider.select((s) => s.selectedTM),
+                surveyRecommendationFormControllerProvider.select((s) => s.selectedTM),
               );
               return CustomDropDownWithTitle(
                 title: "TM",
@@ -58,7 +41,7 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
           Consumer(
             builder: (context, ref, child) {
               final tmRecommend = ref.watch(
-                surveyFormControllerProvider.select(
+                surveyRecommendationFormControllerProvider.select(
                   (s) => s.selectedTMRecommendation,
                 ),
               );
@@ -88,7 +71,7 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
           Consumer(
             builder: (context, ref, child) {
               final selectedRm = ref.watch(
-                surveyFormControllerProvider.select((s) => s.selectedRM),
+                surveyRecommendationFormControllerProvider.select((s) => s.selectedRM),
               );
               return CustomDropDownWithTitle(
                 title: "RM",
@@ -109,7 +92,7 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
           Consumer(
             builder: (context, ref, child) {
               final rmRecommend = ref.watch(
-                surveyFormControllerProvider.select(
+                surveyRecommendationFormControllerProvider.select(
                   (s) => s.selectedRMRecommendation,
                 ),
               );
@@ -134,8 +117,7 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
             controller: controller.rmRemarksController,
             validator: (v) => v.validate(),
           ),
-        ],
-      ),
+      ],
     );
   }
 }

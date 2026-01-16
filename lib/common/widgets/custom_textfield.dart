@@ -25,6 +25,7 @@ class CustomTextField extends StatelessWidget {
   final bool readOnly;
   final String? title;
   final void Function(String)? onChanged;
+  final String? initialValue;
   const CustomTextField({
     super.key,
     this.controller,
@@ -47,6 +48,7 @@ class CustomTextField extends StatelessWidget {
     this.onTap,
     this.readOnly = false,
     this.title, this.onChanged,
+    this.initialValue,
   });
 
   @override
@@ -56,6 +58,7 @@ class CustomTextField extends StatelessWidget {
       height: height,
       child: TextFormField(
         controller: controller,
+        initialValue: initialValue,
         readOnly: readOnly,
         onChanged: onChanged,
         contextMenuBuilder: readOnly

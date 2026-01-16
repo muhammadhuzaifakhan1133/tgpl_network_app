@@ -1,43 +1,74 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
-import 'package:tgpl_network/features/application_detail/widgets/detail_section_card.dart';
+import 'package:tgpl_network/features/application_detail/application_detail_controller.dart';
+import 'package:tgpl_network/common/widgets/section_detail_card.dart';
 
-class ContactDealerTGPLCard extends StatelessWidget {
-  const ContactDealerTGPLCard({super.key});
+class ContactDealerTGPLCard extends ConsumerWidget {
+  // take parameters for all fields to show
+  final String npName;
+  final String source;
+  final String sourceName;
+  final String conductedBy;
+  final String dealerName;
+  final String dealerContact;
+  final String referenceBy;
+
+  const ContactDealerTGPLCard({
+    super.key,
+    required this.npName,
+    required this.source,
+    required this.sourceName,
+    required this.conductedBy,
+    required this.dealerName,
+    required this.dealerContact,
+    required this.referenceBy,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return DetailSectionCard(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isExpanded = ref.watch(
+      applicationDetailControllerProvider.select(
+        (state) => state.isContactDealerTGPLCardExpanded,
+      ),
+    );
+    return SectionDetailCard(
       title: "Contact (Dealer & TGPL)",
+      isExpanded: isExpanded,
+      onToggleExpanded: () {
+        ref
+            .read(applicationDetailControllerProvider.notifier)
+            .toggleContactDealerTGPLCardExpanded();
+      },
       children: [
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "NP. Name",
-          hintText: "Shadman",
+          hintText: npName,
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Source",
-          hintText: "NW Manager (North & KPK)",
+          hintText: source,
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Source Name",
-          hintText: "Shadman Khattak",
+          hintText: sourceName,
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Conducted By",
-          hintText: "Shadman",
+          hintText: conductedBy,
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Dealer Name",
-          hintText: "Qamar Alam",
+          hintText: dealerName,
         ),
         const SizedBox(height: 10),
         Row(
@@ -46,7 +77,7 @@ class ContactDealerTGPLCard extends StatelessWidget {
               child: CustomTextFieldWithTitle(
                 readOnly: true,
                 title: "Dealer Contact",
-                hintText: "03349342026",
+                hintText: dealerContact,
               ),
             ),
             const SizedBox(width: 10),
@@ -54,7 +85,7 @@ class ContactDealerTGPLCard extends StatelessWidget {
               child: CustomTextFieldWithTitle(
                 readOnly: true,
                 title: "Reference By",
-                hintText: "Shadman",
+                hintText: referenceBy,
               ),
             ),
           ],

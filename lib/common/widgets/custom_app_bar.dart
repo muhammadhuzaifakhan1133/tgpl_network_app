@@ -202,6 +202,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                           },
                         ),
                       ],
+                      ...widget.actions,
                     ],
                   ),
                 ],

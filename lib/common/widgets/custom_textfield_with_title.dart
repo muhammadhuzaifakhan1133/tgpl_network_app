@@ -18,6 +18,7 @@ class CustomTextFieldWithTitle extends StatelessWidget {
   final bool readOnly;
   final void Function()? onTap;
   final void Function(String)? onChanged;
+  final String? initialValue;
   const CustomTextFieldWithTitle({
     super.key,
     required this.title,
@@ -34,6 +35,7 @@ class CustomTextFieldWithTitle extends StatelessWidget {
     this.obscureText = false,
     this.readOnly = false,
     this.onTap, this.onChanged,
+    this.initialValue,
   });
 
   @override
@@ -60,6 +62,7 @@ class CustomTextFieldWithTitle extends StatelessWidget {
           minLines: minLines,
           multiline: multiline,
           suffixIcon: suffixIcon,
+          initialValue: initialValue,
         ),
         if (extraInformation != null) ...[
           const SizedBox(height: 2),
