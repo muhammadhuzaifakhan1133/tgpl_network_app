@@ -8,22 +8,26 @@ final nearbySitesControllerProvider =
 
 class NearbySitesState {
   final List<TrafficSiteModel> nearbyTrafficSites;
+  final int totalSites;
 
   const NearbySitesState({
     this.nearbyTrafficSites = const [],
+    this.totalSites = 0,
   });
 
   NearbySitesState copyWith({
     List<TrafficSiteModel>? nearbyTrafficSites,
+    int? totalSites,
   }) {
     return NearbySitesState(
       nearbyTrafficSites: nearbyTrafficSites ?? this.nearbyTrafficSites,
+      totalSites: totalSites ?? this.totalSites,
     );
   }
 
   @override
   String toString() {
-    return 'NearbySitesState(nearbyTrafficSites: $nearbyTrafficSites)';
+    return 'NearbySitesState(nearbyTrafficSites: $nearbyTrafficSites, totalSites: $totalSites)';
   }
 }
 
@@ -33,6 +37,7 @@ class NearbySitesController extends Notifier<NearbySitesState> {
     // Initialize with one empty site
     return NearbySitesState(
       nearbyTrafficSites: [TrafficSiteModel()],
+      totalSites: 1,
     );
   }
 
@@ -63,7 +68,7 @@ class NearbySitesController extends Notifier<NearbySitesState> {
 
   void addNearbySite() {
     final updatedSites = [...state.nearbyTrafficSites,  TrafficSiteModel()];
-    state = state.copyWith(nearbyTrafficSites: updatedSites);
+    state = state.copyWith(nearbyTrafficSites: updatedSites, totalSites: updatedSites.length);
   }
 
   void removeNearbySite(int index) {
@@ -72,6 +77,16 @@ class NearbySitesController extends Notifier<NearbySitesState> {
     final updatedSites = [...state.nearbyTrafficSites];
     if (index >= 0 && index < updatedSites.length) {
       updatedSites.removeAt(index);
+      state = state.copyWith(nearbyTrafficSites: updatedSites, totalSites: updatedSites.length);
+    }
+  }
+
+  void clearField(String fieldName, {required int index}) {
+    final updatedSites = [...state.nearbyTrafficSites];
+    if (index >= 0 && index < updatedSites.length) {
+      updatedSites[index] = updatedSites[index].copyWith(
+        fieldsToNull: [fieldName],
+      );
       state = state.copyWith(nearbyTrafficSites: updatedSites);
     }
   }

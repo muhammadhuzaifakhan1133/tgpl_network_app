@@ -69,7 +69,6 @@ class CustomSearchableDropDown<T extends Object> extends StatelessWidget {
             focusNode,
             onFieldSubmitted,
           ) {
-            final hasValue = controller.text.isNotEmpty;
 
             return CustomTextField(
               controller: controller,
@@ -77,7 +76,7 @@ class CustomSearchableDropDown<T extends Object> extends StatelessWidget {
               hintText: hintText,
               errorText: state.errorText,
               onFieldSubmitted: onFieldSubmitted,
-              showClearButton: showClearButton && hasValue,
+              showClearButton: showClearButton ,
               onClear: () {
                 controller.clear();
                 state.didChange(null);

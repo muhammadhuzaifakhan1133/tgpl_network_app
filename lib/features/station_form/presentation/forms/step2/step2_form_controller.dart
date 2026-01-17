@@ -1,23 +1,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/utils/nullable_fields_helper.dart';
 
 final step2FormControllerProvider =
-    NotifierProvider.autoDispose<Step2FormController, Step2FormState>(
+    NotifierProvider<Step2FormController, Step2FormState>(
   Step2FormController.new,
 );
 
 class Step2FormState {
-  final String selectedCity;
-  final String selectedSiteStatus;
-  final String selectedPriority;
-  final String source;
-  final String sourceName;
+  final String? selectedCity;
+  final String? selectedSiteStatus;
+  final String? selectedPriority;
+  final String? source;
+  final String? sourceName;
 
   const Step2FormState({
-    this.selectedCity = '',
-    this.selectedSiteStatus = '',
-    this.selectedPriority = '',
-    this.source = '',
-    this.sourceName = '',
+    this.selectedCity,
+    this.selectedSiteStatus,
+    this.selectedPriority,
+    this.source,
+    this.sourceName,
   });
 
   Step2FormState copyWith({
@@ -26,13 +27,14 @@ class Step2FormState {
     String? selectedPriority,
     String? source,
     String? sourceName,
+    List<String>? fieldsToNull,
   }) {
     return Step2FormState(
-      selectedCity: selectedCity ?? this.selectedCity,
-      selectedSiteStatus: selectedSiteStatus ?? this.selectedSiteStatus,
-      selectedPriority: selectedPriority ?? this.selectedPriority,
-      source: source ?? this.source,
-      sourceName: sourceName ?? this.sourceName,
+      selectedCity: fieldsToNull.apply('selectedCity', selectedCity, this.selectedCity),
+      selectedSiteStatus: fieldsToNull.apply('selectedSiteStatus', selectedSiteStatus, this.selectedSiteStatus),
+      selectedPriority: fieldsToNull.apply('selectedPriority', selectedPriority, this.selectedPriority),
+      source: fieldsToNull.apply('source', source, this.source),
+      sourceName: fieldsToNull.apply('sourceName', sourceName, this.sourceName),
     );
   }
 }
@@ -63,11 +65,7 @@ class Step2FormController extends Notifier<Step2FormState> {
     state = state.copyWith(sourceName: value);
   }
 
-  bool isValid() {
-    return state.selectedCity.isNotEmpty &&
-        state.selectedSiteStatus.isNotEmpty &&
-        state.selectedPriority.isNotEmpty &&
-        state.source.isNotEmpty &&
-        state.sourceName.isNotEmpty;
+  void clearField(String fieldName) {
+    state = state.copyWith(fieldsToNull: [fieldName]);
   }
 }

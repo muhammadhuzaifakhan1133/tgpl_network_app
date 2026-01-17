@@ -24,6 +24,10 @@ class TrafficCountCardForm extends ConsumerWidget {
                     controller.updateTrafficCountTruck(value);
                   },
                   validator: (v) => v.validate(),
+                  showClearButton: true,
+                  onClear: () {
+                    controller.clearField('trafficCountTruck');
+                  },
                 ),
               ),
               const SizedBox(width: 10),
@@ -36,6 +40,10 @@ class TrafficCountCardForm extends ConsumerWidget {
                     controller.updateTrafficCountCar(value);
                   },
                   validator: (v) => v.validate(),
+                  showClearButton: true,
+                  onClear: () {
+                    controller.clearField('trafficCountCar');
+                  },
                 ),
               ),
               const SizedBox(width: 10),
@@ -48,6 +56,10 @@ class TrafficCountCardForm extends ConsumerWidget {
                     controller.updateTrafficCountBike(value);
                   },
                   validator: (v) => v.validate(),
+                  showClearButton: true,
+                  onClear: () {
+                    controller.clearField('trafficCountBike');
+                  },
                 ),
               ),
             ],

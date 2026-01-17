@@ -61,9 +61,7 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
             title: "City",
             hintText: "Select city",
             enableSearch: true,
-            selectedItem: state.selectedCity.isEmpty
-                ? null
-                : state.selectedCity,
+            selectedItem: state.selectedCity,
             items: ref.read(cityNamesProvider),
             onChanged: (value) {
               if (value != null) {
@@ -71,6 +69,10 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
               }
             },
             validator: (v) => v.validate(),
+            showClearButton: true,
+            onClear: () {
+              step2Controller.clearField('selectedCity');
+            },
           ),
 
           const SizedBox(height: 16),
@@ -78,9 +80,7 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
           CustomDropDownWithTitle(
             title: "Site Status",
             hintText: "Select site status",
-            selectedItem: state.selectedSiteStatus.isEmpty
-                ? null
-                : state.selectedSiteStatus,
+            selectedItem: state.selectedSiteStatus,
             items: ref.read(siteStatusesProvider),
             onChanged: (value) {
               if (value != null) {
@@ -88,6 +88,10 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
               }
             },
             validator: (v) => v.validate(),
+            showClearButton: true,
+            onClear: () {
+              step2Controller.clearField('selectedSiteStatus');
+            },
           ),
 
           const SizedBox(height: 16),
@@ -95,9 +99,7 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
           CustomDropDownWithTitle(
             title: "Priority",
             hintText: "Select site priority",
-            selectedItem: state.selectedPriority.isEmpty
-                ? null
-                : state.selectedPriority,
+            selectedItem: state.selectedPriority,
             items: ref.read(prioritiesProvider),
             onChanged: (value) {
               if (value != null) {
@@ -105,6 +107,8 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
               }
             },
             validator: (v) => v.validate(),
+            showClearButton: true,
+            onClear: () => step2Controller.clearField('selectedPriority'),
           ),
 
           const SizedBox(height: 16),
@@ -112,8 +116,11 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
           CustomTextFieldWithTitle(
             title: "Source*",
             controller: _sourceController,
+            hintText: "Enter source",
             validator: (v) => v.validate(),
             onChanged: step2Controller.updateSource,
+            showClearButton: true,
+          onClear: () => step2Controller.clearField('source'),
           ),
 
           const SizedBox(height: 16),
@@ -121,8 +128,11 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
           CustomTextFieldWithTitle(
             title: "Source Name*",
             controller: _sourceNameController,
+            hintText: "Enter source name",
             validator: (v) => v.validate(),
             onChanged: step2Controller.updateSourceName,
+            showClearButton: true,
+            onClear: () => step2Controller.clearField('sourceName'),
           ),
 
           const SizedBox(height: 20),

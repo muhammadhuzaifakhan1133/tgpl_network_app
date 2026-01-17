@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'dart:math';
+import 'package:tgpl_network/utils/nullable_fields_helper.dart';
 
 class TrafficSiteModel {
   final String id;
@@ -11,6 +12,7 @@ class TrafficSiteModel {
   final List<String> nfrFacilities;
 
   TrafficSiteModel({
+    String? id,
     this.siteName,
     this.estimatedDailyDieselSale,
     this.estimatedDailySuperSale,
@@ -18,7 +20,7 @@ class TrafficSiteModel {
     this.omcName,
     this.isNfrFacility,
     this.nfrFacilities = const [],
-  }) : id = UniqueKey().toString();
+  }) : id = id ?? DateTime.now().millisecondsSinceEpoch.toString() + Random().nextInt(10000).toString();
 
   TrafficSiteModel copyWith({
     String? siteName,
@@ -28,15 +30,29 @@ class TrafficSiteModel {
     String? omcName,
     String? isNfrFacility,
     List<String>? nfrFacilities,
+    List<String>? fieldsToNull,
   }) {
     return TrafficSiteModel(
-      siteName: siteName ?? this.siteName,
-      estimatedDailyDieselSale: estimatedDailyDieselSale ?? this.estimatedDailyDieselSale,
-      estimatedDailySuperSale: estimatedDailySuperSale ?? this.estimatedDailySuperSale,
-      estimatedDailyLubricantSale: estimatedDailyLubricantSale ?? this.estimatedDailyLubricantSale,
-      omcName: omcName ?? this.omcName,
-      isNfrFacility: isNfrFacility ?? this.isNfrFacility,
-      nfrFacilities: nfrFacilities ?? this.nfrFacilities,
+      siteName: fieldsToNull
+          .apply('siteName', siteName, this.siteName),
+      estimatedDailyDieselSale: fieldsToNull.apply(
+          'estimatedDailyDieselSale',
+          estimatedDailyDieselSale,
+          this.estimatedDailyDieselSale),
+      estimatedDailySuperSale: fieldsToNull.apply(
+          'estimatedDailySuperSale',
+          estimatedDailySuperSale,
+          this.estimatedDailySuperSale),
+      estimatedDailyLubricantSale: fieldsToNull.apply(
+          'estimatedDailyLubricantSale',
+          estimatedDailyLubricantSale,
+          this.estimatedDailyLubricantSale),
+      omcName: fieldsToNull.apply('omcName', omcName, this.omcName),
+      isNfrFacility: fieldsToNull.apply('isNfrFacility', isNfrFacility, this.isNfrFacility),
+      nfrFacilities: fieldsToNull.apply(
+          'nfrFacilities',
+          nfrFacilities,
+          this.nfrFacilities) ?? [],
     );
   }
 

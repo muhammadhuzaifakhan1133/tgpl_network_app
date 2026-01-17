@@ -25,7 +25,7 @@ class CustomTextField extends StatefulWidget {
   final String? initialValue;
   final bool showClearButton;
   final VoidCallback? onClear;
-  final bool showClearWhenReadOnly;
+  final bool autoFocus;
 
   const CustomTextField({
     super.key,
@@ -53,7 +53,7 @@ class CustomTextField extends StatefulWidget {
     this.initialValue,
     this.showClearButton = false,
     this.onClear,
-    this.showClearWhenReadOnly = true,
+    this.autoFocus = false,
   });
 
   @override
@@ -61,52 +61,74 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  late String _currentValue;
+  late TextEditingController _internalController;
+  late FocusNode _effectiveFocusNode;
 
   @override
   void initState() {
     super.initState();
-    _currentValue = widget.controller?.text ??
-        widget.initialValue ??
-        '';
+    _internalController =
+        widget.controller ??
+        TextEditingController(text: widget.initialValue ?? '');
 
-    widget.controller?.addListener(_controllerListener);
+    _effectiveFocusNode = widget.focusNode ?? FocusNode();
   }
 
-  void _controllerListener() {
-    setState(() {
-      _currentValue = widget.controller?.text ?? '';
-    });
-  }
-
-  @override
-  void dispose() {
-    widget.controller?.removeListener(_controllerListener);
-    super.dispose();
-  }
-
-  bool get _hasValue => _currentValue.isNotEmpty;
+  bool get _hasValue => _internalController.text.isNotEmpty;
 
   Widget? _buildSuffixIcon() {
     if (widget.showClearButton &&
-        widget.onClear != null &&
-        _hasValue &&
-        (widget.showClearWhenReadOnly || !widget.readOnly)) {
+        (_hasValue || widget.readOnly)) {
       return IconButton(
         icon: const Icon(Icons.close, size: 18),
         splashRadius: 18,
         onPressed: () {
           widget.onClear?.call();
 
-          if (widget.controller == null) {
-            setState(() {
-              _currentValue = '';
-            });
-          }
+          _internalController.clear();
+          widget.onChanged?.call('');
+          setState(() {});
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _effectiveFocusNode.requestFocus();
+          });
         },
       );
     }
     return widget.suffixIcon;
+  }
+
+  @override
+  void dispose() {
+    if (widget.controller == null) {
+      _internalController.dispose();
+    }
+    if (widget.focusNode == null) {
+      _effectiveFocusNode.dispose();
+    }
+    super.dispose();
+  }
+
+  // If parent passes a controller and later replaces it
+  @override
+  void didUpdateWidget(covariant CustomTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.controller != widget.controller) {
+      if (oldWidget.controller == null) {
+        _internalController.dispose();
+      }
+      _internalController =
+          widget.controller ??
+          TextEditingController(text: widget.initialValue ?? '');
+    }
+
+    if (oldWidget.focusNode != widget.focusNode) {
+      if (oldWidget.focusNode == null) {
+        _effectiveFocusNode.dispose();
+      }
+      _effectiveFocusNode = widget.focusNode ?? FocusNode();
+    }
   }
 
   @override
@@ -115,18 +137,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
       width: widget.width,
       height: widget.height,
       child: TextFormField(
-        controller: widget.controller,
-        initialValue: widget.controller == null ? widget.initialValue : null,
+        controller: _internalController,
+        // initialValue: widget.controller == null ? widget.initialValue : null,
+        autofocus: widget.autoFocus,
         readOnly: widget.readOnly,
         onTap: widget.onTap,
         obscureText: widget.obscureText,
-        focusNode: widget.focusNode,
+        focusNode: _effectiveFocusNode,
         onChanged: (v) {
-          if (widget.controller == null) {
-            setState(() {
-              _currentValue = v;
-            });
-          }
+          setState(() {});
           widget.onChanged?.call(v);
         },
         decoration: InputDecoration(
@@ -136,13 +155,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
           hintText: widget.hintText,
           errorText: widget.errorText,
           suffixIcon: _buildSuffixIcon(),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         ),
         validator: widget.validator,
-        keyboardType:
-            widget.multiline ? TextInputType.multiline : widget.keyboardType,
+        keyboardType: widget.multiline
+            ? TextInputType.multiline
+            : widget.keyboardType,
         textInputAction: widget.multiline
             ? TextInputAction.newline
             : (widget.textInputAction ?? TextInputAction.next),

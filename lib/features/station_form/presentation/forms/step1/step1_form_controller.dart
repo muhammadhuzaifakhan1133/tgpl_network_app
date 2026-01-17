@@ -1,16 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/utils/nullable_fields_helper.dart';
 
 final step1FormControllerProvider =
-    NotifierProvider.autoDispose<Step1FormController, Step1FormState>(
+    NotifierProvider<Step1FormController, Step1FormState>(
   Step1FormController.new,
 );
 
 class Step1FormState {
-  final String applicantName;
-  final String contactPerson;
-  final String currentlyPresence;
-  final String contactNumber;
-  final String whatsappNumber;
+  final String? applicantName;
+  final String? contactPerson;
+  final String? currentlyPresence;
+  final String? contactNumber;
+  final String? whatsappNumber;
 
   const Step1FormState({
     this.applicantName = '',
@@ -26,13 +27,14 @@ class Step1FormState {
     String? currentlyPresence,
     String? contactNumber,
     String? whatsappNumber,
+    List<String>? fieldsToNull,
   }) {
     return Step1FormState(
-      applicantName: applicantName ?? this.applicantName,
-      contactPerson: contactPerson ?? this.contactPerson,
-      currentlyPresence: currentlyPresence ?? this.currentlyPresence,
-      contactNumber: contactNumber ?? this.contactNumber,
-      whatsappNumber: whatsappNumber ?? this.whatsappNumber,
+      applicantName: fieldsToNull.apply('applicantName', applicantName, this.applicantName),
+      contactPerson: fieldsToNull.apply('contactPerson', contactPerson, this.contactPerson),
+      currentlyPresence: fieldsToNull.apply('currentlyPresence', currentlyPresence, this.currentlyPresence),
+      contactNumber: fieldsToNull.apply('contactNumber', contactNumber, this.contactNumber),
+      whatsappNumber: fieldsToNull.apply('whatsappNumber', whatsappNumber, this.whatsappNumber),
     );
   }
 }
@@ -63,12 +65,8 @@ class Step1FormController extends Notifier<Step1FormState> {
     state = state.copyWith(whatsappNumber: value);
   }
 
-  bool isValid() {
-    return state.applicantName.isNotEmpty &&
-        state.contactPerson.isNotEmpty &&
-        state.currentlyPresence.isNotEmpty &&
-        state.contactNumber.isNotEmpty &&
-        state.whatsappNumber.isNotEmpty;
+  void clearField(String fieldName) {
+    state = state.copyWith(fieldsToNull: [fieldName]);
   }
 }
 

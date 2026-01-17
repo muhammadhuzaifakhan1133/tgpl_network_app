@@ -27,129 +27,134 @@ class _LoginViewState extends ConsumerState<LoginView> {
       backgroundColor: AppColors.white,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 50),
-          child: ListView(
-            children: [
-              SizedBox(height: context.screenHeight * 0.15),
-              SvgPicture.asset(AppImages.tajLogoSvg, width: 50, height: 50),
-              const SizedBox(height: 28),
-              Text(
-                "Welcome to TGPL",
-                style: AppTextstyles.googleInter700black28,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                "Please choose how you want to continue",
-                style: AppTextstyles.googleInter400black16,
-              ),
-              const SizedBox(height: 28),
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    CustomTextFieldWithTitle(
-                      title: "Username",
-                      hintText: "muhammadhuzaifakhan",
-                      validator: (v) => v.validate(),
-                      keyboardType: TextInputType.emailAddress,
-                      onChanged: (v) {
-                        controller.setUsername(v);
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    Consumer(
-                      builder: (context, ref, child) {
-                        final isPasswordObscure = ref.watch(
-                          loginControllerProvider.select(
-                            (state) => state.isPasswordObscure,
-                          ),
-                        );
-                        return CustomTextFieldWithTitle(
-                          title: "Password",
-                          hintText: "*******",
-                          obscureText: isPasswordObscure,
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              controller.togglePasswordObscure();
-                            },
-                            icon: Icon(
-                              isPasswordObscure
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
-                          ),
-                          validator: (v) => v.validate(),
-                          onChanged: (v) {
-                            controller.setPassword(v);
-                          },
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Consumer(
-                          builder: (context, ref, child) {
-                            final isRememberMe = ref.watch(
-                              loginControllerProvider.select(
-                                (state) => state.rememberMe,
-                              ),
-                            );
-                            return Padding(
-                              padding: const EdgeInsets.all(3.96),
-                              child: SizedBox(
-                                width: 11.8,
-                                height: 11.8,
-                                child: Checkbox(
-                                  activeColor: WidgetStateColor.resolveWith(
-                                    (_) => AppColors.primary,
-                                  ),
-                                  value: isRememberMe,
-                                  onChanged: (_) {
-                                    controller.toggleRememberMe();
-                                  },
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          "Remember me",
-                          style: AppTextstyles.googleInter500LabelColor14,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 28),
-                    Consumer(
-                      builder: (context, ref, child) {
-                        final loginAuth = ref.watch(
-                          loginAuthControllerProvider,
-                        );
-                        return CustomButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              ref
-                                  .read(loginAuthControllerProvider.notifier)
-                                  .login();
-                            }
-                          },
-                          text: "Login",
-                          child: loginAuth.isLoading
-                              ? Center(
-                                  child: CircularProgressIndicator(
-                                    color: AppColors.white,
-                                  ),
-                                )
-                              : null,
-                        );
-                      },
-                    ),
-                  ],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 50),
+            child: Column(
+              children: [
+                SizedBox(height: context.screenHeight * 0.15),
+                SvgPicture.asset(AppImages.tajLogoSvg, width: 50, height: 50),
+                const SizedBox(height: 28),
+                Text(
+                  "Welcome to TGPL",
+                  textAlign: TextAlign.center,
+                  style: AppTextstyles.googleInter700black28,
                 ),
-              ),
-            ],
+                const SizedBox(height: 10),
+                Text(
+                  "Please choose how you want to continue",
+                  textAlign: TextAlign.center,
+                  style: AppTextstyles.googleInter400black16,
+                ),
+                const SizedBox(height: 28),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      CustomTextFieldWithTitle(
+                        title: "Username",
+                        hintText: "muhammadhuzaifakhan",
+                        showClearButton: true,
+                        validator: (v) => v.validate(),
+                        keyboardType: TextInputType.emailAddress,
+                        onChanged: (v) {
+                          controller.setUsername(v);
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      Consumer(
+                        builder: (context, ref, child) {
+                          final isPasswordObscure = ref.watch(
+                            loginControllerProvider.select(
+                              (state) => state.isPasswordObscure,
+                            ),
+                          );
+                          return CustomTextFieldWithTitle(
+                            title: "Password",
+                            hintText: "*******",
+                            obscureText: isPasswordObscure,
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                controller.togglePasswordObscure();
+                              },
+                              icon: Icon(
+                                isPasswordObscure
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                            ),
+                            validator: (v) => v.validate(),
+                            onChanged: (v) {
+                              controller.setPassword(v);
+                            },
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Consumer(
+                            builder: (context, ref, child) {
+                              final isRememberMe = ref.watch(
+                                loginControllerProvider.select(
+                                  (state) => state.rememberMe,
+                                ),
+                              );
+                              return Padding(
+                                padding: const EdgeInsets.all(3.96),
+                                child: SizedBox(
+                                  width: 11.8,
+                                  height: 11.8,
+                                  child: Checkbox(
+                                    activeColor: WidgetStateColor.resolveWith(
+                                      (_) => AppColors.primary,
+                                    ),
+                                    value: isRememberMe,
+                                    onChanged: (_) {
+                                      controller.toggleRememberMe();
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            "Remember me",
+                            style: AppTextstyles.googleInter500LabelColor14,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 28),
+                      Consumer(
+                        builder: (context, ref, child) {
+                          final loginAuth = ref.watch(
+                            loginAuthControllerProvider,
+                          );
+                          return CustomButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                ref
+                                    .read(loginAuthControllerProvider.notifier)
+                                    .login();
+                              }
+                            },
+                            text: "Login",
+                            child: loginAuth.isLoading
+                                ? Center(
+                                    child: CircularProgressIndicator(
+                                      color: AppColors.white,
+                                    ),
+                                  )
+                                : null,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

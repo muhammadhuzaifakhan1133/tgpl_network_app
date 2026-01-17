@@ -1,5 +1,9 @@
 extension StringValidation on String? {
 
+  bool get isNullOrEmpty => this == null || this!.isEmpty;
+
+   String orDefault(String defaultValue) => (this?.isNotEmpty ?? false) ? this! : defaultValue;
+
   String? validate([String message = "This field is required"]) {
     if (this == null || this!.isEmpty) {
       return message;

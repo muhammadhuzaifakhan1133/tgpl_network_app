@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/utils/nullable_fields_helper.dart';
 
 final contactAndDealerFormControllerProvider =
     NotifierProvider<ContactAndDealerFormController, ContactAndDealerFormState>(
@@ -48,19 +49,20 @@ class ContactAndDealerFormState {
     String? plotDepth,
     String? plotArea,
     String? distanceFromDepo,
+    List<String>? fieldsToNull,
   }) {
     return ContactAndDealerFormState(
-      dealerName: dealerName ?? this.dealerName,
-      dealerContact: dealerContact ?? this.dealerContact,
-      referenceBy: referenceBy ?? this.referenceBy,
-      locationAddress: locationAddress ?? this.locationAddress,
-      landmark: landmark ?? this.landmark,
-      nearestDepo: nearestDepo ?? this.nearestDepo,
-      typeOfTradeArea: typeOfTradeArea ?? this.typeOfTradeArea,
-      plotFront: plotFront ?? this.plotFront,
-      plotDepth: plotDepth ?? this.plotDepth,
-      plotArea: plotArea ?? this.plotArea,
-      distanceFromDepo: distanceFromDepo ?? this.distanceFromDepo,
+      dealerName: fieldsToNull.apply("dealerName", dealerName , this.dealerName),
+      dealerContact: fieldsToNull.apply("dealerContact", dealerContact , this.dealerContact),
+      referenceBy: fieldsToNull.apply("referenceBy", referenceBy , this.referenceBy),
+      locationAddress: fieldsToNull.apply("locationAddress", locationAddress , this.locationAddress),
+      landmark: fieldsToNull.apply("landmark", landmark , this.landmark),
+      nearestDepo: fieldsToNull.apply("nearestDepo", nearestDepo , this.nearestDepo),
+      typeOfTradeArea: fieldsToNull.apply("typeOfTradeArea", typeOfTradeArea , this.typeOfTradeArea),
+      plotFront: fieldsToNull.apply("plotFront", plotFront , this.plotFront),
+      plotDepth: fieldsToNull.apply("plotDepth", plotDepth , this.plotDepth),
+      plotArea: fieldsToNull.apply("plotArea", plotArea , this.plotArea),
+      distanceFromDepo: fieldsToNull.apply("distanceFromDepo", distanceFromDepo , this.distanceFromDepo),
     );
   }
 
@@ -132,6 +134,10 @@ class ContactAndDealerFormController
 
   void updateDistanceFromDepo(String? value) {
     state = state.copyWith(distanceFromDepo: value);
+  }
+
+  void clearField(String fieldName) {
+    state = state.copyWith(fieldsToNull: [fieldName]);
   }
 
   /* ---------------- Prefill (edit mode) ---------------- */

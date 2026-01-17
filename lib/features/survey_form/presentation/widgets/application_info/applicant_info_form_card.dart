@@ -43,7 +43,7 @@ class ApplicantInfoFormCard extends ConsumerWidget {
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Date Conducted",
-          hintText: "01/01/2024",
+          hintText: "dd/mm/yyyy",
           controller: TextEditingController(text: state.dateConducted ?? ""),
           onTap: () {
             customDatePicker(
@@ -55,6 +55,10 @@ class ApplicantInfoFormCard extends ConsumerWidget {
               },
             );
           },
+          showClearButton: !state.dateConducted.isNullOrEmpty,
+          onClear: () {
+            controller.clearField('dateConducted');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -64,6 +68,10 @@ class ApplicantInfoFormCard extends ConsumerWidget {
           validator: (v) => v.validate(),
           onChanged: (value) {
             controller.updateConductedInfo(conductedBy: value);
+          },
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('conductedBy');
           },
         ),
         const SizedBox(height: 10),
@@ -101,6 +109,10 @@ class ApplicantInfoFormCard extends ConsumerWidget {
             controller.updateLocation(city: value.toString());
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('selectedCity');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -110,6 +122,10 @@ class ApplicantInfoFormCard extends ConsumerWidget {
           validator: (v) => v.validate(),
           onChanged: (value) {
             controller.updateLocation(district: value);
+          },
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('district');
           },
         ),
         const SizedBox(height: 10),
@@ -122,6 +138,10 @@ class ApplicantInfoFormCard extends ConsumerWidget {
             if (value == null) return;
             controller.updateSiteInfo(status: value.toString());
           },
+          showClearButton: !state.siteStatus.isNullOrEmpty,
+          onClear: () {
+            controller.clearField('siteStatus');
+          },
           validator: (v) => v.validate(),
         ),
         const SizedBox(height: 10),
@@ -133,6 +153,10 @@ class ApplicantInfoFormCard extends ConsumerWidget {
           onChanged: (value) {
             controller.updateNpName(value);
           },
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('npName');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -143,6 +167,10 @@ class ApplicantInfoFormCard extends ConsumerWidget {
           onChanged: (value) {
             controller.updateSourceInfo(source: value);
           },
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('source');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -152,6 +180,10 @@ class ApplicantInfoFormCard extends ConsumerWidget {
           validator: (v) => v.validate(),
           onChanged: (value) {
             controller.updateSourceInfo(sourceName: value);
+          },
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('sourceName');
           },
         ),
         const SizedBox(height: 10),
@@ -165,6 +197,10 @@ class ApplicantInfoFormCard extends ConsumerWidget {
             controller.updateSiteInfo(priority: value.toString());
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('selectedPriority');
+          },
         ),
       ],
     );

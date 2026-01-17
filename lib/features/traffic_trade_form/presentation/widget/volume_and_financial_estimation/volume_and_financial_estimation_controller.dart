@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/utils/nullable_fields_helper.dart';
 
 final volumeFinancialControllerProvider =
     NotifierProvider<VolumeFinancialController, VolumeFinancialState>(
@@ -35,16 +36,17 @@ class VolumeFinancialState {
     String? truckPortPotential,
     String? salamMartPotential,
     String? restaurantPotential,
+    List<String>? fieldsToNull,
   }) {
     return VolumeFinancialState(
-      dailyDieselSales: dailyDieselSales ?? this.dailyDieselSales,
-      dailySuperSales: dailySuperSales ?? this.dailySuperSales,
-      dailyHOBCSales: dailyHOBCSales ?? this.dailyHOBCSales,
-      dailyLubricantSales: dailyLubricantSales ?? this.dailyLubricantSales,
-      rentExpectation: rentExpectation ?? this.rentExpectation,
-      truckPortPotential: truckPortPotential ?? this.truckPortPotential,
-      salamMartPotential: salamMartPotential ?? this.salamMartPotential,
-      restaurantPotential: restaurantPotential ?? this.restaurantPotential,
+      dailyDieselSales: fieldsToNull.apply("dailyDieselSales", dailyDieselSales, this.dailyDieselSales),
+      dailySuperSales: fieldsToNull.apply("dailySuperSales", dailySuperSales, this.dailySuperSales),
+      dailyHOBCSales: fieldsToNull.apply("dailyHOBCSales", dailyHOBCSales, this.dailyHOBCSales),
+      dailyLubricantSales: fieldsToNull.apply("dailyLubricantSales", dailyLubricantSales, this.dailyLubricantSales),
+      rentExpectation: fieldsToNull.apply("rentExpectation", rentExpectation, this.rentExpectation),
+      truckPortPotential: fieldsToNull.apply("truckPortPotential", truckPortPotential, this.truckPortPotential),
+      salamMartPotential: fieldsToNull.apply("salamMartPotential", salamMartPotential, this.salamMartPotential),
+      restaurantPotential: fieldsToNull.apply("restaurantPotential", restaurantPotential, this.restaurantPotential),
     );
   }
 
@@ -90,6 +92,10 @@ class VolumeFinancialController extends Notifier<VolumeFinancialState> {
 
   void setRestaurantPotential(String value) {
     state = state.copyWith(restaurantPotential: value);
+  }
+
+  void clearField(String fieldName) {
+    state = state.copyWith(fieldsToNull: [fieldName]);
   }
 
   void prefillFormData({

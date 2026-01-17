@@ -29,6 +29,10 @@ class DealerProfileFormCard extends ConsumerWidget {
             controller.onChangeIsThisDealer(value.toString());
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('isThisDealer');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -39,6 +43,10 @@ class DealerProfileFormCard extends ConsumerWidget {
             controller.updateDealerPlatform(value);
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('dealerPlatform');
+          },
         ),
         // BELOW ALL FIELDS ACTIVE ONLY WHEN IS THIS DEALER = YES
         if (state.isThisDealer == 'Yes') ...[
@@ -55,12 +63,15 @@ class DealerProfileFormCard extends ConsumerWidget {
             minLines: 2,
             maxLines: 3,
             validator: (v) => v.validate(),
+            showClearButton: true,
+            onClear: () {
+              controller.clearField('dealerBusinesses');
+            },
           ),
           const SizedBox(height: 10),
           CustomDropDownWithTitle(
             title: "How involved is the dealer in petrol pump business?",
             hintText: "Select dealer involvement",
-            enableSearch: true,
             selectedItem: state.selectedDealerInvolvement,
             items: ref.read(dealerInvolvementNamesProvider),
             onChanged: (value) {
@@ -68,6 +79,10 @@ class DealerProfileFormCard extends ConsumerWidget {
               controller.onChangeDealerInvolvement(value.toString());
             },
             validator: (v) => v.validate(),
+            showClearButton: true,
+            onClear: () {
+              controller.clearField('selectedDealerInvolvement');
+            },
           ),
           const SizedBox(height: 10),
           CustomDropDownWithTitle(
@@ -81,6 +96,10 @@ class DealerProfileFormCard extends ConsumerWidget {
               controller.onChangeIsDealerReadyToInvest(value.toString());
             },
             validator: (v) => v.validate(),
+            showClearButton: true,
+            onClear: () {
+              controller.clearField('isDealerReadyToInvest');
+            },
           ),
           const SizedBox(height: 10),
           CustomTextFieldWithTitle(
@@ -94,6 +113,10 @@ class DealerProfileFormCard extends ConsumerWidget {
             minLines: 2,
             maxLines: 3,
             validator: (v) => v.validate(),
+            showClearButton: true,
+            onClear: () {
+              controller.clearField('dealerOpinion');
+            },
           ),
           const SizedBox(height: 10),
           CustomTextFieldWithTitle(
@@ -106,6 +129,10 @@ class DealerProfileFormCard extends ConsumerWidget {
               controller.updateMonthlySalary(value);
             },
             validator: (v) => v.validate(),
+            showClearButton: true,
+            onClear: () {
+              controller.clearField('monthlySalary');
+            },
           ),
           const SizedBox(height: 10),
           CustomDropDownWithTitle(
@@ -121,6 +148,10 @@ class DealerProfileFormCard extends ConsumerWidget {
               );
             },
             validator: (v) => v.validate(),
+            showClearButton: true,
+            onClear: () {
+              controller.clearField('isDealerAgreedToFollowTgplStandards');
+            },
           ),
         ],
       ],

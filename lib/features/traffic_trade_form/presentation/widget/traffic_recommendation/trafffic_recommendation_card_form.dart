@@ -29,6 +29,10 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
             controller.onChangeTM(value.toString());
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('selectedTM');
+          },
         ),
         const SizedBox(height: 10),
         CustomDropDownWithTitle(
@@ -41,6 +45,10 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
             controller.onChangeTMRecommendation(value.toString());
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('selectedTMRecommendation');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -51,6 +59,10 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
             controller.updateTMRemarks(value);
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('tmRemarks');
+          },
         ),
         const SizedBox(height: 10),
         CustomDropDownWithTitle(
@@ -64,6 +76,10 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
             controller.onChangeRM(value.toString());
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('selectedRM');
+          },
         ),
         const SizedBox(height: 10),
         CustomDropDownWithTitle(
@@ -76,6 +92,10 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
             controller.onChangeRMRecommendation(value.toString());
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('selectedRMRecommendation');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -86,6 +106,10 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
             controller.updateRMRemarks(value);
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('rmRemarks');
+          },
         ),
       ],
     );

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
+import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/routes/app_routes.dart';
 
 class DashboardHeaderProfile extends ConsumerWidget {
   const DashboardHeaderProfile({super.key});
@@ -58,15 +60,22 @@ class DashboardHeaderProfile extends ConsumerWidget {
             ],
           ),
         ),
-        Container(
-          height: 44,
-          width: 44,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16.4),
-            color: AppColors.actionContainerColor,
-          ),
-          child: Center(child: SvgPicture.asset(AppImages.searchIconSvg)),
+        actionContainer(
+          padding: 12,
+          icon: AppImages.searchIconSvg,
+          onTap: () {
+            ref.read(goRouterProvider).push(AppRoutes.dashboardSearch);
+          },
         ),
+        // Container(
+        //   height: 44,
+        //   width: 44,
+        //   decoration: BoxDecoration(
+        //     borderRadius: BorderRadius.circular(16.4),
+        //     color: AppColors.actionContainerColor,
+        //   ),
+        //   child: Center(child: SvgPicture.asset(AppImages.searchIconSvg)),
+        // ),
         // const SizedBox(width: 8),
         // Container(
         //   height: 44,

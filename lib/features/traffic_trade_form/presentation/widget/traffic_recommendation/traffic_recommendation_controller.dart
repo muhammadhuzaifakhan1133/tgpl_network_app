@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/utils/nullable_fields_helper.dart';
 
 final recommendationControllerProvider =
     NotifierProvider<RecommendationController, RecommendationState>(
@@ -29,14 +30,15 @@ class RecommendationState {
     String? selectedRMRecommendation,
     String? tmRemarks,
     String? rmRemarks,
+    List<String>? fieldsToNull,
   }) {
     return RecommendationState(
-      selectedTM: selectedTM ?? this.selectedTM,
-      selectedRM: selectedRM ?? this.selectedRM,
-      selectedTMRecommendation: selectedTMRecommendation ?? this.selectedTMRecommendation,
-      selectedRMRecommendation: selectedRMRecommendation ?? this.selectedRMRecommendation,
-      tmRemarks: tmRemarks ?? this.tmRemarks,
-      rmRemarks: rmRemarks ?? this.rmRemarks,
+      selectedTM: fieldsToNull.apply("selectedTM", selectedTM, this.selectedTM),
+      selectedRM: fieldsToNull.apply("selectedRM", selectedRM, this.selectedRM),
+      selectedTMRecommendation: fieldsToNull.apply("selectedTMRecommendation", selectedTMRecommendation, this.selectedTMRecommendation),
+      selectedRMRecommendation: fieldsToNull.apply("selectedRMRecommendation", selectedRMRecommendation, this.selectedRMRecommendation),
+      tmRemarks: fieldsToNull.apply("tmRemarks", tmRemarks, this.tmRemarks),
+      rmRemarks: fieldsToNull.apply("rmRemarks", rmRemarks, this.rmRemarks),
     );
   }
 
@@ -74,6 +76,10 @@ class RecommendationController extends Notifier<RecommendationState> {
 
   void updateRMRemarks(String value) {
     state = state.copyWith(rmRemarks: value);
+  }
+
+  void clearField(String fieldName) {
+    state = state.copyWith(fieldsToNull: [fieldName]);
   }
 
   void prefillFormData({

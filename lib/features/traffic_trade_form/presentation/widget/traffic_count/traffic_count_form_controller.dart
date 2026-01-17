@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/utils/nullable_fields_helper.dart';
 
 final trafficCountControllerProvider =
     NotifierProvider<TrafficCountController, TrafficCountState>(
@@ -20,11 +21,12 @@ class TrafficCountState {
     String? trafficCountTruck,
     String? trafficCountCar,
     String? trafficCountBike,
+    List<String>? fieldsToNull,
   }) {
     return TrafficCountState(
-      trafficCountTruck: trafficCountTruck ?? this.trafficCountTruck,
-      trafficCountCar: trafficCountCar ?? this.trafficCountCar,
-      trafficCountBike: trafficCountBike ?? this.trafficCountBike,
+      trafficCountTruck: fieldsToNull.apply("trafficCountTruck", trafficCountTruck, this.trafficCountTruck),
+      trafficCountCar: fieldsToNull.apply("trafficCountCar", trafficCountCar, this.trafficCountCar),
+      trafficCountBike: fieldsToNull.apply("trafficCountBike", trafficCountBike, this.trafficCountBike),
     );
   }
 
@@ -50,6 +52,10 @@ class TrafficCountController extends Notifier<TrafficCountState> {
 
   void updateTrafficCountBike(String value) {
     state = state.copyWith(trafficCountBike: value);
+  }
+
+  void clearField(String fieldName) {
+    state = state.copyWith(fieldsToNull: [fieldName]);
   }
 
   void prefillFormData({

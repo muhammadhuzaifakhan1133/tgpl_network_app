@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/utils/nullable_fields_helper.dart';
 
 final dealerProfileFormControllerProvider =
     NotifierProvider<DealerProfileFormController, DealerProfileFormState>(
-        DealerProfileFormController.new);
+      DealerProfileFormController.new,
+    );
 
 class DealerProfileFormState {
   final String? isThisDealer;
@@ -34,20 +36,37 @@ class DealerProfileFormState {
     String? dealerOpinion,
     String? monthlySalary,
     String? isDealerAgreedToFollowTgplStandards,
+    List<String>? fieldsToNull,
   }) {
     return DealerProfileFormState(
-      isThisDealer: isThisDealer ?? this.isThisDealer,
-      dealerPlatform: dealerPlatform ?? this.dealerPlatform,
-      dealerBusinesses: dealerBusinesses ?? this.dealerBusinesses,
-      selectedDealerInvolvement:
-          selectedDealerInvolvement ?? this.selectedDealerInvolvement,
-      isDealerReadyToInvest:
-          isDealerReadyToInvest ?? this.isDealerReadyToInvest,
-      dealerOpinion: dealerOpinion ?? this.dealerOpinion,
-      monthlySalary: monthlySalary ?? this.monthlySalary,
-      isDealerAgreedToFollowTgplStandards:
-          isDealerAgreedToFollowTgplStandards ??
-              this.isDealerAgreedToFollowTgplStandards,
+      isThisDealer: fieldsToNull.apply("isThisDealer", isThisDealer, this.isThisDealer),
+      dealerPlatform: fieldsToNull.apply(
+        "dealerPlatform",
+        dealerPlatform,
+        this.dealerPlatform,
+      ),
+      dealerBusinesses: fieldsToNull.apply(
+        "dealerBusinesses",
+        dealerBusinesses,
+        this.dealerBusinesses,
+      ),
+      selectedDealerInvolvement: fieldsToNull.apply(
+        "selectedDealerInvolvement",
+        selectedDealerInvolvement,
+        this.selectedDealerInvolvement,
+      ),
+      isDealerReadyToInvest: fieldsToNull.apply(
+        "isDealerReadyToInvest",
+        isDealerReadyToInvest,
+        this.isDealerReadyToInvest,
+      ),
+      dealerOpinion: fieldsToNull.apply("dealerOpinion", dealerOpinion, this.dealerOpinion),
+      monthlySalary: fieldsToNull.apply("monthlySalary", monthlySalary, this.monthlySalary),
+      isDealerAgreedToFollowTgplStandards: fieldsToNull.apply(
+        "isDealerAgreedToFollowTgplStandards",
+        isDealerAgreedToFollowTgplStandards,
+        this.isDealerAgreedToFollowTgplStandards,
+      ),
     );
   }
 
@@ -65,7 +84,7 @@ class DealerProfileFormController extends Notifier<DealerProfileFormState> {
 
   void onChangeIsThisDealer(String answer) {
     state = state.copyWith(isThisDealer: answer);
-    
+
     // Clear conditional fields if answer is not "Yes"
     if (answer != 'Yes') {
       state = state.copyWith(
@@ -105,6 +124,10 @@ class DealerProfileFormController extends Notifier<DealerProfileFormState> {
 
   void onChangeIsDealerAgreedToFollowTgplStandards(String answer) {
     state = state.copyWith(isDealerAgreedToFollowTgplStandards: answer);
+  }
+
+  void clearField(String fieldName) {
+    state = state.copyWith(fieldsToNull: [fieldName]);
   }
 
   void prefillFormData({

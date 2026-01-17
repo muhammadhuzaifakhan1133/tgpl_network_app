@@ -114,4 +114,8 @@ class FilterController extends Notifier<FilterSelectionState> {
   void clearAll() {
     state = const FilterSelectionState();
   }
+
+  void clearFields(List<String> fields) {
+    state = state.copyWith(fieldsToNull: fields);
+  }
 }

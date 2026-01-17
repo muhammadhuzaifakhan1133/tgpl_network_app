@@ -1,22 +1,23 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/utils/nullable_fields_helper.dart';
 
 final step3FormControllerProvider =
-    NotifierProvider.autoDispose<Step3FormController, Step3FormState>(
+    NotifierProvider<Step3FormController, Step3FormState>(
   Step3FormController.new,
 );
 
 
 class Step3FormState {
-  final String frontSize;
-  final String depthSize;
-  final String googleLocation;
-  final String address;
+  final String? frontSize;
+  final String? depthSize;
+  final String? googleLocation;
+  final String? address;
 
   const Step3FormState({
-    this.frontSize = '',
-    this.depthSize = '',
-    this.googleLocation = '',
-    this.address = '',
+    this.frontSize,
+    this.depthSize,
+    this.googleLocation,
+    this.address,
   });
 
   Step3FormState copyWith({
@@ -24,12 +25,13 @@ class Step3FormState {
     String? depthSize,
     String? googleLocation,
     String? address,
+    List<String>? fieldsToNull,
   }) {
     return Step3FormState(
-      frontSize: frontSize ?? this.frontSize,
-      depthSize: depthSize ?? this.depthSize,
-      googleLocation: googleLocation ?? this.googleLocation,
-      address: address ?? this.address,
+      frontSize: fieldsToNull.apply('frontSize', frontSize, this.frontSize),
+      depthSize: fieldsToNull.apply('depthSize', depthSize, this.depthSize),
+      googleLocation: fieldsToNull.apply('googleLocation', googleLocation, this.googleLocation),
+      address: fieldsToNull.apply('address', address, this.address),
     );
   }
 }
@@ -57,10 +59,7 @@ class Step3FormController extends Notifier<Step3FormState> {
     state = state.copyWith(address: value);
   }
 
-  bool isValid() {
-    return state.frontSize.isNotEmpty &&
-        state.depthSize.isNotEmpty &&
-        state.googleLocation.isNotEmpty &&
-        state.address.isNotEmpty;
+  void clearField(String fieldName) {
+    state = state.copyWith(fieldsToNull: [fieldName]);
   }
 }

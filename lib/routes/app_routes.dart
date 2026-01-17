@@ -17,4 +17,5 @@ class AppRoutes {
   static String trafficTradeForm([String appId = ":appId"]) => "/traffic_trade_form/$appId";
   static String syncData = "/sync_data";
   static String applicationsFilter = "/applications_filter";
+  static String dashboardSearch = "/dashboard_search";
 }

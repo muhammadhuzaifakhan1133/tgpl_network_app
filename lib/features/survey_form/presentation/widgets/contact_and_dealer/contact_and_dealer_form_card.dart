@@ -13,7 +13,9 @@ class ContactAndDealerFormCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.read(contactAndDealerFormControllerProvider.notifier);
+    final controller = ref.read(
+      contactAndDealerFormControllerProvider.notifier,
+    );
     final state = ref.watch(contactAndDealerFormControllerProvider);
 
     return SectionDetailCard(
@@ -27,6 +29,10 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             controller.updateDealerInfo(dealerName: value);
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('dealerName');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -38,6 +44,10 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             controller.updateDealerInfo(dealerContact: value);
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('dealerContact');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -48,6 +58,10 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             controller.updateDealerInfo(referenceBy: value);
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('referenceBy');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -58,6 +72,10 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             controller.updateLocationInfo(locationAddress: value);
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('locationAddress');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -68,6 +86,10 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             controller.updateLocationInfo(landmark: value);
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('landmark');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -86,6 +108,10 @@ class ContactAndDealerFormCard extends ConsumerWidget {
           onChanged: (value) {
             controller.updatePlotDimensions(front: value);
           },
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('plotFront');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -95,6 +121,10 @@ class ContactAndDealerFormCard extends ConsumerWidget {
           initialValue: state.plotDepth,
           onChanged: (value) {
             controller.updatePlotDimensions(depth: value);
+          },
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('plotDepth');
           },
         ),
         const SizedBox(height: 10),
@@ -109,6 +139,10 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             controller.updateLocationInfo(nearestDepo: value.toString());
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('nearestDepo');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -120,6 +154,10 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             controller.updateDistanceFromDepo(value);
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('distanceFromDepo');
+          },
         ),
         const SizedBox(height: 10),
         CustomDropDownWithTitle(
@@ -133,6 +171,10 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             controller.updateLocationInfo(typeOfTradeArea: value.toString());
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('typeOfTradeArea');
+          },
         ),
       ],
     );

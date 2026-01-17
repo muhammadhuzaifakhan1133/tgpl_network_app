@@ -7,7 +7,6 @@ enum SyncItemStatus { pending, syncing, failed, success }
 
 class SyncListWidget extends StatelessWidget {
   final String sectionTitle;
-  final int itemCount;
   final List<SyncItem> items;
   final bool isCollapsed;
   final VoidCallback? onToggle;
@@ -17,7 +16,6 @@ class SyncListWidget extends StatelessWidget {
   const SyncListWidget({
     super.key,
     required this.sectionTitle,
-    required this.itemCount,
     required this.items,
     this.isCollapsed = false,
     this.onToggle,
@@ -39,15 +37,13 @@ class SyncListWidget extends StatelessWidget {
               RichText(
                 text: TextSpan(
                   text: sectionTitle,
-                  style: AppTextstyles.neutra700black32.copyWith(
-                    fontSize: 16,
-                  ),
+                  style: AppTextstyles.neutra700black32.copyWith(fontSize: 16),
                   children: [
                     TextSpan(
-                      text: '  ($itemCount items)',
+                      text: '  (${items.length} items)',
                       style: AppTextstyles.neutra500grey12.copyWith(
                         fontSize: 14,
-                      ), 
+                      ),
                     ),
                   ],
                 ),
@@ -141,10 +137,7 @@ class SyncListWidget extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  item.subtitle,
-                  style: AppTextstyles.neutra500grey12,
-                ),
+                Text(item.subtitle, style: AppTextstyles.neutra500grey12),
               ],
             ),
           ),
@@ -176,7 +169,9 @@ class SyncListWidget extends StatelessWidget {
           height: 20,
           child: CircularProgressIndicator(
             strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.syncedCountColor),
+            valueColor: AlwaysStoppedAnimation<Color>(
+              AppColors.syncedCountColor,
+            ),
           ),
         );
 
@@ -184,7 +179,11 @@ class SyncListWidget extends StatelessWidget {
         return Icon(Icons.edit, color: AppColors.emailUsIconColor, size: 20);
 
       case SyncItemStatus.success:
-        return const Icon(Icons.cloud_done, size: 20, color: AppColors.inauguratedCountColor);
+        return const Icon(
+          Icons.cloud_done,
+          size: 20,
+          color: AppColors.inauguratedCountColor,
+        );
     }
   }
 }

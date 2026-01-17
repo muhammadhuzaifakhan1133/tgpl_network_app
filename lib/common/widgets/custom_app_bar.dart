@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tgpl_network/common/providers/sync_status_provider.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield.dart';
@@ -41,6 +40,13 @@ class CustomAppBar extends ConsumerStatefulWidget {
 
 class _CustomAppBarState extends ConsumerState<CustomAppBar> {
   bool isSearchFieldActive = false;
+  final FocusNode _searchFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +114,9 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                             setState(() {
                               isSearchFieldActive = true;
                             });
-                            debugPrint("$isSearchFieldActive");
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              _searchFocusNode.requestFocus();
+                            });
                           },
                           child: Container(
                             height: 48,
@@ -217,16 +225,18 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                       hintText: "Search",
                       height: 50,
                       backgroundColor: AppColors.actionContainerColor,
+                      focusNode: _searchFocusNode,
+                      showClearButton: true,
                     ),
                   ),
                   const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: () {
+                  TextButton(
+                    child: const Text("Cancel"),
+                    onPressed: () {
                       setState(() {
                         isSearchFieldActive = false;
                       });
                     },
-                    child: SvgPicture.asset(AppImages.crossIconSvg, height: 40),
                   ),
                 ],
               ),

@@ -17,7 +17,7 @@ class NearbySitesFormSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sitesLength = ref.watch(
-      nearbySitesControllerProvider.select((s) => s.nearbyTrafficSites.length),
+      nearbySitesControllerProvider.select((s) => s.totalSites),
     );
 
     return Container(
@@ -33,8 +33,28 @@ class NearbySitesFormSection extends ConsumerWidget {
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemBuilder: (context, index) {
-              // Use ValueKey with index to ensure Flutter tracks the correct widget
-              return _SiteFormCard(key: ValueKey('site_$index'), index: index);
+              // Get the actual site to use its unique ID as the key
+              final sites = ref.watch(
+                nearbySitesControllerProvider.select(
+                  (s) => s.nearbyTrafficSites,
+                ),
+              );
+
+              if (index >= sites.length) {
+                return const SizedBox.shrink();
+              }
+
+              return _SiteFormCard(
+                key: ValueKey(sites[index].id),
+                index: index,
+                onRemove: sitesLength > 1
+                    ? () {
+                        ref
+                            .read(nearbySitesControllerProvider.notifier)
+                            .removeNearbySite(index);
+                      }
+                    : null,
+              );
             },
             separatorBuilder: (context, index) => const SizedBox(height: 20),
             itemCount: sitesLength,
@@ -67,7 +87,8 @@ class NearbySitesFormSection extends ConsumerWidget {
 
 class _SiteFormCard extends ConsumerWidget {
   final int index;
-  const _SiteFormCard({super.key, required this.index});
+  final VoidCallback? onRemove;
+  const _SiteFormCard({super.key, required this.index, required this.onRemove});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -84,10 +105,7 @@ class _SiteFormCard extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    final sitesLength = ref
-        .read(nearbySitesControllerProvider)
-        .nearbyTrafficSites
-        .length;
+    final sitesLength = ref.read(nearbySitesControllerProvider).totalSites;
     final controller = ref.read(nearbySitesControllerProvider.notifier);
 
     return Container(
@@ -119,26 +137,27 @@ class _SiteFormCard extends ConsumerWidget {
                 backgroundColor: sitesLength <= 1
                     ? AppColors.actionContainerColor
                     : AppColors.emailUsIconColor.withOpacity(0.1),
-                onTap: () {
-                  if (sitesLength <= 1) return;
-                  controller.removeNearbySite(index);
-                },
+                onTap: onRemove,
               ),
             ],
           ),
           const SizedBox(height: 10),
           CustomTextFieldWithTitle(
-            key: ValueKey('site_name_$index'),
+            key: ValueKey('site_name_${site.id}'),
             title: "Site Name",
             hintText: "Enter site name",
             initialValue: site.siteName,
             onChanged: (value) {
               controller.updateSite(index: index, siteName: value);
             },
+            showClearButton: true,
+            onClear: () {
+              controller.clearField('siteName', index: index);
+            },
           ),
           const SizedBox(height: 10),
           CustomTextFieldWithTitle(
-            key: ValueKey('diesel_sale_$index'),
+            key: ValueKey('diesel_sale_${site.id}'),
             title: "Estimated Daily Diesel Sale",
             hintText: "Enter daily diesel sale",
             keyboardType: TextInputType.number,
@@ -149,10 +168,14 @@ class _SiteFormCard extends ConsumerWidget {
                 estimatedDailyDieselSale: value,
               );
             },
+            showClearButton: true,
+            onClear: () {
+              controller.clearField('estimatedDailyDieselSale', index: index);
+            },
           ),
           const SizedBox(height: 10),
           CustomTextFieldWithTitle(
-            key: ValueKey('super_sale_$index'),
+            key: ValueKey('super_sale_${site.id}'),
             title: "Estimated Daily Super Sale",
             hintText: "Enter daily super sale",
             keyboardType: TextInputType.number,
@@ -163,10 +186,14 @@ class _SiteFormCard extends ConsumerWidget {
                 estimatedDailySuperSale: value,
               );
             },
+            showClearButton: true,
+            onClear: () {
+              controller.clearField('estimatedDailySuperSale', index: index);
+            },
           ),
           const SizedBox(height: 10),
           CustomTextFieldWithTitle(
-            key: ValueKey('lubricant_sale_$index'),
+            key: ValueKey('lubricant_sale_${site.id}'),
             title: "Estimated Lubricant Sale",
             hintText: "Enter daily lubricant sale",
             keyboardType: TextInputType.number,
@@ -177,20 +204,31 @@ class _SiteFormCard extends ConsumerWidget {
                 estimatedDailyLubricantSale: value,
               );
             },
+            showClearButton: true,
+            onClear: () {
+              controller.clearField(
+                'estimatedDailyLubricantSale',
+                index: index,
+              );
+            },
           ),
           const SizedBox(height: 10),
           CustomTextFieldWithTitle(
-            key: ValueKey('omc_name_$index'),
+            key: ValueKey('omc_name_${site.id}'),
             title: "OMC Name",
             hintText: "Enter OMC name",
             initialValue: site.omcName,
             onChanged: (value) {
               controller.updateSite(index: index, omcName: value);
             },
+            showClearButton: true,
+            onClear: () {
+              controller.clearField('omcName', index: index);
+            },
           ),
           const SizedBox(height: 10),
           CustomDropDownWithTitle(
-            key: ValueKey('nfr_facility_$index'),
+            key: ValueKey('nfr_facility_${site.id}'),
             title: "Is NFR Facility Available?",
             hintText: "Select an option",
             selectedItem: site.isNfrFacility,
@@ -202,20 +240,25 @@ class _SiteFormCard extends ConsumerWidget {
                 isNfrFacility: value.toString(),
               );
             },
+            showClearButton: true,
+            onClear: () {
+              controller.clearField('isNfrFacility', index: index);
+            },
           ),
           const SizedBox(height: 10),
           CustomDropDownWithTitle(
-            key: ValueKey('nfr_facilities_list_$index'),
+            key: ValueKey('nfr_facilities_list_${site.id}'),
             title: "Select NFR Facilities",
             hintText: "Select nfr facilities",
             isMultiSelect: true,
             selectedItems: site.nfrFacilities,
             items: ref.read(nfrFacilitiesProvider),
             onMultiChanged: (values) {
-              controller.updateSite(
-                index: index,
-                nfrFacilities: values,
-              );
+              controller.updateSite(index: index, nfrFacilities: values);
+            },
+            showClearButton: true,
+            onClear: () {
+              controller.clearField('nfrFacilities', index: index);
             },
           ),
         ],

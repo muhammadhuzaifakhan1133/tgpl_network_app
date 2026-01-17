@@ -16,11 +16,14 @@ class StationFormConfirmationView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      floatingActionButton: CustomButton(
-        onPressed: () {
-          ref.read(goRouterProvider).pop();
-        },
-        text: "Back to Home",
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: CustomButton(
+          onPressed: () {
+            ref.read(goRouterProvider).pop();
+          },
+          text: "Back to Home",
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: AppColors.white,

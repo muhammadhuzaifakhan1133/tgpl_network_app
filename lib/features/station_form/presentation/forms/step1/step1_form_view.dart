@@ -70,8 +70,11 @@ Widget build(BuildContext context) {
         CustomTextFieldWithTitle(
           title: "Applicant Name*",
           controller: _applicantNameController,
+          hintText: "Enter applicant name",
           validator: (v) => v.validate(),
           onChanged: step1Controller.updateApplicantName,
+          showClearButton: true,
+          onClear: () => step1Controller.clearField('applicantName'),
         ),
 
         const SizedBox(height: 16),
@@ -79,8 +82,11 @@ Widget build(BuildContext context) {
         CustomTextFieldWithTitle(
           title: "Contact Person*",
           controller: _contactPersonController,
+          hintText: "Enter contact person",
           validator: (v) => v.validate(),
           onChanged: step1Controller.updateContactPerson,
+          showClearButton: true,
+          onClear: () => step1Controller.clearField('contactPerson'),
         ),
 
         const SizedBox(height: 16),
@@ -88,8 +94,11 @@ Widget build(BuildContext context) {
         CustomTextFieldWithTitle(
           title: "Currently Presence*",
           controller: _currentlyPresenceController,
+          hintText: "Enter currently presence",
           validator: (v) => v.validate(),
           onChanged: step1Controller.updateCurrentlyPresence,
+          showClearButton: true,
+          onClear: () => step1Controller.clearField('currentlyPresence'),
         ),
 
         const SizedBox(height: 16),
@@ -97,8 +106,11 @@ Widget build(BuildContext context) {
         CustomTextFieldWithTitle(
           title: "Contact Number*",
           controller: _contactNumberController,
+          hintText: "Enter contact number",
           validator: (v) => v.validatePhoneNumber(),
           onChanged: step1Controller.updateContactNumber,
+          showClearButton: true,
+          onClear: () => step1Controller.clearField('contactNumber'),
         ),
 
         const SizedBox(height: 16),
@@ -106,8 +118,11 @@ Widget build(BuildContext context) {
         CustomTextFieldWithTitle(
           title: "WhatsApp Number*",
           controller: _whatsappNumberController,
+          hintText: "Enter WhatsApp number",
           validator: (v) => v.validatePhoneNumber(),
           onChanged: step1Controller.updateWhatsappNumber,
+          showClearButton: true,
+          onClear: () => step1Controller.clearField('whatsappNumber'),
         ),
 
         const SizedBox(height: 20),

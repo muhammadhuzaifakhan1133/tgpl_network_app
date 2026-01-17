@@ -10,9 +10,10 @@ import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/applications/presentation/applications_filter/applications_filter_controller.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
-import 'package:tgpl_network/features/applications/presentation/applications_filter/yes_no_dropdown_field.dart';
+import 'package:tgpl_network/features/applications/presentation/applications_filter/widgets/yes_no_dropdown_field.dart';
 import 'package:tgpl_network/utils/custom_date_picker.dart';
 import 'package:tgpl_network/utils/datetime_extension.dart';
+import 'package:tgpl_network/utils/string_validation_extension.dart';
 
 class FilterScreen extends ConsumerWidget {
   const FilterScreen({super.key});
@@ -62,8 +63,15 @@ class FilterScreen extends ConsumerWidget {
                                     );
                                   },
                                   title: "Date From",
-                                  hintText: selectedFromDate ?? "dd/mm/yyyy",
+                                  hintText: selectedFromDate.orDefault(
+                                    "dd/mm/yyyy",
+                                  ),
+                                  showClearButton:
+                                      !selectedFromDate.isNullOrEmpty,
                                   readOnly: true,
+                                  onClear: () {
+                                    controller.clearFields(["fromDate"]);
+                                  },
                                 );
                               },
                             ),
@@ -89,8 +97,15 @@ class FilterScreen extends ConsumerWidget {
                                     );
                                   },
                                   title: "Date To",
-                                  hintText: selectedToDate ?? "dd/mm/yyyy",
+                                  hintText: selectedToDate.orDefault(
+                                    "dd/mm/yyyy",
+                                  ),
                                   readOnly: true,
+                                  onClear: () {
+                                    controller.clearFields(["toDate"]);
+                                  },
+                                  showClearButton:
+                                      !selectedToDate.isNullOrEmpty,
                                 );
                               },
                             ),
@@ -118,6 +133,10 @@ class FilterScreen extends ConsumerWidget {
                                     controller.updateDropdown(city: v);
                                   },
                                   selectedItem: selectedCity,
+                                  showClearButton: !selectedCity.isNullOrEmpty,
+                                  onClear: () {
+                                    controller.clearFields(["selectedCity"]);
+                                  },
                                 ),
                               );
                             },
@@ -140,6 +159,13 @@ class FilterScreen extends ConsumerWidget {
                                     controller.updateDropdown(priority: v);
                                   },
                                   selectedItem: selectedPriority,
+                                  showClearButton:
+                                      !selectedPriority.isNullOrEmpty,
+                                  onClear: () {
+                                    controller.clearFields([
+                                      "selectedPriority",
+                                    ]);
+                                  },
                                 ),
                               );
                             },
@@ -166,6 +192,11 @@ class FilterScreen extends ConsumerWidget {
                                     controller.updateDropdown(status: v);
                                   },
                                   selectedItem: selectedStatus,
+                                  showClearButton:
+                                      !selectedStatus.isNullOrEmpty,
+                                  onClear: () {
+                                    controller.clearFields(["selectedStatus"]);
+                                  },
                                 ),
                               );
                             },
@@ -173,6 +204,7 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           Expanded(
                             child: CustomTextFieldWithTitle(
+                              showClearButton: true,
                               title: "Site Name",
                               hintText: "Site Name",
                               onChanged: (v) {
@@ -205,8 +237,15 @@ class FilterScreen extends ConsumerWidget {
                                     );
                                   },
                                   title: "Recev. Date",
-                                  hintText: selectedReceiveDate ?? "dd/mm/yyyy",
+                                  hintText: selectedReceiveDate.orDefault(
+                                    "dd/mm/yyyy",
+                                  ),
                                   readOnly: true,
+                                  onClear: () {
+                                    controller.clearFields(["receiveDate"]);
+                                  },
+                                  showClearButton:
+                                      !selectedReceiveDate.isNullOrEmpty,
                                 );
                               },
                             ),
@@ -232,11 +271,18 @@ class FilterScreen extends ConsumerWidget {
                                     );
                                   },
                                   title: "Cond. Date",
-                                  hintText: "dd/mm/yyyy",
+                                  hintText: selectedCondDate.orDefault(
+                                    "dd/mm/yyyy",
+                                  ),
                                   controller: TextEditingController(
                                     text: selectedCondDate ?? "",
                                   ),
                                   readOnly: true,
+                                  onClear: () {
+                                    controller.clearFields(["condDate"]);
+                                  },
+                                  showClearButton:
+                                      !selectedCondDate.isNullOrEmpty,
                                 );
                               },
                             ),
@@ -248,6 +294,7 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           Expanded(
                             child: CustomTextFieldWithTitle(
+                              showClearButton: true,
                               title: "Application #",
                               hintText: "Application #",
                               onChanged: (v) {
@@ -258,6 +305,7 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           Expanded(
                             child: CustomTextFieldWithTitle(
+                              showClearButton: true,
                               title: "Entry Code",
                               hintText: "Entry Code",
                               onChanged: (v) {
@@ -272,6 +320,7 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           Expanded(
                             child: CustomTextFieldWithTitle(
+                              showClearButton: true,
                               title: "Prepared By",
                               hintText: "Prepared By",
                               onChanged: (v) {
@@ -282,6 +331,7 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           Expanded(
                             child: CustomTextFieldWithTitle(
+                              showClearButton: true,
                               title: "District",
                               hintText: "District",
                               onChanged: (v) {
@@ -296,6 +346,7 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           Expanded(
                             child: CustomTextFieldWithTitle(
+                              showClearButton: true,
                               title: "Dealer Name",
                               hintText: "Dealer Name",
                               onChanged: (v) {
@@ -306,6 +357,7 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           Expanded(
                             child: CustomTextFieldWithTitle(
+                              showClearButton: true,
                               title: "Dealer Contact",
                               hintText: "Dealer Contact",
                               onChanged: (v) {
@@ -320,6 +372,7 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           Expanded(
                             child: CustomTextFieldWithTitle(
+                              showClearButton: true,
                               title: "Address",
                               hintText: "Address",
                               onChanged: (v) {
@@ -330,6 +383,7 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           Expanded(
                             child: CustomTextFieldWithTitle(
+                              showClearButton: true,
                               title: "Referred By",
                               hintText: "Referred By",
                               onChanged: (v) {
@@ -344,6 +398,7 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           Expanded(
                             child: CustomTextFieldWithTitle(
+                              showClearButton: true,
                               title: "Source",
                               hintText: "Source",
                               onChanged: (v) {
@@ -354,6 +409,7 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           Expanded(
                             child: CustomTextFieldWithTitle(
+                              showClearButton: true,
                               title: "Source Name",
                               hintText: "Source Name",
                               onChanged: (v) {
@@ -370,6 +426,7 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           YesNoDropDownField(
                             title: "Survey Profile",
+                            fieldName: "surveyProfile",
                             selectYesNoField: (s) => s.surveyProfile,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(surveyProfile: v),
@@ -377,6 +434,7 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           YesNoDropDownField(
                             title: "Traffic Trade",
+                            fieldName: "trafficTrade",
                             selectYesNoField: (s) => s.trafficTrade,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(trafficTrade: v),
@@ -388,6 +446,7 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           YesNoDropDownField(
                             title: "Feasibility",
+                            fieldName: "feasibility",
                             selectYesNoField: (s) => s.feasibility,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(feasibility: v),
@@ -395,6 +454,7 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           YesNoDropDownField(
                             title: "Negotiation",
+                            fieldName: "negotiation",
                             selectYesNoField: (s) => s.negotiation,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(negotiation: v),
@@ -406,6 +466,7 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           YesNoDropDownField(
                             title: "MOU Sign",
+                            fieldName: "mouSign",
                             selectYesNoField: (s) => s.mouSign,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(mouSign: v),
@@ -413,6 +474,7 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           YesNoDropDownField(
                             title: "Joining Fee",
+                            fieldName: "joiningFee",
                             selectYesNoField: (s) => s.joiningFee,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(joiningFee: v),
@@ -424,6 +486,7 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           YesNoDropDownField(
                             title: "Franchise Agreement",
+                            fieldName: "franchiseAgreement",
                             selectYesNoField: (s) => s.franchiseAgreement,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(franchiseAgreement: v),
@@ -431,6 +494,7 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           YesNoDropDownField(
                             title: "Feasibility Finalization",
+                            fieldName: "feasibilityFinalization",
                             selectYesNoField: (s) => s.feasibilityFinalization,
                             onChangeValue: (v) => controller.updateYesNo(
                               feasibilityFinalization: v,
@@ -443,6 +507,7 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           YesNoDropDownField(
                             title: "Explosive Layout",
+                            fieldName: "explosiveLayout",
                             selectYesNoField: (s) => s.explosiveLayout,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(explosiveLayout: v),
@@ -450,6 +515,7 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           YesNoDropDownField(
                             title: "Drawing",
+                            fieldName: "drawing",
                             selectYesNoField: (s) => s.drawing,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(drawing: v),
@@ -461,6 +527,7 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           YesNoDropDownField(
                             title: "Topography",
+                            fieldName: "topography",
                             selectYesNoField: (s) => s.topography,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(topography: v),
@@ -468,6 +535,7 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           YesNoDropDownField(
                             title: "Issuance of Drawing",
+                            fieldName: "issuanceOfDrawing",
                             selectYesNoField: (s) => s.issuanceOfDrawing,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(issuanceOfDrawing: v),
@@ -479,6 +547,7 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           YesNoDropDownField(
                             title: "Appl. in Expl.",
+                            fieldName: "appliedInExplosive",
                             selectYesNoField: (s) => s.appliedInExplosive,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(appliedInExplosive: v),
@@ -486,6 +555,7 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           YesNoDropDownField(
                             title: "DC NOC",
+                            fieldName: "dcNoc",
                             selectYesNoField: (s) => s.dcNoc,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(dcNoc: v),
@@ -497,6 +567,7 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           YesNoDropDownField(
                             title: "Capex",
+                            fieldName: "capex",
                             selectYesNoField: (s) => s.capex,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(capex: v),
@@ -504,6 +575,7 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           YesNoDropDownField(
                             title: "Lease Agreement",
+                            fieldName: "leaseAgreement",
                             selectYesNoField: (s) => s.leaseAgreement,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(leaseAgreement: v),
@@ -515,6 +587,7 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           YesNoDropDownField(
                             title: "HOTO",
+                            fieldName: "hoto",
                             selectYesNoField: (s) => s.hoto,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(hoto: v),
@@ -522,6 +595,7 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           YesNoDropDownField(
                             title: "Construction",
+                            fieldName: "construction",
                             selectYesNoField: (s) => s.construction,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(construction: v),
@@ -533,6 +607,7 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           YesNoDropDownField(
                             title: "Inauguration",
+                            fieldName: "inauguration",
                             selectYesNoField: (s) => s.inauguration,
                             onChangeValue: (v) =>
                                 controller.updateYesNo(inauguration: v),

@@ -26,6 +26,10 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             controller.updateDailyDieselSales(value);
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('dailyDieselSales');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -36,6 +40,10 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             controller.updateDailySuperSales(value);
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('dailySuperSales');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -46,6 +54,10 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             controller.updateDailyHOBCSales(value);
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('dailyHOBCSales');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -56,6 +68,10 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             controller.updateDailyLubricantSales(value);
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('dailyLubricantSales');
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -66,6 +82,10 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             controller.updateRentExpectation(value);
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('rentExpectation');
+          },
         ),
         const SizedBox(height: 10),
         CustomDropDownWithTitle(
@@ -78,6 +98,10 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             controller.setTruckPortPotential(value.toString());
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('truckPortPotential');
+          },
         ),
         const SizedBox(height: 10),
         CustomDropDownWithTitle(
@@ -90,6 +114,10 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             controller.setSalamMartPotential(value.toString());
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('salamMartPotential');
+          },
         ),
         const SizedBox(height: 10),
         CustomDropDownWithTitle(
@@ -102,6 +130,10 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             controller.setRestaurantPotential(value.toString());
           },
           validator: (v) => v.validate(),
+          showClearButton: true,
+          onClear: () {
+            controller.clearField('restaurantPotential');
+          },
         ),
       ],
     );

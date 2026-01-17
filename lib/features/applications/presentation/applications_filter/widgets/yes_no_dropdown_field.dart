@@ -8,11 +8,12 @@ import 'package:tgpl_network/utils/yes_no_enum_with_extension.dart';
 class YesNoDropDownField extends StatelessWidget {
   final YesNo? Function(FilterSelectionState) selectYesNoField;
   final String title;
+  final String fieldName;
   final void Function(YesNo value) onChangeValue;
   const YesNoDropDownField({super.key, 
     required this.selectYesNoField,
     required this.title,
-    required this.onChangeValue,
+    required this.onChangeValue, required this.fieldName,
   });
 
   @override
@@ -30,6 +31,10 @@ class YesNoDropDownField extends StatelessWidget {
             items: YesNo.values,
             displayString: (item) => item.label,
             hintText: "Yes/No",
+            showClearButton: selectedValue != null,
+            onClear: () {
+              ref.read(filterControllerProvider.notifier).clearFields([fieldName]);
+            },
             onChanged: (v) {
               if (v == null) return;
               onChangeValue(v);

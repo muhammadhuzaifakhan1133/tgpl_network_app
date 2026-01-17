@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/utils/nullable_fields_helper.dart';
 
 final applicationInfoFormControllerProvider =
     NotifierProvider<ApplicationInfoFormController, ApplicationInfoFormState>(
@@ -47,20 +48,22 @@ class ApplicationInfoFormState {
     String? npName,
     String? source,
     String? sourceName,
+    List<String>? fieldsToNull,
   }) {
     return ApplicationInfoFormState(
-      selectedCity: selectedCity ?? this.selectedCity,
-      siteStatus: siteStatus ?? this.siteStatus,
-      selectedPriority: selectedPriority ?? this.selectedPriority,
-      applicantId: applicantId ?? this.applicantId,
-      entryCode: entryCode ?? this.entryCode,
-      dateConducted: dateConducted ?? this.dateConducted,
-      conductedBy: conductedBy ?? this.conductedBy,
-      googleLocation: googleLocation ?? this.googleLocation,
-      district: district ?? this.district,
-      npName: npName ?? this.npName,
-      source: source ?? this.source,
-      sourceName: sourceName ?? this.sourceName,
+      selectedCity: fieldsToNull
+          .apply('selectedCity', selectedCity, this.selectedCity),
+      siteStatus: fieldsToNull.apply("siteStatus", siteStatus, this.siteStatus),
+      selectedPriority: fieldsToNull.apply("selectedPriority", selectedPriority, this.selectedPriority),
+      applicantId: fieldsToNull.apply("applicantId", applicantId, this.applicantId),
+      entryCode: fieldsToNull.apply("entryCode", entryCode, this.entryCode),
+      dateConducted: fieldsToNull.apply("dateConducted", dateConducted, this.dateConducted),
+      conductedBy: fieldsToNull.apply("conductedBy", conductedBy, this.conductedBy),
+      googleLocation: fieldsToNull.apply("googleLocation", googleLocation, this.googleLocation),
+      district: fieldsToNull.apply("district", district, this.district),
+      npName: fieldsToNull.apply("npName", npName, this.npName),
+      source: fieldsToNull.apply("source", source, this.source),
+      sourceName: fieldsToNull.apply("sourceName", sourceName, this.sourceName),
     );
   }
 
@@ -105,6 +108,10 @@ class ApplicationInfoFormController extends Notifier<ApplicationInfoFormState> {
 
   void updateSourceInfo({String? source, String? sourceName}) {
     state = state.copyWith(source: source, sourceName: sourceName);
+  }
+
+  void clearField(String fieldName) {
+    state = state.copyWith(fieldsToNull: [fieldName]);
   }
 
   void prefillFormData({

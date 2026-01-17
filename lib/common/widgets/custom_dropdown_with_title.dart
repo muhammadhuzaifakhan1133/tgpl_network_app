@@ -18,32 +18,39 @@ class CustomDropDownWithTitle<T extends Object> extends StatelessWidget {
   final int? maxSelection;
   final String? Function(List<T>)? multiValidator;
   final void Function(List<T>)? onMultiChanged;
+
+  /// 🔹 NEW
+  final bool showClearButton;
+  final VoidCallback? onClear;
+
   const CustomDropDownWithTitle({
     super.key,
     required this.title,
     required this.items,
     this.displayString,
-     this.onChanged,
+    this.onChanged,
     this.validator,
     this.hintText,
     this.searchableStrings,
-    this.enableSearch = false, this.selectedItem,
+    this.enableSearch = false,
+    this.selectedItem,
     this.selectedItems,
     this.isMultiSelect = false,
     this.maxSelection,
     this.multiValidator,
     this.onMultiChanged,
+    this.showClearButton = false,
+    this.onClear,
   });
 
   @override
   Widget build(BuildContext context) {
-    assert(!(enableSearch && isMultiSelect), "Multi select should not be used when search is enabled");
+    assert(!(enableSearch && isMultiSelect));
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(title, style: AppTextstyles.googleJakarta500Grey12),
-        ),
+        Text(title, style: AppTextstyles.googleJakarta500Grey12),
         const SizedBox(height: 8),
         if (enableSearch)
           CustomSearchableDropDown(
@@ -54,20 +61,24 @@ class CustomDropDownWithTitle<T extends Object> extends StatelessWidget {
             searchableStrings: searchableStrings,
             validator: validator,
             hintText: hintText,
+            showClearButton: showClearButton,
+            onClear: onClear,
           )
         else
           CustomDropDown(
             items: items,
             selectedItem: selectedItem,
-            onChanged: onChanged,
+            selectedItems: selectedItems,
             displayString: displayString,
+            onChanged: onChanged,
+            onMultiChanged: onMultiChanged,
             validator: validator,
+            multiValidator: multiValidator,
             hintText: hintText,
             isMultiSelect: isMultiSelect,
-            selectedItems: selectedItems,
             maxSelection: maxSelection,
-            multiValidator: multiValidator,
-            onMultiChanged: onMultiChanged,
+            showClearButton: showClearButton,
+            onClear: onClear,
           ),
       ],
     );

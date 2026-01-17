@@ -71,7 +71,6 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
   @override
   Widget build(BuildContext context) {
     final step3Controller = ref.read(step3FormControllerProvider.notifier);
-    final stationController = ref.read(stationFormControllerProvider.notifier);
 
     return Form(
       key: _formKey,
@@ -89,9 +88,12 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
                 child: CustomTextFieldWithTitle(
                   title: "Front*",
                   controller: _frontController,
+                  hintText: "Enter front size",
                   validator: (v) => v.validateNumber(),
                   keyboardType: TextInputType.number,
                   onChanged: step3Controller.updateFrontSize,
+                  showClearButton: true,
+                  onClear: () => step3Controller.clearField('frontSize'),
                 ),
               ),
               const SizedBox(width: 16),
@@ -99,9 +101,12 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
                 child: CustomTextFieldWithTitle(
                   title: "Depth*",
                   controller: _depthController,
+                  hintText: "Enter depth size",
                   validator: (v) => v.validateNumber(),
                   keyboardType: TextInputType.number,
                   onChanged: step3Controller.updateDepthSize,
+                  showClearButton: true,
+                  onClear: () => step3Controller.clearField('depthSize'),
                 ),
               ),
             ],
@@ -113,9 +118,11 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
             title: "Google Location*",
             readOnly: true,
             controller: _locationController,
+            hintText: "Select location",
             onTap: _pickLocation,
             suffixIcon: actionContainer(
               icon: AppImages.locationIconSvg,
+              rightMargin: 5,
               iconColor: AppColors.black,
               onTap: _pickLocation,
             ),
@@ -126,10 +133,15 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
 
           CustomTextFieldWithTitle(
             title: "Complete Site Address*",
+            extraInformation:
+                "You can select the location on the map to autofill this field.",
             controller: _addressController,
+            hintText: "Enter complete site address",
             validator: (v) => v.validate(),
             multiline: true,
             onChanged: step3Controller.updateAddress,
+            showClearButton: true,
+            onClear: () => step3Controller.clearField('address'),
           ),
 
           const SizedBox(height: 20),
@@ -154,7 +166,11 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
                 ),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                stationController.nextStep(); // final submit
+                ref
+                    .read(goRouterProvider)
+                    .pushReplacement(
+                      AppRoutes.stationFormConfirmation("App-ID-12345"),
+                    );
               }
             },
           ),

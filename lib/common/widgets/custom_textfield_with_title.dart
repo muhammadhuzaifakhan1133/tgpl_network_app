@@ -23,7 +23,6 @@ class CustomTextFieldWithTitle extends StatelessWidget {
   /// 🔹 NEW
   final bool showClearButton;
   final VoidCallback? onClear;
-  final bool showClearWhenReadOnly;
 
   const CustomTextFieldWithTitle({
     super.key,
@@ -45,7 +44,6 @@ class CustomTextFieldWithTitle extends StatelessWidget {
     this.initialValue,
     this.showClearButton = false,
     this.onClear,
-    this.showClearWhenReadOnly = true,
   });
 
   @override
@@ -73,7 +71,6 @@ class CustomTextFieldWithTitle extends StatelessWidget {
           title: title,
           showClearButton: showClearButton,
           onClear: onClear,
-          showClearWhenReadOnly: showClearWhenReadOnly,
         ),
         if (extraInformation != null) ...[
           const SizedBox(height: 2),

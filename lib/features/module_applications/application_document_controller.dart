@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/models/document_model.dart';
+import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 
 final applicationDocumentControllerProvider = NotifierProvider.family
     .autoDispose<
@@ -14,13 +15,13 @@ final applicationDocumentControllerProvider = NotifierProvider.family
     });
 
 class ApplicationDocumentState {
-  final String? selectedDocumentType;
+  final SubModuleModel? selectedDocumentType;
   final File? pickedFile;
   final String? fileName;
 
   ApplicationDocumentState({this.selectedDocumentType, this.pickedFile, this.fileName});
 
-  ApplicationDocumentState copyWith({String? selectedDocumentType, File? pickedFile, String? fileName}) {
+  ApplicationDocumentState copyWith({SubModuleModel? selectedDocumentType, File? pickedFile, String? fileName}) {
     return ApplicationDocumentState(
       selectedDocumentType: selectedDocumentType ?? this.selectedDocumentType,
       pickedFile: pickedFile ?? this.pickedFile,
@@ -38,7 +39,7 @@ class ApplicationDocumentController extends Notifier<ApplicationDocumentState> {
     return ApplicationDocumentState();
   }
 
-  void onDocumentTypeChange(String newType) {
+  void onDocumentTypeChange(SubModuleModel newType) {
     state = state.copyWith(selectedDocumentType: newType);
   }
 

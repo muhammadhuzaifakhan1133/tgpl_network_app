@@ -30,9 +30,7 @@ class CustomDropDown<T> extends StatefulWidget {
     this.maxSelection,
     this.showClearButton = false,
     this.onClear,
-  }) : assert(
-          isMultiSelect ? onMultiChanged != null : onChanged != null,
-        );
+  }) : assert(isMultiSelect ? onMultiChanged != null : onChanged != null);
 
   @override
   State<CustomDropDown<T>> createState() => _CustomDropDownState<T>();
@@ -42,10 +40,9 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
   List<T> _selectedItems = [];
   final TextEditingController _textController = TextEditingController();
 
-  bool get _hasValue =>
-      widget.isMultiSelect
-          ? _selectedItems.isNotEmpty
-          : widget.selectedItem != null;
+  bool get _hasValue => widget.isMultiSelect
+      ? _selectedItems.isNotEmpty
+      : widget.selectedItem != null;
 
   @override
   void initState() {
@@ -61,8 +58,11 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
       _textController.clear();
     } else {
       _textController.text = _selectedItems
-          .map((e) =>
-              widget.displayString != null ? widget.displayString!(e) : e.toString())
+          .map(
+            (e) => widget.displayString != null
+                ? widget.displayString!(e)
+                : e.toString(),
+          )
           .join(', ');
     }
   }
@@ -100,7 +100,9 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
                 ),
               ),
               child: Text(
-                _textController.text,
+                _selectedItems.isEmpty
+                    ? widget.hintText ?? ''
+                    : _textController.text,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -129,10 +131,7 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
       decoration: InputDecoration(
         hintText: widget.hintText,
         suffixIcon: widget.showClearButton && _hasValue
-            ? IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: _clear,
-              )
+            ? IconButton(icon: const Icon(Icons.close), onPressed: _clear)
             : null,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
@@ -144,54 +143,59 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
       context: context,
       builder: (context) {
         final tempSelectedItems = List<T>.from(_selectedItems);
-        return AlertDialog(
-          title: const Text('Select Items'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: widget.items.map((item) {
-                final isSelected = tempSelectedItems.contains(item);
-                return CheckboxListTile(
-                  value: isSelected,
-                  title: Text(
-                    widget.displayString != null
-                        ? widget.displayString!(item)
-                        : item.toString(),
-                  ),
-                  onChanged: (selected) {
-                    setState(() {
-                      if (selected == true) {
-                        if (widget.maxSelection == null ||
-                            tempSelectedItems.length < widget.maxSelection!) {
-                          tempSelectedItems.add(item);
-                        }
-                      } else {
-                        tempSelectedItems.remove(item);
-                      }
-                    });
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('Select Items'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: widget.items.map((item) {
+                    final isSelected = tempSelectedItems.contains(item);
+                    return CheckboxListTile(
+                      value: isSelected,
+                      title: Text(
+                        widget.displayString != null
+                            ? widget.displayString!(item)
+                            : item.toString(),
+                      ),
+                      onChanged: (selected) {
+                        setState(() {
+                          if (selected == true) {
+                            if (widget.maxSelection == null ||
+                                tempSelectedItems.length <
+                                    widget.maxSelection!) {
+                              tempSelectedItems.add(item);
+                            }
+                          } else {
+                            tempSelectedItems.remove(item);
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
                   },
-                );
-              }).toList(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _selectedItems = tempSelectedItems;
-                  _updateDisplayText();
-                });
-                widget.onMultiChanged?.call(_selectedItems);
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _selectedItems = tempSelectedItems;
+                      _updateDisplayText();
+                    });
+                    widget.onMultiChanged?.call(_selectedItems);
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
         );
       },
     );
