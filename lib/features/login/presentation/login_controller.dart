@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/routes/app_router.dart';
-import 'package:tgpl_network/routes/app_routes.dart';
+import 'package:tgpl_network/features/login/data/auth_data_source.dart';
+import 'package:tgpl_network/features/login/models/login_request_model.dart';
+import 'package:tgpl_network/utils/string_validation_extension.dart';
 
 final loginControllerProvider =
     NotifierProvider.autoDispose<LoginController, LoginState>(() {
@@ -14,9 +15,19 @@ class LoginState {
   String? username;
   String? password;
 
-  LoginState({required this.isPasswordObscure, required this.rememberMe, this.username, this.password});
+  LoginState({
+    required this.isPasswordObscure,
+    required this.rememberMe,
+    this.username,
+    this.password,
+  });
 
-  LoginState copyWith({bool? isPasswordObscure, bool? rememberMe, String? username, String? password}) {
+  LoginState copyWith({
+    bool? isPasswordObscure,
+    bool? rememberMe,
+    String? username,
+    String? password,
+  }) {
     return LoginState(
       isPasswordObscure: isPasswordObscure ?? this.isPasswordObscure,
       rememberMe: rememberMe ?? this.rememberMe,
@@ -27,7 +38,6 @@ class LoginState {
 }
 
 class LoginController extends Notifier<LoginState> {
-
   @override
   LoginState build() {
     return LoginState(isPasswordObscure: true, rememberMe: false);
@@ -42,10 +52,12 @@ class LoginController extends Notifier<LoginState> {
   }
 
   void setUsername(String username) {
+    print(username);
     state = state.copyWith(username: username);
   }
 
   void setPassword(String password) {
+    print(password);
     state = state.copyWith(password: password);
   }
 }
@@ -60,11 +72,30 @@ class LoginAsyncController extends AsyncNotifier<void> {
   FutureOr<void> build() async {}
 
   Future<void> login() async {
-    state = AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      // await ref.read(loginRepositoryProvider).login();
-      await Future.delayed(Duration(seconds: 2));
-      ref.read(goRouterProvider).go(AppRoutes.dashboard);
-    });
+    // Validate inputs
+    final loginState = ref.read(loginControllerProvider);
+    if (loginState.username.isNullOrEmpty ||
+        loginState.password.isNullOrEmpty) {
+      state = AsyncError(
+        Exception('Username and password are required'),
+        StackTrace.current,
+      );
+      return;
+    }
+
+    state = const AsyncLoading();
+
+    try {
+      final authDataSource = ref.read(authRemoteDataSourceProvider);
+      await authDataSource.login(
+        LoginRequestModel(
+          username: loginState.username!,
+          password: loginState.password!,
+        ),
+      );
+      state = const AsyncData(null);
+    } catch (e, st) {
+      state = AsyncError(e, st);
+    }
   }
 }

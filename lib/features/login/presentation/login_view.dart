@@ -19,10 +19,26 @@ class LoginView extends ConsumerStatefulWidget {
 
 class _LoginViewState extends ConsumerState<LoginView> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  
+  void _listenLoginAuth(AsyncValue<void>? previous, AsyncValue<void> next) {
+    next.when(
+      data: (_) {
+        // ref.read(goRouterProvider).go(AppRoutes.dashboard);
+        print("==========> Navigate to dashboard");
+      },
+      loading: () {},
+      error: (error, stackTrace) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error.toString())));
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final controller = ref.read(loginControllerProvider.notifier);
+    ref.listen(loginAuthControllerProvider, _listenLoginAuth);
     return Scaffold(
       backgroundColor: AppColors.white,
       body: GestureDetector(

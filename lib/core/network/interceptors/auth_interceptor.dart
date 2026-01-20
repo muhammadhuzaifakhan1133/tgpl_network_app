@@ -1,6 +1,7 @@
 // lib/core/network/interceptors/auth_interceptor.dart
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tgpl_network/constants/app_apis.dart';
 
 class AuthInterceptor extends Interceptor {
   final SharedPreferences _prefs;
@@ -12,13 +13,12 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // Get token from SharedPreferences
-    final token = _prefs.getString('auth_token');
-    
-    if (token != null && token.isNotEmpty) {
-      options.headers['Authorization'] = 'Bearer $token';
+    if (!options.path.contains('/token')) {
+      final token = _prefs.getString('auth_token');
+      if (token != null && token.isNotEmpty) {
+        options.headers['Authorization'] = 'Bearer $token';
+      }
     }
-    
     super.onRequest(options, handler);
   }
 
@@ -28,7 +28,7 @@ class AuthInterceptor extends Interceptor {
       // Handle token refresh or logout
       // Clear the token from SharedPreferences
       await _prefs.remove('auth_token');
-      
+
       // You can implement token refresh logic here
       // Example:
       // final refreshToken = _prefs.getString('refresh_token');

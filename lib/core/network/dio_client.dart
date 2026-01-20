@@ -19,14 +19,12 @@ class DioClient {
     _dio = dio ?? Dio();
     _dio
       ..options.baseUrl = baseUrl
-      ..options.connectTimeout = 
-          const Duration(milliseconds: AppApis.connectionTimeout)
-      ..options.receiveTimeout = 
-          const Duration(milliseconds: AppApis.receiveTimeout)
-      ..options.headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      };
+      ..options.connectTimeout = const Duration(
+        milliseconds: AppApis.connectionTimeout,
+      )
+      ..options.receiveTimeout = const Duration(
+        milliseconds: AppApis.receiveTimeout,
+      );
 
     // Add interceptors with SharedPreferences
     _dio.interceptors.addAll([
@@ -121,8 +119,11 @@ class DioClient {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return NetworkException('Connection timeout', error.response?.statusCode);
-        
+        return NetworkException(
+          'Connection timeout',
+          error.response?.statusCode,
+        );
+
       case DioExceptionType.badResponse:
         final statusCode = error.response?.statusCode;
         switch (statusCode) {
@@ -138,16 +139,16 @@ class DioClient {
               statusCode,
             );
         }
-        
+
       case DioExceptionType.cancel:
         return NetworkException('Request cancelled');
-        
+
       case DioExceptionType.unknown:
         if (error.message?.contains('SocketException') ?? false) {
           return NetworkException('No internet connection');
         }
         return NetworkException('Unexpected error occurred');
-        
+
       default:
         return NetworkException('Something went wrong');
     }
@@ -157,8 +158,5 @@ class DioClient {
 // Updated Riverpod provider
 final dioClientProvider = Provider<DioClient>((ref) {
   final sharedPrefs = ref.watch(sharedPreferencesProvider);
-  return DioClient(
-    baseUrl: AppApis.baseUrl,
-    sharedPreferences: sharedPrefs,
-  );
+  return DioClient(baseUrl: AppApis.baseUrl, sharedPreferences: sharedPrefs);
 });

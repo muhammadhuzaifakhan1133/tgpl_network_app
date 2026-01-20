@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharedPrefsKeys {
   static const String onboardingCompleted = 'onboarding_completed';
   static const String authToken = 'auth_token';
+  static const String isLoggedIn = 'is_logged_in';
 }
 
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
