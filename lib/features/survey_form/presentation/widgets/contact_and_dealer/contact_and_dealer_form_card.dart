@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/common/providers/depo_names_provider.dart';
-import 'package:tgpl_network/common/providers/trade_area_names_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/depo_names_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/trade_area_names_provider.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/common/widgets/section_detail_card.dart';

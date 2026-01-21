@@ -1,7 +1,4 @@
-enum YesNo {
-  yes,
-  no,
-}
+enum YesNo { yes, no }
 
 extension YesNoX on YesNo {
   String get label {
@@ -10,6 +7,15 @@ extension YesNoX on YesNo {
         return 'Yes';
       case YesNo.no:
         return 'No';
+    }
+  }
+
+  int get value {
+    switch (this) {
+      case YesNo.yes:
+        return 1;
+      case YesNo.no:
+        return 0;
     }
   }
 }

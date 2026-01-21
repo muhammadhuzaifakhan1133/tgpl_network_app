@@ -50,9 +50,11 @@ class StationFormController extends Notifier<StationFormState> {
     }
   }
 
-  void previousStep() {
+  void previousStep({required void Function() onBackFromFirstStep}) {
     if (!state.isFirstStep) {
       goToStep(state.currentStep - 1);
+    } else {
+      onBackFromFirstStep();
     }
   }
 

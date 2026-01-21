@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/common/models/application_model.dart';
-import 'package:tgpl_network/common/providers/application_provider.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/features/master_data/providers/application_provider.dart';
 
 final moduleApplicationsAsyncControllerProvider =
     AsyncNotifierProvider.family<
@@ -19,6 +19,6 @@ class ModuleApplicationsAyncController
 
   @override
   FutureOr<List<ApplicationModel>> build() async {
-    return ref.read(applicationsProvider);
+    return await ref.watch(applicationsProvider);
   }
 }

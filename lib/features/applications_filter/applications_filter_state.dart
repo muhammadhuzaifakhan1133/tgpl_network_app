@@ -163,4 +163,44 @@ class FilterSelectionState {
       siteName: fieldsToNull.apply('siteName', siteName, this.siteName),
     );
   }
+
+  bool get hasActiveFilters {
+    return selectedPriority != null ||
+        selectedCity != null ||
+        selectedStatus != null ||
+        surveyProfile != null ||
+        trafficTrade != null ||
+        feasibility != null ||
+        negotiation != null ||
+        mouSign != null ||
+        joiningFee != null ||
+        franchiseAgreement != null ||
+        feasibilityFinalization != null ||
+        explosiveLayout != null ||
+        drawing != null ||
+        topography != null ||
+        issuanceOfDrawing != null ||
+        appliedInExplosive != null ||
+        dcNoc != null ||
+        capex != null ||
+        leaseAgreement != null ||
+        hoto != null ||
+        construction != null ||
+        inauguration != null ||
+        fromDate != null ||
+        toDate != null ||
+        receiveDate != null ||
+        condDate != null ||
+        applicationId != null ||
+        entryCode != null ||
+        preparedBy != null ||
+        district != null ||
+        dealerName != null ||
+        dealerContact != null ||
+        address != null ||
+        referredBy != null ||
+        source != null ||
+        sourceName != null ||
+        siteName != null;
+  }
 }

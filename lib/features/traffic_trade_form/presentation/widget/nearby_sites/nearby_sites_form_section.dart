@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/common/providers/nfr_facilities_provider.dart';
-import 'package:tgpl_network/common/providers/yes_no_na_values_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/nfr_facilities_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/yes_no_na_values_provider.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';

@@ -2,10 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'applications_filter_state.dart';
 import 'package:tgpl_network/utils/yes_no_enum_with_extension.dart';
 
-final filterControllerProvider =
+final applicationFiltersProvider =
     NotifierProvider<FilterController, FilterSelectionState>(
-  FilterController.new,
-);
+      FilterController.new,
+    );
 
 class FilterController extends Notifier<FilterSelectionState> {
   @override
@@ -13,11 +13,7 @@ class FilterController extends Notifier<FilterSelectionState> {
     return const FilterSelectionState();
   }
 
-  void updateDropdown({
-    String? city,
-    String? priority,
-    String? status,
-  }) {
+  void updateDropdown({String? city, String? priority, String? status}) {
     state = state.copyWith(
       selectedCity: city,
       selectedPriority: priority,

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/common/providers/city_names_provider.dart';
-import 'package:tgpl_network/common/providers/priorities_provider.dart';
-import 'package:tgpl_network/common/providers/statuses_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/priorities_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/statuses_provider.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
-import 'package:tgpl_network/features/applications/presentation/applications_filter/applications_filter_controller.dart';
+import 'package:tgpl_network/features/applications_filter/applications_filter_controller.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
-import 'package:tgpl_network/features/applications/presentation/applications_filter/widgets/yes_no_dropdown_field.dart';
+import 'package:tgpl_network/features/applications_filter/widgets/yes_no_dropdown_field.dart';
 import 'package:tgpl_network/utils/custom_date_picker.dart';
 import 'package:tgpl_network/utils/datetime_extension.dart';
 import 'package:tgpl_network/utils/string_validation_extension.dart';
@@ -20,7 +20,7 @@ class FilterScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.read(filterControllerProvider.notifier);
+    final controller = ref.read(applicationFiltersProvider.notifier);
 
     return Scaffold(
       body: GestureDetector(
@@ -47,7 +47,7 @@ class FilterScreen extends ConsumerWidget {
                             child: Consumer(
                               builder: (context, ref, child) {
                                 final selectedFromDate = ref.watch(
-                                  filterControllerProvider.select(
+                                  applicationFiltersProvider.select(
                                     (s) => s.fromDate,
                                   ),
                                 );
@@ -81,7 +81,7 @@ class FilterScreen extends ConsumerWidget {
                             child: Consumer(
                               builder: (context, ref, child) {
                                 final selectedToDate = ref.watch(
-                                  filterControllerProvider.select(
+                                  applicationFiltersProvider.select(
                                     (s) => s.toDate,
                                   ),
                                 );
@@ -118,7 +118,7 @@ class FilterScreen extends ConsumerWidget {
                           Consumer(
                             builder: (context, ref, child) {
                               final selectedCity = ref.watch(
-                                filterControllerProvider.select(
+                                applicationFiltersProvider.select(
                                   (s) => s.selectedCity,
                                 ),
                               );
@@ -145,7 +145,7 @@ class FilterScreen extends ConsumerWidget {
                           Consumer(
                             builder: (context, ref, child) {
                               final selectedPriority = ref.watch(
-                                filterControllerProvider.select(
+                                applicationFiltersProvider.select(
                                   (s) => s.selectedPriority,
                                 ),
                               );
@@ -178,7 +178,7 @@ class FilterScreen extends ConsumerWidget {
                           Consumer(
                             builder: (context, ref, child) {
                               final selectedStatus = ref.watch(
-                                filterControllerProvider.select(
+                                applicationFiltersProvider.select(
                                   (s) => s.selectedStatus,
                                 ),
                               );
@@ -221,7 +221,7 @@ class FilterScreen extends ConsumerWidget {
                             child: Consumer(
                               builder: (context, ref, child) {
                                 final selectedReceiveDate = ref.watch(
-                                  filterControllerProvider.select(
+                                  applicationFiltersProvider.select(
                                     (s) => s.receiveDate,
                                   ),
                                 );
@@ -255,7 +255,7 @@ class FilterScreen extends ConsumerWidget {
                             child: Consumer(
                               builder: (context, ref, child) {
                                 final selectedCondDate = ref.watch(
-                                  filterControllerProvider.select(
+                                  applicationFiltersProvider.select(
                                     (s) => s.condDate,
                                   ),
                                 );

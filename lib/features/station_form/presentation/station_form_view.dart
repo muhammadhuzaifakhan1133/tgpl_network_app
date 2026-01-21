@@ -10,6 +10,7 @@ import 'package:tgpl_network/features/station_form/presentation/forms/step3/step
 import 'package:tgpl_network/features/station_form/presentation/station_form_controller.dart';
 import 'package:tgpl_network/features/station_form/presentation/widgets/form_steps_indicator.dart';
 import 'package:tgpl_network/features/station_form/presentation/widgets/form_steps_title.dart';
+import 'package:tgpl_network/routes/app_router.dart';
 
 class StationFormView extends ConsumerStatefulWidget {
   const StationFormView({super.key});
@@ -119,7 +120,11 @@ class _StationFormViewState extends ConsumerState<StationFormView> {
                         final controller = ref.read(
                           stationFormControllerProvider.notifier,
                         );
-                        controller.previousStep();
+                        controller.previousStep(
+                          onBackFromFirstStep: () {
+                            ref.read(goRouterProvider).pop();
+                          },
+                        );
                       },
                     );
                   },
