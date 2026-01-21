@@ -1,7 +1,6 @@
 // lib/core/network/interceptors/auth_interceptor.dart
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tgpl_network/constants/app_apis.dart';
 
 class AuthInterceptor extends Interceptor {
   final SharedPreferences _prefs;

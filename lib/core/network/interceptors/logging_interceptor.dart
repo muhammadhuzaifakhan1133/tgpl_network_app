@@ -17,7 +17,7 @@ class LoggingInterceptor extends Interceptor {
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     if (kDebugMode) {
       print(
-        'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}',
+        'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.uri}',
       );
       print('Data: ${response.data}');
     }
@@ -28,7 +28,7 @@ class LoggingInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (kDebugMode) {
       print(
-        'ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}',
+        'ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.uri}',
       );
       print('Message: ${err.message}');
     }

@@ -6,7 +6,10 @@ import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/features/login/models/login_response_model.dart';
 import 'package:tgpl_network/features/login/presentation/login_controller.dart';
+import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/routes/app_routes.dart';
 import 'package:tgpl_network/utils/screen_size_extension.dart';
 import 'package:tgpl_network/utils/string_validation_extension.dart';
 
@@ -19,13 +22,10 @@ class LoginView extends ConsumerStatefulWidget {
 
 class _LoginViewState extends ConsumerState<LoginView> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  
+
   void _listenLoginAuth(AsyncValue<void>? previous, AsyncValue<void> next) {
     next.when(
-      data: (_) {
-        // ref.read(goRouterProvider).go(AppRoutes.dashboard);
-        print("==========> Navigate to dashboard");
-      },
+      data: (_) {},
       loading: () {},
       error: (error, stackTrace) {
         ScaffoldMessenger.of(
@@ -148,11 +148,16 @@ class _LoginViewState extends ConsumerState<LoginView> {
                             loginAuthControllerProvider,
                           );
                           return CustomButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                ref
+                                final LoginResponseModel? response = await ref
                                     .read(loginAuthControllerProvider.notifier)
                                     .login();
+                                if (response != null) {
+                                  ref
+                                      .read(goRouterProvider)
+                                      .go(AppRoutes.dashboard); 
+                                }
                               }
                             },
                             text: "Login",

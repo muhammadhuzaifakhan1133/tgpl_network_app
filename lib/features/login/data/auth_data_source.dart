@@ -19,15 +19,21 @@ class AuthRemoteDataSourceImpl implements AuthDataSource {
 
   @override
   Future<LoginResponseModel> login(LoginRequestModel request) async {
+    final body =
+        'username=${Uri.encodeComponent(request.username)}'
+        '&password=${Uri.encodeComponent(request.password)}'
+        '&grant_type=${Uri.encodeComponent(request.grantType)}';
+
     final response = await _dioClient.post(
       AppApis.loginEndpoint,
-      data: request.toJson(),
+      data: body, // 👈 raw string
       options: Options(
-        headers: {'Content-Type': Headers.formUrlEncodedContentType},
+        contentType: Headers.formUrlEncodedContentType,
       ),
     );
     final loginResponse = LoginResponseModel.fromJson(response.data);
     _sharedPrefsDataSource.saveAuthToken(loginResponse.accessToken);
+    _sharedPrefsDataSource.saveUsername(loginResponse.userName);
     return loginResponse;
   }
 }

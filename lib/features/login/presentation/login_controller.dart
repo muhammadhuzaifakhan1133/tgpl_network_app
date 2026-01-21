@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/features/login/data/auth_data_source.dart';
 import 'package:tgpl_network/features/login/models/login_request_model.dart';
+import 'package:tgpl_network/features/login/models/login_response_model.dart';
 import 'package:tgpl_network/utils/string_validation_extension.dart';
 
 final loginControllerProvider =
@@ -52,12 +53,10 @@ class LoginController extends Notifier<LoginState> {
   }
 
   void setUsername(String username) {
-    print(username);
     state = state.copyWith(username: username);
   }
 
   void setPassword(String password) {
-    print(password);
     state = state.copyWith(password: password);
   }
 }
@@ -69,9 +68,11 @@ final loginAuthControllerProvider =
 
 class LoginAsyncController extends AsyncNotifier<void> {
   @override
-  FutureOr<void> build() async {}
+  FutureOr<void> build() async {
+    return null;
+  }
 
-  Future<void> login() async {
+  Future<LoginResponseModel?> login() async {
     // Validate inputs
     final loginState = ref.read(loginControllerProvider);
     if (loginState.username.isNullOrEmpty ||
@@ -80,22 +81,24 @@ class LoginAsyncController extends AsyncNotifier<void> {
         Exception('Username and password are required'),
         StackTrace.current,
       );
-      return;
+      return null;
     }
 
     state = const AsyncLoading();
 
     try {
       final authDataSource = ref.read(authRemoteDataSourceProvider);
-      await authDataSource.login(
+      final response = await authDataSource.login(
         LoginRequestModel(
           username: loginState.username!,
           password: loginState.password!,
         ),
       );
       state = const AsyncData(null);
+      return response;
     } catch (e, st) {
       state = AsyncError(e, st);
+      return null;
     }
   }
 }

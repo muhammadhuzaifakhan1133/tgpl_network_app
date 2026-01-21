@@ -25,6 +25,9 @@ class DioClient {
       ..options.receiveTimeout = const Duration(
         milliseconds: AppApis.receiveTimeout,
       );
+    _dio.options.headers = {
+      'Accept': 'application/json',
+    };
 
     // Add interceptors with SharedPreferences
     _dio.interceptors.addAll([
@@ -135,7 +138,8 @@ class DioClient {
             return ServerException('Internal server error');
           default:
             return NetworkException(
-              error.response?.data['message'] ?? 'Something went wrong',
+              error.response?.data['error_description'] ??
+                  'Something went wrong',
               statusCode,
             );
         }

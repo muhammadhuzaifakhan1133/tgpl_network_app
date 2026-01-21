@@ -120,7 +120,7 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
             validator: (v) => v.validate(),
             onChanged: step2Controller.updateSource,
             showClearButton: true,
-          onClear: () => step2Controller.clearField('source'),
+            onClear: () => step2Controller.clearField('source'),
           ),
 
           const SizedBox(height: 16),
