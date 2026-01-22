@@ -3,4 +3,5 @@ class AppApis {
   static const int connectionTimeout = 30000;
   static const int receiveTimeout = 30000;
   static const String loginEndpoint = "/token";
+  static  String masterDataEndpoint(String userName)=> "/api/DataForApp/GetMasterData/$userName";
 }

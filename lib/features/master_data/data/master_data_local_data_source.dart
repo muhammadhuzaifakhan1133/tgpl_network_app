@@ -1,9 +1,10 @@
 // lib/features/master_data/data/datasources/master_data_local_data_source.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:tgpl_network/constants/app_database.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_state.dart';
-import 'package:tgpl_network/utils/yes_no_enum_with_extension.dart';
+import 'package:tgpl_network/features/master_data/models/master_data_response_model.dart';
+import 'package:tgpl_network/features/master_data/models/master_list_type.dart';
 import '../models/application_model.dart';
 import '../models/city_model.dart';
 import 'dart:convert';
@@ -13,8 +14,17 @@ abstract class MasterDataLocalDataSource {
   Future<List<ApplicationModel>> getApplications({
     FilterSelectionState? filters,
   });
+  Future<List<String>> getNearestDepos();
+  Future<List<String>> getTradeAreaTypes();
+  Future<List<String>> getDealerInvestmentTypes();
+  Future<List<String>> getGFBList();
+  Future<List<String>> getRecommendationList();
+  Future<List<String>> getShiftHourList();
+  Future<List<String>> getHMLList();
+  Future<List<String>> getYNList();
+  Future<List<String>> getYNNList();
+  Future<List<String>> getNFRList();
   Future<List<CityModel>> getCities();
-  Future<Map<String, List<String>>> getMasterLists();
   Future<void> clearAllData();
 }
 
@@ -29,78 +39,67 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
 
     await db.transaction((txn) async {
       // Clear existing data
-      await txn.delete('applications');
-      await txn.delete('cities');
-      await txn.delete('traffic_trades');
-      await txn.delete('master_lists');
+      await txn.delete(AppDatabase.applicationTable);
+      await txn.delete(AppDatabase.cityTable);
+      await txn.delete(AppDatabase.trafficTradeTable);
+      await txn.delete(AppDatabase.masterListsTable);
 
       // Insert applications
       for (var app in data.applicationAndSurveyList) {
-        final appModel = ApplicationModel.fromJson(app);
-        await txn.insert('applications', appModel.toMap());
+        await txn.insert(AppDatabase.applicationTable, app.toDatabaseMap());
       }
 
       // Insert cities
       for (var city in data.userCityList) {
-        await txn.insert('cities', {
-          'cityId': city['Id'],
-          'name': city['Name'],
-        });
+        await txn.insert(AppDatabase.cityTable, city.toDatabaseMap());
       }
 
       // Insert traffic trades
       for (var trade in data.traficTradeSitesList) {
-        await txn.insert('traffic_trades', {
-          'trafficTradeId': trade['Id'],
-          'applicationId': trade['ApplicationId'],
-          'proposedSiteName': trade['ProposedSiteName'],
-          'estimateDailyDieselSale': trade['EstimateDailyDieselSale'],
-          'estimateDailySuperSale': trade['EstimateDailySuperSale'],
-          'estimateLubricantSale': trade['EstimateLubricantSale'],
-        });
+        await txn.insert(AppDatabase.trafficTradeTable, trade.toDatabaseMap());
       }
 
       // Insert master lists
-      await txn.insert('master_lists', {
-        'listType': 'NearestDepo',
-        'values': jsonEncode(data.nearestDepo),
-      });
-      await txn.insert('master_lists', {
-        'listType': 'TradeAreaType',
-        'values': jsonEncode(data.tradeAreaType),
-      });
-      await txn.insert('master_lists', {
-        'listType': 'DealerInvestmentType',
-        'values': jsonEncode(data.dealerInvestmentType),
-      });
-      await txn.insert('master_lists', {
-        'listType': 'GFBList',
-        'values': jsonEncode(data.gfbList),
-      });
-      await txn.insert('master_lists', {
-        'listType': 'RecommendationList',
-        'values': jsonEncode(data.recommendationList),
-      });
-      await txn.insert('master_lists', {
-        'listType': 'ShiftHourList',
-        'values': jsonEncode(data.shiftHourList),
-      });
-      await txn.insert('master_lists', {
-        'listType': 'HMLList',
-        'values': jsonEncode(data.hmlList),
-      });
-      await txn.insert('master_lists', {
-        'listType': 'YNList',
-        'values': jsonEncode(data.ynList),
-      });
-      await txn.insert('master_lists', {
-        'listType': 'YNNList',
-        'values': jsonEncode(data.ynnList),
-      });
-      await txn.insert('master_lists', {
-        'listType': 'NFRList',
-        'values': jsonEncode(data.nfrList),
-      });
+      await txn.insert(
+        AppDatabase.masterListsTable,
+        data.listTypeToMap(MasterListType.nearestDepo),
+      );
+      await txn.insert(
+        AppDatabase.masterListsTable,
+        data.listTypeToMap(MasterListType.tradeAreaType),
+      );
+      await txn.insert(
+        AppDatabase.masterListsTable,
+        data.listTypeToMap(MasterListType.dealerInvestmentType),
+      );
+      await txn.insert(
+        AppDatabase.masterListsTable,
+        data.listTypeToMap(MasterListType.gfbList),
+      );
+      await txn.insert(
+        AppDatabase.masterListsTable,
+        data.listTypeToMap(MasterListType.recommendationList),
+      );
+      await txn.insert(
+        AppDatabase.masterListsTable,
+        data.listTypeToMap(MasterListType.shiftHourList),
+      );
+      await txn.insert(
+        AppDatabase.masterListsTable,
+        data.listTypeToMap(MasterListType.hmlList),
+      );
+      await txn.insert(
+        AppDatabase.masterListsTable,
+        data.listTypeToMap(MasterListType.ynList),
+      );
+      await txn.insert(
+        AppDatabase.masterListsTable,
+        data.listTypeToMap(MasterListType.ynnList),
+      );
+      await txn.insert(
+        AppDatabase.masterListsTable,
+        data.listTypeToMap(MasterListType.nfrList),
+      );
     });
   }
 
@@ -110,235 +109,95 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
   }) async {
     final db = await _databaseHelper.database;
 
-    // Build WHERE clause dynamically
-    final whereConditions = <String>[];
+    String? whereClause;
     final whereArgs = <dynamic>[];
 
     if (filters != null) {
-      // Text filters
-      if (filters.selectedCity != null) {
-        whereConditions.add('cityName = ?');
-        whereArgs.add(filters.selectedCity);
-      }
+      final whereData = ApplicationModel.getWhereClauseAndArgs(filters);
+      whereClause = whereData.$1;
+      whereArgs.addAll(whereData.$2);
+    }
 
-      if (filters.selectedPriority != null) {
-        whereConditions.add('priority = ?');
-        whereArgs.add(filters.selectedPriority);
-      }
+    final List<Map<String, dynamic>> maps = await db.query(
+      AppDatabase.applicationTable,
+      where: whereClause,
+      whereArgs: whereArgs.isNotEmpty ? whereArgs : null,
+      orderBy: ApplicationModel.orderBy,
+    );
 
-      if (filters.selectedStatus != null) {
-        whereConditions.add('statusId = ?');
-        whereArgs.add(int.tryParse(filters.selectedStatus!) ?? 0);
-      }
-
-      if (filters.applicationId != null) {
-        whereConditions.add('applicationId = ?');
-        whereArgs.add(int.tryParse(filters.applicationId!) ?? 0);
-      }
-
-      if (filters.entryCode != null && filters.entryCode!.isNotEmpty) {
-        whereConditions.add('entryCode LIKE ?');
-        whereArgs.add('%${filters.entryCode}%');
-      }
-
-      if (filters.preparedBy != null && filters.preparedBy!.isNotEmpty) {
-        whereConditions.add('preparedBy LIKE ?');
-        whereArgs.add('%${filters.preparedBy}%');
-      }
-
-      if (filters.district != null && filters.district!.isNotEmpty) {
-        whereConditions.add('district LIKE ?');
-        whereArgs.add('%${filters.district}%');
-      }
-
-      if (filters.dealerName != null && filters.dealerName!.isNotEmpty) {
-        whereConditions.add('dealerName LIKE ?');
-        whereArgs.add('%${filters.dealerName}%');
-      }
-
-      if (filters.dealerContact != null && filters.dealerContact!.isNotEmpty) {
-        whereConditions.add('dealerContact LIKE ?');
-        whereArgs.add('%${filters.dealerContact}%');
-      }
-
-      if (filters.address != null && filters.address!.isNotEmpty) {
-        whereConditions.add('locationAddress LIKE ?');
-        whereArgs.add('%${filters.address}%');
-      }
-
-      if (filters.referredBy != null && filters.referredBy!.isNotEmpty) {
-        whereConditions.add('referedBy LIKE ?'); whereArgs.add('%${filters.referredBy}%');
+    return maps.map((map) => ApplicationModel.fromDatabaseMap(map)).toList();
   }
 
-  if (filters.source != null && filters.source!.isNotEmpty) {
-    whereConditions.add('source LIKE ?');
-    whereArgs.add('%${filters.source}%');
+  @override
+  Future<List<CityModel>> getCities() async {
+    final db = await _databaseHelper.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      AppDatabase.cityTable,
+    );
+    return maps.map((map) => CityModel.fromDatabaseMap(map)).toList();
   }
 
-  if (filters.sourceName != null && filters.sourceName!.isNotEmpty) {
-    whereConditions.add('sourceName LIKE ?');
-    whereArgs.add('%${filters.sourceName}%');
+  Future<List<String>> _getMasterListByType(MasterListType type) async {
+    final db = await _databaseHelper.database;
+    final result = await db.query(
+      AppDatabase.masterListsTable,
+      where: '${MasterListTypeTable.databaseColName} = ?',
+      whereArgs: [type.key],
+    );
+
+    if (result.isEmpty) return [];
+    return List<String>.from(jsonDecode(result.first['listValues'] as String));
   }
 
-  if (filters.siteName != null && filters.siteName!.isNotEmpty) {
-    whereConditions.add('proposedSiteName1 LIKE ?');
-    whereArgs.add('%${filters.siteName}%');
-  }
+  @override
+  Future<List<String>> getNearestDepos() =>
+      _getMasterListByType(MasterListType.nearestDepo);
 
-  // Yes/No filters (stored as 0 or 1 in database)
-  if (filters.surveyProfile != null) {
-    whereConditions.add('surveyDealerProfileDone = ?');
-    whereArgs.add(filters.surveyProfile!.value);
-  }
+  @override
+  Future<List<String>> getTradeAreaTypes() =>
+      _getMasterListByType(MasterListType.tradeAreaType);
 
-  if (filters.trafficTrade != null) {
-    whereConditions.add('trafficTradeDone = ?');
-    whereArgs.add(filters.trafficTrade!.value);
-  }
+  @override
+  Future<List<String>> getDealerInvestmentTypes() =>
+      _getMasterListByType(MasterListType.dealerInvestmentType);
 
-  if (filters.feasibility != null) {
-    whereConditions.add('feasibilityDone = ?');
-    whereArgs.add(filters.feasibility!.value);
-  }
+  @override
+  Future<List<String>> getGFBList() =>
+      _getMasterListByType(MasterListType.gfbList);
 
-  if (filters.negotiation != null) {
-    whereConditions.add('negotiationDone = ?');
-    whereArgs.add(filters.negotiation!.value);
-  }
+  @override
+  Future<List<String>> getRecommendationList() =>
+      _getMasterListByType(MasterListType.recommendationList);
 
-  if (filters.mouSign != null) {
-    whereConditions.add('mouSignOffDone = ?');
-    whereArgs.add(filters.mouSign!.value);
-  }
+  @override
+  Future<List<String>> getShiftHourList() =>
+      _getMasterListByType(MasterListType.shiftHourList);
 
-  if (filters.joiningFee != null) {
-    whereConditions.add('joiningFeeDone = ?');
-    whereArgs.add(filters.joiningFee!.value);
-  }
+  @override
+  Future<List<String>> getHMLList() =>
+      _getMasterListByType(MasterListType.hmlList);
 
-  if (filters.franchiseAgreement != null) {
-    whereConditions.add('franchiseAgreementDone = ?');
-    whereArgs.add(filters.franchiseAgreement!.value);
-  }
+  @override
+  Future<List<String>> getYNList() =>
+      _getMasterListByType(MasterListType.ynList);
 
-  if (filters.feasibilityFinalization != null) {
-    whereConditions.add('feasibilityFinalizationDone = ?');
-    whereArgs.add(filters.feasibilityFinalization!.value);
-  }
+  @override
+  Future<List<String>> getYNNList() =>
+      _getMasterListByType(MasterListType.ynnList);
 
-  if (filters.explosiveLayout != null) {
-    whereConditions.add('explosiveLayoutDone = ?');
-    whereArgs.add(filters.explosiveLayout!.value);
-  }
+  @override
+  Future<List<String>> getNFRList() =>
+      _getMasterListByType(MasterListType.nfrList);
 
-  if (filters.drawing != null) {
-    whereConditions.add('drawingsDone = ?');
-    whereArgs.add(filters.drawing!.value);
-  }
-
-  if (filters.topography != null) {
-    whereConditions.add('topographyDone = ?');
-    whereArgs.add(filters.topography!.value);
-  }
-
-  if (filters.issuanceOfDrawing != null) {
-    whereConditions.add('issuanceOfDrawingsDone = ?');
-    whereArgs.add(filters.issuanceOfDrawing!.value);
-  }
-
-  if (filters.appliedInExplosive != null) {
-    whereConditions.add('appliedInExplosiveDone = ?');
-    whereArgs.add(filters.appliedInExplosive!.value);
-  }
-
-  if (filters.dcNoc != null) {
-    whereConditions.add('dcNocDone = ?');
-    whereArgs.add(filters.dcNoc!.value);
-  }
-
-  if (filters.capex != null) {
-    whereConditions.add('capexDone = ?');
-    whereArgs.add(filters.capex!.value);
-  }
-
-  if (filters.leaseAgreement != null) {
-    whereConditions.add('leaseAgreementDone = ?');
-    whereArgs.add(filters.leaseAgreement!.value);
-  }
-
-  if (filters.hoto != null) {
-    whereConditions.add('hotoDone = ?');
-    whereArgs.add(filters.hoto!.value);
-  }
-
-  if (filters.construction != null) {
-    whereConditions.add('constructionDone = ?');
-    whereArgs.add(filters.construction!.value);
-  }
-
-  if (filters.inauguration != null) {
-    whereConditions.add('inaugurationDone = ?');
-    whereArgs.add(filters.inauguration!.value);
-  }
-
-  // Date filters
-  if (filters.fromDate != null && filters.toDate != null) {
-    whereConditions.add('addDate BETWEEN ? AND ?');
-    whereArgs.add(filters.fromDate);
-    whereArgs.add(filters.toDate);
-  } else if (filters.fromDate != null) {
-    whereConditions.add('addDate >= ?');
-    whereArgs.add(filters.fromDate);
-  } else if (filters.toDate != null) {
-    whereConditions.add('addDate <= ?');
-    whereArgs.add(filters.toDate);
-  }
-
-  if (filters.condDate != null) {
-    whereConditions.add('dateConducted = ?');
-    whereArgs.add(filters.condDate);
+  @override
+  Future<void> clearAllData() async {
+    await _databaseHelper.clearMasterDataTables();
   }
 }
 
-// Build final query
-final whereClause =
-    whereConditions.isNotEmpty ? whereConditions.join(' AND ') : null;
-
-final List<Map<String, dynamic>> maps = await db.query(
-  'applications',
-  where: whereClause,
-  whereArgs: whereArgs.isNotEmpty ? whereArgs : null,
-  orderBy: 'addDate DESC',
-);
-
-return maps.map((map) => ApplicationModel.fromMap(map)).toList();
-}
-@override
-Future<List<CityModel>> getCities() async {
-final db = await _databaseHelper.database;
-final List<Map<String, dynamic>> maps = await db.query('cities');
-return maps.map((map) => CityModel.fromMap(map)).toList();
-}
-@override
-Future<Map<String, List<String>>> getMasterLists() async {
-final db = await _databaseHelper.database;
-final List<Map<String, dynamic>> maps = await db.query('master_lists');
-final result = <String, List<String>>{};
-for (var map in maps) {
-  final listType = map['listType'] as String;
-  final values = List<String>.from(jsonDecode(map['values']));
-  result[listType] = values;
-}
-
-return result;
-}
-@override
-Future<void> clearAllData() async {
-await _databaseHelper.clearAllTables();
-}
-}
 // Provider
-final masterDataLocalDataSourceProvider =
-Provider<MasterDataLocalDataSource>((ref) {
-return MasterDataLocalDataSourceImpl(DatabaseHelper.instance);
+final masterDataLocalDataSourceProvider = Provider<MasterDataLocalDataSource>((
+  ref,
+) {
+  return MasterDataLocalDataSourceImpl(DatabaseHelper.instance);
 });

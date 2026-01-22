@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:tgpl_network/common/models/application_model.dart';
+// import 'package:tgpl_network/common/models/application_model.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown.dart';
@@ -10,13 +10,14 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
+import 'package:tgpl_network/features/master_data/providers/applications_provider.dart';
 import 'package:tgpl_network/features/module_applications/application_document_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/utils/get_all_submodules_names.dart';
 
 Future<dynamic> documentBottomSheet({
   required BuildContext context,
-  required ApplicationModel application,
+  required ApplicationLegacyModel application,
 }) {
   return showModalBottomSheet(
     isScrollControlled: true,

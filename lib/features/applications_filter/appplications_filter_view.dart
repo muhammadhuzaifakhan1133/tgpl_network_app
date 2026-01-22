@@ -20,7 +20,7 @@ class FilterScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.read(applicationFiltersProvider.notifier);
+    final controller = ref.read(filterSelectionProvider.notifier);
 
     return Scaffold(
       body: GestureDetector(
@@ -47,7 +47,7 @@ class FilterScreen extends ConsumerWidget {
                             child: Consumer(
                               builder: (context, ref, child) {
                                 final selectedFromDate = ref.watch(
-                                  applicationFiltersProvider.select(
+                                  filterSelectionProvider.select(
                                     (s) => s.fromDate,
                                   ),
                                 );
@@ -81,7 +81,7 @@ class FilterScreen extends ConsumerWidget {
                             child: Consumer(
                               builder: (context, ref, child) {
                                 final selectedToDate = ref.watch(
-                                  applicationFiltersProvider.select(
+                                  filterSelectionProvider.select(
                                     (s) => s.toDate,
                                   ),
                                 );
@@ -118,7 +118,7 @@ class FilterScreen extends ConsumerWidget {
                           Consumer(
                             builder: (context, ref, child) {
                               final selectedCity = ref.watch(
-                                applicationFiltersProvider.select(
+                                filterSelectionProvider.select(
                                   (s) => s.selectedCity,
                                 ),
                               );
@@ -145,7 +145,7 @@ class FilterScreen extends ConsumerWidget {
                           Consumer(
                             builder: (context, ref, child) {
                               final selectedPriority = ref.watch(
-                                applicationFiltersProvider.select(
+                                filterSelectionProvider.select(
                                   (s) => s.selectedPriority,
                                 ),
                               );
@@ -178,7 +178,7 @@ class FilterScreen extends ConsumerWidget {
                           Consumer(
                             builder: (context, ref, child) {
                               final selectedStatus = ref.watch(
-                                applicationFiltersProvider.select(
+                                filterSelectionProvider.select(
                                   (s) => s.selectedStatus,
                                 ),
                               );
@@ -221,7 +221,7 @@ class FilterScreen extends ConsumerWidget {
                             child: Consumer(
                               builder: (context, ref, child) {
                                 final selectedReceiveDate = ref.watch(
-                                  applicationFiltersProvider.select(
+                                  filterSelectionProvider.select(
                                     (s) => s.receiveDate,
                                   ),
                                 );
@@ -255,7 +255,7 @@ class FilterScreen extends ConsumerWidget {
                             child: Consumer(
                               builder: (context, ref, child) {
                                 final selectedCondDate = ref.watch(
-                                  applicationFiltersProvider.select(
+                                  filterSelectionProvider.select(
                                     (s) => s.condDate,
                                   ),
                                 );

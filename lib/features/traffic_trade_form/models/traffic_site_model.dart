@@ -87,4 +87,6 @@ class TrafficSiteModel {
   String toString() {
     return 'TrafficSiteModel(siteName: $siteName, estimatedDailyDieselSale: $estimatedDailyDieselSale, estimatedDailySuperSale: $estimatedDailySuperSale, estimatedDailyLubricantSale: $estimatedDailyLubricantSale, omcName: $omcName, isNfrFacility: $isNfrFacility, nfrFacilities: $nfrFacilities)';
   }
+
+  
 }

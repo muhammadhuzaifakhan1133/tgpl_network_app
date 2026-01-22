@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tgpl_network/common/presentation/home_shell_view.dart';
+import 'package:tgpl_network/features/home_shell/presentation/home_shell_view.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_view.dart';
 import 'package:tgpl_network/features/applications_filter/appplications_filter_view.dart';
 import 'package:tgpl_network/features/applications/presentation/applications_view.dart';

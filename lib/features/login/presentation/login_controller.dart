@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/home_shell/presentation/home_shell_controller.dart';
 import 'package:tgpl_network/features/login/data/auth_data_source.dart';
 import 'package:tgpl_network/features/login/models/login_request_model.dart';
 import 'package:tgpl_network/features/login/models/login_response_model.dart';
@@ -94,6 +95,7 @@ class LoginAsyncController extends AsyncNotifier<void> {
           password: loginState.password!,
         ),
       );
+      ref.read(isOpenHomeFirstTimeProvider.notifier).state = true;
       state = const AsyncData(null);
       return response;
     } catch (e, st) {

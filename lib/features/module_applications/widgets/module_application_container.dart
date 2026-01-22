@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:tgpl_network/common/models/application_model.dart';
+// import 'package:tgpl_network/common/models/application_model.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/features/master_data/providers/applications_provider.dart';
 import 'package:tgpl_network/features/module_applications/widgets/document_bottom_sheet.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 import 'package:tgpl_network/utils/get_application_category_color.dart';
 
 class ModuleApplicationContainer extends ConsumerWidget {
-  final ApplicationModel application;
+  final ApplicationLegacyModel application;
   final String submodule;
   const ModuleApplicationContainer({
     super.key,

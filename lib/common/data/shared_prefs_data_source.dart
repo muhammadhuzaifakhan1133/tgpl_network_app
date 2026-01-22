@@ -6,6 +6,7 @@ import 'package:tgpl_network/common/providers/shared_prefs_provider.dart';
 abstract class SharedPrefsDataSource {
   Future<void> saveAuthToken(String token);
   Future<void> saveUsername(String username);
+  String? getUsername();
   String? getAuthToken();
   Future<void> clearAuthData();
   bool isLoggedIn();
@@ -33,6 +34,11 @@ class SharedPrefsDataSourceImpl implements SharedPrefsDataSource {
   }
 
   @override
+  String? getUsername() {
+    return _prefs.getString(SharedPrefsKeys.username);
+  }
+
+  @override
   String? getAuthToken() {
     return _prefs.getString(SharedPrefsKeys.authToken);
   }
@@ -40,7 +46,6 @@ class SharedPrefsDataSourceImpl implements SharedPrefsDataSource {
   @override
   Future<void> clearAuthData() async {
     await _prefs.remove(SharedPrefsKeys.authToken);
-    // await _prefs.remove(SharedPrefsKeys.refreshToken);
     await _prefs.remove(SharedPrefsKeys.username);
     await _prefs.setBool(SharedPrefsKeys.isLoggedIn, false);
   }

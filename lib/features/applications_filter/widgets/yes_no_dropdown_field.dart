@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_controller.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_state.dart';
-import 'package:tgpl_network/utils/yes_no_enum_with_extension.dart';
+import 'package:tgpl_network/common/models/yes_no_enum_with_extension.dart';
 
 class YesNoDropDownField extends StatelessWidget {
   final YesNo? Function(FilterSelectionState) selectYesNoField;
@@ -23,7 +23,7 @@ class YesNoDropDownField extends StatelessWidget {
     return Consumer(
       builder: (context, ref, child) {
         final selectedValue = ref.watch(
-          applicationFiltersProvider.select((s) => selectYesNoField(s)),
+          filterSelectionProvider.select((s) => selectYesNoField(s)),
         );
         return Expanded(
           child: CustomDropDownWithTitle(
@@ -33,7 +33,7 @@ class YesNoDropDownField extends StatelessWidget {
             hintText: "Yes/No",
             showClearButton: selectedValue != null,
             onClear: () {
-              ref.read(applicationFiltersProvider.notifier).clearFields([
+              ref.read(filterSelectionProvider.notifier).clearFields([
                 fieldName,
               ]);
             },

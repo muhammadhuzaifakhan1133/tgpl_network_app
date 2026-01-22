@@ -1,5 +1,5 @@
 import 'package:tgpl_network/utils/nullable_fields_helper.dart';
-import 'package:tgpl_network/utils/yes_no_enum_with_extension.dart';
+import 'package:tgpl_network/common/models/yes_no_enum_with_extension.dart';
 
 class FilterSelectionState {
   final String? selectedPriority;

@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/common/models/application_model.dart';
-import 'package:tgpl_network/features/master_data/providers/application_provider.dart';
 import 'package:tgpl_network/features/applications/models/application_status.dart';
+import 'package:tgpl_network/features/master_data/providers/applications_provider.dart';
 
 final appStatusesProvider = Provider.family
     .autoDispose<List<ApplicationStatus>, String>((ref, id) {
@@ -47,7 +46,7 @@ final applicationControllerProvider =
     });
 
 class ApplicationController extends Notifier<ApplicationStates> {
-  List<ApplicationModel> get applications => ref.read(applicationsProvider);
+  List<ApplicationLegacyModel> get applications => ref.read(applicationsProvider);
 
   @override
   ApplicationStates build() {

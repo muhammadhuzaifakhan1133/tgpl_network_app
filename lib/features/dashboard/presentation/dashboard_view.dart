@@ -7,7 +7,7 @@ import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_g
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_header_profile.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_module_sections.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/sync_status_widget.dart';
-import 'package:tgpl_network/utils/sync_enum.dart';
+import 'package:tgpl_network/common/models/sync_enum.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});

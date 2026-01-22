@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:tgpl_network/common/models/application_model.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/map/presentation/map_controller.dart';
+import 'package:tgpl_network/features/master_data/providers/applications_provider.dart';
 import 'package:tgpl_network/utils/get_application_category_color.dart';
 
 class MapView extends ConsumerWidget {
@@ -67,7 +67,7 @@ class _MapSkeleton extends StatelessWidget {
 
 
 class _SelectedApplicationCard extends StatelessWidget {
-  final ApplicationModel application;
+  final ApplicationLegacyModel application;
   const _SelectedApplicationCard({required this.application});
 
   @override

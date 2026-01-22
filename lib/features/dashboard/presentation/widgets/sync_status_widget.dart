@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tgpl_network/utils/sync_enum.dart';
+import 'package:tgpl_network/common/models/sync_enum.dart';
 
 class SyncStatusCard extends StatelessWidget {
   final SyncStatus status;

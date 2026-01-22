@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/utils/sync_enum.dart';
+import 'package:tgpl_network/common/models/sync_enum.dart';
 
 final syncStatusProvider = AsyncNotifierProvider<SyncStatusAsyncController, SyncStatus>(() {
   return SyncStatusAsyncController();

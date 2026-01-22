@@ -7,7 +7,7 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/routes/app_router.dart';
-import 'package:tgpl_network/utils/sync_enum.dart';
+import 'package:tgpl_network/common/models/sync_enum.dart';
 
 class CustomAppBar extends ConsumerStatefulWidget {
   final String title;
