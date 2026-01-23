@@ -168,7 +168,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                               },
                               label: const Text("Resync"),
                               icon: state.when(
-                                data: (status) => status == SyncStatus.syncing
+                                data: (state) => state.status == SyncStatus.syncing
                                     ? const SizedBox(
                                         width: 16,
                                         height: 16,

@@ -1,6 +1,3 @@
-import 'package:tgpl_network/constants/app_database.dart';
-import 'package:tgpl_network/core/database/database_helper.dart';
-
 class SurveyFormModel {
   // Application Info
   final String? applicantId;
@@ -259,56 +256,5 @@ class SurveyFormModel {
   @override
   String toString() {
     return 'SurveyFormModel(applicantId: $applicantId, entryCode: $entryCode, dateConducted: $dateConducted, conductedBy: $conductedBy, googleLocation: $googleLocation, city: $city, district: $district, siteStatus: $siteStatus, npName: $npName, source: $source, sourceName: $sourceName, priority: $priority, dealerName: $dealerName, dealerContact: $dealerContact, referenceBy: $referenceBy, locationAddress: $locationAddress, landmark: $landmark, plotFront: $plotFront, plotDepth: $plotDepth, plotArea: $plotArea, nearestDepo: $nearestDepo, distanceFromDepo: $distanceFromDepo, typeOfTradeArea: $typeOfTradeArea, isThisDealer: $isThisDealer, dealerPlatform: $dealerPlatform, dealerBusinesses: $dealerBusinesses, dealerInvolvement: $dealerInvolvement, isDealerReadyToInvest: $isDealerReadyToInvest, dealerOpinion: $dealerOpinion, monthlySalary: $monthlySalary, isDealerAgreedToFollowTgplStandards: $isDealerAgreedToFollowTgplStandards, selectedTM: $selectedTM, tmRecommendation: $tmRecommendation, tmRemarks: $tmRemarks, selectedRM: $selectedRM, rmRecommendation: $rmRecommendation, rmRemarks: $rmRemarks)';
-  }
-
-  static String get createSQLTableQuery {
-    final idType = DatabaseHelper.idType;
-    final textType = DatabaseHelper.textType;
-    final intType = DatabaseHelper.intType;
-    return '''
-  CREATE TABLE ${AppDatabase.surveyFormsTable} (
-    id $idType,
-    applicationId $textType,
-    entryCode $textType,
-    dateConducted $textType,
-    conductedBy $textType,
-    googleLocation $textType,
-    city $textType,
-    district $textType,
-    siteStatus $textType,
-    npName $textType,
-    source $textType,
-    sourceName $textType,
-    priority $textType,
-    dealerName $textType,
-    dealerContact $textType,
-    referenceBy $textType,
-    locationAddress $textType,
-    landmark $textType,
-    plotFront $textType,
-    plotDepth $textType,
-    plotArea $textType,
-    nearestDepo $textType,
-    distanceFromDepo $textType,
-    typeOfTradeArea $textType,
-    isThisDealer $textType,
-    dealerPlatform $textType,
-    dealerBusinesses $textType,
-    dealerInvolvement $textType,
-    isDealerReadyToInvest $textType,
-    dealerOpinion $textType,
-    monthlySalary $textType,
-    isDealerAgreedToFollowTgplStandards $textType,
-    selectedTM $textType,
-    tmRecommendation $textType,
-    tmRemarks $textType,
-    selectedRM $textType,
-    rmRecommendation $textType,
-    rmRemarks $textType,
-    isSynced $intType DEFAULT 0,
-    createdAt $textType,
-    updatedAt $textType
-  )
-''';
   }
 }

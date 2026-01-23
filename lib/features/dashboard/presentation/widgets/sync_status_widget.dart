@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tgpl_network/common/models/sync_enum.dart';
+import 'package:tgpl_network/utils/get_time_since_last_sync.dart';
 
 class SyncStatusCard extends StatelessWidget {
   final SyncStatus status;
@@ -66,7 +67,7 @@ class SyncStatusCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Last sync: $lastSyncTime',
+                  'Last sync: ${getTimeSinceLastSync(lastSyncTime)}',
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],
@@ -126,7 +127,7 @@ class SyncStatusCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Last sync: $lastSyncTime',
+                  'Last sync: ${getTimeSinceLastSync(lastSyncTime)}',
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],
@@ -177,7 +178,7 @@ class SyncStatusCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Last sync: $lastSyncTime',
+                  'Last sync: ${getTimeSinceLastSync(lastSyncTime)}',
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],
@@ -194,73 +195,6 @@ class SyncStatusCard extends StatelessWidget {
               ),
             ),
         ],
-      ),
-    );
-  }
-}
-
-// Example usage
-class SyncStatusDemo extends StatefulWidget {
-  const SyncStatusDemo({Key? key}) : super(key: key);
-
-  @override
-  State<SyncStatusDemo> createState() => _SyncStatusDemoState();
-}
-
-class _SyncStatusDemoState extends State<SyncStatusDemo> {
-  SyncStatus currentStatus = SyncStatus.offline;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      appBar: AppBar(
-        title: const Text('Sync Status Cards'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SyncStatusCard(
-                status: currentStatus,
-                lastSyncTime: currentStatus == SyncStatus.syncing
-                    ? '5 minutes ago'
-                    : currentStatus == SyncStatus.offline
-                    ? '2 hours ago'
-                    : 'Just now',
-                onResync: () {
-                  debugPrint('Resync triggered');
-                },
-              ),
-            ),
-            const SizedBox(height: 40),
-            Wrap(
-              spacing: 12,
-              children: [
-                ElevatedButton(
-                  onPressed: () =>
-                      setState(() => currentStatus = SyncStatus.offline),
-                  child: const Text('Offline'),
-                ),
-                ElevatedButton(
-                  onPressed: () =>
-                      setState(() => currentStatus = SyncStatus.syncing),
-                  child: const Text('Syncing'),
-                ),
-                ElevatedButton(
-                  onPressed: () =>
-                      setState(() => currentStatus = SyncStatus.synchronized),
-                  child: const Text('Synchronized'),
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }

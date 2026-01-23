@@ -1,4 +1,3 @@
-import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/features/traffic_trade_form/models/traffic_site_model.dart';
 
 class TrafficTradeFormModel {
@@ -151,38 +150,5 @@ class TrafficTradeFormModel {
   @override
   String toString() {
     return 'TrafficTradeFormModel(nearbyTrafficSites: $nearbyTrafficSites, trafficCountTruck: $trafficCountTruck, trafficCountCar: $trafficCountCar, trafficCountBike: $trafficCountBike, dailyDieselSales: $dailyDieselSales, dailySuperSales: $dailySuperSales, dailyHOBCSales: $dailyHOBCSales, dailyLubricantSales: $dailyLubricantSales, rentExpectation: $rentExpectation, truckPortPotential: $truckPortPotential, salamMartPotential: $salamMartPotential, restaurantPotential: $restaurantPotential, selectedTM: $selectedTM, selectedRM: $selectedRM, selectedTMRecommendation: $selectedTMRecommendation, selectedRMRecommendation: $selectedRMRecommendation, tmRemarks: $tmRemarks, rmRemarks: $rmRemarks)';
-  }
-
-  static String get createSQLTableQuery {
-    final idType = DatabaseHelper.idType;
-    final textType = DatabaseHelper.textType;
-    final intType = DatabaseHelper.intType;
-    return '''
-  CREATE TABLE traffic_trade_forms (
-    id $idType,
-    applicationId $textType,
-    nearbyTrafficSites $textType,
-    trafficCountTruck $textType,
-    trafficCountCar $textType,
-    trafficCountBike $textType,
-    dailyDieselSales $textType,
-    dailySuperSales $textType,
-    dailyHOBCSales $textType,
-    dailyLubricantSales $textType,
-    rentExpectation $textType,
-    truckPortPotential $textType,
-    salamMartPotential $textType,
-    restaurantPotential $textType,
-    selectedTM $textType,
-    selectedRM $textType,
-    selectedTMRecommendation $textType,
-    selectedRMRecommendation $textType,
-    tmRemarks $textType,
-    rmRemarks $textType,
-    isSynced $intType DEFAULT 0,
-    createdAt $textType,
-    updatedAt $textType
-  )
-''';
   }
 }

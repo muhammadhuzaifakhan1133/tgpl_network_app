@@ -43,7 +43,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
     final isOnboardingCompleted =
         prefs.getBool(SharedPrefsKeys.onboardingCompleted) ?? false;
     // await ref.read(sharedPrefsDataSourceProvider).clearAuthData(); // temp
-    ref.read(isOpenHomeFirstTimeProvider.notifier).state = false; // temp
+    // ref.read(isOpenHomeFirstTimeProvider.notifier).state = true; // temp
     final isLoggedIn = ref.read(sharedPrefsDataSourceProvider).isLoggedIn();
 
     if (!isOnboardingCompleted) {

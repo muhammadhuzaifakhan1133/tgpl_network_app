@@ -1,12 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:tgpl_network/constants/app_database.dart';
-import 'package:tgpl_network/features/master_data/models/application_model.dart';
-import 'package:tgpl_network/features/master_data/models/city_model.dart';
-import 'package:tgpl_network/features/master_data/models/master_list_type.dart';
-import 'package:tgpl_network/features/master_data/models/traffic_trades_model.dart';
-import 'package:tgpl_network/features/survey_form/models/survey_form_model.dart';
-import 'package:tgpl_network/features/traffic_trade_form/models/traffic_trade_form_model.dart';
+import 'package:tgpl_network/core/database/queries/create_queries.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
@@ -33,36 +28,41 @@ class DatabaseHelper {
   }
 
   Future _createDB(Database db, int version) async {
+    // await clearAllTables(); // temp
+
     // Applications Table
-    await db.execute(ApplicationModel.createSQLTableQuery);
+    await db.execute(CreateDbQueries.createApplicationTable);
 
     // Cities Table
-    await db.execute(CityModel.createSQLTableQuery);
+    await db.execute(CreateDbQueries.createCityTable);
 
     // Traffic Trade Sites Table
-    await db.execute(TrafficTradesModel.createSQLTableQuery);
+    await db.execute(CreateDbQueries.createTrafficTradeTable);
 
     // Master Lists Table (storing as JSON)
-    await db.execute(MasterListTypeTable.createSQLTableQuery);
+    await db.execute(CreateDbQueries.createMasterListsTable);
 
     // Sync Metadata Table
-    await db.execute('''
-      CREATE TABLE ${AppDatabase.syncMetadataTable} (
-        id $idType,
-        lastSyncTime $textType
-      )
-    ''');
+    await db.execute(CreateDbQueries.syncMetadataTable);
 
     // Survey Forms Table
-    await db.execute(SurveyFormModel.createSQLTableQuery);
+    await db.execute(CreateDbQueries.createSurveyFormsTable);
 
     // Traffic Trade Forms Table
-    await db.execute(TrafficTradeFormModel.createSQLTableQuery);
+    await db.execute(CreateDbQueries.createTrafficTradeFormsTable);
   }
 
   Future<void> close() async {
     final db = await instance.database;
     db.close();
+  }
+
+  Future<void> clearAllTables() async {
+    final db = await instance.database;
+    await clearMasterDataTables();
+    await db.delete(AppDatabase.surveyFormsTable);
+    await db.delete(AppDatabase.trafficTradeFormsTable);
+    await db.delete(AppDatabase.syncMetadataTable);
   }
 
   Future<void> clearMasterDataTables() async {

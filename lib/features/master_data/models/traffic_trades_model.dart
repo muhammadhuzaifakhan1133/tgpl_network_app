@@ -11,9 +11,6 @@
 //     "NFLFacilityAvailable": "No"
 // }
 
-import 'package:tgpl_network/constants/app_database.dart';
-import 'package:tgpl_network/core/database/database_helper.dart';
-
 class TrafficTradesModel {
   final int? id;
   final int trafficTradeId;
@@ -54,27 +51,6 @@ class TrafficTradesModel {
       nfrName: map['NFRName'],
       nflFacilityAvailable: map['NFLFacilityAvailable'],
     );
-  }
-
-  static String get createSQLTableQuery {
-    final idType = DatabaseHelper.idType;
-    final textType = DatabaseHelper.textType;
-    final intType = DatabaseHelper.intType;
-    return '''
-    CREATE TABLE IF NOT EXISTS ${AppDatabase.trafficTradeTable} (
-      id $idType,
-      trafficTradeId $intType,
-      applicationId $intType,
-      proposedSiteName $textType,
-      estimateDailyDieselSale $intType,
-      estimateDailySuperSale $intType,
-      estimateLubricantSale $intType,
-      expectedLeaseRentPerManth $intType,
-      nfrFacility $textType,
-      nfrName $textType,
-      nflFacilityAvailable $textType
-    )
-  ''';
   }
 
   factory TrafficTradesModel.fromDatabaseMap(Map<String, dynamic> map) {

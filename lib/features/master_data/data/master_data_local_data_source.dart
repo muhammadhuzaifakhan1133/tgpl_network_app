@@ -39,10 +39,7 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
 
     await db.transaction((txn) async {
       // Clear existing data
-      await txn.delete(AppDatabase.applicationTable);
-      await txn.delete(AppDatabase.cityTable);
-      await txn.delete(AppDatabase.trafficTradeTable);
-      await txn.delete(AppDatabase.masterListsTable);
+      await _databaseHelper.clearMasterDataTables();
 
       // Insert applications
       for (var app in data.applicationAndSurveyList) {
@@ -100,6 +97,9 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
         AppDatabase.masterListsTable,
         data.listTypeToMap(MasterListType.nfrList),
       );
+      await txn.insert(AppDatabase.syncMetadataTable, {
+        'lastSyncTime': DateTime.now().toIso8601String(),
+      });
     });
   }
 
