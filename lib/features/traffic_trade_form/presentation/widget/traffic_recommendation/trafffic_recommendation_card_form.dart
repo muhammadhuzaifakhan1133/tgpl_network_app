@@ -6,7 +6,7 @@ import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/common/widgets/section_detail_card.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/traffic_recommendation/traffic_recommendation_controller.dart';
-import 'package:tgpl_network/utils/string_validation_extension.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class TrafficRecommendationCardForm extends ConsumerWidget {
   const TrafficRecommendationCardForm({super.key});

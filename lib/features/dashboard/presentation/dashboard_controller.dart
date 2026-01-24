@@ -2,11 +2,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/features/dashboard/data/dashboard_data_source.dart';
 import 'package:tgpl_network/features/dashboard/models/dashboard_response_model.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
-import 'package:tgpl_network/features/dashboard/models/user_model.dart';
-import 'package:tgpl_network/features/dashboard/presentation/data/module_provider.dart';
+import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
+import 'package:tgpl_network/common/models/user_model.dart';
 
-final userProvider = Provider<User>((ref) {
-  return User(name: "Ahmed Hassan", title: "Regional Manager", id: "EMP-2025-001");
+final userProvider = Provider<UserModel>((ref) {
+  return UserModel(name: "Ahmed Hassan", role: "Regional Manager", id: "EMP-2025-001");
 });
 
 final dashboardControllerProvider =
@@ -18,7 +18,6 @@ final dashboardAsyncControllerProvider =
     AsyncNotifierProvider<DashboardAsyncController, DashboardResponseModel>(() {
   return DashboardAsyncController();
     });
-
 
 class DashboardState {
   List<bool> isModulesExpanded;

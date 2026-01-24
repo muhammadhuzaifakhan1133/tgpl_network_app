@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:tgpl_network/constants/app_database.dart';
+import 'package:tgpl_network/core/database/app_database.dart';
 import 'package:tgpl_network/core/database/queries/create_queries.dart';
 
 class DatabaseHelper {
@@ -24,7 +24,14 @@ class DatabaseHelper {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+    return await openDatabase(
+      path,
+      version: 1,
+      onCreate: _createDB,
+      onUpgrade: (db, oldVersion, newVersion) async {
+        // future-safe
+      },
+    );
   }
 
   Future _createDB(Database db, int version) async {
@@ -32,6 +39,9 @@ class DatabaseHelper {
 
     // Applications Table
     await db.execute(CreateDbQueries.createApplicationTable);
+
+    // Create index on statusId column
+    await db.execute(CreateDbQueries.createStatusIdIndexOnApplicationTable);
 
     // Cities Table
     await db.execute(CreateDbQueries.createCityTable);

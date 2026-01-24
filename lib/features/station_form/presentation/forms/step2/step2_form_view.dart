@@ -9,7 +9,7 @@ import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/station_form/presentation/forms/step2/step2_form_controller.dart';
 import 'package:tgpl_network/features/station_form/presentation/station_form_controller.dart';
-import 'package:tgpl_network/utils/string_validation_extension.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class Step2FormView extends ConsumerStatefulWidget {
   const Step2FormView({super.key});

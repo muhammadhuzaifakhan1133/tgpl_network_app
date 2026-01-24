@@ -1,15 +1,13 @@
-  import 'dart:async';
-
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/common/data/sync_status_data_source.dart';
+import 'package:tgpl_network/common/providers/last_sync_time_provider.dart';
 
 const autoSyncThresholdMinutes = 30; // (in minutes)
 
- FutureOr<bool> shouldAutoSync({String? lastSyncTimeIso, Ref? ref}) async {
-  if (lastSyncTimeIso == null) {
-    assert(ref != null, 'Ref must be provided if lastSyncTimeIso is null');
-       lastSyncTimeIso = await ref!.read(syncStatusDataSourceProvider).getLastSyncTime();
-    }
+ FutureOr<bool> shouldAutoSync(Ref ref) async {
+  
+    String lastSyncTimeIso = await ref.read(getLastSyncTimeProvider.future);
+    
     if (lastSyncTimeIso.isEmpty || lastSyncTimeIso == "Never") {
       return true; // Always sync if never synced before
     }

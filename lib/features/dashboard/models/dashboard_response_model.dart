@@ -3,12 +3,10 @@ import 'package:tgpl_network/common/models/user_model.dart';
 class DashboardResponseModel {
   final UserModel user;
   final DashboardApplicationsCounts counts;
-  final String lastSyncTime;
 
   DashboardResponseModel({
     required this.user,
     required this.counts,
-    required this.lastSyncTime,
   });
 }
 
@@ -47,6 +45,7 @@ class DashboardApplicationsCounts {
   final int holdByTgpl;
   final int rejectedByDealer;
   final int rejectedByTgpl;
+  final int hisotry;
 
   DashboardApplicationsCounts({
     required this.inProcess,
@@ -83,6 +82,7 @@ class DashboardApplicationsCounts {
     required this.holdByTgpl,
     required this.rejectedByDealer,
     required this.rejectedByTgpl,
+    this.hisotry = 0,
   });
 
   DashboardApplicationsCounts.fromJson(Map<String, dynamic> json)
@@ -127,6 +127,11 @@ class DashboardApplicationsCounts {
         construction = json['constructionCount'] ?? 0,
         commissioning = (json['hotoCount'] ?? 0) + (json['inauguratedCount'] ?? 0),
         hoto = json['hotoCount'] ?? 0,
+        hisotry = json['inauguratedCount'] ?? 0 +
+             json['holdByDealerCount'] ?? 0 +
+             json['holdByTgplCount'] ?? 0 +
+             json['rejectedByDealerCount'] ?? 0 +
+             json['rejectedByTgplCount'] ?? 0,
         inauguration = json['inauguratedCount'] ?? 0,
         holdByDealer = json['holdByDealerCount'] ?? 0,
         holdByTgpl = json['holdByTgplCount'] ?? 0,

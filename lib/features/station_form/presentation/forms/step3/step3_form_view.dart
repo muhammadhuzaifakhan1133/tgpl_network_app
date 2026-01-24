@@ -11,7 +11,7 @@ import 'package:tgpl_network/features/station_form/presentation/forms/step3/step
 import 'package:tgpl_network/features/station_form/presentation/station_form_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
-import 'package:tgpl_network/utils/string_validation_extension.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class Step3FormView extends ConsumerStatefulWidget {
   const Step3FormView({super.key});

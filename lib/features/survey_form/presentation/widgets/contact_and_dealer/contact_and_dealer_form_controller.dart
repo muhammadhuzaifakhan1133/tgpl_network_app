@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/utils/nullable_fields_helper.dart';
+import 'package:tgpl_network/utils/extensions/nullable_fields_helper.dart';
 
 final contactAndDealerFormControllerProvider =
     NotifierProvider<ContactAndDealerFormController, ContactAndDealerFormState>(

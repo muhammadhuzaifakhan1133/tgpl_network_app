@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tgpl_network/common/models/sync_enum.dart';
-import 'package:tgpl_network/utils/get_time_since_last_sync.dart';
+import 'package:tgpl_network/utils/get_time_duration_till_now.dart';
 
 class SyncStatusCard extends StatelessWidget {
   final SyncStatus status;
@@ -67,7 +67,7 @@ class SyncStatusCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Last sync: ${getTimeSinceLastSync(lastSyncTime)}',
+                  'Last sync: ${getTimeDurationTillNow(lastSyncTime)}',
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],
@@ -127,7 +127,7 @@ class SyncStatusCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Last sync: ${getTimeSinceLastSync(lastSyncTime)}',
+                  'Last sync: ${getTimeDurationTillNow(lastSyncTime)}',
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],
@@ -178,7 +178,7 @@ class SyncStatusCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Last sync: ${getTimeSinceLastSync(lastSyncTime)}',
+                  'Last sync: ${getTimeDurationTillNow(lastSyncTime)}',
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],

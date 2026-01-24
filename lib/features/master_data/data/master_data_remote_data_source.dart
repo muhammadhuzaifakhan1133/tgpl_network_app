@@ -19,7 +19,7 @@ class MasterDataRemoteDataSourceImpl implements MasterDataRemoteDataSource {
   }
 }
 
-// Provider
+
 final masterDataRemoteDataSourceProvider = Provider<MasterDataRemoteDataSource>((ref) {
   final dioClient = ref.watch(dioClientProvider);
   return MasterDataRemoteDataSourceImpl(dioClient);

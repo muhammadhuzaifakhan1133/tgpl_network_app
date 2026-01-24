@@ -29,7 +29,7 @@ class DashboardHeaderProfile extends ConsumerWidget {
           ),
           child: Center(
             child: Text(
-              user.name[0],
+              user.name?[0] ?? "",
               style: AppTextstyles.googleInter700black28.copyWith(
                 fontSize: 20,
                 color: AppColors.white,
@@ -44,14 +44,14 @@ class DashboardHeaderProfile extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                user.name,
+                user.name ?? "",
                 style: AppTextstyles.googleInter700black28.copyWith(
                   fontSize: 20,
                   color: AppColors.black2Color,
                 ),
               ),
               Text(
-                user.title,
+                user.role ?? "",
                 style: AppTextstyles.googleInter400Grey14.copyWith(
                   fontSize: 16,
                   color: AppColors.black2Color,

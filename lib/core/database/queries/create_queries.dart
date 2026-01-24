@@ -1,4 +1,4 @@
-import 'package:tgpl_network/constants/app_database.dart';
+import 'package:tgpl_network/core/database/app_database.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/features/master_data/models/master_list_type.dart';
 
@@ -11,7 +11,7 @@ class CreateDbQueries {
   static String createApplicationTable = '''
       CREATE TABLE IF NOT EXISTS ${AppDatabase.applicationTable} (
         id $idType,
-        applicationId $intType,
+        applicationId $intType UNIQUE,
         dateConducted $textType,
         preparedBy $textType,
         googleLocation $textType,
@@ -144,10 +144,14 @@ class CreateDbQueries {
       )
     ''';
 
+  static String createStatusIdIndexOnApplicationTable = '''
+    CREATE INDEX IF NOT EXISTS idx_application_status ON ${AppDatabase.applicationTable}(statusId);
+  ''';
+
   static String createCityTable = '''
     CREATE TABLE IF NOT EXISTS ${AppDatabase.cityTable} (
       id $idType,
-      cityId $intType,
+      cityId $intType UNIQUE,
       name $textType
     )
   ''';
@@ -155,7 +159,7 @@ class CreateDbQueries {
   static String createTrafficTradeTable = '''
     CREATE TABLE IF NOT EXISTS ${AppDatabase.trafficTradeTable} (
       id $idType,
-      trafficTradeId $intType,
+      trafficTradeId $intType UNIQUE,
       applicationId $intType,
       proposedSiteName $textType,
       estimateDailyDieselSale $intType,
@@ -171,7 +175,7 @@ class CreateDbQueries {
   static String createMasterListsTable = '''
       CREATE TABLE ${AppDatabase.masterListsTable} (
         id $idType,
-        ${MasterListTypeTable.databaseColName} $textType,
+        ${MasterListTypeTable.databaseColName} $textType UNIQUE,
         listValues $textType
       )
     ''';

@@ -7,7 +7,7 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/onboarding/presentation/onboarding_controller.dart';
 import 'package:tgpl_network/features/onboarding/presentation/widgets/onboarding_content_container_clipper.dart';
-import 'package:tgpl_network/utils/screen_size_extension.dart';
+import 'package:tgpl_network/utils/extensions/screen_size_extension.dart';
 
 class OnboardingContentSection extends ConsumerWidget {
   const OnboardingContentSection({super.key});

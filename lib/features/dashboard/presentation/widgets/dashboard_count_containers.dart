@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
 
-class DashboardCountContainers extends StatelessWidget {
+class DashboardCountContainers extends ConsumerWidget {
   const DashboardCountContainers({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dashboardData = ref.watch(dashboardAsyncControllerProvider).requireValue;
     return Column(
       children: [
         Row(
@@ -19,7 +22,7 @@ class DashboardCountContainers extends StatelessWidget {
                 color1: AppColors.inProcessCountColor,
                 color2: AppColors.inProcessCountDarkColor,
                 title: "In Process",
-                count: 124,
+                count: dashboardData.counts.inProcess,
               ),
             ),
             const SizedBox(width: 16),
@@ -29,7 +32,7 @@ class DashboardCountContainers extends StatelessWidget {
                 color1: AppColors.inauguratedCountColor,
                 color2: AppColors.inauguratedCountDarkColor,
                 title: "Inaugurated",
-                count: 89,
+                count: dashboardData.counts.inaugurated,
               ),
             ),
           ],
@@ -43,7 +46,7 @@ class DashboardCountContainers extends StatelessWidget {
                 color1: AppColors.rejectedCountColor,
                 color2: AppColors.rejectedCountDarkColor,
                 title: "Rejected",
-                count: 15,
+                count: dashboardData.counts.rejected,
               ),
             ),
             const SizedBox(width: 16),
@@ -52,8 +55,8 @@ class DashboardCountContainers extends StatelessWidget {
                 icon: AppImages.totalActiveIconSvg,
                 color1: AppColors.nextStep1Color,
                 color2: AppColors.headerDarkBlueColor,
-                title: "Total Active",
-                count: 228,
+                title: "Hold",
+                count: dashboardData.counts.hold,
               ),
             ),
           ],

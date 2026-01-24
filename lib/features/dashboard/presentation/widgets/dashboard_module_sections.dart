@@ -5,7 +5,7 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
-import 'package:tgpl_network/features/dashboard/presentation/data/module_provider.dart';
+import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 
@@ -14,6 +14,7 @@ class DashboardModulesSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final modules = ref.watch(modulesProvider);
     return Column(
       children: [
         Align(
@@ -24,9 +25,9 @@ class DashboardModulesSection extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 12),
-        for (int i = 0; i < ref.read(modulesProvider).length; i++)
+        for (int i = 0; i < modules.length; i++)
           _DashboardModuleContainer(
-            module: ref.read(modulesProvider)[i],
+            module: modules[i],
             index: i,
           ),
       ],

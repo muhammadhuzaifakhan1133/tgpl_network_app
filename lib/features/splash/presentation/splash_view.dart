@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/data/shared_prefs_data_source.dart';
 import 'package:tgpl_network/common/providers/shared_prefs_provider.dart';
 import 'package:tgpl_network/constants/app_images.dart';
-import 'package:tgpl_network/features/home_shell/presentation/home_shell_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 
@@ -43,7 +42,6 @@ class _SplashViewState extends ConsumerState<SplashView> {
     final isOnboardingCompleted =
         prefs.getBool(SharedPrefsKeys.onboardingCompleted) ?? false;
     // await ref.read(sharedPrefsDataSourceProvider).clearAuthData(); // temp
-    // ref.read(isOpenHomeFirstTimeProvider.notifier).state = true; // temp
     final isLoggedIn = ref.read(sharedPrefsDataSourceProvider).isLoggedIn();
 
     if (!isOnboardingCompleted) {

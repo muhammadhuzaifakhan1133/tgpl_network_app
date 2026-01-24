@@ -6,8 +6,8 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/change_password/change_password_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
-import 'package:tgpl_network/utils/screen_size_extension.dart';
-import 'package:tgpl_network/utils/string_validation_extension.dart';
+import 'package:tgpl_network/utils/extensions/screen_size_extension.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class ChangePasswordView extends ConsumerStatefulWidget {
   const ChangePasswordView({super.key});

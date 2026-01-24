@@ -6,6 +6,7 @@ import 'package:tgpl_network/common/widgets/custom_textfield.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/features/home_shell/presentation/home_shell_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/common/models/sync_enum.dart';
 
@@ -156,19 +157,15 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                       if (widget.showResyncButton) ...[
                         Consumer(
                           builder: (context, ref, _) {
-                            final state = ref.watch(syncStatusProvider);
-                            debugPrint(
-                              "Resync Button State: ${state.isLoading}",
-                            );
+                            final syncStatus = ref.watch(syncStatusProvider);
                             return ElevatedButton.icon(
                               onPressed: () {
                                 ref
-                                    .read(syncStatusProvider.notifier)
-                                    .resyncData();
+                                    .read(homeShellControllerProvider.notifier)
+                                    .getMasterDataAndSaveLocally();
                               },
                               label: const Text("Resync"),
-                              icon: state.when(
-                                data: (state) => state.status == SyncStatus.syncing
+                              icon: syncStatus == SyncStatus.syncing
                                     ? const SizedBox(
                                         width: 16,
                                         height: 16,
@@ -178,17 +175,6 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                                         ),
                                       )
                                     : const Icon(Icons.refresh, size: 20),
-                                loading: () => const SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(
-                                    color: AppColors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                                error: (e, st) =>
-                                    const Icon(Icons.refresh, size: 20),
-                              ),
                               style: ElevatedButton.styleFrom(
                                 // backgroundColor: AppColors.primary,
                                 backgroundColor: AppColors.headerDarkBlueColor,

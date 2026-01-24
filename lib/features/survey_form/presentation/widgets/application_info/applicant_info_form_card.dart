@@ -14,8 +14,8 @@ import 'package:tgpl_network/features/survey_form/presentation/widgets/applicati
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 import 'package:tgpl_network/utils/custom_date_picker.dart';
-import 'package:tgpl_network/utils/datetime_extension.dart';
-import 'package:tgpl_network/utils/string_validation_extension.dart';
+import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class ApplicantInfoFormCard extends ConsumerWidget {
   const ApplicantInfoFormCard({super.key});

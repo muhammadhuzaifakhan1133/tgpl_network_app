@@ -12,8 +12,8 @@ import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/features/applications_filter/widgets/yes_no_dropdown_field.dart';
 import 'package:tgpl_network/utils/custom_date_picker.dart';
-import 'package:tgpl_network/utils/datetime_extension.dart';
-import 'package:tgpl_network/utils/string_validation_extension.dart';
+import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class FilterScreen extends ConsumerWidget {
   const FilterScreen({super.key});

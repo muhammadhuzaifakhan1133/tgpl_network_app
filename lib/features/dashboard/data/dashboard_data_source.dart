@@ -6,6 +6,7 @@ import 'package:tgpl_network/features/dashboard/models/dashboard_response_model.
 
 abstract class DashboardDataSource {
   Future<DashboardResponseModel> fetchDashboardData();
+  Future<String> getLastSyncTime();
 }
 
 class DashboardDataSourceImpl implements DashboardDataSource {
@@ -17,23 +18,27 @@ class DashboardDataSourceImpl implements DashboardDataSource {
   Future<DashboardResponseModel> fetchDashboardData() async {
     final db = await _databaseHelper.database;
     final result = await db.rawQuery(SelectDbQueries.selectDashboardCounts);
-    final lastSyncTimeResult = await db.rawQuery(
-      SelectDbQueries.selectLastSyncTime,
-    );
     if (result.isNotEmpty) {
-      print(result);
       final moduleAppsCount = DashboardApplicationsCounts.fromJson(
         result.first,
       );
       return DashboardResponseModel(
         user: UserModel(),
         counts: moduleAppsCount,
-        lastSyncTime: lastSyncTimeResult.isNotEmpty
-            ? lastSyncTimeResult.first['lastSyncTime'] as String
-            : '',
       );
     } else {
       throw Exception('No dashboard data found');
+    }
+  }
+
+   @override
+  Future<String> getLastSyncTime() async {
+    final db = await _databaseHelper.database;
+    final result = await db.rawQuery(SelectDbQueries.selectLastSyncTime);
+    if (result.isNotEmpty) {
+      return result.first['lastSyncTime'] as String;
+    } else {
+      return "Never";
     }
   }
 }

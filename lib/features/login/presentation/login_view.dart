@@ -10,8 +10,8 @@ import 'package:tgpl_network/features/login/models/login_response_model.dart';
 import 'package:tgpl_network/features/login/presentation/login_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
-import 'package:tgpl_network/utils/screen_size_extension.dart';
-import 'package:tgpl_network/utils/string_validation_extension.dart';
+import 'package:tgpl_network/utils/extensions/screen_size_extension.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});

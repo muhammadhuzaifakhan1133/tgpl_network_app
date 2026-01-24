@@ -1,6 +1,7 @@
 // lib/features/master_data/data/datasources/master_data_local_data_source.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/constants/app_database.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:tgpl_network/core/database/app_database.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_state.dart';
 import 'package:tgpl_network/features/master_data/models/master_data_response_model.dart';
@@ -38,69 +39,93 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
     final db = await _databaseHelper.database;
 
     await db.transaction((txn) async {
+      final batch = txn.batch();
+
       // Clear existing data
-      await _databaseHelper.clearMasterDataTables();
+      batch.delete(AppDatabase.applicationTable);
+      batch.delete(AppDatabase.cityTable);
+      batch.delete(AppDatabase.trafficTradeTable);
+      batch.delete(AppDatabase.masterListsTable);
 
-      // Insert applications
-      for (var app in data.applicationAndSurveyList) {
-        await txn.insert(AppDatabase.applicationTable, app.toDatabaseMap());
+      await batch.commit(noResult: true);
+
+      // Insert in chunks to avoid memory issues
+      const chunkSize = 500;
+
+      // Insert applications in chunks
+      await _insertInChunks(
+        txn,
+        AppDatabase.applicationTable,
+        data.applicationAndSurveyList.map((e) => e.toDatabaseMap()).toList(),
+        chunkSize,
+      );
+
+      // Insert cities in chunks
+      await _insertInChunks(
+        txn,
+        AppDatabase.cityTable,
+        data.userCityList.map((e) => e.toDatabaseMap()).toList(),
+        chunkSize,
+      );
+
+      // Insert traffic trades in chunks
+      await _insertInChunks(
+        txn,
+        AppDatabase.trafficTradeTable,
+        data.traficTradeSitesList.map((e) => e.toDatabaseMap()).toList(),
+        chunkSize,
+      );
+
+      // Master lists and sync metadata (small data)
+      final finalBatch = txn.batch();
+
+      final masterListTypes = [
+        MasterListType.nearestDepo,
+        MasterListType.tradeAreaType,
+        MasterListType.dealerInvestmentType,
+        MasterListType.gfbList,
+        MasterListType.recommendationList,
+        MasterListType.shiftHourList,
+        MasterListType.hmlList,
+        MasterListType.ynList,
+        MasterListType.ynnList,
+        MasterListType.nfrList,
+      ];
+
+      for (var listType in masterListTypes) {
+        finalBatch.insert(
+          AppDatabase.masterListsTable,
+          data.listTypeToMap(listType),
+        );
       }
 
-      // Insert cities
-      for (var city in data.userCityList) {
-        await txn.insert(AppDatabase.cityTable, city.toDatabaseMap());
-      }
+      
+      batch.delete(AppDatabase.syncMetadataTable);
 
-      // Insert traffic trades
-      for (var trade in data.traficTradeSitesList) {
-        await txn.insert(AppDatabase.trafficTradeTable, trade.toDatabaseMap());
-      }
-
-      // Insert master lists
-      await txn.insert(
-        AppDatabase.masterListsTable,
-        data.listTypeToMap(MasterListType.nearestDepo),
-      );
-      await txn.insert(
-        AppDatabase.masterListsTable,
-        data.listTypeToMap(MasterListType.tradeAreaType),
-      );
-      await txn.insert(
-        AppDatabase.masterListsTable,
-        data.listTypeToMap(MasterListType.dealerInvestmentType),
-      );
-      await txn.insert(
-        AppDatabase.masterListsTable,
-        data.listTypeToMap(MasterListType.gfbList),
-      );
-      await txn.insert(
-        AppDatabase.masterListsTable,
-        data.listTypeToMap(MasterListType.recommendationList),
-      );
-      await txn.insert(
-        AppDatabase.masterListsTable,
-        data.listTypeToMap(MasterListType.shiftHourList),
-      );
-      await txn.insert(
-        AppDatabase.masterListsTable,
-        data.listTypeToMap(MasterListType.hmlList),
-      );
-      await txn.insert(
-        AppDatabase.masterListsTable,
-        data.listTypeToMap(MasterListType.ynList),
-      );
-      await txn.insert(
-        AppDatabase.masterListsTable,
-        data.listTypeToMap(MasterListType.ynnList),
-      );
-      await txn.insert(
-        AppDatabase.masterListsTable,
-        data.listTypeToMap(MasterListType.nfrList),
-      );
-      await txn.insert(AppDatabase.syncMetadataTable, {
+      finalBatch.insert(AppDatabase.syncMetadataTable, {
         'lastSyncTime': DateTime.now().toIso8601String(),
       });
+
+      await finalBatch.commit(noResult: true);
     });
+  }
+
+  Future<void> _insertInChunks(
+    DatabaseExecutor txn,
+    String table,
+    List<Map<String, dynamic>> items,
+    int chunkSize,
+  ) async {
+    for (var i = 0; i < items.length; i += chunkSize) {
+      final end = (i + chunkSize < items.length) ? i + chunkSize : items.length;
+      final chunk = items.sublist(i, end);
+
+      final batch = txn.batch();
+      for (var item in chunk) {
+        batch.insert(table, item);
+      }
+      await batch.commit(noResult: true);
+    }
   }
 
   @override

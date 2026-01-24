@@ -1,5 +1,5 @@
-import 'package:tgpl_network/constants/app_database.dart';
-import 'package:tgpl_network/constants/modules_db_conditions.dart';
+import 'package:tgpl_network/core/database/app_database.dart';
+import 'package:tgpl_network/core/database/modules_db_conditions.dart';
 
 class SelectDbQueries {
   static const String selectDashboardCounts = '''

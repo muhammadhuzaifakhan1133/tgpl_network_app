@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/common/widgets/section_detail_card.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/traffic_count/traffic_count_form_controller.dart';
-import 'package:tgpl_network/utils/string_validation_extension.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class TrafficCountCardForm extends ConsumerWidget {
   const TrafficCountCardForm({super.key});

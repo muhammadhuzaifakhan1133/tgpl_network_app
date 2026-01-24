@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:tgpl_network/utils/nullable_fields_helper.dart';
+import 'package:tgpl_network/utils/extensions/nullable_fields_helper.dart';
 
 class TrafficSiteModel {
   final String id;
