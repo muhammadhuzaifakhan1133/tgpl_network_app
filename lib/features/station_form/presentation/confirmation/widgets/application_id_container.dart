@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
-import 'package:tgpl_network/features/station_form/presentation/station_form_controller.dart';
 
 class ApplicationIdContainer extends ConsumerWidget {
-  const ApplicationIdContainer({super.key});
+  final String applicationId;
+  const ApplicationIdContainer({super.key, required this.applicationId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final stationFormController = ref.read(stationFormControllerProvider.notifier);
     return Row(
       children: [
         Expanded(
@@ -32,7 +31,7 @@ class ApplicationIdContainer extends ConsumerWidget {
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    stationFormController.applicationId ?? "APP-2025-305",
+                    applicationId,
                     style: AppTextstyles.googleInter700black28.copyWith(
                       fontSize: 24.33,
                       color: AppColors.black2Color,

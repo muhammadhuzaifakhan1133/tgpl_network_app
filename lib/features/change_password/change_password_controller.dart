@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 
@@ -13,43 +12,43 @@ final changePasswordControllerProvider =
 class ChangePasswordState {
   bool isPasswordObscure;
   bool isNewPasswordObscure;
+  String? password;
+  String? newPassword;
+  String? passwordConfirmation;
 
   ChangePasswordState({
     required this.isPasswordObscure,
     required this.isNewPasswordObscure,
+    this.password,
+    this.newPassword,
+    this.passwordConfirmation,
   });
 
   ChangePasswordState copyWith({
     bool? isPasswordObscure,
     bool? isNewPasswordObscure,
+    String? password,
+    String? newPassword,
+    String? passwordConfirmation,
   }) {
     return ChangePasswordState(
       isPasswordObscure: isPasswordObscure ?? this.isPasswordObscure,
       isNewPasswordObscure: isNewPasswordObscure ?? this.isNewPasswordObscure,
+      password: password ?? this.password,
+      newPassword: newPassword ?? this.newPassword,
+      passwordConfirmation: passwordConfirmation ?? this.passwordConfirmation,
     );
   }
 }
 
 class ChangePasswordController extends Notifier<ChangePasswordState> {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController newPasswordController = TextEditingController();
-  TextEditingController passwordConfirmationController =
-      TextEditingController();
-
+  // GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   ChangePasswordState build() {
-    ref.onDispose(dispose);
     return ChangePasswordState(
       isPasswordObscure: true,
       isNewPasswordObscure: true,
     );
-  }
-
-  void dispose() {
-    passwordController.dispose();
-    newPasswordController.dispose();
-    passwordConfirmationController.dispose();
   }
 
   void togglePasswordObscure() {
@@ -58,6 +57,18 @@ class ChangePasswordController extends Notifier<ChangePasswordState> {
 
   void toggleNewPasswordObscure() {
     state = state.copyWith(isNewPasswordObscure: !state.isNewPasswordObscure);
+  }
+
+  void setOldPassword(String password) {
+    state = state.copyWith(password: password);
+  }
+
+  void setNewPassword(String newPassword) {
+    state = state.copyWith(newPassword: newPassword);
+  }
+
+  void setPasswordConfirmation(String passwordConfirmation) {
+    state = state.copyWith(passwordConfirmation: passwordConfirmation);
   }
 }
 
@@ -71,13 +82,6 @@ class ChangePasswordAsyncController extends AsyncNotifier<void> {
   FutureOr<void> build() async {}
 
   Future<void> changePassword() async {
-    if (!ref
-        .read(changePasswordControllerProvider.notifier)
-        .formKey
-        .currentState!
-        .validate()) {
-      return;
-    }
     state = AsyncLoading();
     state = await AsyncValue.guard(() async {
       // await ref.read(changePasswordRepository).changePassword();

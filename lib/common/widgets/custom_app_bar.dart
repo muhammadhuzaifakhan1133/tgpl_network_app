@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tgpl_network/common/providers/sync_status_provider.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/features/home_shell/presentation/home_shell_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
-import 'package:tgpl_network/utils/sync_enum.dart';
+import 'package:tgpl_network/common/models/sync_enum.dart';
 
 class CustomAppBar extends ConsumerStatefulWidget {
   final String title;
@@ -41,6 +41,13 @@ class CustomAppBar extends ConsumerStatefulWidget {
 
 class _CustomAppBarState extends ConsumerState<CustomAppBar> {
   bool isSearchFieldActive = false;
+  final FocusNode _searchFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +115,9 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                             setState(() {
                               isSearchFieldActive = true;
                             });
-                            debugPrint("$isSearchFieldActive");
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              _searchFocusNode.requestFocus();
+                            });
                           },
                           child: Container(
                             height: 48,
@@ -148,19 +157,15 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                       if (widget.showResyncButton) ...[
                         Consumer(
                           builder: (context, ref, _) {
-                            final state = ref.watch(syncStatusProvider);
-                            debugPrint(
-                              "Resync Button State: ${state.isLoading}",
-                            );
+                            final syncStatus = ref.watch(syncStatusProvider);
                             return ElevatedButton.icon(
                               onPressed: () {
                                 ref
-                                    .read(syncStatusProvider.notifier)
-                                    .resyncData();
+                                    .read(homeShellControllerProvider.notifier)
+                                    .getMasterDataAndSaveLocally();
                               },
                               label: const Text("Resync"),
-                              icon: state.when(
-                                data: (status) => status == SyncStatus.syncing
+                              icon: syncStatus == SyncStatus.syncing
                                     ? const SizedBox(
                                         width: 16,
                                         height: 16,
@@ -170,17 +175,6 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                                         ),
                                       )
                                     : const Icon(Icons.refresh, size: 20),
-                                loading: () => const SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(
-                                    color: AppColors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                                error: (e, st) =>
-                                    const Icon(Icons.refresh, size: 20),
-                              ),
                               style: ElevatedButton.styleFrom(
                                 // backgroundColor: AppColors.primary,
                                 backgroundColor: AppColors.headerDarkBlueColor,
@@ -202,6 +196,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                           },
                         ),
                       ],
+                      ...widget.actions,
                     ],
                   ),
                 ],
@@ -216,16 +211,18 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                       hintText: "Search",
                       height: 50,
                       backgroundColor: AppColors.actionContainerColor,
+                      focusNode: _searchFocusNode,
+                      showClearButton: true,
                     ),
                   ),
                   const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: () {
+                  TextButton(
+                    child: const Text("Cancel"),
+                    onPressed: () {
                       setState(() {
                         isSearchFieldActive = false;
                       });
                     },
-                    child: SvgPicture.asset(AppImages.crossIconSvg, height: 40),
                   ),
                 ],
               ),

@@ -1,11 +1,12 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/features/dashboard/presentation/data/module_provider.dart';
 
-List<String> getAllSubmodulesList(WidgetRef ref) {
+import 'package:tgpl_network/features/dashboard/models/module_model.dart';
+import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
+
+List<SubModuleModel> getAllSubmodulesList(ref) {
     final modules = ref.read(modulesProvider);
-    final List<String> submodules = [];
+    final List<SubModuleModel> submodules = [];
     for (var mod in modules) {
-      submodules.addAll(mod.subModules.map((e) => e.title).toList());
+      submodules.addAll(mod.subModules);
     }
     return submodules;
   }

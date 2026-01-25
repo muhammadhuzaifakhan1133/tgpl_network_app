@@ -3,17 +3,16 @@ import 'package:tgpl_network/common/widgets/custom_textfield.dart';
 
 class CustomSearchableDropDown<T extends Object> extends StatelessWidget {
   final List<T> items;
-
-  /// What to show in the text field & selected value
   final String Function(T item)? displayString;
-
-  /// Fields used for searching (id, email, name, etc.)
   final List<String> Function(T item)? searchableStrings;
-
   final void Function(T?)? onChanged;
   final String? Function(T?)? validator;
   final String? hintText;
   final T? initialValue;
+
+  /// 🔹 NEW
+  final bool showClearButton;
+  final VoidCallback? onClear;
 
   const CustomSearchableDropDown({
     super.key,
@@ -24,6 +23,8 @@ class CustomSearchableDropDown<T extends Object> extends StatelessWidget {
     this.validator,
     this.hintText,
     this.initialValue,
+    this.showClearButton = false,
+    this.onClear,
   });
 
   @override
@@ -34,27 +35,26 @@ class CustomSearchableDropDown<T extends Object> extends StatelessWidget {
       builder: (state) {
         return Autocomplete<T>(
           initialValue: initialValue != null
-              ? TextEditingValue(text: displayString != null ? displayString!(initialValue!): initialValue.toString())
+              ? TextEditingValue(
+                  text: displayString != null
+                      ? displayString!(initialValue!)
+                      : initialValue.toString(),
+                )
               : const TextEditingValue(),
 
-          displayStringForOption: displayString ?? RawAutocomplete.defaultStringForOption,
+          displayStringForOption:
+              displayString ?? RawAutocomplete.defaultStringForOption,
 
           optionsBuilder: (textEditingValue) {
-            if (textEditingValue.text.isEmpty) {
-              return items;
-            }
+            if (textEditingValue.text.isEmpty) return items;
 
             final query = textEditingValue.text.toLowerCase();
-
             return items.where((item) {
               if (searchableStrings != null) {
-
-              return searchableStrings!(item).any(
-                (field) => field.toLowerCase().contains(query),
-              );
-              } else {
-                return item.toString().toLowerCase().contains(query);
+                return searchableStrings!(item)
+                    .any((f) => f.toLowerCase().contains(query));
               }
+              return item.toString().toLowerCase().contains(query);
             });
           },
 
@@ -69,12 +69,20 @@ class CustomSearchableDropDown<T extends Object> extends StatelessWidget {
             focusNode,
             onFieldSubmitted,
           ) {
+
             return CustomTextField(
               controller: controller,
               focusNode: focusNode,
               hintText: hintText,
               errorText: state.errorText,
               onFieldSubmitted: onFieldSubmitted,
+              showClearButton: showClearButton ,
+              onClear: () {
+                controller.clear();
+                state.didChange(null);
+                onChanged?.call(null);
+                onClear?.call();
+              },
             );
           },
         );

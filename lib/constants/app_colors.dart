@@ -35,4 +35,6 @@ class AppColors {
   static const onlineStatusColor =  Color(0xFF10B981);
   static const offlineStatusColor =  Color(0xFFFF8C42);
   static const syncedCountColor =  Color(0xFF2196F3);
+  static const shimmerBaseColor =  Color(0xFFE0E0E0);
+  static const shimmerHighlightColor =  Color(0xFFF5F5F5);
 }

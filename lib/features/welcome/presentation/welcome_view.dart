@@ -7,7 +7,7 @@ import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/welcome/presentation/widgets/welcome_card.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
-import 'package:tgpl_network/utils/screen_size_extension.dart';
+import 'package:tgpl_network/utils/extensions/screen_size_extension.dart';
 
 class WelcomeView extends ConsumerWidget {
   const WelcomeView({super.key});

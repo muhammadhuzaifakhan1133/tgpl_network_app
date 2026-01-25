@@ -3,7 +3,7 @@ class AppRoutes {
   static const String onboarding = '/onboarding';
   static const String welcome = '/welcome';
   static const String stationForm = '/station_form';
-  static const String stationFormConfirmation = '/station_form_confirmation';
+  static String stationFormConfirmation([String applicationId = ":applicationId"]) => '/station_form_confirmation/$applicationId';
   static const String login = '/login';
   static const String dashboard = "/dashboard";
   static const String applications = "/applications";
@@ -16,4 +16,6 @@ class AppRoutes {
   static String surveyForm([String appId = ":appId"]) => "/survey_form/$appId";
   static String trafficTradeForm([String appId = ":appId"]) => "/traffic_trade_form/$appId";
   static String syncData = "/sync_data";
+  static String applicationsFilter = "/applications_filter";
+  static String dashboardSearch = "/dashboard_search";
 }

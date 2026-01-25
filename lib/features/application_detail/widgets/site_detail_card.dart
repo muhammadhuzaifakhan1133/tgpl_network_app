@@ -1,70 +1,110 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
-import 'package:tgpl_network/features/application_detail/widgets/detail_section_card.dart';
+import 'package:tgpl_network/features/application_detail/application_detail_controller.dart';
+import 'package:tgpl_network/common/widgets/section_detail_card.dart';
 
-class SiteDetailCard extends StatelessWidget {
-  const SiteDetailCard({super.key});
+class SiteDetailCard extends ConsumerWidget {
+  final String entryCode;
+  final String dateConducted;
+  final String googleLocation;
+  final String city;
+  final String district;
+  final String priority;
+  final String locationAddress;
+  final String landmark;
+  final String plotArea;
+  final String plotFront;
+  final String plotDepth;
+  final String nearestDepo;
+  final String distanceFromDepo;
+  final String typeOfTrade;
+
+  const SiteDetailCard({
+    super.key,
+    required this.entryCode,
+    required this.dateConducted,
+    required this.googleLocation,
+    required this.city,
+    required this.district,
+    required this.priority,
+    required this.locationAddress,
+    required this.landmark,
+    required this.plotArea,
+    required this.plotFront,
+    required this.plotDepth,
+    required this.nearestDepo,
+    required this.distanceFromDepo,
+    required this.typeOfTrade,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return DetailSectionCard(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isExpanded = ref.watch(
+      applicationDetailControllerProvider.select(
+        (state) => state.isSiteDetailCardExpanded,
+      ),
+    );
+    return SectionDetailCard(
       title: "Site Detail",
+      isExpanded: isExpanded,
+      onToggleExpanded: () {
+        ref
+            .read(applicationDetailControllerProvider.notifier)
+            .toggleSiteDetailCardExpanded();
+      },
       children: [
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Entry Code",
-          hintText: "TGPL-SIN-76",
+          hintText: entryCode,
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Date Conducted",
-          hintText: "15/Sep/2022",
+          hintText: dateConducted,
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           readOnly: true,
 
           title: "Google Location",
-          hintText: "25.915497,68.619792",
+          hintText: googleLocation,
         ),
         const SizedBox(height: 10),
-        CustomTextFieldWithTitle(
-          readOnly: true,
-          title: "City",
-          hintText: "Shahdadpur",
-        ),
+        CustomTextFieldWithTitle(readOnly: true, title: "City", hintText: city),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "District",
-          hintText: "Sanghar",
+          hintText: district,
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Priority",
-          hintText: "High",
+          hintText: priority,
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           readOnly: true,
 
           title: "Location Address",
-          hintText: "Sufi CNG, Shahdapur",
+          hintText: locationAddress,
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           readOnly: true,
 
           title: "Landmark",
-          hintText: "The Citizen English Grammer School",
+          hintText: landmark,
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Plot Area",
-          hintText: "300",
+          hintText: plotArea,
         ),
         const SizedBox(height: 10),
         Row(
@@ -74,7 +114,7 @@ class SiteDetailCard extends StatelessWidget {
                 readOnly: true,
 
                 title: "Plot Front",
-                hintText: "150",
+                hintText: plotFront,
               ),
             ),
             const SizedBox(width: 10),
@@ -83,7 +123,7 @@ class SiteDetailCard extends StatelessWidget {
                 readOnly: true,
 
                 title: "Plot Depth",
-                hintText: "150",
+                hintText: plotDepth,
               ),
             ),
           ],
@@ -92,21 +132,21 @@ class SiteDetailCard extends StatelessWidget {
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Nearest Depo",
-          hintText: "Habibabad",
+          hintText: nearestDepo,
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           readOnly: true,
 
           title: "Distance From Depo (Km)",
-          hintText: "593.00",
+          hintText: distanceFromDepo,
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           readOnly: true,
 
           title: "Type of Trade",
-          hintText: "High Populated Urban Area",
+          hintText: typeOfTrade,
         ),
       ],
     );

@@ -5,7 +5,7 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
-import 'package:tgpl_network/features/dashboard/presentation/data/module_provider.dart';
+import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 
@@ -14,6 +14,7 @@ class DashboardModulesSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final modules = ref.watch(modulesProvider);
     return Column(
       children: [
         Align(
@@ -24,9 +25,9 @@ class DashboardModulesSection extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 12),
-        for (int i = 0; i < ref.read(modulesProvider).length; i++)
+        for (int i = 0; i < modules.length; i++)
           _DashboardModuleContainer(
-            module: ref.read(modulesProvider)[i],
+            module: modules[i],
             index: i,
           ),
       ],
@@ -47,12 +48,14 @@ class _DashboardModuleContainer extends ConsumerWidget {
     );
     return Column(
       children: [
-        _DashboardModuleContainerComponent(
+        DashboardModuleContainerComponent(
+          isModule: true,
           color: module.color,
           icon: module.icon,
           title: module.title,
           isExpanded: isExpanded,
-          noOfActiveItems: module.count,
+          subtitle: "${module.count} active items",
+          count: module.count,
           onTap: () {
             controller.onModuleExpand(index);
           },
@@ -64,15 +67,19 @@ class _DashboardModuleContainer extends ConsumerWidget {
               ? Column(
                   children: [
                     for (var subModule in module.subModules) ...[
-                      _DashboardModuleContainerComponent(
+                      DashboardModuleContainerComponent(
                         color: module.color,
                         title: subModule.title,
-                        noOfActiveItems: subModule.count,
+                        subtitle: "${subModule.count} active items",
+                        count: subModule.count,
                         onTap: () {
                           ref
                               .read(goRouterProvider)
                               .push(
-                                AppRoutes.moduleApplications(module.title, subModule.title),
+                                AppRoutes.moduleApplications(
+                                  module.title,
+                                  subModule.title,
+                                ),
                               );
                         },
                       ),
@@ -86,22 +93,26 @@ class _DashboardModuleContainer extends ConsumerWidget {
   }
 }
 
-class _DashboardModuleContainerComponent extends StatelessWidget {
-  const _DashboardModuleContainerComponent({
+class DashboardModuleContainerComponent extends StatelessWidget {
+  const DashboardModuleContainerComponent({
     required this.color,
     required this.title,
-    required this.noOfActiveItems,
+    required this.subtitle,
     required this.onTap,
     this.isExpanded = false,
     this.icon,
+    required this.count,
+    this.isModule = false,
   });
 
   final Color color;
   final String? icon;
   final String title;
-  final int noOfActiveItems;
+  final String subtitle;
+  final int count;
   final void Function() onTap;
   final bool isExpanded;
+  final bool isModule;
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +155,7 @@ class _DashboardModuleContainerComponent extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "$noOfActiveItems active items",
+                      subtitle,
                       style: AppTextstyles.googleInter400Grey14.copyWith(
                         fontSize: 13,
                       ),
@@ -162,7 +173,7 @@ class _DashboardModuleContainerComponent extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50),
                     ),
                     child: Text(
-                      "$noOfActiveItems",
+                      "$count",
                       style: AppTextstyles.googleInter700black28.copyWith(
                         fontSize: 14,
                         color: color,
@@ -172,7 +183,7 @@ class _DashboardModuleContainerComponent extends StatelessWidget {
                   IconButton(
                     onPressed: onTap,
                     icon: AnimatedRotation(
-                      turns: icon == null ? -0.25 : (isExpanded ? 0.5 : 0),
+                      turns: !isModule ? -0.25 : (isExpanded ? 0.5 : 0),
                       duration: const Duration(milliseconds: 500),
                       child: Icon(
                         Icons.expand_more,

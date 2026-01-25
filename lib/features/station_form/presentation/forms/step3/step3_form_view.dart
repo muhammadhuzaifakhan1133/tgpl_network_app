@@ -8,124 +8,171 @@ import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/site_location_selection/presentation/site_location_selection_controller.dart';
 import 'package:tgpl_network/features/station_form/presentation/forms/step3/step3_form_controller.dart';
+import 'package:tgpl_network/features/station_form/presentation/station_form_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
-import 'package:tgpl_network/utils/string_validation_extension.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
-class Step3FormView extends ConsumerWidget {
+class Step3FormView extends ConsumerStatefulWidget {
   const Step3FormView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.read(step3FormControllerProvider);
+  ConsumerState<Step3FormView> createState() => _Step3FormViewState();
+}
 
-    Future<void> navigateToSiteLocationSelection() async {
-      LocationData? selectedLocation = await ref
-          .read(goRouterProvider)
-          .push(AppRoutes.siteLocationSelection);
-      if (selectedLocation != null) {
-        controller.locationController.text =
-            "${selectedLocation.position.latitude.toStringAsFixed(6)}, ${selectedLocation.position.longitude.toStringAsFixed(6)}";
-        controller.addressController.text = selectedLocation.address ?? '';
-      }
+class _Step3FormViewState extends ConsumerState<Step3FormView> {
+  final _formKey = GlobalKey<FormState>();
+
+  late final TextEditingController _frontController;
+  late final TextEditingController _depthController;
+  late final TextEditingController _locationController;
+  late final TextEditingController _addressController;
+
+  @override
+  void initState() {
+    super.initState();
+    final state = ref.read(step3FormControllerProvider);
+
+    _frontController = TextEditingController(text: state.frontSize);
+    _depthController = TextEditingController(text: state.depthSize);
+    _locationController = TextEditingController(text: state.googleLocation);
+    _addressController = TextEditingController(text: state.address);
+  }
+
+  @override
+  void dispose() {
+    _frontController.dispose();
+    _depthController.dispose();
+    _locationController.dispose();
+    _addressController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickLocation() async {
+    final controller = ref.read(step3FormControllerProvider.notifier);
+
+    LocationData? selectedLocation = await ref
+        .read(goRouterProvider)
+        .push(AppRoutes.siteLocationSelection);
+
+    if (selectedLocation != null) {
+      final value =
+          "${selectedLocation.position.latitude.toStringAsFixed(6)}, "
+          "${selectedLocation.position.longitude.toStringAsFixed(6)}";
+
+      _locationController.text = value;
+      _addressController.text = selectedLocation.address ?? '';
+
+      controller.updateLocation(value);
+      controller.updateAddress(selectedLocation.address ?? '');
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final step3Controller = ref.read(step3FormControllerProvider.notifier);
 
     return Form(
-      key: controller.formKey,
+      key: _formKey,
       child: Column(
         children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Plot Details",
-              style: AppTextstyles.googleInter700black28.copyWith(
-                fontSize: 24,
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Provide plot dimensions and location",
-              style: AppTextstyles.googleInter400black16,
-            ),
+          Text(
+            "Plot Details",
+            style: AppTextstyles.googleInter700black28.copyWith(fontSize: 24),
           ),
           const SizedBox(height: 24),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Plot Size (in feet)",
-              style: AppTextstyles.googleJakarta500Grey12,
-            ),
-          ),
-          const SizedBox(height: 6),
+
           Row(
             children: [
               Expanded(
                 child: CustomTextFieldWithTitle(
                   title: "Front*",
-                  hintText: "60",
-                  controller: controller.frontSizeController,
+                  controller: _frontController,
+                  hintText: "Enter front size",
                   validator: (v) => v.validateNumber(),
                   keyboardType: TextInputType.number,
+                  onChanged: step3Controller.updateFrontSize,
+                  showClearButton: true,
+                  onClear: () => step3Controller.clearField('frontSize'),
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: CustomTextFieldWithTitle(
                   title: "Depth*",
-                  hintText: "78",
-                  controller: controller.depthSizeController,
+                  controller: _depthController,
+                  hintText: "Enter depth size",
                   validator: (v) => v.validateNumber(),
                   keyboardType: TextInputType.number,
+                  onChanged: step3Controller.updateDepthSize,
+                  showClearButton: true,
+                  onClear: () => step3Controller.clearField('depthSize'),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 2),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Enter dimensions in feet.",
-              style: AppTextstyles.googleInter400LightGrey12,
-            ),
-          ),
+
           const SizedBox(height: 16),
+
           CustomTextFieldWithTitle(
             title: "Google Location*",
-            hintText: "Tap to select locaiton",
             readOnly: true,
-            controller: controller.locationController,
-            extraInformation: "Use GPS to mark exact location of your plot",
-            onTap: navigateToSiteLocationSelection,
+            controller: _locationController,
+            hintText: "Select location",
+            onTap: _pickLocation,
             suffixIcon: actionContainer(
               icon: AppImages.locationIconSvg,
-              iconColor: AppColors.black,
               rightMargin: 5,
-              onTap: navigateToSiteLocationSelection,
+              iconColor: AppColors.black,
+              onTap: _pickLocation,
             ),
             validator: (v) => v.validate(),
           ),
+
           const SizedBox(height: 16),
+
           CustomTextFieldWithTitle(
             title: "Complete Site Address*",
-            hintText: "Enter complete address with landmarks",
-            controller: controller.addressController,
+            extraInformation:
+                "You can select the location on the map to autofill this field.",
+            controller: _addressController,
+            hintText: "Enter complete site address",
             validator: (v) => v.validate(),
             multiline: true,
+            onChanged: step3Controller.updateAddress,
+            showClearButton: true,
+            onClear: () => step3Controller.clearField('address'),
           ),
+
           const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: CustomButton(
-                  onPressed: () {
-                    controller.validateAndContinue();
-                  },
-                  text: "Submit",
+          // change this button to use stationSubmissionProvider for showing loading state
+          CustomButton(
+            text: "",
+            child: ref
+                .watch(stationSubmissionProvider)
+                .when(
+                  data: (_) => Text(
+                    "Submit",
+                    textAlign: TextAlign.center,
+                    style: AppTextstyles.neutra500white22,
+                  ),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (error, stack) => Text(
+                    "Submit",
+                    textAlign: TextAlign.center,
+                    style: AppTextstyles.neutra500white22,
+                  ),
                 ),
-              ),
-            ],
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                ref
+                    .read(goRouterProvider)
+                    .pushReplacement(
+                      AppRoutes.stationFormConfirmation("App-ID-12345"),
+                    );
+              }
+            },
           ),
         ],
       ),

@@ -4,7 +4,7 @@ import 'package:tgpl_network/constants/app_colors.dart';
 
 Widget actionContainer({
   required String icon,
-  required void Function() onTap,
+  required void Function()? onTap,
   Color iconColor = AppColors.subHeadingColor,
   Color backgroundColor = AppColors.actionContainerColor,
   double leftMargin = 8,

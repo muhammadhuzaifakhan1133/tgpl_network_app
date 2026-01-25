@@ -4,11 +4,9 @@ class OnboardingContentContainerClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-
-    var offset = 100.0;
-
-    var controlPoint = Offset(size.width / 2, 0);
-    var endPoint = Offset(0, offset);
+    const offset = 100.0;
+    final controlPoint = Offset(size.width / 2, 0);
+    const endPoint = Offset(0, offset);
 
     // Start the path at the top-left corner with an offset
     path.moveTo(0, offset);
@@ -28,7 +26,7 @@ class OnboardingContentContainerClipper extends CustomClipper<Path> {
       controlPoint.dy,
       endPoint.dx,
       endPoint.dy,
-    ); // Curve at the top
+    );
 
     // Close the path to complete the shape
     path.close();

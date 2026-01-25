@@ -1,18 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
+import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/traffic_trade_form_controller.dart';
-import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/nearby_sites_form_section.dart';
-import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/trafffic_recommendation_card_form.dart';
-import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/traffic_count_card_form.dart';
-import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/volum_and_financial_estimation_card_form.dart';
+import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/nearby_sites/nearby_sites_form_section.dart';
+import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/traffic_recommendation/trafffic_recommendation_card_form.dart';
+import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/traffic_count/traffic_count_card_form.dart';
+import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/volume_and_financial_estimation/volum_and_financial_estimation_card_form.dart';
 
-class TrafficTradeFormView extends ConsumerWidget {
+class TrafficTradeFormView extends ConsumerStatefulWidget {
   final String appId;
   const TrafficTradeFormView({super.key, required this.appId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TrafficTradeFormView> createState() =>
+      _TrafficTradeFormViewState();
+}
+
+class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
+    // Load initial data if needed (for edit mode)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(trafficTradeFormControllerProvider.notifier)
+          .initialize(widget.appId);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final asyncValue = ref.watch(trafficTradeFormControllerProvider);
+    final controller = ref.read(trafficTradeFormControllerProvider.notifier);
+
     return Scaffold(
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -20,25 +42,26 @@ class TrafficTradeFormView extends ConsumerWidget {
           children: [
             CustomAppBar(
               title: "Traffic / Trade",
-              subtitle: "Form # $appId",
+              subtitle: "Form # ${widget.appId}",
               showBackButton: true,
             ),
             Expanded(
-              child: Form(
-                key: ref
-                    .read(trafficTradeFormControllerProvider.notifier)
-                    .formKey,
-                child: ListView(
-                  padding: const EdgeInsets.all(20.0),
-                  children: [
-                    NearbySitesFormSection(),
-                    const SizedBox(height: 20),
-                    TrafficCountCardForm(),
-                    const SizedBox(height: 20),
-                    VolumAndFinancialEstimationCardForm(),
-                    const SizedBox(height: 20),
-                    TrafficRecommendationCardForm(),
-                  ],
+              child: asyncValue.when(
+                data: (_) => _buildForm(controller),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stack) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Error: $error'),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () =>
+                            ref.refresh(trafficTradeFormControllerProvider),
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -46,5 +69,77 @@ class TrafficTradeFormView extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildForm(TrafficTradeFormController controller) {
+    final isSubmitting = ref.watch(
+      trafficTradeFormControllerProvider.select((state) => state.isLoading),
+    );
+
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: const [
+                    NearbySitesFormSection(),
+                    SizedBox(height: 20),
+                    TrafficCountCardForm(),
+                    SizedBox(height: 20),
+                    VolumAndFinancialEstimationCardForm(),
+                    SizedBox(height: 20),
+                    TrafficRecommendationCardForm(),
+                    SizedBox(height: 20),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: CustomButton(
+              onPressed: isSubmitting ? null : () => _handleSubmit(controller),
+              text: isSubmitting ? "Submitting..." : "Submit",
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handleSubmit(TrafficTradeFormController controller) async {
+    // Unfocus any active text field
+    FocusScope.of(context).unfocus();
+
+    bool? success;
+
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      // Submit form (validation happens inside)
+      success = await controller.submitTrafficTradeForm();
+    }
+
+    if (!mounted) return;
+
+    if (success == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Form submitted successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      // Navigate back or to success screen
+      Navigator.of(context).pop(true);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please correct the errors in the form.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 }

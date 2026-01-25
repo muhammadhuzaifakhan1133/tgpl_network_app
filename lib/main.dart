@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tgpl_network/common/providers/shared_prefs_provider.dart';
+import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 
 Future<void> main() async {
@@ -12,7 +13,11 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  
+  await DatabaseHelper.instance.database;
+  
   final prefs = await SharedPreferences.getInstance();
+  
   runApp(ProviderScope(
     overrides: [
       sharedPreferencesProvider.overrideWithValue(prefs),

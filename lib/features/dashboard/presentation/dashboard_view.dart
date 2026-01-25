@@ -1,16 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/common/providers/last_sync_time_provider.dart';
 import 'package:tgpl_network/common/providers/sync_status_provider.dart';
+import 'package:tgpl_network/common/widgets/error_widget.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
+import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_count_containers.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_greeting_text.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_header_profile.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_module_sections.dart';
+import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_shimmer.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/sync_status_widget.dart';
-import 'package:tgpl_network/utils/sync_enum.dart';
+import 'package:tgpl_network/features/home_shell/presentation/home_shell_controller.dart';
 
-class DashboardView extends StatelessWidget {
+class DashboardView extends ConsumerWidget {
   const DashboardView({super.key});
+
+  
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final homeState = ref.watch(homeShellControllerProvider);
+    return homeState.when(
+      data: (data) {
+        final dashboardState = ref.watch(dashboardAsyncControllerProvider);
+        return dashboardState.when(
+          data: (dashboardData) => _DashboardView(),
+          loading: ()=> DashboardShimmerView(),
+          error: (e, st) {
+            return errorWidget("Error loading data: $e");
+          },
+        );
+      },
+      loading: ()=> DashboardShimmerView(),
+      error: (e, st) {
+        return errorWidget("Error loading data: $e");
+      },
+    );
+  }
+}
+
+class _DashboardView extends StatelessWidget {
+  const _DashboardView();
 
   @override
   Widget build(BuildContext context) {
@@ -44,24 +76,29 @@ class DashboardView extends StatelessWidget {
               // RegionalManagersSection(),
               Consumer(
                 builder: (context, ref, child) {
-                  final state = ref.watch(syncStatusProvider);
+                  final state = ref.watch(getLastSyncTimeProvider);
+                  final syncState = ref.watch(syncStatusProvider);
                   return state.when(
-                    data: (status) => SyncStatusCard(
-                      status: status,
-                      lastSyncTime: "10 minutes ago",
+                    data: (lastSyncTime) => SyncStatusCard(
+                      status: syncState,
+                      lastSyncTime: lastSyncTime,
                       onResync: () {
-                        ref.read(syncStatusProvider.notifier).resyncData();
+                        ref
+                            .read(homeShellControllerProvider.notifier)
+                            .getMasterDataAndSaveLocally();
                       },
                     ),
                     loading: () => SyncStatusCard(
-                      status: SyncStatus.syncing,
-                      lastSyncTime: "10 minutes ago",
+                      status: syncState,
+                      lastSyncTime: "Loading...",
                     ),
                     error: (e, st) => SyncStatusCard(
-                      status: SyncStatus.offline,
-                      lastSyncTime: "10 minutes ago",
+                      status: syncState,
+                      lastSyncTime: "Never",
                       onResync: () {
-                        ref.read(syncStatusProvider.notifier).resyncData();
+                        ref
+                            .read(homeShellControllerProvider.notifier)
+                            .getMasterDataAndSaveLocally();
                       },
                     ),
                   );

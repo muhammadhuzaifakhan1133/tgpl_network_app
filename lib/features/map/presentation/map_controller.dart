@@ -1,46 +1,41 @@
-import 'dart:async';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:tgpl_network/common/models/application_model.dart';
-import 'package:tgpl_network/common/providers/application_provider.dart';
+// import 'package:tgpl_network/features/master_data/models/application_model.dart';
 import 'package:tgpl_network/features/map/presentation/widgets/site_marker_widget.dart';
+import 'package:tgpl_network/features/master_data/providers/applications_provider.dart';
 import 'package:tgpl_network/utils/get_application_status_color.dart';
 import 'package:widget_to_marker/widget_to_marker.dart';
 
 final isMapLoadedProvider = StateProvider<bool>((ref) => false);
 
-final mapControllerProvider =
-    AsyncNotifierProvider<MapController, List<Marker>>(() {
-      return MapController();
-    });
+final selectedSiteProvider = StateProvider<ApplicationLegacyModel?>((ref) => null);
 
-final selectedSiteProvider = StateProvider<ApplicationModel?>((ref) => null);
+final mapMarkersProvider =
+    AsyncNotifierProvider<MapMarkersController, List<Marker>>(() {
+  return MapMarkersController();
+});
 
-class MapController extends AsyncNotifier<List<Marker>> {
+class MapMarkersController extends AsyncNotifier<List<Marker>> {
   final _markerCache = <String, BitmapDescriptor>{};
 
   @override
-  FutureOr<List<Marker>> build() async {
-    return await _generateMarkers();
+  Future<List<Marker>> build() async {
+    return _generateMarkers();
   }
 
   Future<List<Marker>> _generateMarkers() async {
-    final List<ApplicationModel> applications = ref.read(applicationsProvider);
+    final apps = ref.read(applicationsProvider);
     final List<Marker> markers = [];
-    for (var application in applications) {
+    for (final app in apps) {
       final marker = Marker(
-        markerId: MarkerId(application.id.toString()),
-        position: LatLng(application.latitude, application.longitude),
+        markerId: MarkerId(app.id.toString()),
+        position: LatLng(app.latitude, app.longitude),
         icon: await _getMarker(
-          color: getApplicationStatusColor(application.statusId),
-          label: application.siteName,
+          color: getApplicationStatusColor(app.statusId),
+          label: app.siteName,
         ),
-        onTap: () {
-          ref.read(selectedSiteProvider.notifier).state = application;
-        },
+        onTap: () => ref.read(selectedSiteProvider.notifier).state = app,
       );
       markers.add(marker);
     }
@@ -48,20 +43,13 @@ class MapController extends AsyncNotifier<List<Marker>> {
   }
 
   Future<BitmapDescriptor> _getMarker({
-    required Color color,
+    required color,
     required String label,
   }) async {
     final key = '${color.value}_$label';
+    if (_markerCache.containsKey(key)) return _markerCache[key]!;
 
-    if (_markerCache.containsKey(key)) {
-      return _markerCache[key]!;
-    }
-
-    final bitmap = await SiteMapMarker(
-      color: color,
-      label: label,
-    ).toBitmapDescriptor();
-
+    final bitmap = await SiteMapMarker(color: color, label: label).toBitmapDescriptor();
     _markerCache[key] = bitmap;
     return bitmap;
   }
