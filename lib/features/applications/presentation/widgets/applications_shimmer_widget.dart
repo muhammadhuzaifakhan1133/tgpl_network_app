@@ -55,23 +55,23 @@ class ApplicationStatusShimmerCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(
-                  height: 20,
-                  width: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  height: 24,
-                  width: 24,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                ),
+                // Container(
+                //   height: 20,
+                //   width: 60,
+                //   decoration: BoxDecoration(
+                //     color: Colors.white,
+                //     borderRadius: BorderRadius.circular(25),
+                //   ),
+                // ),
+                // const SizedBox(width: 8),
+                // Container(
+                //   height: 24,
+                //   width: 24,
+                //   decoration: BoxDecoration(
+                //     color: Colors.white,
+                //     shape: BoxShape.circle,
+                //   ),
+                // ),
               ],
             ),
             const SizedBox(height: 8),
@@ -107,24 +107,24 @@ class ApplicationStatusShimmerCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
-                const SizedBox(width: 10),
-                Container(
-                  height: 14,
-                  width: 14,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 5),
-                Container(
-                  height: 13,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
+                // const SizedBox(width: 10),
+                // Container(
+                //   height: 14,
+                //   width: 14,
+                //   decoration: BoxDecoration(
+                //     color: Colors.white,
+                //     shape: BoxShape.circle,
+                //   ),
+                // ),
+                // const SizedBox(width: 5),
+                // Container(
+                //   height: 13,
+                //   width: 100,
+                //   decoration: BoxDecoration(
+                //     color: Colors.white,
+                //     borderRadius: BorderRadius.circular(4),
+                //   ),
+                // ),
               ],
             ),
             const SizedBox(height: 10),
@@ -132,7 +132,7 @@ class ApplicationStatusShimmerCard extends StatelessWidget {
             // Progress Bars
             Row(
               children: [
-                for (int i = 0; i < 19; i++)
+                for (int i = 0; i < 15; i++)
                   Expanded(
                     child: Container(
                       margin: const EdgeInsets.only(right: 5),

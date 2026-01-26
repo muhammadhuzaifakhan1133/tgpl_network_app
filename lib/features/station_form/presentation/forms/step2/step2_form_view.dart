@@ -44,7 +44,8 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
   Widget build(BuildContext context) {
     final step2Controller = ref.read(step2FormControllerProvider.notifier);
     final stationController = ref.read(stationFormControllerProvider.notifier);
-
+    final citiesState = ref.watch(cityNamesProvider);
+    final prioritiesState = ref.watch(prioritiesProvider);
     final state = ref.watch(step2FormControllerProvider);
 
     return Form(
@@ -59,10 +60,14 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
 
           CustomDropDownWithTitle(
             title: "City",
-            hintText: "Select city",
+            hintText: citiesState.isLoading? "Loading Cities...":"Select city",
             enableSearch: true,
             selectedItem: state.selectedCity,
-            items: ref.read(cityNamesProvider),
+            items: citiesState.when(
+              data: (cities) => cities.map((city) => city.name).toList(),
+              loading: () => <String>[],
+              error: (_, __) => <String>[],
+            ),
             onChanged: (value) {
               if (value != null) {
                 step2Controller.updateCity(value.toString());
@@ -98,9 +103,13 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
 
           CustomDropDownWithTitle(
             title: "Priority",
-            hintText: "Select site priority",
+            hintText: prioritiesState.isLoading ? "Loading Priorities..." : "Select site priority",
             selectedItem: state.selectedPriority,
-            items: ref.read(prioritiesProvider),
+            items: prioritiesState.when(
+              data: (priorities) => priorities,
+              loading: () => <String>[],
+              error: (_, __) => <String>[],
+            ),
             onChanged: (value) {
               if (value != null) {
                 step2Controller.updatePriority(value.toString());

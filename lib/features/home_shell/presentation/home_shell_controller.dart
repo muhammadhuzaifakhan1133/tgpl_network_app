@@ -6,9 +6,13 @@ import 'package:tgpl_network/common/data/shared_prefs_data_source.dart';
 import 'package:tgpl_network/common/models/sync_enum.dart';
 import 'package:tgpl_network/common/providers/last_sync_time_provider.dart';
 import 'package:tgpl_network/common/providers/sync_status_provider.dart';
+import 'package:tgpl_network/features/applications/presentation/application_controller.dart';
+import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
 import 'package:tgpl_network/features/master_data/data/master_data_local_data_source.dart';
 import 'package:tgpl_network/features/master_data/data/master_data_remote_data_source.dart';
+import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/priorities_provider.dart';
 import 'package:tgpl_network/utils/internet_connectivity.dart';
 import 'package:tgpl_network/utils/should_auto_sync.dart';
 
@@ -18,16 +22,19 @@ final homeShellControllerProvider =
     });
 
 class HomeShellController extends AsyncNotifier<void> {
-
   List<dynamic> get providersToRefresh => [
-        getLastSyncTimeProvider,
-        dashboardAsyncControllerProvider,
+    getLastSyncTimeProvider,
+    dashboardAsyncControllerProvider,
+    modulesProvider,
+    applicationControllerProvider,
+    appStatusesProvider,
+    cityNamesProvider,
+    prioritiesProvider,
   ];
   StreamSubscription<InternetStatus>? _connectivitySubscription;
 
   @override
   Future<void> build() async {
-    
     _listenToConnectivityChanges();
 
     ref.onDispose(() {
@@ -42,7 +49,9 @@ class HomeShellController extends AsyncNotifier<void> {
     if (!isFirstTime) {
       state = const AsyncValue.data(null);
       // Sync in background without blocking
-      debugPrint("HomeShellController: Not first-time, syncing in background...");
+      debugPrint(
+        "HomeShellController: Not first-time, syncing in background...",
+      );
       _syncInBackground();
       return;
     }
@@ -81,8 +90,7 @@ class HomeShellController extends AsyncNotifier<void> {
   }
 
   Future<void> _syncInBackground() async {
-    if (await InternetConnectivity.hasInternet() &&
-        await shouldAutoSync(ref)) {
+    if (await InternetConnectivity.hasInternet() && await shouldAutoSync(ref)) {
       try {
         await getMasterDataAndSaveLocally();
       } catch (e) {

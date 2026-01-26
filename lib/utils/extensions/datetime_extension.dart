@@ -7,28 +7,41 @@ extension DatetimeExtension on DateTime {
 }
 
 extension StrDateTimeExtension on String {
-  String formatTod_MMM_yyyy() {
+  String formatFromDDMMYYYToIsoDate() {
     try {
+      final parts = split('/');
+      if (parts.length != 3) return this;
+      final day = int.parse(parts[0]);
+      final month = int.parse(parts[1]);
+      final year = int.parse(parts[2]);
+      final dateTime = DateTime(year, month, day);
+      return dateTime.toIso8601String();
+    } catch (e) {
+      return this;
+    }
+  }
 
-    final dateTime = DateTime.parse(this);
-    final day = dateTime.day.toString().padLeft(2, '0');
-    final monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
-    final month = monthNames[dateTime.month - 1];
-    final year = dateTime.year;
-    return '$day $month, $year';
+  String formatTodMMMyyyy() {
+    try {
+      final dateTime = DateTime.parse(this);
+      final day = dateTime.day.toString().padLeft(2, '0');
+      final monthNames = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
+      final month = monthNames[dateTime.month - 1];
+      final year = dateTime.year;
+      return '$day $month, $year';
     } catch (e) {
       return this;
     }

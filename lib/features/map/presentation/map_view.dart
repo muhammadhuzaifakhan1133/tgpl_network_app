@@ -1,22 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:riverpod/src/framework.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
+import 'package:tgpl_network/common/widgets/custom_dropdown.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/map/presentation/map_controller.dart';
-import 'package:tgpl_network/features/master_data/providers/applications_provider.dart';
-import 'package:tgpl_network/utils/get_application_category_color.dart';
+import 'package:tgpl_network/features/map/presentation/widgets/map_skeleton.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/features/master_data/models/city_model.dart';
+import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/statuses_provider.dart';
+import 'package:tgpl_network/utils/get_application_status_color.dart';
 
-class MapView extends ConsumerWidget {
+class MapView extends ConsumerStatefulWidget {
   const MapView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MapView> createState() => _MapViewState();
+}
+
+class _MapViewState extends ConsumerState<MapView> {
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     _getCurrentLocation();
+  //   });
+  // }
+
+  // Future<void> _getCurrentLocation() async {
+  //   ref.read(locationActionProvider.notifier).state =
+  //   const AsyncLoading();
+
+  //   final locationService = ref.read(locationServiceProvider);
+  //   final position = await locationService.getCurrentLocation();
+
+  //   if (position != null) {
+  //     ref.read(currentLocationProvider.notifier).state = position;
+
+  //     // Add current location marker
+  //     final markers = ref.read(markersProvider.notifier);
+  //     markers.state = {
+  //       ...markers.state,
+  //       Marker(
+  //         markerId: MarkerId(AppKeys.currentMarkerId),
+  //         position: position,
+  //         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+  //         infoWindow: const InfoWindow(title: 'Your Location'),
+  //       ),
+  //     };
+
+  //     // Move camera to current location
+  //     final mapController = ref.read(mapControllerProvider);
+  //     mapController?.animateCamera(
+  //       CameraUpdate.newCameraPosition(
+  //         CameraPosition(target: position, zoom: 15),
+  //       ),
+  //     );
+  //   } else {
+  //     if (context.mounted) {
+  //       showSnackBar(context, 'Failed to get location. Please check permissions.');
+  //     }
+  //   }
+
+  //   ref.read(locationActionProvider.notifier).state =
+  //   const AsyncData(null);
+  // }
+
+  @override
+  Widget build(BuildContext context) {
     final markersAsync = ref.watch(mapMarkersProvider);
     final selectedApplication = ref.watch(selectedSiteProvider);
-    final isMapLoaded = ref.watch(isMapLoadedProvider);
+    // final isMapLoaded = ref.watch(isMapLoadedProvider);
+    final citiesAsync = ref.watch(cityNamesProvider);
+    final selectedCity = ref.watch(selectedCityProvider);
 
+    if (markersAsync.isLoading) {
+      return const MapSkeleton();
+    }
     return Stack(
       children: [
         GoogleMap(
@@ -28,7 +91,7 @@ class MapView extends ConsumerWidget {
           mapToolbarEnabled: false,
           onMapCreated: (controller) async {
             await Future.delayed(const Duration(milliseconds: 300));
-            ref.read(isMapLoadedProvider.notifier).state = true;
+            // ref.read(isMapLoadedProvider.notifier).state = true;
           },
           markers: markersAsync.when(
             data: (markers) => Set<Marker>.from(markers),
@@ -37,8 +100,28 @@ class MapView extends ConsumerWidget {
           ),
           onTap: (_) => ref.read(selectedSiteProvider.notifier).state = null,
         ),
-        if (!isMapLoaded)
-          const Positioned.fill(child: _MapSkeleton()),
+        // City Dropdown
+        Positioned(
+          top: 16,
+          left: 16,
+          right: 16,
+          child: citiesAsync.when(
+            data: (cities) {
+              return CustomDropDown(
+                items: cities,
+                backgroundColor: AppColors.white,
+                displayString: (item) => item.name,
+                selectedItem: selectedCity,
+                hintText: 'Select City',
+                onChanged: (city) {
+                  ref.read(selectedCityProvider.notifier).state = city;
+                },
+              );
+            },
+            loading: () => const SizedBox(),
+            error: (_, __) => const SizedBox(),
+          ),
+        ),
         if (selectedApplication != null)
           Positioned(
             bottom: 40,
@@ -51,27 +134,12 @@ class MapView extends ConsumerWidget {
   }
 }
 
-class _MapSkeleton extends StatelessWidget {
-  const _MapSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.grey.shade200,
-      child: const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
-      ),
-    );
-  }
-}
-
-
-class _SelectedApplicationCard extends StatelessWidget {
-  final ApplicationLegacyModel application;
+class _SelectedApplicationCard extends ConsumerWidget {
+  final ApplicationModel application;
   const _SelectedApplicationCard({required this.application});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
@@ -85,21 +153,32 @@ class _SelectedApplicationCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "${application.id} (${application.siteName})",
-                style: AppTextstyles.googleInter400Grey14.copyWith(fontSize: 12),
+                "${application.entryCode}",
+                style: AppTextstyles.googleInter400Grey14.copyWith(
+                  fontSize: 12,
+                ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 5,
+                  horizontal: 15,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25),
-                  color: getApplicationCategoryColor(application.category)
-                      .withOpacity(0.08),
+                  color: getApplicationStatusColor(
+                    application.statusId ?? 18,
+                  ).withOpacity(0.08),
                 ),
                 child: Text(
-                  application.category,
+                  getStatusById(
+                    application.statusId ?? 18,
+                    ref.read(statusesProvider),
+                  ),
                   style: AppTextstyles.googleInter500LabelColor14.copyWith(
                     fontSize: 12,
-                    color: getApplicationCategoryColor(application.category),
+                    color: getApplicationStatusColor(
+                      application.statusId ?? 18,
+                    ),
                   ),
                 ),
               ),
@@ -107,7 +186,7 @@ class _SelectedApplicationCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            application.applicantName,
+            application.dealerName ?? "N/A",
             style: AppTextstyles.googleInter700black28.copyWith(
               fontSize: 20,
               color: AppColors.black2Color,
@@ -119,7 +198,7 @@ class _SelectedApplicationCard extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  application.address,
+                  application.locationAddress ?? "N/A",
                   style: AppTextstyles.googleInter400Grey14,
                 ),
               ),

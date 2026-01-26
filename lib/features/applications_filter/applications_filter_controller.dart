@@ -13,11 +13,11 @@ class FilterController extends Notifier<FilterSelectionState> {
     return const FilterSelectionState();
   }
 
-  void updateDropdown({String? city, String? priority, String? status}) {
+  void updateDropdown({String? city, String? priority, String? statusId}) {
     state = state.copyWith(
       selectedCity: city,
       selectedPriority: priority,
-      selectedStatus: status,
+      selectedStatusId: statusId,
     );
   }
 

@@ -21,10 +21,10 @@ class AppImages {
   static const String searchIconSvg = "assets/icons/search_icon.svg";
   static const String notificationIconSvg =
       "assets/icons/notification_icon.svg";
-  static const String inProcessIconSvg = "assets/icons/in_process_icon.svg";
+  static const String holdIconSvg = "assets/icons/in_process_icon.svg";
   static const String inauguratedIconSvg = "assets/icons/inaugurated_icon.svg";
   static const String rejectedIconSvg = "assets/icons/rejected_icon.svg";
-  static const String totalActiveIconSvg = "assets/icons/total_active_icon.svg";
+  static const String inProcessIconSvg = "assets/icons/total_active_icon.svg";
   static const String historyIconSvg = "assets/icons/history_icon.svg";
   static const String commissionIconSvg = "assets/icons/commission_icon.svg";
   static const String constructionIconSvg =

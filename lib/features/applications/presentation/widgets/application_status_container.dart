@@ -96,7 +96,7 @@ class ApplicationStatusContainer extends ConsumerWidget {
               ),
               const SizedBox(width: 5),
               Text(
-                application.addDate.toString().formatTod_MMM_yyyy(),
+                application.addDate.toString().formatTodMMMyyyy(),
                 style: AppTextstyles.googleInter400Grey14.copyWith(
                   fontSize: 13,
                 ),

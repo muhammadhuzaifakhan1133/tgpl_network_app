@@ -14,6 +14,7 @@ class CustomDropDown<T> extends StatefulWidget {
   final int? maxSelection;
   final bool showClearButton;
   final VoidCallback? onClear;
+  final Color? backgroundColor;
 
   const CustomDropDown({
     super.key,
@@ -30,6 +31,7 @@ class CustomDropDown<T> extends StatefulWidget {
     this.maxSelection,
     this.showClearButton = false,
     this.onClear,
+    this.backgroundColor,
   }) : assert(isMultiSelect ? onMultiChanged != null : onChanged != null);
 
   @override
@@ -130,6 +132,8 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
       validator: widget.validator,
       decoration: InputDecoration(
         hintText: widget.hintText,
+        fillColor: widget.backgroundColor,
+        filled: widget.backgroundColor != null,
         suffixIcon: widget.showClearButton && _hasValue
             ? IconButton(icon: const Icon(Icons.close), onPressed: _clear)
             : null,

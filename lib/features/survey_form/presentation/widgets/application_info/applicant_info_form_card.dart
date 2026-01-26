@@ -24,7 +24,8 @@ class ApplicantInfoFormCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(applicationInfoFormControllerProvider.notifier);
     final state = ref.watch(applicationInfoFormControllerProvider);
-
+    final citiesState = ref.watch(cityNamesProvider);
+    final prioritiesState = ref.watch(prioritiesProvider);
     return SectionDetailCard(
       title: "Applicant Info",
       children: [
@@ -100,10 +101,14 @@ class ApplicantInfoFormCard extends ConsumerWidget {
         const SizedBox(height: 10),
         CustomDropDownWithTitle(
           title: "City",
-          hintText: "Select city",
+          hintText: citiesState.isLoading ? "Loading Cities..." : "Select city",
           enableSearch: true,
           selectedItem: state.selectedCity,
-          items: ref.read(cityNamesProvider),
+          items: citiesState.when(
+            data: (cities) => cities.map((city) => city.name).toList(),
+            loading: () => <String>[],
+            error: (_, _) => <String>[],
+          ),
           onChanged: (value) {
             if (value == null) return;
             controller.updateLocation(city: value.toString());
@@ -190,8 +195,12 @@ class ApplicantInfoFormCard extends ConsumerWidget {
         CustomDropDownWithTitle(
           title: "Priority",
           selectedItem: state.selectedPriority,
-          hintText: "Select site priority",
-          items: ref.read(prioritiesProvider),
+          hintText: prioritiesState.isLoading ? "Loading Priorities..." : "Select site priority",
+          items: prioritiesState.when(
+            data: (priorities) => priorities,
+            loading: () => <String>[],
+            error: (_, _) => <String>[],
+          ),
           onChanged: (value) {
             if (value == null) return;
             controller.updateSiteInfo(priority: value.toString());

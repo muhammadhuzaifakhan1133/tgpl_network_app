@@ -3,13 +3,21 @@ import 'package:tgpl_network/constants/app_colors.dart';
 
 Color getApplicationStatusColor(int statusId) {
   switch (statusId) {
-    case 1:
+    // In Process
+    case < 13:
       return AppColors.nextStep1Color;
-    case 2:
+    // inaugurated
+    case 13:
       return AppColors.nextStep2Color;
-    case 3:
+    // hold
+    case 15:
+    case 16:
       return AppColors.nextStep3Color;
-    default:
+    // rejected
+    case 14:
+    case 17:
       return AppColors.emailUsIconColor;
+    default:
+      return AppColors.grey;
   }
 }

@@ -21,6 +21,7 @@ class CustomAppBar extends ConsumerStatefulWidget {
   final void Function()? onTapBackButton;
   final List<Widget> actions;
   final bool showResyncButton;
+  final void Function(String)? onSearchChanged;
   const CustomAppBar({
     super.key,
     required this.title,
@@ -33,6 +34,7 @@ class CustomAppBar extends ConsumerStatefulWidget {
     this.onTapBackButton,
     this.actions = const <Widget>[],
     this.showResyncButton = false,
+    this.onSearchChanged,
   });
 
   @override
@@ -213,6 +215,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                       backgroundColor: AppColors.actionContainerColor,
                       focusNode: _searchFocusNode,
                       showClearButton: true,
+                      onChanged: widget.onSearchChanged,
                     ),
                   ),
                   const SizedBox(width: 8),

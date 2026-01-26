@@ -6,7 +6,11 @@ import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
 import 'package:tgpl_network/common/models/user_model.dart';
 
 final userProvider = Provider<UserModel>((ref) {
-  return UserModel(name: "Ahmed Hassan", role: "Regional Manager", id: "EMP-2025-001");
+  return UserModel(
+    name: "Ahmed Hassan",
+    role: "Regional Manager",
+    id: "EMP-2025-001",
+  );
 });
 
 final dashboardControllerProvider =
@@ -16,7 +20,7 @@ final dashboardControllerProvider =
 
 final dashboardAsyncControllerProvider =
     AsyncNotifierProvider<DashboardAsyncController, DashboardResponseModel>(() {
-  return DashboardAsyncController();
+      return DashboardAsyncController();
     });
 
 class DashboardState {

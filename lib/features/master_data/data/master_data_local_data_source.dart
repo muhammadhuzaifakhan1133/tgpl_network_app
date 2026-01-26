@@ -1,4 +1,6 @@
 // lib/features/master_data/data/datasources/master_data_local_data_source.dart
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tgpl_network/core/database/app_database.dart';
@@ -14,6 +16,11 @@ abstract class MasterDataLocalDataSource {
   Future<void> saveMasterData(MasterDataResponseModel data);
   Future<List<ApplicationModel>> getApplications({
     FilterSelectionState? filters,
+    int page,
+    int pageSize,
+  });
+  Future<List<ApplicationModel>> getApplicationsForMap({
+    required String cityId,
   });
   Future<List<String>> getNearestDepos();
   Future<List<String>> getTradeAreaTypes();
@@ -99,7 +106,6 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
         );
       }
 
-      
       batch.delete(AppDatabase.syncMetadataTable);
 
       finalBatch.insert(AppDatabase.syncMetadataTable, {
@@ -131,7 +137,10 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
   @override
   Future<List<ApplicationModel>> getApplications({
     FilterSelectionState? filters,
+    int page = 1,
+    int? pageSize,
   }) async {
+    pageSize ??= ApplicationModel.pageSize;
     final db = await _databaseHelper.database;
 
     String? whereClause;
@@ -148,8 +157,45 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
       where: whereClause,
       whereArgs: whereArgs.isNotEmpty ? whereArgs : null,
       orderBy: ApplicationModel.orderBy,
+      limit: pageSize,
+      offset: (page - 1) * pageSize,
     );
 
+    return maps.map((map) => ApplicationModel.fromDatabaseMap(map)).toList();
+  }
+
+  @override
+  Future<List<ApplicationModel>> getApplicationsForMap({
+    required String cityId,
+  }) async {
+    final db = await _databaseHelper.database;
+
+    final List<ApplicationModel> results = [];
+    const batchSize = 1000;
+    int offset = 0;
+
+    while (true) {
+      final batch = await db.query(
+        AppDatabase.applicationTable,
+        columns: ApplicationModel.mapColumns,
+        where: 'cityId = ?',
+        whereArgs: [cityId],
+        limit: batchSize,
+        offset: offset,
+      );
+
+      if (batch.isEmpty) break;
+
+      results.addAll(await compute(_parseApplications, batch));
+      offset += batchSize;
+    }
+
+    return results;
+  }
+
+  static List<ApplicationModel> _parseApplications(
+    List<Map<String, dynamic>> maps,
+  ) {
     return maps.map((map) => ApplicationModel.fromDatabaseMap(map)).toList();
   }
 
@@ -169,7 +215,7 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
       where: '${MasterListTypeTable.databaseColName} = ?',
       whereArgs: [type.key],
     );
-
+    debugPrint('Master list for ${type.key}: $result');
     if (result.isEmpty) return [];
     return List<String>.from(jsonDecode(result.first['listValues'] as String));
   }

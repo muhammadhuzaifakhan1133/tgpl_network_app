@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/master_data/data/master_data_local_data_source.dart';
 
-final prioritiesProvider = Provider<List<String>>((ref) {
-  return ["High", "Medium", "Low"];
+final prioritiesProvider = FutureProvider<List<String>>((ref) async {
+  final masterDataLocalDataSource = ref.watch(masterDataLocalDataSourceProvider);
+  return await masterDataLocalDataSource.getHMLList();
 });

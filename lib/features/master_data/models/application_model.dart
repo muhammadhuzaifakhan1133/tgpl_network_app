@@ -1,11 +1,28 @@
 import 'package:tgpl_network/common/models/sort_order_direction_enum.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_state.dart';
 import 'package:tgpl_network/common/models/yes_no_enum_with_extension.dart';
+import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class ApplicationModel {
+  static int pageSize = 50;
   static String orderByField = "addDate";
   static SortOrderDirection orderDirection = SortOrderDirection.descending;
   static String get orderBy => "$orderByField ${orderDirection.key}";
+  static List<String> mapColumns = [
+    "id",
+    "applicationId",
+    "entryCode",
+    "dealerName",
+    "googleLocation",
+    "locationAddress",
+    "statusId",
+  ];
+
+  double get latitude =>
+      double.tryParse(googleLocation?.split(',').first ?? '') ?? 0.0;
+  double get longitude =>
+      double.tryParse(googleLocation?.split(',').last ?? '') ?? 0.0;
 
   // fields
   final int? id;
@@ -690,7 +707,7 @@ class ApplicationModel {
 
     if (filters.hasActiveFilters) {
       if (filters.selectedCity != null) {
-        whereConditions.add('cityName = ?');
+        whereConditions.add('cityName LIKE ?');
         whereArgs.add(filters.selectedCity);
       }
 
@@ -699,62 +716,72 @@ class ApplicationModel {
         whereArgs.add(filters.selectedPriority);
       }
 
-      if (filters.selectedStatus != null) {
-        whereConditions.add('statusId = ?');
-        whereArgs.add(int.tryParse(filters.selectedStatus!) ?? 0);
+      if (filters.selectedStatusId != null) {
+        if (filters.selectedStatusId!.split(",").length > 1) {
+          final statusIds = filters.selectedStatusId!
+              .split(",")
+              .map((e) => int.tryParse(e.trim()) ?? 0)
+              .toList();
+          final placeholders = List.filled(statusIds.length, '?').join(', ');
+          whereConditions.add('statusId IN ($placeholders)');
+          whereArgs.addAll(statusIds);
+        } else {
+          whereConditions.add('statusId = ?');
+          whereArgs.add(int.tryParse(filters.selectedStatusId!) ?? 0);
+        }
       }
 
-      if (filters.applicationId != null) {
+      if (!filters.applicationId.isNullOrEmpty) {
         whereConditions.add('applicationId = ?');
         whereArgs.add(int.tryParse(filters.applicationId!) ?? 0);
       }
 
-      if (filters.entryCode != null && filters.entryCode!.isNotEmpty) {
+      if (!filters.entryCode.isNullOrEmpty) {
         whereConditions.add('entryCode LIKE ?');
         whereArgs.add('%${filters.entryCode}%');
       }
 
-      if (filters.preparedBy != null && filters.preparedBy!.isNotEmpty) {
+      if (!filters.preparedBy.isNullOrEmpty) {
         whereConditions.add('preparedBy LIKE ?');
         whereArgs.add('%${filters.preparedBy}%');
       }
 
-      if (filters.district != null && filters.district!.isNotEmpty) {
+      if (!filters.district.isNullOrEmpty) {
         whereConditions.add('district LIKE ?');
         whereArgs.add('%${filters.district}%');
       }
 
-      if (filters.dealerName != null && filters.dealerName!.isNotEmpty) {
+      if (!filters.dealerName.isNullOrEmpty) {
         whereConditions.add('dealerName LIKE ?');
         whereArgs.add('%${filters.dealerName}%');
       }
 
-      if (filters.dealerContact != null && filters.dealerContact!.isNotEmpty) {
+      if (!filters.dealerContact.isNullOrEmpty) {
         whereConditions.add('dealerContact LIKE ?');
         whereArgs.add('%${filters.dealerContact}%');
       }
 
-      if (filters.address != null && filters.address!.isNotEmpty) {
+      if (!filters.address.isNullOrEmpty) {
         whereConditions.add('locationAddress LIKE ?');
         whereArgs.add('%${filters.address}%');
       }
 
-      if (filters.referredBy != null && filters.referredBy!.isNotEmpty) {
+      if (!filters.referredBy.isNullOrEmpty) {
         whereConditions.add('referedBy LIKE ?');
         whereArgs.add('%${filters.referredBy}%');
       }
 
-      if (filters.source != null && filters.source!.isNotEmpty) {
+      if (!filters.source.isNullOrEmpty) {
         whereConditions.add('source LIKE ?');
         whereArgs.add('%${filters.source}%');
       }
 
-      if (filters.sourceName != null && filters.sourceName!.isNotEmpty) {
+      if (!filters.sourceName.isNullOrEmpty) {
         whereConditions.add('sourceName LIKE ?');
         whereArgs.add('%${filters.sourceName}%');
       }
 
-      if (filters.siteName != null && filters.siteName!.isNotEmpty) {
+      if (!filters.siteName.isNullOrEmpty) {
         whereConditions.add('proposedSiteName1 LIKE ?');
         whereArgs.add('%${filters.siteName}%');
       }
@@ -858,19 +885,19 @@ class ApplicationModel {
       // Date filters
       if (filters.fromDate != null && filters.toDate != null) {
         whereConditions.add('addDate BETWEEN ? AND ?');
-        whereArgs.add(filters.fromDate);
-        whereArgs.add(filters.toDate);
+        whereArgs.add(filters.fromDate?.formatFromDDMMYYYToIsoDate());
+        whereArgs.add(filters.toDate?.formatFromDDMMYYYToIsoDate());
       } else if (filters.fromDate != null) {
         whereConditions.add('addDate >= ?');
-        whereArgs.add(filters.fromDate);
+        whereArgs.add(filters.fromDate?.formatFromDDMMYYYToIsoDate());
       } else if (filters.toDate != null) {
         whereConditions.add('addDate <= ?');
-        whereArgs.add(filters.toDate);
+        whereArgs.add(filters.toDate?.formatFromDDMMYYYToIsoDate());
       }
 
       if (filters.condDate != null) {
         whereConditions.add('dateConducted = ?');
-        whereArgs.add(filters.condDate);
+        whereArgs.add(filters.condDate?.formatFromDDMMYYYToIsoDate());
       }
     }
 

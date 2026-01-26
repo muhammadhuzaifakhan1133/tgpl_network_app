@@ -1,10 +1,11 @@
 import 'package:tgpl_network/utils/extensions/nullable_fields_helper.dart';
 import 'package:tgpl_network/common/models/yes_no_enum_with_extension.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class FilterSelectionState {
   final String? selectedPriority;
   final String? selectedCity;
-  final String? selectedStatus;
+  final String? selectedStatusId;
 
   final YesNo? surveyProfile;
   final YesNo? trafficTrade;
@@ -46,7 +47,7 @@ class FilterSelectionState {
   const FilterSelectionState({
     this.selectedPriority,
     this.selectedCity,
-    this.selectedStatus,
+    this.selectedStatusId,
     this.surveyProfile,
     this.trafficTrade,
     this.feasibility,
@@ -86,7 +87,7 @@ class FilterSelectionState {
   FilterSelectionState copyWith({
     String? selectedPriority,
     String? selectedCity,
-    String? selectedStatus,
+    String? selectedStatusId,
     YesNo? surveyProfile,
     YesNo? trafficTrade,
     YesNo? feasibility,
@@ -124,38 +125,110 @@ class FilterSelectionState {
     List<String>? fieldsToNull,
   }) {
     return FilterSelectionState(
-      selectedPriority: fieldsToNull.apply('selectedPriority', selectedPriority, this.selectedPriority),
-      selectedCity: fieldsToNull.apply('selectedCity', selectedCity, this.selectedCity),
-      selectedStatus: fieldsToNull.apply('selectedStatus', selectedStatus, this.selectedStatus),
-      surveyProfile: fieldsToNull.apply('surveyProfile', surveyProfile, this.surveyProfile),
-      trafficTrade: fieldsToNull.apply('trafficTrade', trafficTrade, this.trafficTrade),
-      feasibility: fieldsToNull.apply('feasibility', feasibility, this.feasibility),
-      negotiation: fieldsToNull.apply('negotiation', negotiation, this.negotiation),
+      selectedPriority: fieldsToNull.apply(
+        'selectedPriority',
+        selectedPriority,
+        this.selectedPriority,
+      ),
+      selectedCity: fieldsToNull.apply(
+        'selectedCity',
+        selectedCity,
+        this.selectedCity,
+      ),
+      selectedStatusId: fieldsToNull.apply(
+        'selectedStatusId',
+        selectedStatusId,
+        this.selectedStatusId,
+      ),
+      surveyProfile: fieldsToNull.apply(
+        'surveyProfile',
+        surveyProfile,
+        this.surveyProfile,
+      ),
+      trafficTrade: fieldsToNull.apply(
+        'trafficTrade',
+        trafficTrade,
+        this.trafficTrade,
+      ),
+      feasibility: fieldsToNull.apply(
+        'feasibility',
+        feasibility,
+        this.feasibility,
+      ),
+      negotiation: fieldsToNull.apply(
+        'negotiation',
+        negotiation,
+        this.negotiation,
+      ),
       mouSign: fieldsToNull.apply('mouSign', mouSign, this.mouSign),
       joiningFee: fieldsToNull.apply('joiningFee', joiningFee, this.joiningFee),
-      franchiseAgreement: fieldsToNull.apply('franchiseAgreement', franchiseAgreement, this.franchiseAgreement),
-      feasibilityFinalization: fieldsToNull.apply('feasibilityFinalization', feasibilityFinalization, this.feasibilityFinalization),
-      explosiveLayout: fieldsToNull.apply('explosiveLayout', explosiveLayout, this.explosiveLayout),
+      franchiseAgreement: fieldsToNull.apply(
+        'franchiseAgreement',
+        franchiseAgreement,
+        this.franchiseAgreement,
+      ),
+      feasibilityFinalization: fieldsToNull.apply(
+        'feasibilityFinalization',
+        feasibilityFinalization,
+        this.feasibilityFinalization,
+      ),
+      explosiveLayout: fieldsToNull.apply(
+        'explosiveLayout',
+        explosiveLayout,
+        this.explosiveLayout,
+      ),
       drawing: fieldsToNull.apply('drawing', drawing, this.drawing),
       topography: fieldsToNull.apply('topography', topography, this.topography),
-      issuanceOfDrawing: fieldsToNull.apply('issuanceOfDrawing', issuanceOfDrawing, this.issuanceOfDrawing),
-      appliedInExplosive: fieldsToNull.apply('appliedInExplosive', appliedInExplosive, this.appliedInExplosive),
+      issuanceOfDrawing: fieldsToNull.apply(
+        'issuanceOfDrawing',
+        issuanceOfDrawing,
+        this.issuanceOfDrawing,
+      ),
+      appliedInExplosive: fieldsToNull.apply(
+        'appliedInExplosive',
+        appliedInExplosive,
+        this.appliedInExplosive,
+      ),
       dcNoc: fieldsToNull.apply('dcNoc', dcNoc, this.dcNoc),
       capex: fieldsToNull.apply('capex', capex, this.capex),
-      leaseAgreement: fieldsToNull.apply('leaseAgreement', leaseAgreement, this.leaseAgreement),
+      leaseAgreement: fieldsToNull.apply(
+        'leaseAgreement',
+        leaseAgreement,
+        this.leaseAgreement,
+      ),
       hoto: fieldsToNull.apply('hoto', hoto, this.hoto),
-      construction: fieldsToNull.apply('construction', construction, this.construction),
-      inauguration: fieldsToNull.apply('inauguration', inauguration, this.inauguration),
+      construction: fieldsToNull.apply(
+        'construction',
+        construction,
+        this.construction,
+      ),
+      inauguration: fieldsToNull.apply(
+        'inauguration',
+        inauguration,
+        this.inauguration,
+      ),
       fromDate: fieldsToNull.apply('fromDate', fromDate, this.fromDate),
       toDate: fieldsToNull.apply('toDate', toDate, this.toDate),
-      receiveDate: fieldsToNull.apply('receiveDate', receiveDate, this.receiveDate),
+      receiveDate: fieldsToNull.apply(
+        'receiveDate',
+        receiveDate,
+        this.receiveDate,
+      ),
       condDate: fieldsToNull.apply('condDate', condDate, this.condDate),
-      applicationId: fieldsToNull.apply('applicationId', applicationId, this.applicationId),
+      applicationId: fieldsToNull.apply(
+        'applicationId',
+        applicationId,
+        this.applicationId,
+      ),
       entryCode: fieldsToNull.apply('entryCode', entryCode, this.entryCode),
       preparedBy: fieldsToNull.apply('preparedBy', preparedBy, this.preparedBy),
       district: fieldsToNull.apply('district', district, this.district),
       dealerName: fieldsToNull.apply('dealerName', dealerName, this.dealerName),
-      dealerContact: fieldsToNull.apply('dealerContact', dealerContact, this.dealerContact),
+      dealerContact: fieldsToNull.apply(
+        'dealerContact',
+        dealerContact,
+        this.dealerContact,
+      ),
       address: fieldsToNull.apply('address', address, this.address),
       referredBy: fieldsToNull.apply('referredBy', referredBy, this.referredBy),
       source: fieldsToNull.apply('source', source, this.source),
@@ -167,7 +240,7 @@ class FilterSelectionState {
   bool get hasActiveFilters {
     return selectedPriority != null ||
         selectedCity != null ||
-        selectedStatus != null ||
+        selectedStatusId != null ||
         surveyProfile != null ||
         trafficTrade != null ||
         feasibility != null ||
@@ -191,16 +264,16 @@ class FilterSelectionState {
         toDate != null ||
         receiveDate != null ||
         condDate != null ||
-        applicationId != null ||
-        entryCode != null ||
-        preparedBy != null ||
-        district != null ||
-        dealerName != null ||
-        dealerContact != null ||
-        address != null ||
-        referredBy != null ||
-        source != null ||
-        sourceName != null ||
-        siteName != null;
+        !applicationId.isNullOrEmpty ||
+        !entryCode.isNullOrEmpty ||
+        !preparedBy.isNullOrEmpty ||
+        !district.isNullOrEmpty ||
+        !dealerName.isNullOrEmpty ||
+        !dealerContact.isNullOrEmpty ||
+        !address.isNullOrEmpty ||
+        !referredBy.isNullOrEmpty ||
+        !source.isNullOrEmpty ||
+        !sourceName.isNullOrEmpty ||
+        !siteName.isNullOrEmpty;
   }
 }
