@@ -9,15 +9,15 @@ import 'package:tgpl_network/common/widgets/custom_textfield.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
-import 'package:tgpl_network/features/master_data/providers/applications_provider.dart';
-import 'package:tgpl_network/features/module_applications/application_document_controller.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/features/module_applications/presentation/application_document_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
-import 'package:tgpl_network/utils/get_all_submodules_names.dart';
 
 Future<dynamic> documentBottomSheet({
   required BuildContext context,
-  required ApplicationLegacyModel application,
+  required ApplicationModel application,
 }) {
   return showModalBottomSheet(
     isScrollControlled: true,
@@ -31,7 +31,7 @@ Future<dynamic> documentBottomSheet({
           return Consumer(
             builder: (context, ref, _) {
               final controller = ref.read(
-                applicationDocumentControllerProvider(application.id).notifier,
+                applicationDocumentControllerProvider(application.applicationId?.toString() ?? "").notifier,
               );
 
               return Container(
@@ -97,7 +97,7 @@ Future<dynamic> documentBottomSheet({
                             builder: (context, ref, child) {
                               final SubModuleModel? selectedType = ref.watch(
                                 applicationDocumentControllerProvider(
-                                  application.id,
+                                  application.applicationId?.toString() ?? "",
                                 ).select((state) => state.selectedDocumentType),
                               );
                               return CustomDropDown<SubModuleModel>(
@@ -132,12 +132,12 @@ Future<dynamic> documentBottomSheet({
                             builder: (context, ref, _) {
                               final state = ref.watch(
                                 applicationDocumentControllerProvider(
-                                  application.id,
+                                  application.applicationId?.toString() ?? "",
                                 ),
                               );
                               final controller = ref.read(
                                 applicationDocumentControllerProvider(
-                                  application.id,
+                                  application.applicationId?.toString() ?? "",
                                 ).notifier,
                               );
 

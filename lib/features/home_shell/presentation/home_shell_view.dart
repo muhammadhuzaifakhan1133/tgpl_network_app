@@ -5,6 +5,7 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/features/home_shell/presentation/home_shell_controller.dart';
 import 'package:tgpl_network/features/home_shell/presentation/widgets/nav_item.dart';
+import 'package:tgpl_network/utils/show_snackbar.dart';
 
 class HomeShellView extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
@@ -19,6 +20,16 @@ class HomeShellView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(snackbarMessageProvider, (prev, next) {
+      final message = next;
+      if (message != null && message.isNotEmpty) {
+        showSnackBar(context, message);
+        // Clear the message after showing
+        Future.microtask(() {
+          ref.read(snackbarMessageProvider.notifier).state = null;
+        });
+      }
+    });
     final state = ref.watch(homeShellControllerProvider);
     bool isLoading = state.isLoading;
     return Scaffold(

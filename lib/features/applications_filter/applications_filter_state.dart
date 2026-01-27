@@ -276,4 +276,43 @@ class FilterSelectionState {
         !sourceName.isNullOrEmpty ||
         !siteName.isNullOrEmpty;
   }
+
+  FilterSelectionState.fromSearchQuery(String query)
+    : selectedPriority = query,
+      selectedCity = null,
+      selectedStatusId = null,
+      surveyProfile = null,
+      trafficTrade = null,
+      feasibility = null,
+      negotiation = null,
+      mouSign = null,
+      joiningFee = null,
+      franchiseAgreement = null,
+      feasibilityFinalization = null,
+      explosiveLayout = null,
+      drawing = null,
+      topography = null,
+      issuanceOfDrawing = null,
+      appliedInExplosive = null,
+      dcNoc = null,
+      capex = null,
+      leaseAgreement = null,
+      hoto = null,
+      construction = null,
+      inauguration = null,
+      fromDate = null,
+      toDate = null,
+      receiveDate = query,
+      condDate = null,
+      applicationId = query.isNullOrEmpty ? null : query,
+      entryCode = query,
+      preparedBy = null,
+      district = null,
+      dealerName = query,
+      dealerContact = null,
+      address = null,
+      referredBy = null,
+      source = null,
+      sourceName = query,
+      siteName = query;
 }

@@ -75,8 +75,8 @@ class DatabaseHelper {
     await db.delete(AppDatabase.syncMetadataTable);
   }
 
-  Future<void> clearMasterDataTables() async {
-    final db = await instance.database;
+  Future<void> clearMasterDataTables({Database? db}) async {
+    db ??= await instance.database;
     await db.delete(AppDatabase.applicationTable);
     await db.delete(AppDatabase.cityTable);
     await db.delete(AppDatabase.trafficTradeTable);

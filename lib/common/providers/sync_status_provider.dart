@@ -13,4 +13,8 @@ class SyncStatusController extends Notifier<SyncStatus> {
   SyncStatus build() {
     return SyncStatus.offline;
   }
+
+  Future<void> tryToConnect() async {
+    
+  }
 }

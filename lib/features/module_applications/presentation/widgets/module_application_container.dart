@@ -6,19 +6,20 @@ import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
-import 'package:tgpl_network/features/master_data/providers/applications_provider.dart';
-import 'package:tgpl_network/features/module_applications/widgets/document_bottom_sheet.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/features/module_applications/presentation/widgets/document_bottom_sheet.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
-import 'package:tgpl_network/utils/get_application_category_color.dart';
+import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class ModuleApplicationContainer extends ConsumerWidget {
-  final ApplicationLegacyModel application;
-  final String submodule;
+  final ApplicationModel application;
+  final String submoduleName;
   const ModuleApplicationContainer({
     super.key,
     required this.application,
-    required this.submodule,
+    required this.submoduleName,
   });
 
   @override
@@ -36,33 +37,43 @@ class ModuleApplicationContainer extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(application.id, style: AppTextstyles.googleInter400Grey14),
+              Text(
+                application.entryCode ?? '',
+                style: AppTextstyles.googleInter400Grey14,
+              ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 1.5, horizontal: 8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25),
-                  color: getApplicationCategoryColor(
-                    application.category,
+                  color: AppColors.getPriorityColor(
+                    application.priority ?? '',
                   ).withOpacity(0.08),
                 ),
                 child: Text(
-                  application.category,
+                  application.priority ?? '',
                   style: AppTextstyles.googleInter500LabelColor14.copyWith(
                     fontSize: 12,
-                    color: getApplicationCategoryColor(application.category),
+                    color: AppColors.getPriorityColor(
+                      application.priority ?? '',
+                    ),
                   ),
                 ),
               ),
             ],
           ),
+          const SizedBox(height: 5),
           Text(
-            "${application.applicantName} | ${application.siteName}",
+            "${application.dealerName}${application.proposedSiteName1 == null ? '' : ' | ${application.proposedSiteName1}'}",
             style: AppTextstyles.googleInter700black28.copyWith(
               fontSize: 20,
               color: AppColors.black2Color,
             ),
           ),
-          Text(application.source, style: AppTextstyles.googleInter400Grey14),
+          if (!application.sourceName.isNullOrEmpty)
+            Text(
+              application.sourceName ?? '',
+              style: AppTextstyles.googleInter400Grey14,
+            ),
           const SizedBox(height: 8),
           Divider(color: AppColors.lightGrey),
           const SizedBox(height: 6.75),
@@ -78,7 +89,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        application.contactNumber,
+                        application.dealerContact ?? '',
                         style: AppTextstyles.googleInter400Grey14.copyWith(
                           fontSize: 13,
                         ),
@@ -97,7 +108,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        application.city,
+                        application.cityName ?? '',
                         style: AppTextstyles.googleInter400Grey14.copyWith(
                           fontSize: 13,
                         ),
@@ -115,7 +126,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
             children: [
               Expanded(
                 child: Text(
-                  "Received: ${application.receivedDate}",
+                  "Received: ${application.addDate?.formatTodMMMyyyy() ?? 'N/A'}",
                   style: AppTextstyles.googleInter400LightGrey12,
                 ),
               ),
@@ -128,26 +139,36 @@ class ModuleApplicationContainer extends ConsumerWidget {
                   ref
                       .read(goRouterProvider)
                       .push(
-                        AppRoutes.applicationDetail(application.id),
+                        AppRoutes.applicationDetail(
+                          application.applicationId?.toString() ?? '',
+                        ),
                         extra: application.statusId,
                       );
                 },
               ),
-              if (submodule == "Survey & Dealer Profile" ||
-                  submodule == "Traffic & Trade") ...[
+              if (submoduleName == "Survey & Dealer Profile" ||
+                  submoduleName == "Traffic & Trade") ...[
                 const SizedBox(width: 8),
                 actionContainer(
                   icon: AppImages.formIconSvg,
                   onTap: () {
-                    if (submodule == "Survey & Dealer Profile") {
+                    if (submoduleName == "Survey & Dealer Profile") {
                       ref
                           .read(goRouterProvider)
-                          .push(AppRoutes.surveyForm(application.id));
+                          .push(
+                            AppRoutes.surveyForm(
+                              application.applicationId?.toString() ?? '',
+                            ),
+                          );
                       return;
                     } else {
                       ref
                           .read(goRouterProvider)
-                          .push(AppRoutes.trafficTradeForm(application.id));
+                          .push(
+                            AppRoutes.trafficTradeForm(
+                              application.applicationId?.toString() ?? '',
+                            ),
+                          );
                     }
                   },
                 ),

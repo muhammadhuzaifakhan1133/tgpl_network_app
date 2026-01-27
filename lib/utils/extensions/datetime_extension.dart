@@ -1,8 +1,22 @@
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
+
 extension DatetimeExtension on DateTime {
   String formatToDDMMYYY() {
     final day = this.day.toString().padLeft(2, '0');
     final month = this.month.toString().padLeft(2, '0');
     return '$day/$month/$year';
+  }
+}
+
+extension StrDateTimeExtension2 on String? {
+   bool isValidDate() {
+    if (isNullOrEmpty) return false;
+    try {
+      DateTime.parse(this!);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
 
@@ -20,6 +34,8 @@ extension StrDateTimeExtension on String {
       return this;
     }
   }
+
+ 
 
   String formatTodMMMyyyy() {
     try {

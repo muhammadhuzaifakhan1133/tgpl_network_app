@@ -1,3 +1,4 @@
+import 'package:tgpl_network/common/models/logical_operator_enum.dart';
 import 'package:tgpl_network/common/models/sort_order_direction_enum.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_state.dart';
 import 'package:tgpl_network/common/models/yes_no_enum_with_extension.dart';
@@ -6,7 +7,7 @@ import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class ApplicationModel {
   static int pageSize = 50;
-  static String orderByField = "addDate";
+  static String orderByField = "applicationId";
   static SortOrderDirection orderDirection = SortOrderDirection.descending;
   static String get orderBy => "$orderByField ${orderDirection.key}";
   static List<String> mapColumns = [
@@ -17,6 +18,8 @@ class ApplicationModel {
     "googleLocation",
     "locationAddress",
     "statusId",
+    "priority",
+    "proposedSiteName1",
   ];
 
   double get latitude =>
@@ -24,6 +27,11 @@ class ApplicationModel {
   double get longitude =>
       double.tryParse(googleLocation?.split(',').last ?? '') ?? 0.0;
 
+  double get plotAreaValue => plotArea.isNullOrEmpty
+      ? _plotArea
+      : double.tryParse(plotArea!) ?? _plotArea;
+
+  double get _plotArea => (plotFront ?? 0) * (plotDepth ?? 0);
   // fields
   final int? id;
   final int? applicationId;
@@ -700,8 +708,9 @@ class ApplicationModel {
   }
 
   static (String?, List<dynamic>) getWhereClauseAndArgs(
-    FilterSelectionState filters,
-  ) {
+    FilterSelectionState filters, {
+    LogicalOperator logicalOperator = LogicalOperator.and,
+  }) {
     final whereConditions = <String>[];
     final whereArgs = <dynamic>[];
 
@@ -883,26 +892,26 @@ class ApplicationModel {
       }
 
       // Date filters
-      if (filters.fromDate != null && filters.toDate != null) {
+      if (filters.fromDate.isValidDate() && filters.toDate.isValidDate()) {
         whereConditions.add('addDate BETWEEN ? AND ?');
         whereArgs.add(filters.fromDate?.formatFromDDMMYYYToIsoDate());
         whereArgs.add(filters.toDate?.formatFromDDMMYYYToIsoDate());
-      } else if (filters.fromDate != null) {
+      } else if (filters.fromDate.isValidDate()) {
         whereConditions.add('addDate >= ?');
         whereArgs.add(filters.fromDate?.formatFromDDMMYYYToIsoDate());
-      } else if (filters.toDate != null) {
+      } else if (filters.toDate.isValidDate()) {
         whereConditions.add('addDate <= ?');
         whereArgs.add(filters.toDate?.formatFromDDMMYYYToIsoDate());
       }
 
-      if (filters.condDate != null) {
+      if (filters.condDate.isValidDate()) {
         whereConditions.add('dateConducted = ?');
         whereArgs.add(filters.condDate?.formatFromDDMMYYYToIsoDate());
       }
     }
 
     final whereClause = whereConditions.isNotEmpty
-        ? whereConditions.join(' AND ')
+        ? whereConditions.join(' ${logicalOperator.value} ')
         : null;
 
     return (whereClause, whereArgs);

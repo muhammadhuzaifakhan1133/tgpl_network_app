@@ -8,7 +8,7 @@ import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/applications/presentation/application_controller.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
 import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
-import 'package:tgpl_network/utils/get_priority_color.dart';
+import 'package:tgpl_network/utils/map_utils.dart';
 
 class ApplicationStatusContainer extends ConsumerWidget {
   final int index;
@@ -48,7 +48,7 @@ class ApplicationStatusContainer extends ConsumerWidget {
                 padding: EdgeInsets.symmetric(horizontal: 8.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25),
-                  color: getPriorityColor(
+                  color: AppColors.getPriorityColor(
                     application.priority.toString(),
                   ).withOpacity(0.082),
                 ),
@@ -56,7 +56,9 @@ class ApplicationStatusContainer extends ConsumerWidget {
                   child: Text(
                     application.priority.toString(),
                     style: AppTextstyles.googleInter400LightGrey12.copyWith(
-                      color: getPriorityColor(application.priority.toString()),
+                      color: AppColors.getPriorityColor(
+                        application.priority.toString(),
+                      ),
                     ),
                   ),
                 ),
@@ -174,7 +176,12 @@ class ApplicationStatusContainer extends ConsumerWidget {
                         children: [
                           Expanded(
                             child: CustomButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                MapUtils.openGoogleMap(
+                                  application.latitude,
+                                  application.longitude,
+                                );
+                              },
                               height: 41,
                               text: "",
                               topPadding: 10,

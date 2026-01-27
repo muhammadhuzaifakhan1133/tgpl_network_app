@@ -22,6 +22,8 @@ class CustomAppBar extends ConsumerStatefulWidget {
   final List<Widget> actions;
   final bool showResyncButton;
   final void Function(String)? onSearchChanged;
+  final void Function()? onCrossSearch;
+  final void Function()? onCancelSearchField;
   const CustomAppBar({
     super.key,
     required this.title,
@@ -35,6 +37,8 @@ class CustomAppBar extends ConsumerStatefulWidget {
     this.actions = const <Widget>[],
     this.showResyncButton = false,
     this.onSearchChanged,
+    this.onCrossSearch,
+    this.onCancelSearchField,
   });
 
   @override
@@ -168,15 +172,15 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                               },
                               label: const Text("Resync"),
                               icon: syncStatus == SyncStatus.syncing
-                                    ? const SizedBox(
-                                        width: 16,
-                                        height: 16,
-                                        child: CircularProgressIndicator(
-                                          color: AppColors.white,
-                                          strokeWidth: 2,
-                                        ),
-                                      )
-                                    : const Icon(Icons.refresh, size: 20),
+                                  ? const SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Icon(Icons.refresh, size: 20),
                               style: ElevatedButton.styleFrom(
                                 // backgroundColor: AppColors.primary,
                                 backgroundColor: AppColors.headerDarkBlueColor,
@@ -216,12 +220,14 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                       focusNode: _searchFocusNode,
                       showClearButton: true,
                       onChanged: widget.onSearchChanged,
+                      onClear: widget.onCrossSearch,
                     ),
                   ),
                   const SizedBox(width: 8),
                   TextButton(
                     child: const Text("Cancel"),
                     onPressed: () {
+                      widget.onCancelSearchField?.call();
                       setState(() {
                         isSearchFieldActive = false;
                       });

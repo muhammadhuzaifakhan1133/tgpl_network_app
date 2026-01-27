@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/common/models/sync_enum.dart';
 import 'package:tgpl_network/common/providers/last_sync_time_provider.dart';
 import 'package:tgpl_network/common/providers/sync_status_provider.dart';
 import 'package:tgpl_network/common/widgets/error_widget.dart';
@@ -84,10 +85,13 @@ class _DashboardView extends ConsumerWidget {
                       data: (lastSyncTime) => SyncStatusCard(
                         status: syncState,
                         lastSyncTime: lastSyncTime,
-                        onResync: () {
+                        onPressActionButton: () {
                           ref
                               .read(homeShellControllerProvider.notifier)
-                              .getMasterDataAndSaveLocally();
+                              .getMasterDataAndSaveLocally(
+                                forcefulSync:
+                                    syncState == SyncStatus.synchronized,
+                              );
                         },
                       ),
                       loading: () => SyncStatusCard(
@@ -97,7 +101,7 @@ class _DashboardView extends ConsumerWidget {
                       error: (e, st) => SyncStatusCard(
                         status: syncState,
                         lastSyncTime: "Never",
-                        onResync: () {
+                        onPressActionButton: () {
                           ref
                               .read(homeShellControllerProvider.notifier)
                               .getMasterDataAndSaveLocally();

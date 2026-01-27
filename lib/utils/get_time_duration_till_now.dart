@@ -1,4 +1,4 @@
-String getTimeDurationTillNow(String isoDateTimeString) {
+String getFormattedTimeDuration(String isoDateTimeString) {
   try {
     final lastSync = DateTime.parse(isoDateTimeString);
     final now = DateTime.now();

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/home_shell/presentation/home_shell_view.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_view.dart';
 import 'package:tgpl_network/features/applications_filter/appplications_filter_view.dart';
@@ -10,7 +11,7 @@ import 'package:tgpl_network/features/dashboard/presentation/dashboard_view.dart
 import 'package:tgpl_network/features/data_sync/presentation/data_sync_view.dart';
 import 'package:tgpl_network/features/login/presentation/login_view.dart';
 import 'package:tgpl_network/features/map/presentation/map_view.dart';
-import 'package:tgpl_network/features/module_applications/module_applications_view.dart';
+import 'package:tgpl_network/features/module_applications/presentation/module_applications_view.dart';
 import 'package:tgpl_network/features/onboarding/presentation/onboarding_view.dart';
 import 'package:tgpl_network/features/profile/presentation/profile_view.dart';
 import 'package:tgpl_network/features/splash/presentation/splash_view.dart';
@@ -110,10 +111,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => ChangePasswordView(),
       ),
       GoRoute(
-        path: AppRoutes.moduleApplications(),
+        path: AppRoutes.moduleApplications,
         builder: (context, state) => ModuleApplicationsView(
-          module: state.pathParameters['module'] ?? '',
-          subModule: state.pathParameters['subModule'] ?? '',
+          subModule: state.extra as SubModuleModel,
         ),
       ),
       GoRoute(

@@ -33,6 +33,13 @@ class _ApplicationsViewState extends ConsumerState<ApplicationsView> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     final state = ref.watch(applicationControllerProvider);
     return GestureDetector(

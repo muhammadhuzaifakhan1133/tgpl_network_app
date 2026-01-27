@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:tgpl_network/common/data/shared_prefs_data_source.dart';
 import 'package:tgpl_network/common/models/sync_enum.dart';
@@ -13,15 +14,20 @@ import 'package:tgpl_network/features/master_data/data/master_data_local_data_so
 import 'package:tgpl_network/features/master_data/data/master_data_remote_data_source.dart';
 import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/priorities_provider.dart';
+import 'package:tgpl_network/features/module_applications/presentation/module_applications_controller.dart';
 import 'package:tgpl_network/utils/internet_connectivity.dart';
-import 'package:tgpl_network/utils/should_auto_sync.dart';
 
 final homeShellControllerProvider =
     AsyncNotifierProvider<HomeShellController, void>(() {
       return HomeShellController();
     });
 
+final snackbarMessageProvider = StateProvider<String?>((ref) {
+  return null;
+});
+
 class HomeShellController extends AsyncNotifier<void> {
+  int  autoSyncThresholdMinutes = 30; // (in minutes)
   List<dynamic> get providersToRefresh => [
     getLastSyncTimeProvider,
     dashboardAsyncControllerProvider,
@@ -30,11 +36,17 @@ class HomeShellController extends AsyncNotifier<void> {
     appStatusesProvider,
     cityNamesProvider,
     prioritiesProvider,
+    // mapMarkersProvider // this is expensive, avoid refreshing unless necessary
+    moduleApplicationsAsyncControllerProvider,
   ];
   StreamSubscription<InternetStatus>? _connectivitySubscription;
 
   @override
   Future<void> build() async {
+    if (await InternetConnectivity.hasInternet()) {
+      ref.read(syncStatusProvider.notifier).state = SyncStatus.synchronized;
+    }
+
     _listenToConnectivityChanges();
 
     ref.onDispose(() {
@@ -48,16 +60,11 @@ class HomeShellController extends AsyncNotifier<void> {
     // If not first time, return immediately with data state
     if (!isFirstTime) {
       state = const AsyncValue.data(null);
-      // Sync in background without blocking
-      debugPrint(
-        "HomeShellController: Not first-time, syncing in background...",
-      );
+      // Sync in background without blocking (if necessary)
       _syncInBackground();
       return;
     }
 
-    // First time: must complete sync before proceeding
-    debugPrint("HomeShellController: First-time setup, starting sync...");
     await _syncDataIfInternetAvailable();
   }
 
@@ -70,18 +77,16 @@ class HomeShellController extends AsyncNotifier<void> {
         isInitialCheck = false;
         return;
       }
-      if (status == InternetStatus.connected &&
-          ref.read(syncStatusProvider) != SyncStatus.syncing) {
+      if (status == InternetStatus.connected) {
         // Internet is back online
-        if (!await shouldAutoSync(ref)) {
+        if (ref.read(syncStatusProvider) != SyncStatus.syncing) {
           ref.read(syncStatusProvider.notifier).state = SyncStatus.synchronized;
-          return;
+          // Auto-sync only if enough time has passed
+          debugPrint(
+            "HomeShellController: Internet reconnected, starting auto-sync...",
+          );
+          await getMasterDataAndSaveLocally();
         }
-        // Auto-sync only if enough time has passed
-        debugPrint(
-          "HomeShellController: Internet reconnected, starting auto-sync...",
-        );
-        await getMasterDataAndSaveLocally();
       } else {
         // Internet is offline
         ref.read(syncStatusProvider.notifier).state = SyncStatus.offline;
@@ -105,13 +110,18 @@ class HomeShellController extends AsyncNotifier<void> {
     final lastSyncTime = await ref.read(getLastSyncTimeProvider.future);
     final isFirstTime = lastSyncTime.isEmpty || lastSyncTime == "Never";
     final hasInternet = await InternetConnectivity.hasInternet();
+
     // First time: require internet connection
     if (isFirstTime && !hasInternet) {
-      state = AsyncValue.error(
-        Exception('Internet connection required for first-time setup.'),
-        StackTrace.current,
-      );
-      return;
+      ref.read(snackbarMessageProvider.notifier).state =
+          'Internet connection required for first-time setup.';
+      int tryNumber = 0;
+      while (!await InternetConnectivity.hasInternet()) {
+        tryNumber++;
+        ref.read(snackbarMessageProvider.notifier).state =
+            'Waiting for internet connection... (Attempt $tryNumber)';
+        await Future.delayed(const Duration(seconds: 5));
+      }
     }
     try {
       state = const AsyncValue.loading();
@@ -125,9 +135,21 @@ class HomeShellController extends AsyncNotifier<void> {
 
   bool _isAutoSyncRunning = false;
 
-  Future<void> getMasterDataAndSaveLocally() async {
+  Future<void> getMasterDataAndSaveLocally({bool forcefulSync = false}) async {
     if (_isAutoSyncRunning) return;
     _isAutoSyncRunning = true;
+
+    if (!await InternetConnectivity.hasInternet()) {
+      ref.read(snackbarMessageProvider.notifier).state =
+          'No internet connection. Please connect to the internet to sync data.';
+      _isAutoSyncRunning = false;
+      return;
+    }
+
+    if (!await shouldAutoSync(ref) && !forcefulSync) {
+      _isAutoSyncRunning = false;
+      return;
+    }
     try {
       final username = ref.read(sharedPrefsDataSourceProvider).getUsername();
 
@@ -135,14 +157,20 @@ class HomeShellController extends AsyncNotifier<void> {
         throw Exception('Username not found in shared preferences.');
       }
       ref.read(syncStatusProvider.notifier).state = SyncStatus.syncing;
+      ref.read(snackbarMessageProvider.notifier).state =
+          'Fetching latest data...';
       final masterData = await ref
           .read(masterDataRemoteDataSourceProvider)
           .getMasterDataFromApi(username: username);
 
+      ref.read(snackbarMessageProvider.notifier).state =
+          'Data fetched successfully. Saving locally...';
       await ref
           .read(masterDataLocalDataSourceProvider)
           .saveMasterData(masterData);
       ref.read(syncStatusProvider.notifier).state = SyncStatus.synchronized;
+      ref.read(snackbarMessageProvider.notifier).state =
+          'Data synchronized successfully.';
       _refreshAllDependentProviders();
     } catch (e, stack) {
       Error.throwWithStackTrace(e, stack);
@@ -154,6 +182,26 @@ class HomeShellController extends AsyncNotifier<void> {
   void _refreshAllDependentProviders() {
     for (final provider in providersToRefresh) {
       ref.invalidate(provider);
+    }
+  }
+
+ FutureOr<bool> shouldAutoSync(Ref ref) async {
+  
+    String lastSyncTimeIso = await ref.read(getLastSyncTimeProvider.future);
+    
+    if (lastSyncTimeIso.isEmpty || lastSyncTimeIso == "Never") {
+      return true; // Always sync if never synced before
+    }
+
+    try {
+      final lastSync = DateTime.parse(lastSyncTimeIso);
+      final now = DateTime.now();
+      final difference = now.difference(lastSync);
+
+      // Auto-sync if difference is greater than threshold
+      return difference.inMinutes >= autoSyncThresholdMinutes;
+    } catch (e) {
+      return true; // Sync on error to be safe
     }
   }
 }

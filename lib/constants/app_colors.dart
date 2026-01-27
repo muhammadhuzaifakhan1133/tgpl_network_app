@@ -37,4 +37,52 @@ class AppColors {
   static const syncedCountColor =  Color(0xFF2196F3);
   static const shimmerBaseColor =  Color(0xFFE0E0E0);
   static const shimmerHighlightColor =  Color(0xFFF5F5F5);
+  static const labelColor = Color(0xFF333333);
+
+  static Color getPriorityColor(String priority) {
+    switch (priority) {
+      case "High":
+        return AppColors.emailUsIconColor;
+      case "Medium":
+        return AppColors.nextStep3Color;
+      case "Low":
+        return AppColors.nextStep2Color;
+      default:
+        return AppColors.inactiveStatusColor;
+    }
+  }
+
+  static Color getApplicationCategoryColor(String category) {
+  switch (category) {
+    case "New Plot":
+      return AppColors.inauguratedCountDarkColor;
+    case "Conversion":
+      return AppColors.inProcessCountDarkColor;
+    case "CNG":
+      return AppColors.emailUsIconColor;
+    default:
+      return AppColors.subHeadingColor;
+  }
+}
+
+static Color getApplicationStatusColor(int statusId) {
+  switch (statusId) {
+    // In Process
+    case < 13:
+      return AppColors.nextStep1Color;
+    // inaugurated
+    case 13:
+      return AppColors.nextStep2Color;
+    // hold
+    case 15:
+    case 16:
+      return AppColors.nextStep3Color;
+    // rejected
+    case 14:
+    case 17:
+      return AppColors.emailUsIconColor;
+    default:
+      return AppColors.grey;
+  }
+}
 }

@@ -19,9 +19,6 @@ abstract class MasterDataLocalDataSource {
     int page,
     int pageSize,
   });
-  Future<List<ApplicationModel>> getApplicationsForMap({
-    required String cityId,
-  });
   Future<List<String>> getNearestDepos();
   Future<List<String>> getTradeAreaTypes();
   Future<List<String>> getDealerInvestmentTypes();
@@ -46,15 +43,13 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
     final db = await _databaseHelper.database;
 
     await db.transaction((txn) async {
-      final batch = txn.batch();
-
       // Clear existing data
-      batch.delete(AppDatabase.applicationTable);
-      batch.delete(AppDatabase.cityTable);
-      batch.delete(AppDatabase.trafficTradeTable);
-      batch.delete(AppDatabase.masterListsTable);
+      txn.delete(AppDatabase.applicationTable);
+      txn.delete(AppDatabase.cityTable);
+      txn.delete(AppDatabase.trafficTradeTable);
+      txn.delete(AppDatabase.masterListsTable);
 
-      await batch.commit(noResult: true);
+      // final batch = txn.batch();
 
       // Insert in chunks to avoid memory issues
       const chunkSize = 500;
@@ -83,9 +78,6 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
         chunkSize,
       );
 
-      // Master lists and sync metadata (small data)
-      final finalBatch = txn.batch();
-
       final masterListTypes = [
         MasterListType.nearestDepo,
         MasterListType.tradeAreaType,
@@ -100,19 +92,14 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
       ];
 
       for (var listType in masterListTypes) {
-        finalBatch.insert(
-          AppDatabase.masterListsTable,
-          data.listTypeToMap(listType),
-        );
+        txn.insert(AppDatabase.masterListsTable, data.listTypeToMap(listType));
       }
 
-      batch.delete(AppDatabase.syncMetadataTable);
+      txn.delete(AppDatabase.syncMetadataTable);
 
-      finalBatch.insert(AppDatabase.syncMetadataTable, {
+      txn.insert(AppDatabase.syncMetadataTable, {
         'lastSyncTime': DateTime.now().toIso8601String(),
       });
-
-      await finalBatch.commit(noResult: true);
     });
   }
 
@@ -137,6 +124,7 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
   @override
   Future<List<ApplicationModel>> getApplications({
     FilterSelectionState? filters,
+    
     int page = 1,
     int? pageSize,
   }) async {
@@ -161,41 +149,6 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
       offset: (page - 1) * pageSize,
     );
 
-    return maps.map((map) => ApplicationModel.fromDatabaseMap(map)).toList();
-  }
-
-  @override
-  Future<List<ApplicationModel>> getApplicationsForMap({
-    required String cityId,
-  }) async {
-    final db = await _databaseHelper.database;
-
-    final List<ApplicationModel> results = [];
-    const batchSize = 1000;
-    int offset = 0;
-
-    while (true) {
-      final batch = await db.query(
-        AppDatabase.applicationTable,
-        columns: ApplicationModel.mapColumns,
-        where: 'cityId = ?',
-        whereArgs: [cityId],
-        limit: batchSize,
-        offset: offset,
-      );
-
-      if (batch.isEmpty) break;
-
-      results.addAll(await compute(_parseApplications, batch));
-      offset += batchSize;
-    }
-
-    return results;
-  }
-
-  static List<ApplicationModel> _parseApplications(
-    List<Map<String, dynamic>> maps,
-  ) {
     return maps.map((map) => ApplicationModel.fromDatabaseMap(map)).toList();
   }
 

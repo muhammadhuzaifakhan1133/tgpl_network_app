@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
+import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/traffic_trade_form_controller.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/nearby_sites/nearby_sites_form_section.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/traffic_recommendation/trafffic_recommendation_card_form.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/traffic_count/traffic_count_card_form.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/volume_and_financial_estimation/volum_and_financial_estimation_card_form.dart';
+import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/utils/show_snackbar.dart';
 
 class TrafficTradeFormView extends ConsumerStatefulWidget {
   final String appId;
@@ -125,20 +128,18 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
     if (!mounted) return;
 
     if (success == true) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Form submitted successfully!'),
-          backgroundColor: Colors.green,
-        ),
+      showSnackBar(
+        context,
+        "Form submitted successfully!",
+        bgColor: AppColors.onlineStatusColor,
       );
       // Navigate back or to success screen
-      Navigator.of(context).pop(true);
+      ref.read(goRouterProvider).pop(true);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please correct the errors in the form.'),
-          backgroundColor: Colors.red,
-        ),
+      showSnackBar(
+        context,
+        'Please correct the errors in the form.',
+        bgColor: AppColors.emailUsIconColor,
       );
     }
   }

@@ -16,6 +16,7 @@ class SubModuleModel {
   final String moduleName;
   final Color moduleColor;
   final String moduleIcon;
+  final String dbCondition;
 
-  SubModuleModel({required this.title, required this.count, required this.moduleName, required this.moduleColor, required this.moduleIcon});
+  SubModuleModel({required this.title, required this.count, required this.moduleName, required this.moduleColor, required this.moduleIcon, required this.dbCondition});
 }
