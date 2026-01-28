@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/features/survey_form/models/survey_form_model.dart';
 import 'package:tgpl_network/utils/extensions/nullable_fields_helper.dart';
 
 final surveyRecommendationFormControllerProvider = NotifierProvider<
@@ -53,6 +55,22 @@ class SurveyRecommendationFormState {
   String toString() {
     return 'SurveyRecommendationFormState(selectedTM: $selectedTM, selectedRM: $selectedRM, selectedTMRecommendation: $selectedTMRecommendation, selectedRMRecommendation: $selectedRMRecommendation, tmRemarks: $tmRemarks, rmRemarks: $rmRemarks)';
   }
+
+  SurveyRecommendationFormState.loadFromApplication(ApplicationModel app)
+      : selectedTM = app.ssRecommendationTmName,
+        selectedRM = app.ssRecommendationRmName,
+        selectedTMRecommendation = app.ssTmRecommendation,
+        selectedRMRecommendation = app.ssRmRecommendation,
+        tmRemarks = app.ssTmRemarks,
+        rmRemarks = app.ssRmRemarks;
+
+  SurveyRecommendationFormState.loadFromSurveyFormModel(SurveyFormModel form)
+      : selectedTM = form.selectedTM,
+        selectedRM = form.selectedRM,
+        selectedTMRecommendation = form.tmRecommendation,
+        selectedRMRecommendation = form.rmRecommendation,
+        tmRemarks = form.tmRemarks,
+        rmRemarks = form.rmRemarks;
 }
 
 class SurveyRecommendationFormController
@@ -90,21 +108,11 @@ class SurveyRecommendationFormController
     state = state.copyWith(fieldsToNull: [fieldName]);
   }
 
-  void prefillFormData({
-    required String selectedTM,
-    required String selectedRM,
-    required String selectedTMRecommendation,
-    required String selectedRMRecommendation,
-    required String tmRemarks,
-    required String rmRemarks,
-  }) {
-    state = state.copyWith(
-      selectedTM: selectedTM,
-      selectedRM: selectedRM,
-      selectedTMRecommendation: selectedTMRecommendation,
-      selectedRMRecommendation: selectedRMRecommendation,
-      tmRemarks: tmRemarks,
-      rmRemarks: rmRemarks,
-    );
+  void loadFromApplication(ApplicationModel app) {
+    state = SurveyRecommendationFormState.loadFromApplication(app);
+  }
+
+  void loadFromSurveyFormModel(SurveyFormModel form) {
+    state = SurveyRecommendationFormState.loadFromSurveyFormModel(form);
   }
 }

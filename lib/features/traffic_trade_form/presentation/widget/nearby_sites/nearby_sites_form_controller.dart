@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
 import 'package:tgpl_network/features/traffic_trade_form/models/traffic_site_model.dart';
+import 'package:tgpl_network/features/traffic_trade_form/models/traffic_trade_form_model.dart';
 
 final nearbySitesControllerProvider =
     NotifierProvider<NearbySitesController, NearbySitesState>(
@@ -29,6 +31,14 @@ class NearbySitesState {
   String toString() {
     return 'NearbySitesState(nearbyTrafficSites: $nearbyTrafficSites, totalSites: $totalSites)';
   }
+
+  NearbySitesState.loadFromApplication(ApplicationModel app)
+      : nearbyTrafficSites = app.nearbyTrafficSites,
+        totalSites = app.nearbyTrafficSites.length;
+  
+  NearbySitesState.loadFromTrafficTradeFormModel(TrafficTradeFormModel form)
+      : nearbyTrafficSites = form.nearbyTrafficSites,
+        totalSites = form.nearbyTrafficSites.length;
 }
 
 class NearbySitesController extends Notifier<NearbySitesState> {
@@ -91,11 +101,11 @@ class NearbySitesController extends Notifier<NearbySitesState> {
     }
   }
 
-  void prefillFormData({required List<TrafficSiteModel> nearbyTrafficSites}) {
-    state = state.copyWith(
-      nearbyTrafficSites: nearbyTrafficSites.isNotEmpty 
-          ? nearbyTrafficSites 
-          : [TrafficSiteModel()],
-    );
+  void loadFromApplication(ApplicationModel app) {
+    state = NearbySitesState.loadFromApplication(app);
+  }
+
+  void loadFromTrafficTradeFormModel(TrafficTradeFormModel form) {
+    state = NearbySitesState.loadFromTrafficTradeFormModel(form);
   }
 }

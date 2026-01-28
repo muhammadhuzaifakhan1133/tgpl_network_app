@@ -38,7 +38,6 @@ class _ApplicationsViewState extends ConsumerState<ApplicationsView> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(applicationControllerProvider);
@@ -52,6 +51,8 @@ class _ApplicationsViewState extends ConsumerState<ApplicationsView> {
                 title: "Applications",
                 subtitle: "Process status tracking",
                 showFilterIcon: true,
+                countofActiveFilters:
+                    state.value?.filter.countofActiveFilters ?? 0,
                 onTapFilterIcon: () async {
                   final result = await ref
                       .read(goRouterProvider)
@@ -94,7 +95,7 @@ class _ApplicationsListView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (data.applications.isEmpty) {
       return ApplicationsEmptyState(
-        reason: data.filter.hasActiveFilters
+        reason: data.filter.countofActiveFilters > 0
             ? EmptyApplicationsReason.noSearchResults
             : EmptyApplicationsReason.noData,
         onClearFilters: () {

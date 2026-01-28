@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/features/traffic_trade_form/models/traffic_trade_form_model.dart';
 import 'package:tgpl_network/utils/extensions/nullable_fields_helper.dart';
 
 final trafficCountControllerProvider =
@@ -34,6 +36,16 @@ class TrafficCountState {
   String toString() {
     return 'TrafficCountState(trafficCountTruck: $trafficCountTruck, trafficCountCar: $trafficCountCar, trafficCountBike: $trafficCountBike)';
   }
+
+  TrafficCountState.loadFromApplication(ApplicationModel app)
+      : trafficCountTruck = app.truckCount?.toString(),
+        trafficCountCar = app.carCount?.toString(),
+        trafficCountBike = app.bikeCount?.toString();
+
+  TrafficCountState.loadFromTrafficTradeFormModel(TrafficTradeFormModel form)
+      : trafficCountTruck = form.trafficCountTruck,
+        trafficCountCar = form.trafficCountCar,
+        trafficCountBike = form.trafficCountBike;
 }
 
 class TrafficCountController extends Notifier<TrafficCountState> {
@@ -58,15 +70,23 @@ class TrafficCountController extends Notifier<TrafficCountState> {
     state = state.copyWith(fieldsToNull: [fieldName]);
   }
 
-  void prefillFormData({
-    required String trafficCountTruck,
-    required String trafficCountCar,
-    required String trafficCountBike,
-  }) {
-    state = state.copyWith(
-      trafficCountTruck: trafficCountTruck,
-      trafficCountCar: trafficCountCar,
-trafficCountBike: trafficCountBike,
-);
-}
+//   void prefillFormData({
+//     required String trafficCountTruck,
+//     required String trafficCountCar,
+//     required String trafficCountBike,
+//   }) {
+//     state = state.copyWith(
+//       trafficCountTruck: trafficCountTruck,
+//       trafficCountCar: trafficCountCar,
+// trafficCountBike: trafficCountBike,
+// );
+// }
+
+  void loadFromApplication(ApplicationModel app) {
+    state = TrafficCountState.loadFromApplication(app);
+  }
+
+  void loadFromTrafficTradeFormModel(TrafficTradeFormModel form) {
+    state = TrafficCountState.loadFromTrafficTradeFormModel(form);
+  }
 }

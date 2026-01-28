@@ -120,8 +120,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.applicationDetail(),
         builder: (context, state) {
           return ApplicationDetailView(
-            appId: state.pathParameters['appId'] ?? '',
-            statusId: state.extra as int? ?? 0,
+            applicationId: state.pathParameters['appId'] ?? '',
           );
         },
       ),

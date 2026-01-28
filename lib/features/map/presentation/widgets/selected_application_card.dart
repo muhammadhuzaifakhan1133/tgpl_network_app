@@ -4,6 +4,8 @@ import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/routes/app_routes.dart';
 import 'package:tgpl_network/utils/map_utils.dart';
 
 class SelectedApplicationCard extends ConsumerWidget {
@@ -94,7 +96,15 @@ class SelectedApplicationCard extends ConsumerWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: CustomButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    ref
+                      .read(goRouterProvider)
+                      .push(
+                        AppRoutes.applicationDetail(
+                          application.applicationId?.toString() ?? '',
+                        ),
+                      );
+                  },
                   text: "View Details",
                   leftPadding: 0,
                   rightPadding: 0,

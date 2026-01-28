@@ -237,82 +237,57 @@ class FilterSelectionState {
     );
   }
 
-  bool get hasActiveFilters {
-    return selectedPriority != null ||
-        selectedCity != null ||
-        selectedStatusId != null ||
-        surveyProfile != null ||
-        trafficTrade != null ||
-        feasibility != null ||
-        negotiation != null ||
-        mouSign != null ||
-        joiningFee != null ||
-        franchiseAgreement != null ||
-        feasibilityFinalization != null ||
-        explosiveLayout != null ||
-        drawing != null ||
-        topography != null ||
-        issuanceOfDrawing != null ||
-        appliedInExplosive != null ||
-        dcNoc != null ||
-        capex != null ||
-        leaseAgreement != null ||
-        hoto != null ||
-        construction != null ||
-        inauguration != null ||
-        fromDate != null ||
-        toDate != null ||
-        receiveDate != null ||
-        condDate != null ||
-        !applicationId.isNullOrEmpty ||
-        !entryCode.isNullOrEmpty ||
-        !preparedBy.isNullOrEmpty ||
-        !district.isNullOrEmpty ||
-        !dealerName.isNullOrEmpty ||
-        !dealerContact.isNullOrEmpty ||
-        !address.isNullOrEmpty ||
-        !referredBy.isNullOrEmpty ||
-        !source.isNullOrEmpty ||
-        !sourceName.isNullOrEmpty ||
-        !siteName.isNullOrEmpty;
+  int get countofActiveFilters {
+    int count = 0;
+    if (selectedPriority != null) count++;
+    if (selectedCity != null) count++;
+    if (selectedStatusId != null) count++;
+    if (surveyProfile != null) count++;
+    if (trafficTrade != null) count++;
+    if (feasibility != null) count++;
+    if (negotiation != null) count++;
+    if (mouSign != null) count++;
+    if (joiningFee != null) count++;
+    if (franchiseAgreement != null) count++;
+    if (feasibilityFinalization != null) count++;
+    if (explosiveLayout != null) count++;
+    if (drawing != null) count++;
+    if (topography != null) count++;
+    if (issuanceOfDrawing != null) count++;
+    if (appliedInExplosive != null) count++;
+    if (dcNoc != null) count++;
+    if (capex != null) count++;
+    if (leaseAgreement != null) count++;
+    if (hoto != null) count++;
+    if (construction != null) count++;
+    if (inauguration != null) count++;
+    if (fromDate != null) count++;
+    if (toDate != null) count++;
+    if (receiveDate != null) count++;
+    if (condDate != null) count++;
+    if (!applicationId.isNullOrEmpty) count++;
+    if (!entryCode.isNullOrEmpty) count++;
+    if (!preparedBy.isNullOrEmpty) count++;
+    if (!district.isNullOrEmpty) count++;
+    if (!dealerName.isNullOrEmpty) count++;
+    if (!dealerContact.isNullOrEmpty) count++;
+    if (!address.isNullOrEmpty) count++;
+    if (!referredBy.isNullOrEmpty) count++;
+    if (!source.isNullOrEmpty) count++;
+    if (!sourceName.isNullOrEmpty) count++;
+    if (!siteName.isNullOrEmpty) count++;
+    return count;
   }
 
-  FilterSelectionState.fromSearchQuery(String query)
-    : selectedPriority = query,
-      selectedCity = null,
-      selectedStatusId = null,
-      surveyProfile = null,
-      trafficTrade = null,
-      feasibility = null,
-      negotiation = null,
-      mouSign = null,
-      joiningFee = null,
-      franchiseAgreement = null,
-      feasibilityFinalization = null,
-      explosiveLayout = null,
-      drawing = null,
-      topography = null,
-      issuanceOfDrawing = null,
-      appliedInExplosive = null,
-      dcNoc = null,
-      capex = null,
-      leaseAgreement = null,
-      hoto = null,
-      construction = null,
-      inauguration = null,
-      fromDate = null,
-      toDate = null,
-      receiveDate = query,
-      condDate = null,
-      applicationId = query.isNullOrEmpty ? null : query,
-      entryCode = query,
-      preparedBy = null,
-      district = null,
-      dealerName = query,
-      dealerContact = null,
-      address = null,
-      referredBy = null,
-      source = null,
-      sourceName = query,
-      siteName = query;
+  static FilterSelectionState fromSearchQuery(String query) {
+    return FilterSelectionState(
+      selectedPriority: query,
+      receiveDate: query,
+      applicationId: query,
+      entryCode: query,
+      dealerName: query,
+      sourceName: query,
+      siteName: query,
+    );
+  }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/common/models/user_model.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/core/database/queries/select_queries.dart';
 import 'package:tgpl_network/features/dashboard/models/dashboard_response_model.dart';
@@ -23,7 +22,6 @@ class DashboardDataSourceImpl implements DashboardDataSource {
         result.first,
       );
       return DashboardResponseModel(
-        user: UserModel(),
         counts: moduleAppsCount,
       );
     } else {

@@ -3,9 +3,13 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/features/traffic_trade_form/models/traffic_trade_form_model.dart';
+import 'package:tgpl_network/core/database/app_database.dart';
 
 abstract class TrafficTradeFormLocalDataSource {
   Future<int> saveTrafficTradeForm(TrafficTradeFormModel form);
+  Future<TrafficTradeFormModel?> getSingleTrafficTradeForm(
+    String applicationId,
+  );
   Future<List<TrafficTradeFormModel>> getPendingTrafficTradeForms();
   Future<List<TrafficTradeFormModel>> getSyncedTrafficTradeForms();
   Future<void> markAsSynced(int id);
@@ -23,17 +27,35 @@ class TrafficTradeFormLocalDataSourceImpl
     final db = await _databaseHelper.database;
     final now = DateTime.now().toIso8601String();
 
-    final formData = form.toJson();
+    final formData = form.toDatabaseMap();
     // Convert nearbyTrafficSites list to JSON string for storage
-    formData['nearbyTrafficSites'] =
-        jsonEncode(formData['nearbyTrafficSites']);
+    formData['nearbyTrafficSites'] = jsonEncode(formData['nearbyTrafficSites']);
 
-    return await db.insert('traffic_trade_forms', {
+    return await db.insert(AppDatabase.trafficTradeFormsTable, {
       ...formData,
       'isSynced': 0,
       'createdAt': now,
       'updatedAt': now,
     });
+  }
+
+  @override
+  Future<TrafficTradeFormModel?> getSingleTrafficTradeForm(
+    String applicationId,
+  ) async {
+    final db = await _databaseHelper.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      AppDatabase.trafficTradeFormsTable,
+      where: 'applicationId = ?',
+      whereArgs: [applicationId],
+      limit: 1,
+    );
+
+    if (maps.isNotEmpty) {
+      return TrafficTradeFormModel.fromDatabaseMap(maps.first);
+    } else {
+      return null;
+    }
   }
 
   @override
@@ -51,7 +73,7 @@ class TrafficTradeFormLocalDataSourceImpl
       if (map['nearbyTrafficSites'] is String) {
         map['nearbyTrafficSites'] = jsonDecode(map['nearbyTrafficSites']);
       }
-      return TrafficTradeFormModel.fromJson(map);
+      return TrafficTradeFormModel.fromDatabaseMap(map);
     }).toList();
   }
 
@@ -70,7 +92,7 @@ class TrafficTradeFormLocalDataSourceImpl
       if (map['nearbyTrafficSites'] is String) {
         map['nearbyTrafficSites'] = jsonDecode(map['nearbyTrafficSites']);
       }
-      return TrafficTradeFormModel.fromJson(map);
+      return TrafficTradeFormModel.fromDatabaseMap(map);
     }).toList();
   }
 
@@ -79,10 +101,7 @@ class TrafficTradeFormLocalDataSourceImpl
     final db = await _databaseHelper.database;
     await db.update(
       'traffic_trade_forms',
-      {
-        'isSynced': 1,
-        'updatedAt': DateTime.now().toIso8601String(),
-      },
+      {'isSynced': 1, 'updatedAt': DateTime.now().toIso8601String()},
       where: 'id = ?',
       whereArgs: [id],
     );
@@ -91,16 +110,12 @@ class TrafficTradeFormLocalDataSourceImpl
   @override
   Future<void> deleteTrafficTradeForm(int id) async {
     final db = await _databaseHelper.database;
-    await db.delete(
-      'traffic_trade_forms',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    await db.delete('traffic_trade_forms', where: 'id = ?', whereArgs: [id]);
   }
 }
 
 // Provider
 final trafficTradeFormLocalDataSourceProvider =
     Provider<TrafficTradeFormLocalDataSource>((ref) {
-  return TrafficTradeFormLocalDataSourceImpl(DatabaseHelper.instance);
-});
+      return TrafficTradeFormLocalDataSourceImpl(DatabaseHelper.instance);
+    });

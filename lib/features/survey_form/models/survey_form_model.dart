@@ -84,7 +84,7 @@ class SurveyFormModel {
     this.rmRemarks,
   });
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toDatabaseMap() {
     return {
       'applicantId': applicantId,
       'entryCode': entryCode,
@@ -127,7 +127,46 @@ class SurveyFormModel {
     };
   }
 
-  factory SurveyFormModel.fromJson(Map<String, dynamic> json) {
+  Map<String, dynamic> toApiMap() {
+    return {
+      "dateConducted": dateConducted,
+      "googleLocation": googleLocation,
+      "cityName": city,
+      "district": district,
+      "siteStatus": siteStatus,
+      "npName": npName,
+      "source": source,
+      "sourceName": sourceName,
+      "priority": priority,
+      "dealerName": dealerName,
+      "dealerContact": dealerContact,
+      "referenceBy": referenceBy,
+      "locationAddress": locationAddress,
+      "landmark": landmark,
+      "plotFront": plotFront,
+      "plotDepth": plotDepth,
+      "nearestDepo": nearestDepo,
+      "distanceFromDepo": distanceFromDepo,
+      "typeOfTradeArea": typeOfTradeArea,
+      "isThisDealer": isThisDealer,
+      "dealerPlatform": dealerPlatform,
+      "dealerBusinesses": dealerBusinesses,
+      "dealerInvolvement": dealerInvolvement,
+      "isDealerReadyToInvest": isDealerReadyToInvest,
+      "dealerOpinion": dealerOpinion,
+      "monthlySalary": monthlySalary,
+      "isDealerAgreedToFollowTgplStandards":
+          isDealerAgreedToFollowTgplStandards,
+      "selectedTM": selectedTM,
+      "tmRecommendation": tmRecommendation,
+      "tmRemarks": tmRemarks,
+      "selectedRM": selectedRM,
+      "rmRecommendation": rmRecommendation,
+      "rmRemarks": rmRemarks,
+    };
+  }
+
+  factory SurveyFormModel.fromDatabaseMap(Map<String, dynamic> json) {
     return SurveyFormModel(
       applicantId: json['applicantId'] as String?,
       entryCode: json['entryCode'] as String?,
@@ -256,5 +295,10 @@ class SurveyFormModel {
   @override
   String toString() {
     return 'SurveyFormModel(applicantId: $applicantId, entryCode: $entryCode, dateConducted: $dateConducted, conductedBy: $conductedBy, googleLocation: $googleLocation, city: $city, district: $district, siteStatus: $siteStatus, npName: $npName, source: $source, sourceName: $sourceName, priority: $priority, dealerName: $dealerName, dealerContact: $dealerContact, referenceBy: $referenceBy, locationAddress: $locationAddress, landmark: $landmark, plotFront: $plotFront, plotDepth: $plotDepth, plotArea: $plotArea, nearestDepo: $nearestDepo, distanceFromDepo: $distanceFromDepo, typeOfTradeArea: $typeOfTradeArea, isThisDealer: $isThisDealer, dealerPlatform: $dealerPlatform, dealerBusinesses: $dealerBusinesses, dealerInvolvement: $dealerInvolvement, isDealerReadyToInvest: $isDealerReadyToInvest, dealerOpinion: $dealerOpinion, monthlySalary: $monthlySalary, isDealerAgreedToFollowTgplStandards: $isDealerAgreedToFollowTgplStandards, selectedTM: $selectedTM, tmRecommendation: $tmRecommendation, tmRemarks: $tmRemarks, selectedRM: $selectedRM, rmRecommendation: $rmRecommendation, rmRemarks: $rmRemarks)';
+  }
+
+  String? get validate {
+    // TODO: add validation logic
+    return null;
   }
 }

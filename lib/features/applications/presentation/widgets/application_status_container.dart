@@ -7,6 +7,8 @@ import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/applications/presentation/application_controller.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/routes/app_routes.dart';
 import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
 import 'package:tgpl_network/utils/map_utils.dart';
 
@@ -199,7 +201,16 @@ class ApplicationStatusContainer extends ConsumerWidget {
                           const SizedBox(width: 12),
                           Expanded(
                             child: CustomButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                ref
+                                    .read(goRouterProvider)
+                                    .push(
+                                      AppRoutes.applicationDetail(
+                                        application.applicationId?.toString() ??
+                                            '',
+                                      ),
+                                    );
+                              },
                               height: 41,
                               text: "",
                               topPadding: 10,

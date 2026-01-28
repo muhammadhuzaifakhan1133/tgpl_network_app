@@ -260,4 +260,24 @@ class CreateDbQueries {
     updatedAt $textType
   )
 ''';
+
+  static String createUserInfoTable = '''
+    CREATE TABLE ${AppDatabase.userInfoTable} (
+      userId INTEGER PRIMARY KEY,
+      userName TEXT,
+      fullName TEXT,
+      companyId INTEGER,
+      companyDisplayName TEXT,
+      companyLogo TEXT,
+      positionId INTEGER,
+      email TEXT,
+      contact TEXT,
+      treePath TEXT,
+      isSuperAdmin INTEGER,
+      message TEXT,
+      success INTEGER,
+      hasSurveyFormAccess INTEGER,
+      hasTrafficTradeFormAccess INTEGER
+    )
+  ''';
 }

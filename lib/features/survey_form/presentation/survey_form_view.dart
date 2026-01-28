@@ -22,18 +22,11 @@ class SurveyFormView extends ConsumerStatefulWidget {
 class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
   final _formKey = GlobalKey<FormState>();
   
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(surveyFormControllerProvider.notifier).initialize(widget.appId);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    final asyncValue = ref.watch(surveyFormControllerProvider);
-    final controller = ref.read(surveyFormControllerProvider.notifier);
+    final asyncValue = ref.watch(surveyFormControllerProvider(widget.appId));
+    final submissionController = ref.read(surveyFormSubmissionControllerProvider.notifier);
 
     return Scaffold(
       body: GestureDetector(
@@ -47,7 +40,7 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
             ),
             Expanded(
               child: asyncValue.when(
-                data: (_) => _buildForm(controller),
+                data: (_) => _buildForm(submissionController),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stack) => Center(
                   child: Column(
@@ -57,7 +50,7 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () =>
-                            ref.refresh(surveyFormControllerProvider),
+                            ref.refresh(surveyFormControllerProvider(widget.appId)),
                         child: const Text('Retry'),
                       ),
                     ],
@@ -71,9 +64,9 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
     );
   }
 
-  Widget _buildForm(SurveyFormController controller) {
+  Widget _buildForm(SurveyFormSubmissionController submissionController) {
     final isSubmitting = ref.watch(
-      surveyFormControllerProvider.select((state) => state.isLoading),
+      surveyFormControllerProvider(widget.appId).select((state) => state.isLoading),
     );
 
     return Form(
@@ -94,7 +87,7 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
               CustomButton(
                 onPressed: isSubmitting
                     ? null
-                    : () => _handleSubmit(controller),
+                    : () => _handleSubmit(submissionController),
                 text: isSubmitting ? "Submitting..." : "Submit",
               ),
               const SizedBox(height: 20),
@@ -105,7 +98,7 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
     );
   }
 
-  Future<void> _handleSubmit(SurveyFormController controller) async {
+  Future<void> _handleSubmit(SurveyFormSubmissionController submissionController) async {
     // Unfocus any active text field
     FocusScope.of(context).unfocus();
 
@@ -113,7 +106,7 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
     
     // Validate form
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-      success = await controller.submitSurveyForm();
+      success = await submissionController.submitSurveyForm();
       return;
     }
 

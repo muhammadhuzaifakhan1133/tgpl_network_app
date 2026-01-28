@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/features/traffic_trade_form/models/traffic_trade_form_model.dart';
 import 'package:tgpl_network/utils/extensions/nullable_fields_helper.dart';
 
 final volumeFinancialControllerProvider =
@@ -54,6 +56,26 @@ class VolumeFinancialState {
   String toString() {
     return 'VolumeFinancialState(dailyDieselSales: $dailyDieselSales, dailySuperSales: $dailySuperSales, dailyHOBCSales: $dailyHOBCSales, dailyLubricantSales: $dailyLubricantSales, rentExpectation: $rentExpectation, truckPortPotential: $truckPortPotential, salamMartPotential: $salamMartPotential, restaurantPotential: $restaurantPotential)';
   }
+
+  VolumeFinancialState.loadFromApplication(ApplicationModel app)
+      : dailyDieselSales = app.estimateDailyDieselSale?.toString(),
+        dailySuperSales = app.estimateDailySuperSale?.toString(),
+        dailyHOBCSales = null, // TODO: Addd hobc field
+        dailyLubricantSales = app.estimateLubricantSale?.toString(),
+        rentExpectation = app.expectedLeaseRentPerManth?.toString(),
+        truckPortPotential = app.trucPortPotentail?.toString(),
+        salamMartPotential = app.salamMartPotential?.toString(),
+        restaurantPotential = app.resturantPotential?.toString();
+
+  VolumeFinancialState.loadFromTrafficTradeFormModel(TrafficTradeFormModel form)
+      : dailyDieselSales = form.dailyDieselSales,
+        dailySuperSales = form.dailySuperSales,
+        dailyHOBCSales = form.dailyHOBCSales,
+        dailyLubricantSales = form.dailyLubricantSales,
+        rentExpectation = form.rentExpectation,
+        truckPortPotential = form.truckPortPotential,
+        salamMartPotential = form.salamMartPotential,
+        restaurantPotential = form.restaurantPotential;
 }
 
 class VolumeFinancialController extends Notifier<VolumeFinancialState> {
@@ -98,25 +120,11 @@ class VolumeFinancialController extends Notifier<VolumeFinancialState> {
     state = state.copyWith(fieldsToNull: [fieldName]);
   }
 
-  void prefillFormData({
-    required String dailyDieselSales,
-    required String dailySuperSales,
-    required String dailyHOBCSales,
-    required String dailyLubricantSales,
-    required String rentExpectation,
-    required String truckPortPotential,
-    required String salamMartPotential,
-    required String restaurantPotential,
-  }) {
-    state = state.copyWith(
-      dailyDieselSales: dailyDieselSales,
-      dailySuperSales: dailySuperSales,
-      dailyHOBCSales: dailyHOBCSales,
-      dailyLubricantSales: dailyLubricantSales,
-      rentExpectation: rentExpectation,
-      truckPortPotential: truckPortPotential,
-      salamMartPotential: salamMartPotential,
-      restaurantPotential: restaurantPotential,
-    );
+  void loadFromApplication(ApplicationModel app) {
+    state = VolumeFinancialState.loadFromApplication(app);
+  }
+
+  void loadFromTrafficTradeFormModel(TrafficTradeFormModel form) {
+    state = VolumeFinancialState.loadFromTrafficTradeFormModel(form);
   }
 }

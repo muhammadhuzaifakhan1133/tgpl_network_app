@@ -2,6 +2,7 @@ import 'package:tgpl_network/common/models/logical_operator_enum.dart';
 import 'package:tgpl_network/common/models/sort_order_direction_enum.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_state.dart';
 import 'package:tgpl_network/common/models/yes_no_enum_with_extension.dart';
+import 'package:tgpl_network/features/traffic_trade_form/models/traffic_site_model.dart';
 import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
@@ -32,6 +33,11 @@ class ApplicationModel {
       : double.tryParse(plotArea!) ?? _plotArea;
 
   double get _plotArea => (plotFront ?? 0) * (plotDepth ?? 0);
+
+  // fields get by join table // TODO: join the table
+  final String? siteStatusName;
+  final List<TrafficSiteModel> nearbyTrafficSites;
+
   // fields
   final int? id;
   final int? applicationId;
@@ -297,6 +303,8 @@ class ApplicationModel {
     this.message,
     this.recordId,
     this.accessLevel,
+    this.siteStatusName,
+    this.nearbyTrafficSites = const [],
   });
 
   factory ApplicationModel.fromAPIResponseMap(Map<String, dynamic> json) {
@@ -714,7 +722,7 @@ class ApplicationModel {
     final whereConditions = <String>[];
     final whereArgs = <dynamic>[];
 
-    if (filters.hasActiveFilters) {
+    if (filters.countofActiveFilters > 0) {
       if (filters.selectedCity != null) {
         whereConditions.add('cityName LIKE ?');
         whereArgs.add(filters.selectedCity);
@@ -891,6 +899,7 @@ class ApplicationModel {
         whereArgs.add(filters.inauguration!.value);
       }
 
+      // TODO: addDate is updated when some one change application data on Server.
       // Date filters
       if (filters.fromDate.isValidDate() && filters.toDate.isValidDate()) {
         whereConditions.add('addDate BETWEEN ? AND ?');

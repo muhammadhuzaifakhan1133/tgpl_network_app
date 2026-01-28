@@ -51,6 +51,9 @@ class DatabaseHelper {
 
     // Master Lists Table (storing as JSON)
     await db.execute(CreateDbQueries.createMasterListsTable);
+    
+    // User Info Table
+    await db.execute(CreateDbQueries.createUserInfoTable);
 
     // Sync Metadata Table
     await db.execute(CreateDbQueries.syncMetadataTable);
@@ -67,19 +70,21 @@ class DatabaseHelper {
     db.close();
   }
 
+  List<String> get masterDataTables => [
+        AppDatabase.applicationTable,
+        AppDatabase.cityTable,
+        AppDatabase.trafficTradeTable,
+        AppDatabase.masterListsTable,
+        AppDatabase.userInfoTable,
+      ];
+
   Future<void> clearAllTables() async {
     final db = await instance.database;
-    await clearMasterDataTables();
+    for (final table in masterDataTables) {
+      await db.delete(table);
+    }
     await db.delete(AppDatabase.surveyFormsTable);
     await db.delete(AppDatabase.trafficTradeFormsTable);
     await db.delete(AppDatabase.syncMetadataTable);
-  }
-
-  Future<void> clearMasterDataTables({Database? db}) async {
-    db ??= await instance.database;
-    await db.delete(AppDatabase.applicationTable);
-    await db.delete(AppDatabase.cityTable);
-    await db.delete(AppDatabase.trafficTradeTable);
-    await db.delete(AppDatabase.masterListsTable);
   }
 }

@@ -7,6 +7,8 @@ import 'package:tgpl_network/common/data/shared_prefs_data_source.dart';
 import 'package:tgpl_network/common/models/sync_enum.dart';
 import 'package:tgpl_network/common/providers/last_sync_time_provider.dart';
 import 'package:tgpl_network/common/providers/sync_status_provider.dart';
+import 'package:tgpl_network/common/providers/user_provider.dart';
+import 'package:tgpl_network/features/application_detail/application_detail_controller.dart';
 import 'package:tgpl_network/features/applications/presentation/application_controller.dart';
 import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
@@ -27,10 +29,11 @@ final snackbarMessageProvider = StateProvider<String?>((ref) {
 });
 
 class HomeShellController extends AsyncNotifier<void> {
-  int  autoSyncThresholdMinutes = 30; // (in minutes)
+  int  autoSyncThresholdMinutes = 60;
   List<dynamic> get providersToRefresh => [
     getLastSyncTimeProvider,
     dashboardAsyncControllerProvider,
+    userProvider,
     modulesProvider,
     applicationControllerProvider,
     appStatusesProvider,
@@ -38,6 +41,7 @@ class HomeShellController extends AsyncNotifier<void> {
     prioritiesProvider,
     // mapMarkersProvider // this is expensive, avoid refreshing unless necessary
     moduleApplicationsAsyncControllerProvider,
+    applicationDetailAsyncControllerProvider,
   ];
   StreamSubscription<InternetStatus>? _connectivitySubscription;
 

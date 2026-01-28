@@ -1,6 +1,7 @@
 // lib/features/master_data/data/models/master_data_response_model.dart
 import 'dart:convert';
 
+import 'package:tgpl_network/features/master_data/models/user_model.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
 import 'package:tgpl_network/features/master_data/models/city_model.dart';
 import 'package:tgpl_network/features/master_data/models/dealer_investment_type_model.dart';
@@ -29,6 +30,7 @@ class MasterDataResponseModel {
   final List<MasterDataYNAModel> ynList;
   final List<MasterDataYNAModel> ynnList;
   final List<NFRModel> nfrList;
+  final UserModel? userInfo;
 
   MasterDataResponseModel({
     required this.applicationAndSurveyList,
@@ -44,6 +46,7 @@ class MasterDataResponseModel {
     required this.ynList,
     required this.ynnList,
     required this.nfrList,
+    required this.userInfo,
   });
 
   factory MasterDataResponseModel.fromAPIResponseMap(
@@ -98,6 +101,9 @@ class MasterDataResponseModel {
       nfrList: List<NFRModel>.from(
         json['NFRList']?.map((x) => NFRModel(x)) ?? [],
       ),
+      userInfo: json['UserInfo'] != null 
+          ? UserModel.fromAPIResponseMap(json['UserInfo'])
+          : null,
     );
   }
 

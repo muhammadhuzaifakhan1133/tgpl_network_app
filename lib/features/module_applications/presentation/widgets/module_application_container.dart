@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:tgpl_network/common/providers/user_provider.dart';
 // import 'package:tgpl_network/common/models/application_model.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
@@ -12,6 +13,7 @@ import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
+import 'package:tgpl_network/utils/map_utils.dart';
 
 class ModuleApplicationContainer extends ConsumerWidget {
   final ApplicationModel application;
@@ -24,6 +26,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(userProvider).requireValue!;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 13, vertical: 8),
       margin: EdgeInsets.only(bottom: 14),
@@ -130,7 +133,15 @@ class ModuleApplicationContainer extends ConsumerWidget {
                   style: AppTextstyles.googleInter400LightGrey12,
                 ),
               ),
-              actionContainer(icon: AppImages.locationIconSvg, onTap: () {}),
+              actionContainer(
+                icon: AppImages.locationIconSvg,
+                onTap: () {
+                  MapUtils.openGoogleMap(
+                    application.latitude,
+                    application.longitude,
+                  );
+                },
+              ),
               const SizedBox(width: 8),
               actionContainer(
                 icon: AppImages.eyeIconSvg,
@@ -142,34 +153,38 @@ class ModuleApplicationContainer extends ConsumerWidget {
                         AppRoutes.applicationDetail(
                           application.applicationId?.toString() ?? '',
                         ),
-                        extra: application.statusId,
                       );
                 },
               ),
               if (submoduleName == "Survey & Dealer Profile" ||
-                  submoduleName == "Traffic & Trade") ...[
+                  user.hasSurveyFormAccess) ...[
                 const SizedBox(width: 8),
                 actionContainer(
                   icon: AppImages.formIconSvg,
                   onTap: () {
-                    if (submoduleName == "Survey & Dealer Profile") {
-                      ref
-                          .read(goRouterProvider)
-                          .push(
-                            AppRoutes.surveyForm(
-                              application.applicationId?.toString() ?? '',
-                            ),
-                          );
-                      return;
-                    } else {
-                      ref
-                          .read(goRouterProvider)
-                          .push(
-                            AppRoutes.trafficTradeForm(
-                              application.applicationId?.toString() ?? '',
-                            ),
-                          );
-                    }
+                    ref
+                        .read(goRouterProvider)
+                        .push(
+                          AppRoutes.surveyForm(
+                            application.applicationId?.toString() ?? '',
+                          ),
+                        );
+                  },
+                ),
+              ],
+              if (submoduleName == "Traffic & Trade" ||
+                  user.hasTrafficTradeFormAccess) ...[
+                const SizedBox(width: 8),
+                actionContainer(
+                  icon: AppImages.formIconSvg,
+                  onTap: () {
+                    ref
+                        .read(goRouterProvider)
+                        .push(
+                          AppRoutes.trafficTradeForm(
+                            application.applicationId?.toString() ?? '',
+                          ),
+                        );
                   },
                 ),
               ],

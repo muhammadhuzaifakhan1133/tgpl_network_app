@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/features/survey_form/models/survey_form_model.dart';
 import 'package:tgpl_network/utils/extensions/nullable_fields_helper.dart';
 
 final contactAndDealerFormControllerProvider =
@@ -65,6 +67,32 @@ class ContactAndDealerFormState {
       distanceFromDepo: fieldsToNull.apply("distanceFromDepo", distanceFromDepo , this.distanceFromDepo),
     );
   }
+
+  ContactAndDealerFormState.loadFromApplication(ApplicationModel app)
+      : dealerName = app.dealerName,
+        dealerContact = app.dealerContact,
+        referenceBy = app.referedBy,
+        locationAddress = app.locationAddress,
+        landmark = app.landmark,
+        nearestDepo = app.nearestDepo,
+        typeOfTradeArea = app.typeOfTradeArea,
+        plotFront = app.plotFront?.toString(),
+        plotDepth = app.plotDepth?.toString(),
+        plotArea = app.plotArea?.toString(),
+        distanceFromDepo = app.distanceFromDetp?.toString();
+
+  ContactAndDealerFormState.loadFromSurveyFormModel(SurveyFormModel form)
+      : dealerName = form.dealerName,
+        dealerContact = form.dealerContact,
+        referenceBy = form.referenceBy,
+        locationAddress = form.locationAddress,
+        landmark = form.landmark,
+        nearestDepo = form.nearestDepo,
+        typeOfTradeArea = form.typeOfTradeArea,
+        plotFront = form.plotFront,
+        plotDepth = form.plotDepth,
+        plotArea = form.plotArea,
+        distanceFromDepo = form.distanceFromDepo;
 
   @override
   String toString() {
@@ -140,38 +168,11 @@ class ContactAndDealerFormController
     state = state.copyWith(fieldsToNull: [fieldName]);
   }
 
-  /* ---------------- Prefill (edit mode) ---------------- */
-
-  void prefillFormData({
-    required String dealerName,
-    required String dealerContact,
-    required String referenceBy,
-    required String locationAddress,
-    required String nearestDepo,
-    required String typeOfTradeArea,
-    required String landmark,
-    required String plotFront,
-    required String plotDepth,
-    required String distanceFromDepo,
-  }) {
-    updateDealerInfo(
-      dealerName: dealerName,
-      dealerContact: dealerContact,
-      referenceBy: referenceBy,
-    );
-
-    updateLocationInfo(
-      locationAddress: locationAddress,
-      landmark: landmark,
-      nearestDepo: nearestDepo,
-      typeOfTradeArea: typeOfTradeArea,
-    );
-
-    updatePlotDimensions(
-      front: plotFront,
-      depth: plotDepth,
-    );
-
-    updateDistanceFromDepo(distanceFromDepo);
+  void loadFromApplication(ApplicationModel app) {
+    state = ContactAndDealerFormState.loadFromApplication(app);
   }
+
+  void loadFromSurveyFormModel(SurveyFormModel form) {
+    state = ContactAndDealerFormState.loadFromSurveyFormModel(form);
+  }  
 }

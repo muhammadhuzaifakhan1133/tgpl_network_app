@@ -22,21 +22,15 @@ class TrafficTradeFormView extends ConsumerStatefulWidget {
 
 class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  @override
-  void initState() {
-    super.initState();
-    // Load initial data if needed (for edit mode)
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(trafficTradeFormControllerProvider.notifier)
-          .initialize(widget.appId);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    final asyncValue = ref.watch(trafficTradeFormControllerProvider);
-    final controller = ref.read(trafficTradeFormControllerProvider.notifier);
+    final asyncValue = ref.watch(
+      trafficTradeFormControllerProvider(widget.appId),
+    );
+    final submissionController = ref.read(
+      trafficTradeFormSubmissionControllerProvider.notifier,
+    );
 
     return Scaffold(
       body: GestureDetector(
@@ -50,7 +44,7 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
             ),
             Expanded(
               child: asyncValue.when(
-                data: (_) => _buildForm(controller),
+                data: (_) => _buildForm(submissionController),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stack) => Center(
                   child: Column(
@@ -59,8 +53,9 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
                       Text('Error: $error'),
                       const SizedBox(height: 16),
                       ElevatedButton(
-                        onPressed: () =>
-                            ref.refresh(trafficTradeFormControllerProvider),
+                        onPressed: () => ref.refresh(
+                          trafficTradeFormControllerProvider(widget.appId),
+                        ),
                         child: const Text('Retry'),
                       ),
                     ],
@@ -74,9 +69,11 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
     );
   }
 
-  Widget _buildForm(TrafficTradeFormController controller) {
+  Widget _buildForm(TrafficTradeFormSubmissionController submissionController) {
     final isSubmitting = ref.watch(
-      trafficTradeFormControllerProvider.select((state) => state.isLoading),
+      trafficTradeFormSubmissionControllerProvider.select(
+        (state) => state.isLoading,
+      ),
     );
 
     return Form(
@@ -105,7 +102,9 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: CustomButton(
-              onPressed: isSubmitting ? null : () => _handleSubmit(controller),
+              onPressed: isSubmitting
+                  ? null
+                  : () => _handleSubmit(submissionController),
               text: isSubmitting ? "Submitting..." : "Submit",
             ),
           ),
@@ -114,7 +113,9 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
     );
   }
 
-  Future<void> _handleSubmit(TrafficTradeFormController controller) async {
+  Future<void> _handleSubmit(
+    TrafficTradeFormSubmissionController submissionController,
+  ) async {
     // Unfocus any active text field
     FocusScope.of(context).unfocus();
 
@@ -122,7 +123,7 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
 
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       // Submit form (validation happens inside)
-      success = await controller.submitTrafficTradeForm();
+      success = await submissionController.submitTrafficTradeForm();
     }
 
     if (!mounted) return;

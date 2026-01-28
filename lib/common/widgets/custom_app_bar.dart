@@ -24,6 +24,7 @@ class CustomAppBar extends ConsumerStatefulWidget {
   final void Function(String)? onSearchChanged;
   final void Function()? onCrossSearch;
   final void Function()? onCancelSearchField;
+  final int countofActiveFilters;
   const CustomAppBar({
     super.key,
     required this.title,
@@ -39,6 +40,7 @@ class CustomAppBar extends ConsumerStatefulWidget {
     this.onSearchChanged,
     this.onCrossSearch,
     this.onCancelSearchField,
+    this.countofActiveFilters = 0,
   });
 
   @override
@@ -142,22 +144,50 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                         ),
                       if (widget.showFilterIcon) ...[
                         const SizedBox(width: 8),
-                        GestureDetector(
-                          onTap: widget.onTapFilterIcon,
-                          child: Container(
-                            height: 48,
-                            width: 48,
-                            decoration: BoxDecoration(
-                              color: AppColors.actionContainerColor,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Center(
-                              child: Icon(
-                                Icons.filter_alt_outlined,
-                                color: AppColors.subHeadingColor,
+                        Stack(
+                          children: [
+                            GestureDetector(
+                              onTap: widget.onTapFilterIcon,
+                              child: Container(
+                                height: 48,
+                                width: 48,
+                                decoration: BoxDecoration(
+                                  color: AppColors.actionContainerColor,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.filter_alt_outlined,
+                                    color: AppColors.subHeadingColor,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            if (widget.countofActiveFilters > 0)
+                              Positioned(
+                                right: 4,
+                                top: 4,
+                                child: Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.emailUsIconColor,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: AppColors.white,
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    widget.countofActiveFilters.toString(),
+                                    style: AppTextstyles.googleInter700black28
+                                        .copyWith(
+                                          fontSize: 10,
+                                          color: AppColors.white,
+                                        ),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                       ],
                       if (widget.showResyncButton) ...[

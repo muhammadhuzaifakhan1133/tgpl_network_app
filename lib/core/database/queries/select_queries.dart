@@ -38,4 +38,10 @@ class SelectDbQueries {
       ORDER BY id DESC
       LIMIT 1
     ''';
+  
+  static const String selectApplicationDetail = '''
+      SELECT *
+      FROM ${AppDatabase.applicationTable}
+      WHERE applicationId = ?
+    ''';
 }

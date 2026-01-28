@@ -1,17 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/common/providers/user_provider.dart';
 import 'package:tgpl_network/features/dashboard/data/dashboard_data_source.dart';
 import 'package:tgpl_network/features/dashboard/models/dashboard_response_model.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
-import 'package:tgpl_network/common/models/user_model.dart';
-
-final userProvider = Provider<UserModel>((ref) {
-  return UserModel(
-    name: "Ahmed Hassan",
-    role: "Regional Manager",
-    id: "EMP-2025-001",
-  );
-});
 
 final dashboardControllerProvider =
     NotifierProvider<DashboardController, DashboardState>(() {
@@ -58,6 +50,7 @@ class DashboardController extends Notifier<DashboardState> {
 class DashboardAsyncController extends AsyncNotifier<DashboardResponseModel> {
   @override
   Future<DashboardResponseModel> build() async {
+    await ref.read(userProvider.future); // Ensure user data is loaded
     return await getDashboardData();
   }
 

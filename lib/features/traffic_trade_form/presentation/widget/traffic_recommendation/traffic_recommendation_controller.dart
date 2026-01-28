@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/features/traffic_trade_form/models/traffic_trade_form_model.dart';
 import 'package:tgpl_network/utils/extensions/nullable_fields_helper.dart';
 
 final recommendationControllerProvider =
@@ -46,6 +48,22 @@ class RecommendationState {
   String toString() {
     return 'RecommendationState(selectedTM: $selectedTM, selectedRM: $selectedRM, selectedTMRecommendation: $selectedTMRecommendation, selectedRMRecommendation: $selectedRMRecommendation, tmRemarks: $tmRemarks, rmRemarks: $rmRemarks)';
   }
+
+  RecommendationState.loadFromApplication(ApplicationModel app)
+      : selectedTM = app.ttRecommendationTmName,
+        selectedRM = app.ttRecommendationRmName,
+        selectedTMRecommendation = app.ttTmRecommendation,
+        selectedRMRecommendation = app.ttRmRecommendation,
+        tmRemarks = app.ttTmRemarks,
+        rmRemarks = app.ttRmRemarks;
+
+  RecommendationState.loadFromTrafficTradeFormModel(TrafficTradeFormModel form)
+      : selectedTM = form.selectedTM,
+        selectedRM = form.selectedRM,
+        selectedTMRecommendation = form.selectedTMRecommendation,
+        selectedRMRecommendation = form.selectedRMRecommendation,
+        tmRemarks = form.tmRemarks,
+        rmRemarks = form.rmRemarks;
 }
 
 class RecommendationController extends Notifier<RecommendationState> {
@@ -82,21 +100,11 @@ class RecommendationController extends Notifier<RecommendationState> {
     state = state.copyWith(fieldsToNull: [fieldName]);
   }
 
-  void prefillFormData({
-    required String selectedTM,
-    required String selectedRM,
-    required String selectedTMRecommendation,
-    required String selectedRMRecommendation,
-    required String tmRemarks,
-    required String rmRemarks,
-  }) {
-    state = state.copyWith(
-      selectedTM: selectedTM,
-      selectedRM: selectedRM,
-      selectedTMRecommendation: selectedTMRecommendation,
-      selectedRMRecommendation: selectedRMRecommendation,
-      tmRemarks: tmRemarks,
-      rmRemarks: rmRemarks,
-    );
+  void loadFromApplication(ApplicationModel app) {
+    state = RecommendationState.loadFromApplication(app);
+  }
+
+  void loadFromTrafficTradeFormModel(TrafficTradeFormModel form) {
+    state = RecommendationState.loadFromTrafficTradeFormModel(form);
   }
 }

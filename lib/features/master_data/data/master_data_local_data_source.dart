@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:tgpl_network/features/master_data/models/user_model.dart';
 import 'package:tgpl_network/core/database/app_database.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_state.dart';
@@ -30,6 +31,7 @@ abstract class MasterDataLocalDataSource {
   Future<List<String>> getYNNList();
   Future<List<String>> getNFRList();
   Future<List<CityModel>> getCities();
+  Future<UserModel?> getUserInfo();
   Future<void> clearAllData();
 }
 
@@ -44,12 +46,9 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
 
     await db.transaction((txn) async {
       // Clear existing data
-      txn.delete(AppDatabase.applicationTable);
-      txn.delete(AppDatabase.cityTable);
-      txn.delete(AppDatabase.trafficTradeTable);
-      txn.delete(AppDatabase.masterListsTable);
-
-      // final batch = txn.batch();
+      for (final table in _databaseHelper.masterDataTables) {
+        await txn.delete(table);
+      }
 
       // Insert in chunks to avoid memory issues
       const chunkSize = 500;
@@ -95,6 +94,12 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
         txn.insert(AppDatabase.masterListsTable, data.listTypeToMap(listType));
       }
 
+      if (data.userInfo != null) {
+        // Insert user info
+        txn.insert(AppDatabase.userInfoTable, data.userInfo!.toDatabaseMap());
+      }
+
+      // Update sync metadata
       txn.delete(AppDatabase.syncMetadataTable);
 
       txn.insert(AppDatabase.syncMetadataTable, {
@@ -124,7 +129,7 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
   @override
   Future<List<ApplicationModel>> getApplications({
     FilterSelectionState? filters,
-    
+
     int page = 1,
     int? pageSize,
   }) async {
@@ -214,8 +219,25 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
       _getMasterListByType(MasterListType.nfrList);
 
   @override
+  Future<UserModel?> getUserInfo() async {
+  final db = await _databaseHelper.database;
+  
+  final userInfoResult = await db.query(
+    AppDatabase.userInfoTable,
+    limit: 1,
+  );
+  
+  if (userInfoResult.isEmpty) return null;
+  
+  final userInfoMap = userInfoResult.first;
+  
+  
+  return UserModel.fromDatabaseMap(userInfoMap);
+}
+
+  @override
   Future<void> clearAllData() async {
-    await _databaseHelper.clearMasterDataTables();
+    await _databaseHelper.clearAllTables();
   }
 }
 

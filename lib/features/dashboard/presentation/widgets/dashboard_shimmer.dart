@@ -21,7 +21,7 @@ class DashboardShimmerView extends StatelessWidget {
           child: Column(
             children: const [
               SizedBox(height: 10),
-              _HeaderProfileShimmer(),
+              HeaderProfileShimmer(),
               SizedBox(height: 30),
               _GreetingTextShimmer(),
               SizedBox(height: 20),
@@ -44,8 +44,8 @@ class DashboardShimmerView extends StatelessWidget {
   }
 }
 
-class _HeaderProfileShimmer extends StatelessWidget {
-  const _HeaderProfileShimmer();
+class HeaderProfileShimmer extends StatelessWidget {
+  const HeaderProfileShimmer();
 
   @override
   Widget build(BuildContext context) {

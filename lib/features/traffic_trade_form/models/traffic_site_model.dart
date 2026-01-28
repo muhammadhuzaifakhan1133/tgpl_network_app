@@ -20,7 +20,10 @@ class TrafficSiteModel {
     this.omcName,
     this.isNfrFacility,
     this.nfrFacilities = const [],
-  }) : id = id ?? DateTime.now().millisecondsSinceEpoch.toString() + Random().nextInt(10000).toString();
+  }) : id =
+           id ??
+           DateTime.now().millisecondsSinceEpoch.toString() +
+               Random().nextInt(10000).toString();
 
   TrafficSiteModel copyWith({
     String? siteName,
@@ -33,30 +36,39 @@ class TrafficSiteModel {
     List<String>? fieldsToNull,
   }) {
     return TrafficSiteModel(
-      siteName: fieldsToNull
-          .apply('siteName', siteName, this.siteName),
+      siteName: fieldsToNull.apply('siteName', siteName, this.siteName),
       estimatedDailyDieselSale: fieldsToNull.apply(
-          'estimatedDailyDieselSale',
-          estimatedDailyDieselSale,
-          this.estimatedDailyDieselSale),
+        'estimatedDailyDieselSale',
+        estimatedDailyDieselSale,
+        this.estimatedDailyDieselSale,
+      ),
       estimatedDailySuperSale: fieldsToNull.apply(
-          'estimatedDailySuperSale',
-          estimatedDailySuperSale,
-          this.estimatedDailySuperSale),
+        'estimatedDailySuperSale',
+        estimatedDailySuperSale,
+        this.estimatedDailySuperSale,
+      ),
       estimatedDailyLubricantSale: fieldsToNull.apply(
-          'estimatedDailyLubricantSale',
-          estimatedDailyLubricantSale,
-          this.estimatedDailyLubricantSale),
+        'estimatedDailyLubricantSale',
+        estimatedDailyLubricantSale,
+        this.estimatedDailyLubricantSale,
+      ),
       omcName: fieldsToNull.apply('omcName', omcName, this.omcName),
-      isNfrFacility: fieldsToNull.apply('isNfrFacility', isNfrFacility, this.isNfrFacility),
-      nfrFacilities: fieldsToNull.apply(
-          'nfrFacilities',
-          nfrFacilities,
-          this.nfrFacilities) ?? [],
+      isNfrFacility: fieldsToNull.apply(
+        'isNfrFacility',
+        isNfrFacility,
+        this.isNfrFacility,
+      ),
+      nfrFacilities:
+          fieldsToNull.apply(
+            'nfrFacilities',
+            nfrFacilities,
+            this.nfrFacilities,
+          ) ??
+          [],
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toDatabaseMap() {
     return {
       'siteName': siteName,
       'estimatedDailyDieselSale': estimatedDailyDieselSale,
@@ -73,10 +85,12 @@ class TrafficSiteModel {
       siteName: json['siteName'] as String?,
       estimatedDailyDieselSale: json['estimatedDailyDieselSale'] as String?,
       estimatedDailySuperSale: json['estimatedDailySuperSale'] as String?,
-      estimatedDailyLubricantSale: json['estimatedDailyLubricantSale'] as String?,
+      estimatedDailyLubricantSale:
+          json['estimatedDailyLubricantSale'] as String?,
       omcName: json['omcName'] as String?,
       isNfrFacility: json['isNfrFacility'] as String?,
-      nfrFacilities: (json['nfrFacilities'] as List<dynamic>?)
+      nfrFacilities:
+          (json['nfrFacilities'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           [],
@@ -88,5 +102,16 @@ class TrafficSiteModel {
     return 'TrafficSiteModel(siteName: $siteName, estimatedDailyDieselSale: $estimatedDailyDieselSale, estimatedDailySuperSale: $estimatedDailySuperSale, estimatedDailyLubricantSale: $estimatedDailyLubricantSale, omcName: $omcName, isNfrFacility: $isNfrFacility, nfrFacilities: $nfrFacilities)';
   }
 
-  
+  Map<String, dynamic> toApiMap() {
+    return {
+      "id": id,
+      "siteName": siteName,
+      "estimatedDailyDieselSale": estimatedDailyDieselSale,
+      "estimatedDailySuperSale": estimatedDailySuperSale,
+      "estimatedDailyLubricantSale": estimatedDailyLubricantSale,
+      "omcName": omcName,
+      "isNfrFacility": isNfrFacility,
+      "nfrFacilities": nfrFacilities
+    };
+  }
 }

@@ -48,10 +48,10 @@ class TrafficTradeFormModel {
     this.rmRemarks,
   });
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toDatabaseMap() {
     return {
       'nearbyTrafficSites': nearbyTrafficSites
-          .map((site) => site.toJson())
+          .map((site) => site.toDatabaseMap())
           .toList(),
       'trafficCountTruck': trafficCountTruck,
       'trafficCountCar': trafficCountCar,
@@ -73,7 +73,7 @@ class TrafficTradeFormModel {
     };
   }
 
-  factory TrafficTradeFormModel.fromJson(Map<String, dynamic> json) {
+  factory TrafficTradeFormModel.fromDatabaseMap(Map<String, dynamic> json) {
     return TrafficTradeFormModel(
       nearbyTrafficSites:
           (json['nearbyTrafficSites'] as List<dynamic>?)
@@ -150,5 +150,34 @@ class TrafficTradeFormModel {
   @override
   String toString() {
     return 'TrafficTradeFormModel(nearbyTrafficSites: $nearbyTrafficSites, trafficCountTruck: $trafficCountTruck, trafficCountCar: $trafficCountCar, trafficCountBike: $trafficCountBike, dailyDieselSales: $dailyDieselSales, dailySuperSales: $dailySuperSales, dailyHOBCSales: $dailyHOBCSales, dailyLubricantSales: $dailyLubricantSales, rentExpectation: $rentExpectation, truckPortPotential: $truckPortPotential, salamMartPotential: $salamMartPotential, restaurantPotential: $restaurantPotential, selectedTM: $selectedTM, selectedRM: $selectedRM, selectedTMRecommendation: $selectedTMRecommendation, selectedRMRecommendation: $selectedRMRecommendation, tmRemarks: $tmRemarks, rmRemarks: $rmRemarks)';
+  }
+
+  Map<String, dynamic> toApiMap() {
+    return {
+      "nearbyTrafficSites": nearbyTrafficSites
+          .map((site) => site.toApiMap())
+          .toList(),
+      "trafficCountTruck": trafficCountTruck,
+      "trafficCountCar": trafficCountCar,
+      "trafficCountBike": trafficCountBike,
+      "dailyDieselSales": dailyDieselSales,
+      "dailySuperSales": dailySuperSales,
+      "dailyHOBCSales": dailyHOBCSales,
+      "dailyLubricantSales": dailyLubricantSales,
+      "rentExpectation": rentExpectation,
+      "truckPortPotential": truckPortPotential,
+      "salamMartPotential": salamMartPotential,
+      "restaurantPotential": restaurantPotential,
+      "selectedTM": selectedTM,
+      "selectedRM": selectedRM,
+      "selectedTMRecommendation": selectedTMRecommendation,
+      "selectedRMRecommendation": selectedRMRecommendation,
+      "tmRemarks": tmRemarks,
+      "rmRemarks": rmRemarks,
+    };
+  }
+
+  String? get validate {
+    return null;
   }
 }
