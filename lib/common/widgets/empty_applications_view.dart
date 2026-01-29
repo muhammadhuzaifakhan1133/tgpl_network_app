@@ -14,7 +14,7 @@ class ApplicationsEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _config = _stateConfig(reason);
+    final config = _stateConfig(reason);
 
     return Center(
       child: Padding(
@@ -25,20 +25,20 @@ class ApplicationsEmptyState extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: _config.color.withOpacity(0.1),
+                color: config.color.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                _config.icon,
+                config.icon,
                 size: 64,
-                color: _config.color,
+                color: config.color,
               ),
             ),
 
             const SizedBox(height: 24),
 
             Text(
-              _config.title,
+              config.title,
               style: AppTextstyles.googleInter700black28.copyWith(fontSize: 20),
               textAlign: TextAlign.center,
             ),
@@ -46,14 +46,14 @@ class ApplicationsEmptyState extends StatelessWidget {
             const SizedBox(height: 8),
 
             Text(
-              _config.subtitle,
+              config.subtitle,
               style: AppTextstyles.neutra500grey12.copyWith(fontSize: 14),
               textAlign: TextAlign.center,
             ),
 
             const SizedBox(height: 28),
 
-            _buildActions(_config),
+            _buildActions(config),
           ],
         ),
       ),

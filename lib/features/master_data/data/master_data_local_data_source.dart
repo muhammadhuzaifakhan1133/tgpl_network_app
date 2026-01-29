@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:tgpl_network/core/database/queries/select_queries.dart';
 import 'package:tgpl_network/features/master_data/models/user_model.dart';
 import 'package:tgpl_network/core/database/app_database.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
@@ -32,7 +33,7 @@ abstract class MasterDataLocalDataSource {
   Future<List<String>> getNFRList();
   Future<List<CityModel>> getCities();
   Future<UserModel?> getUserInfo();
-  Future<void> clearAllData();
+  // Future<void> clearAllData();
 }
 
 class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
@@ -129,32 +130,38 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
   @override
   Future<List<ApplicationModel>> getApplications({
     FilterSelectionState? filters,
-
     int page = 1,
     int? pageSize,
   }) async {
     pageSize ??= ApplicationModel.pageSize;
     final db = await _databaseHelper.database;
 
-    String? whereClause;
-    final whereArgs = <dynamic>[];
+    var whereConditions = <String>[];
+    var whereArgs = <dynamic>[];
 
     if (filters != null) {
       final whereData = ApplicationModel.getWhereClauseAndArgs(filters);
-      whereClause = whereData.$1;
-      whereArgs.addAll(whereData.$2);
+      whereConditions = whereData.$1;
+      whereArgs = whereData.$2;
     }
 
-    final List<Map<String, dynamic>> maps = await db.query(
-      AppDatabase.applicationTable,
-      where: whereClause,
-      whereArgs: whereArgs.isNotEmpty ? whereArgs : null,
+    final mainQuery = SelectDbQueries.buildApplicationQuery(
+      whereConditions: whereConditions,
       orderBy: ApplicationModel.orderBy,
       limit: pageSize,
       offset: (page - 1) * pageSize,
     );
 
-    return maps.map((map) => ApplicationModel.fromDatabaseMap(map)).toList();
+    final List<Map<String, dynamic>> applicationsResult = await db.rawQuery(
+      mainQuery,
+      whereArgs.isNotEmpty ? whereArgs : null,
+    );
+
+    final applications = applicationsResult
+        .map((map) => ApplicationModel.fromDatabaseMap(map))
+        .toList();
+
+    return applications;
   }
 
   @override
@@ -220,24 +227,15 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
 
   @override
   Future<UserModel?> getUserInfo() async {
-  final db = await _databaseHelper.database;
-  
-  final userInfoResult = await db.query(
-    AppDatabase.userInfoTable,
-    limit: 1,
-  );
-  
-  if (userInfoResult.isEmpty) return null;
-  
-  final userInfoMap = userInfoResult.first;
-  
-  
-  return UserModel.fromDatabaseMap(userInfoMap);
-}
+    final db = await _databaseHelper.database;
 
-  @override
-  Future<void> clearAllData() async {
-    await _databaseHelper.clearAllTables();
+    final userInfoResult = await db.query(AppDatabase.userInfoTable, limit: 1);
+
+    if (userInfoResult.isEmpty) return null;
+
+    final userInfoMap = userInfoResult.first;
+
+    return UserModel.fromDatabaseMap(userInfoMap);
   }
 }
 

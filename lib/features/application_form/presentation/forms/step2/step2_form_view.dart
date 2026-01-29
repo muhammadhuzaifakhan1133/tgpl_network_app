@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
-import 'package:tgpl_network/features/master_data/providers/priorities_provider.dart';
-import 'package:tgpl_network/features/master_data/providers/site_statuses_provider.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step2/step2_form_controller.dart';
-import 'package:tgpl_network/features/station_form/presentation/station_form_controller.dart';
+import 'package:tgpl_network/features/application_form/presentation/forms/step2/step2_form_controller.dart';
+import 'package:tgpl_network/features/application_form/presentation/app_form_controller.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class Step2FormView extends ConsumerStatefulWidget {
@@ -43,11 +40,9 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
   @override
   Widget build(BuildContext context) {
     final step2Controller = ref.read(step2FormControllerProvider.notifier);
-    final stationController = ref.read(stationFormControllerProvider.notifier);
-    final citiesState = ref.watch(cityNamesProvider);
-    final prioritiesState = ref.watch(prioritiesProvider);
+    final appFormController = ref.read(appFormControllerProvider.notifier);
     final state = ref.watch(step2FormControllerProvider);
-
+    final dropDownsData = ref.read(formPrerequisiteValuesProvider).requireValue;
     return Form(
       key: _formKey,
       child: Column(
@@ -58,16 +53,12 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
           ),
           const SizedBox(height: 24),
 
-          CustomDropDownWithTitle(
+          SmartCustomDropDownWithTitle(
             title: "City",
-            hintText: citiesState.isLoading? "Loading Cities...":"Select city",
+            hintText: "Select city",
             enableSearch: true,
             selectedItem: state.selectedCity,
-            items: citiesState.when(
-              data: (cities) => cities.map((city) => city.name).toList(),
-              loading: () => <String>[],
-              error: (_, __) => <String>[],
-            ),
+            items: dropDownsData.cities.map((city) => city.name).toList(),
             onChanged: (value) {
               if (value != null) {
                 step2Controller.updateCity(value.toString());
@@ -82,11 +73,13 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
 
           const SizedBox(height: 16),
 
-          CustomDropDownWithTitle(
+          SmartCustomDropDownWithTitle(
             title: "Site Status",
             hintText: "Select site status",
             selectedItem: state.selectedSiteStatus,
-            items: ref.read(siteStatusesProvider),
+            items: dropDownsData.siteStatuses
+                .map((status) => status.name)
+                .toList(),
             onChanged: (value) {
               if (value != null) {
                 step2Controller.updateSiteStatus(value.toString());
@@ -101,15 +94,13 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
 
           const SizedBox(height: 16),
 
-          CustomDropDownWithTitle(
+          SmartCustomDropDownWithTitle(
             title: "Priority",
-            hintText: prioritiesState.isLoading ? "Loading Priorities..." : "Select site priority",
+            hintText: "Select site priority",
             selectedItem: state.selectedPriority,
-            items: prioritiesState.when(
-              data: (priorities) => priorities,
-              loading: () => <String>[],
-              error: (_, __) => <String>[],
-            ),
+            items: dropDownsData.hmlList
+                .map((priority) => priority.hml)
+                .toList(),
             onChanged: (value) {
               if (value != null) {
                 step2Controller.updatePriority(value.toString());
@@ -150,7 +141,7 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
             text: "Next",
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                stationController.nextStep();
+                appFormController.nextStep();
               }
             },
           ),

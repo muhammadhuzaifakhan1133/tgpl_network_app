@@ -33,7 +33,16 @@ class NearbySitesState {
   }
 
   NearbySitesState.loadFromApplication(ApplicationModel app)
-      : nearbyTrafficSites = app.nearbyTrafficSites,
+      : nearbyTrafficSites = app.nearbyTrafficSites.map((site) => TrafficSiteModel(
+          id: site.id?.toString(),
+          siteName: site.proposedSiteName,
+          estimatedDailyDieselSale: site.estimateDailyDieselSale.toString(),
+          estimatedDailySuperSale: site.estimateDailySuperSale.toString(),
+          estimatedDailyLubricantSale: site.estimateLubricantSale.toString(),
+          omcName: site.nfrName,
+          isNfrFacility: site.nflFacilityAvailable,
+          nfrFacilities: site.nfrFacility.split(",").map((e) => e.trim()).toList(),
+      )).toList(),
         totalSites = app.nearbyTrafficSites.length;
   
   NearbySitesState.loadFromTrafficTradeFormModel(TrafficTradeFormModel form)

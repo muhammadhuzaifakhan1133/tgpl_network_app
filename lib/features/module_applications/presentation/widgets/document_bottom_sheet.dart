@@ -6,6 +6,7 @@ import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield.dart';
+import 'package:tgpl_network/common/widgets/error_widget.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
@@ -297,7 +298,7 @@ Future<dynamic> documentBottomSheet({
                                     );
                                   },
                                 ),
-                                error: (e, s) => Text("Error: $e"),
+                                error: (e, s) => errorWidget(e.toString()),
                                 loading: () => CircularProgressIndicator(),
                               );
                             },

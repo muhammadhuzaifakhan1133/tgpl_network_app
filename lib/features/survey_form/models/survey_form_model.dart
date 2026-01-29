@@ -298,7 +298,7 @@ class SurveyFormModel {
   }
 
   String? get validate {
-    // TODO: add validation logic
+    // TODO: add custom validation logic
     return null;
   }
 }

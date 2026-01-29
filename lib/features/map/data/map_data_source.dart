@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/core/database/app_database.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
+import 'package:tgpl_network/core/database/queries/select_queries.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_state.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
 
@@ -29,13 +29,18 @@ class MapDataSource {
     final whereData = ApplicationModel.getWhereClauseAndArgs(filters);
 
     while (true) {
-      final batch = await db.query(
-        AppDatabase.applicationTable,
-        columns: ApplicationModel.mapColumns,
-        where: whereData.$1,
-        whereArgs: whereData.$2,
+
+      final mainQuery = SelectDbQueries.buildApplicationQuery(
+        whereConditions: whereData.$1,
+        orderBy: ApplicationModel.orderBy,
+        selectColumns: ApplicationModel.mapColumns,
         limit: batchSize,
         offset: offset,
+      );
+
+      final batch = await db.rawQuery(
+        mainQuery,
+        whereData.$2.isNotEmpty ? whereData.$2 : null,
       );
 
       if (batch.isEmpty) break;

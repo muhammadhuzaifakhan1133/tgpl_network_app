@@ -26,7 +26,7 @@ class YesNoDropDownField extends StatelessWidget {
           filterSelectionProvider.select((s) => selectYesNoField(s)),
         );
         return Expanded(
-          child: CustomDropDownWithTitle(
+          child: SmartCustomDropDownWithTitle(
             title: title,
             items: YesNo.values,
             displayString: (item) => item.label,

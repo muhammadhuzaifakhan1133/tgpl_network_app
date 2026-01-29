@@ -118,26 +118,18 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           Consumer(
                             builder: (context, ref, child) {
-                              final citiesState = ref.watch(cityNamesProvider);
                               final selectedCity = ref.watch(
                                 filterSelectionProvider.select(
                                   (s) => s.selectedCity,
                                 ),
                               );
                               return Expanded(
-                                child: CustomDropDownWithTitle(
+                                child: SmartCustomDropDownWithTitle(
                                   title: "City",
-                                  items: citiesState.when(
-                                    data: (cities) => cities
-                                        .map((city) => city.name)
-                                        .toList(),
-                                    loading: () => <String>[],
-                                    error: (error, stackTrace) => <String>[],
-                                  ),
+                                  asyncProvider: cityNamesProvider,
+                                  itemsBuilder: (city) => city.map((e)=>e.name).toList(),
                                   enableSearch: true,
-                                  hintText: citiesState.isLoading
-                                      ? "Loading Cities..."
-                                      : "Select City",
+                                  hintText: "Select City",
                                   onChanged: (v) {
                                     if (v == null) return;
                                     controller.updateDropdown(city: v);
@@ -154,26 +146,17 @@ class FilterScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           Consumer(
                             builder: (context, ref, child) {
-                              final prioritiesState = ref.watch(
-                                prioritiesProvider,
-                              );
                               final selectedPriority = ref.watch(
                                 filterSelectionProvider.select(
                                   (s) => s.selectedPriority,
                                 ),
                               );
-                              debugPrint("Priority State: $prioritiesState");
                               return Expanded(
-                                child: CustomDropDownWithTitle(
+                                child: SmartCustomDropDownWithTitle(
                                   title: "Priority",
-                                  items: prioritiesState.when(
-                                    data: (priorities) => priorities,
-                                    loading: () => <String>[],
-                                    error: (error, stackTrace) => <String>[],
-                                  ),
-                                  hintText: prioritiesState.isLoading
-                                      ? "Loading Priorities..."
-                                      : "Priority",
+                                  asyncProvider: prioritiesProvider,
+                                  itemsBuilder: (data) => data,
+                                  hintText: "Select Priority",
                                   onChanged: (v) {
                                     if (v == null) return;
                                     controller.updateDropdown(priority: v);
@@ -204,7 +187,7 @@ class FilterScreen extends ConsumerWidget {
                                 ),
                               );
                               return Expanded(
-                                child: CustomDropDownWithTitle(
+                                child: SmartCustomDropDownWithTitle(
                                   title: "Status",
                                   items: statuses.entries
                                       .map((e) => e.key)

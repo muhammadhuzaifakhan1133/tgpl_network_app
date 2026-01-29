@@ -1,16 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/features/station_form/models/station_form_model.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step1/step1_form_controller.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step2/step2_form_controller.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step3/step3_form_controller.dart';
+import 'package:tgpl_network/features/application_form/models/applicaiton_form_model.dart';
+import 'package:tgpl_network/features/application_form/presentation/forms/step1/step1_form_controller.dart';
+import 'package:tgpl_network/features/application_form/presentation/forms/step2/step2_form_controller.dart';
+import 'package:tgpl_network/features/application_form/presentation/forms/step3/step3_form_controller.dart';
 
-class StationFormAssembler {
-  static StationFormModel assemble(Ref ref) {
+class AppFormAssembler {
+  static ApplicationFormModel assemble(Ref ref) {
     final step1Form = ref.read(step1FormControllerProvider);
     final step2Form = ref.read(step2FormControllerProvider);
     final step3Form = ref.read(step3FormControllerProvider);
 
-    return StationFormModel(
+    return ApplicationFormModel(
       applicantName: step1Form.applicantName,
       contactPerson: step1Form.contactPerson,
       currentlyPresence: step1Form.currentlyPresence,

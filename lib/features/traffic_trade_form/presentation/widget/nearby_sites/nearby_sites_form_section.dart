@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/features/master_data/providers/nfr_facilities_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/yes_no_na_values_provider.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
-import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
@@ -227,12 +227,13 @@ class _SiteFormCard extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 10),
-          CustomDropDownWithTitle(
+          SmartCustomDropDownWithTitle(
             key: ValueKey('nfr_facility_${site.id}'),
             title: "Is NFR Facility Available?",
             hintText: "Select an option",
             selectedItem: site.isNfrFacility,
-            items: ref.read(yesNoValuesProvider),
+            asyncProvider: yesNoValuesProvider,
+            itemsBuilder: (values) => values,
             onChanged: (value) {
               if (value == null) return;
               controller.updateSite(
@@ -246,13 +247,14 @@ class _SiteFormCard extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 10),
-          CustomDropDownWithTitle(
+          SmartCustomDropDownWithTitle(
             key: ValueKey('nfr_facilities_list_${site.id}'),
             title: "Select NFR Facilities",
             hintText: "Select nfr facilities",
             isMultiSelect: true,
             selectedItems: site.nfrFacilities,
-            items: ref.read(nfrFacilitiesProvider),
+            asyncProvider: nfrFacilitiesProvider,
+            itemsBuilder: (values) => values,
             onMultiChanged: (values) {
               controller.updateSite(index: index, nfrFacilities: values);
             },

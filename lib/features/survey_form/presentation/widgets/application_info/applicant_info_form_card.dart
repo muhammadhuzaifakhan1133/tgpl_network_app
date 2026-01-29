@@ -24,8 +24,6 @@ class ApplicantInfoFormCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(applicationInfoFormControllerProvider.notifier);
     final state = ref.watch(applicationInfoFormControllerProvider);
-    final citiesState = ref.watch(cityNamesProvider);
-    final prioritiesState = ref.watch(prioritiesProvider);
     return SectionDetailCard(
       title: "Applicant Info",
       children: [
@@ -99,16 +97,13 @@ class ApplicantInfoFormCard extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 10),
-        CustomDropDownWithTitle(
+        SmartCustomDropDownWithTitle(
           title: "City",
-          hintText: citiesState.isLoading ? "Loading Cities..." : "Select city",
+          hintText: "Select city",
           enableSearch: true,
           selectedItem: state.selectedCity,
-          items: citiesState.when(
-            data: (cities) => cities.map((city) => city.name).toList(),
-            loading: () => <String>[],
-            error: (_, _) => <String>[],
-          ),
+          asyncProvider: cityNamesProvider,
+          itemsBuilder: (cities) => cities.map((city) => city.name).toList(),
           onChanged: (value) {
             if (value == null) return;
             controller.updateLocation(city: value.toString());
@@ -134,11 +129,12 @@ class ApplicantInfoFormCard extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        CustomDropDownWithTitle(
+        SmartCustomDropDownWithTitle(
           title: "Site Status",
           selectedItem: state.siteStatus,
           hintText: "Select site status",
-          items: ref.read(siteStatusesProvider),
+          asyncProvider: siteStatusesProvider,
+          itemsBuilder: (statuses) => statuses.map((status) => status.name).toList(),
           onChanged: (value) {
             if (value == null) return;
             controller.updateSiteInfo(status: value.toString());
@@ -192,15 +188,12 @@ class ApplicantInfoFormCard extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        CustomDropDownWithTitle(
+        SmartCustomDropDownWithTitle(
           title: "Priority",
           selectedItem: state.selectedPriority,
-          hintText: prioritiesState.isLoading ? "Loading Priorities..." : "Select site priority",
-          items: prioritiesState.when(
-            data: (priorities) => priorities,
-            loading: () => <String>[],
-            error: (_, _) => <String>[],
-          ),
+          asyncProvider: prioritiesProvider,
+          hintText: "Select site priority",
+          itemsBuilder: (priorities) => priorities,
           onChanged: (value) {
             if (value == null) return;
             controller.updateSiteInfo(priority: value.toString());

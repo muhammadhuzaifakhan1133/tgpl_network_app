@@ -50,7 +50,6 @@ class DashboardController extends Notifier<DashboardState> {
 class DashboardAsyncController extends AsyncNotifier<DashboardResponseModel> {
   @override
   Future<DashboardResponseModel> build() async {
-    await ref.read(userProvider.future); // Ensure user data is loaded
     return await getDashboardData();
   }
 

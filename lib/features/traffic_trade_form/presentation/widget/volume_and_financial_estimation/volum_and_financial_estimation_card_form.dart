@@ -88,11 +88,12 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        CustomDropDownWithTitle(
+        SmartCustomDropDownWithTitle(
           title: "Truck Port Potential?",
           hintText: "Select truck port potential",
           selectedItem: state.truckPortPotential,
-          items: ref.read(yesNoNaValuesProvider),
+          asyncProvider: yesNoNaValuesProvider,
+          itemsBuilder: (values) => values,
           onChanged: (value) {
             if (value == null) return;
             controller.setTruckPortPotential(value.toString());
@@ -104,11 +105,12 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        CustomDropDownWithTitle(
+        SmartCustomDropDownWithTitle(
           title: "Salam Mart Potential?",
           hintText: "Select salam mart potential",
           selectedItem: state.salamMartPotential,
-          items: ref.read(yesNoNaValuesProvider),
+          asyncProvider: yesNoNaValuesProvider,
+          itemsBuilder: (values) => values,
           onChanged: (value) {
             if (value == null) return;
             controller.setSalamMartPotential(value.toString());
@@ -120,11 +122,12 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        CustomDropDownWithTitle(
+        SmartCustomDropDownWithTitle(
           title: "Restaurant Potential?",
           hintText: "Select restaurant potential",
           selectedItem: state.restaurantPotential,
-          items: ref.read(yesNoNaValuesProvider),
+          asyncProvider: yesNoNaValuesProvider,
+          itemsBuilder: (values) => values,
           onChanged: (value) {
             if (value == null) return;
             controller.setRestaurantPotential(value.toString());

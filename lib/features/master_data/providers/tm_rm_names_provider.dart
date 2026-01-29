@@ -9,3 +9,13 @@ final tmNamesProvider = Provider<List<String>>((ref) {
     'TM 5',
   ];
 });
+
+final rmNamesProvider = Provider<List<String>>((ref) {
+  return [
+    'RM 1',
+    'RM 2',
+    'RM 3',
+    'RM 4',
+    'RM 5',
+  ];
+});

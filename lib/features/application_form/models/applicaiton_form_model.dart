@@ -1,4 +1,4 @@
-class StationFormModel {
+class ApplicationFormModel {
   // step 1
   final String? applicantName;
   final String? contactPerson;
@@ -19,34 +19,44 @@ class StationFormModel {
   final String? googleLocation;
   final String? address;
 
-  StationFormModel({this.applicantName, this.contactPerson, this.currentlyPresence, this.contactNumber, this.whatsappNumber, this.selectedCity, this.selectedSiteStatus, this.selectedPriority, this.source, this.sourceName, this.frontSize, this.depthSize, this.googleLocation, this.address});
+  ApplicationFormModel({
+    this.applicantName,
+    this.contactPerson,
+    this.currentlyPresence,
+    this.contactNumber,
+    this.whatsappNumber,
+    this.selectedCity,
+    this.selectedSiteStatus,
+    this.selectedPriority,
+    this.source,
+    this.sourceName,
+    this.frontSize,
+    this.depthSize,
+    this.googleLocation,
+    this.address,
+  });
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toApiMap() {
     return {
-      // step 1
-      'applicantName': applicantName,
-      'contactPerson': contactPerson,
-      'currentlyPresence': currentlyPresence,
-      'contactNumber': contactNumber,
-      'whatsappNumber': whatsappNumber,
-
-      // step 2
-      'selectedCity': selectedCity,
-      'selectedSiteStatus': selectedSiteStatus,
-      'selectedPriority': selectedPriority,
-      'source': source,
-      'sourceName': sourceName,
-
-      // step 3
-      'frontSize': frontSize,
-      'depthSize': depthSize,
-      'googleLocation': googleLocation,
-      'address': address,
+      "applicantName": applicantName,
+      "contactPerson": contactPerson,
+      "currentlyPresence": currentlyPresence,
+      "contactNumber": contactNumber,
+      "whatsappNumber": whatsappNumber,
+      "cityName": selectedCity,
+      "siteStatus": selectedSiteStatus,
+      "priority": selectedPriority,
+      "source": source,
+      "sourceName": sourceName,
+      "frontSize": frontSize,
+      "depthSize": depthSize,
+      "googleLocation": googleLocation,
+      "address": address,
     };
   }
 
-  factory StationFormModel.fromJson(Map<String, dynamic> json) {
-    return StationFormModel(
+  factory ApplicationFormModel.fromJson(Map<String, dynamic> json) {
+    return ApplicationFormModel(
       // step 1
       applicantName: json['applicantName'],
       contactPerson: json['contactPerson'],

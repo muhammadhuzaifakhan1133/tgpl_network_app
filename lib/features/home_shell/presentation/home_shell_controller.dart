@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:tgpl_network/common/data/shared_prefs_data_source.dart';
 import 'package:tgpl_network/common/models/sync_enum.dart';
@@ -17,6 +18,8 @@ import 'package:tgpl_network/features/master_data/data/master_data_remote_data_s
 import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/priorities_provider.dart';
 import 'package:tgpl_network/features/module_applications/presentation/module_applications_controller.dart';
+import 'package:tgpl_network/features/application_form/data/app_form_dropdowns_local_data_source.dart';
+import 'package:tgpl_network/features/application_form/data/app_form_dropdowns_remote_data_source.dart';
 import 'package:tgpl_network/utils/internet_connectivity.dart';
 
 final homeShellControllerProvider =
@@ -29,8 +32,8 @@ final snackbarMessageProvider = StateProvider<String?>((ref) {
 });
 
 class HomeShellController extends AsyncNotifier<void> {
-  int  autoSyncThresholdMinutes = 60;
-  List<dynamic> get providersToRefresh => [
+  int autoSyncThresholdMinutes = 60;
+  List<ProviderOrFamily> get providersToRefresh => [
     getLastSyncTimeProvider,
     dashboardAsyncControllerProvider,
     userProvider,
@@ -166,16 +169,21 @@ class HomeShellController extends AsyncNotifier<void> {
       final masterData = await ref
           .read(masterDataRemoteDataSourceProvider)
           .getMasterDataFromApi(username: username);
-
+      final dropdownValues = await ref
+          .read(appFormDropdownsRemoteDataSourceProvider)
+          .fetchAppFormDropdownValues();
       ref.read(snackbarMessageProvider.notifier).state =
           'Data fetched successfully. Saving locally...';
+      await ref
+          .read(appFormDropdownsLocalDataSourceProvider)
+          .saveSiteStatuses(dropdownValues.siteStatuses);
       await ref
           .read(masterDataLocalDataSourceProvider)
           .saveMasterData(masterData);
       ref.read(syncStatusProvider.notifier).state = SyncStatus.synchronized;
       ref.read(snackbarMessageProvider.notifier).state =
           'Data synchronized successfully.';
-      _refreshAllDependentProviders();
+      // _refreshAllDependentProviders();
     } catch (e, stack) {
       Error.throwWithStackTrace(e, stack);
     } finally {
@@ -189,10 +197,9 @@ class HomeShellController extends AsyncNotifier<void> {
     }
   }
 
- FutureOr<bool> shouldAutoSync(Ref ref) async {
-  
+  FutureOr<bool> shouldAutoSync(Ref ref) async {
     String lastSyncTimeIso = await ref.read(getLastSyncTimeProvider.future);
-    
+
     if (lastSyncTimeIso.isEmpty || lastSyncTimeIso == "Never") {
       return true; // Always sync if never synced before
     }

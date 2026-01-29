@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
+import 'package:tgpl_network/common/widgets/error_widget.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_controller.dart';
-import 'package:tgpl_network/features/application_detail/widgets/application_detail_shimmer_widget.dart';
+import 'package:tgpl_network/common/widgets/application_fields_shimmer_widget.dart';
 import 'package:tgpl_network/features/application_detail/widgets/contact_dealer_tgpl_card.dart';
 import 'package:tgpl_network/features/application_detail/widgets/dealer_profile_card.dart';
 import 'package:tgpl_network/features/application_detail/widgets/feasibility_card.dart';
@@ -26,9 +27,10 @@ class ApplicationDetailView extends ConsumerWidget {
     );
     return state.when(
       data: (application) => _buildDetailView(application),
-      loading: () => ApplicationDetailShimmer(),
-      error: (error, stack) =>
-          Scaffold(body: Center(child: Text('Error: $error'))),
+      loading: () => ApplicationFieldsShimmer(
+        title: "Application Details",
+      ),
+      error: (error, stack) => Scaffold(body: errorWidget(error.toString())),
     );
   }
 

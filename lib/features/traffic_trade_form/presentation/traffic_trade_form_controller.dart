@@ -65,9 +65,18 @@ class TrafficTradeFormSubmissionController extends AsyncNotifier<void> {
       final validateMessage = trafficTradeFormData.validate;
       if (validateMessage == null) {
         if (await InternetConnectivity.hasInternet()) {
-          await ref
+          final response = await ref
               .read(trafficTradeFormRemoteDataSourceProvider)
               .submitTrafficTradeForm(trafficTradeFormData);
+          if (response.success) {
+            return true;
+          } else {
+            state = AsyncValue.error(
+              Exception('Submission failed: ${response.message}'),
+              StackTrace.current,
+            );
+            return false;
+          }
         } else {
           // Save locally if no internet
           await ref

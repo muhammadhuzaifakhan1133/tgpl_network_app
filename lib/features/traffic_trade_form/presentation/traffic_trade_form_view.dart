@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/common/widgets/application_fields_shimmer_widget.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
+import 'package:tgpl_network/common/widgets/error_widget.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/traffic_trade_form_controller.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/nearby_sites/nearby_sites_form_section.dart';
@@ -32,50 +34,38 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
       trafficTradeFormSubmissionControllerProvider.notifier,
     );
 
+    ref.listen(trafficTradeFormSubmissionControllerProvider, (previous, next) {
+      if (next.hasError) {
+        showSnackBar(
+          context,
+          'Error submitting form: ${next.error}',
+          bgColor: AppColors.emailUsIconColor,
+        );
+      }
+    });
+
     return Scaffold(
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
-        child: Column(
-          children: [
-            CustomAppBar(
-              title: "Traffic / Trade",
-              subtitle: "Form # ${widget.appId}",
-              showBackButton: true,
-            ),
-            Expanded(
-              child: asyncValue.when(
-                data: (_) => _buildForm(submissionController),
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stack) => Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Error: $error'),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () => ref.refresh(
-                          trafficTradeFormControllerProvider(widget.appId),
-                        ),
-                        child: const Text('Retry'),
-                      ),
-                    ],
-                  ),
-                ),
+        child: asyncValue.when(
+          data: (_) => Column(
+            children: [
+              CustomAppBar(
+                title: "Traffic / Trade",
+                subtitle: "Form # ${widget.appId}",
+                showBackButton: true,
               ),
-            ),
-          ],
+              Expanded(child: _buildForm(submissionController)),
+            ],
+          ),
+          loading: () => ApplicationFieldsShimmer(title: "Traffic / Trade"),
+          error: (error, stack) => errorWidget(error.toString()),
         ),
       ),
     );
   }
 
   Widget _buildForm(TrafficTradeFormSubmissionController submissionController) {
-    final isSubmitting = ref.watch(
-      trafficTradeFormSubmissionControllerProvider.select(
-        (state) => state.isLoading,
-      ),
-    );
-
     return Form(
       key: _formKey,
       child: Column(
@@ -101,11 +91,25 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: CustomButton(
-              onPressed: isSubmitting
-                  ? null
-                  : () => _handleSubmit(submissionController),
-              text: isSubmitting ? "Submitting..." : "Submit",
+            child: Consumer(
+              builder: (context, ref, child) {
+                final state = ref.watch(
+                  trafficTradeFormSubmissionControllerProvider,
+                );
+                return CustomButton(
+                  onPressed: state.isLoading
+                      ? null
+                      : () => _handleSubmit(submissionController),
+                  text: "Submit",
+                  child: state.isLoading
+                      ? Center(
+                          child: const CircularProgressIndicator(
+                            color: AppColors.white,
+                          ),
+                        )
+                      : null,
+                );
+              },
             ),
           ),
         ],
@@ -123,7 +127,8 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
 
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       // Submit form (validation happens inside)
-      success = await submissionController.submitTrafficTradeForm();
+      // success = await submissionController.submitTrafficTradeForm();
+      success = true; // Temporary bypass for submission
     }
 
     if (!mounted) return;

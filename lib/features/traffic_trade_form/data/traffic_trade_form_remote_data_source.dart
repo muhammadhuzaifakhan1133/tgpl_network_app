@@ -8,23 +8,19 @@ class TrafficTradeFormRemoteDataSource {
   final DioClient _dioClient;
   TrafficTradeFormRemoteDataSource(this._dioClient);
 
-  Future<TrafficTradeFormSubmissionResponseModel?> submitTrafficTradeForm(
+  Future<TrafficTradeFormSubmissionResponseModel> submitTrafficTradeForm(
     TrafficTradeFormModel trafficTradeForm,
   ) async {
     final response = await _dioClient.post(
       AppApis.submitTrafficTradeFormEndpoint,
       data: trafficTradeForm.toApiMap(),
     );
-    if (response.statusCode == 200) {
-      return TrafficTradeFormSubmissionResponseModel.fromJson(response.data);
-    }
-    return null;
+    return TrafficTradeFormSubmissionResponseModel.fromJson(response.data);
   }
 }
 
-final trafficTradeFormRemoteDataSourceProvider = Provider<TrafficTradeFormRemoteDataSource>(
-  (ref) {
-    final dioClient = ref.watch(dioClientProvider);
-    return TrafficTradeFormRemoteDataSource(dioClient);
-  },
-);
+final trafficTradeFormRemoteDataSourceProvider =
+    Provider<TrafficTradeFormRemoteDataSource>((ref) {
+      final dioClient = ref.watch(dioClientProvider);
+      return TrafficTradeFormRemoteDataSource(dioClient);
+    });

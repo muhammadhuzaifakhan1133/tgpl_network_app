@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/features/master_data/providers/depo_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/trade_area_names_provider.dart';
-import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/common/widgets/section_detail_card.dart';
 import 'package:tgpl_network/features/survey_form/presentation/widgets/contact_and_dealer/contact_and_dealer_form_controller.dart';
@@ -128,12 +128,13 @@ class ContactAndDealerFormCard extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        CustomDropDownWithTitle(
+        SmartCustomDropDownWithTitle(
           title: "Nearest Depo",
           hintText: "Select nearest depo",
           enableSearch: true,
           selectedItem: state.nearestDepo,
-          items: ref.read(depoNamesProvider),
+          asyncProvider: depoNamesProvider,
+          itemsBuilder: (depos) => depos,
           onChanged: (value) {
             if (value == null) return;
             controller.updateLocationInfo(nearestDepo: value.toString());
@@ -160,12 +161,13 @@ class ContactAndDealerFormCard extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        CustomDropDownWithTitle(
+        SmartCustomDropDownWithTitle(
           title: "Type of Trade Area",
           hintText: "Select type of trade area",
           enableSearch: true,
           selectedItem: state.typeOfTradeArea,
-          items: ref.read(tradeAreaNamesProvider),
+          asyncProvider: tradeAreaNamesProvider,
+          itemsBuilder: (tradeAreas) => tradeAreas,
           onChanged: (value) {
             if (value == null) return;
             controller.updateLocationInfo(typeOfTradeArea: value.toString());

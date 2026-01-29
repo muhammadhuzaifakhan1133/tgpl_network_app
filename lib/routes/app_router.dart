@@ -15,9 +15,9 @@ import 'package:tgpl_network/features/module_applications/presentation/module_ap
 import 'package:tgpl_network/features/onboarding/presentation/onboarding_view.dart';
 import 'package:tgpl_network/features/profile/presentation/profile_view.dart';
 import 'package:tgpl_network/features/splash/presentation/splash_view.dart';
-import 'package:tgpl_network/features/station_form/presentation/confirmation/station_form_confirmation_view.dart';
+import 'package:tgpl_network/features/application_form/presentation/confirmation/app_form_confirmation_view.dart';
 import 'package:tgpl_network/features/site_location_selection/presentation/site_location_selection_view.dart';
-import 'package:tgpl_network/features/station_form/presentation/station_form_view.dart';
+import 'package:tgpl_network/features/application_form/presentation/app_form_view.dart';
 import 'package:tgpl_network/features/survey_form/presentation/survey_form_view.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/traffic_trade_form_view.dart';
 import 'package:tgpl_network/features/welcome/presentation/welcome_view.dart';
@@ -50,7 +50,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.stationFormConfirmation(),
         builder: (context, state) {
-          return StationFormConfirmationView(
+          return AppFormConfirmationView(
             applicationId: state.pathParameters['applicationId'] ?? '',
           );
         }

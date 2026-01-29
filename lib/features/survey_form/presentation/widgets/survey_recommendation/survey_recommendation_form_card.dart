@@ -21,7 +21,7 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
     return SectionDetailCard(
       title: "Recommendation",
       children: [
-        CustomDropDownWithTitle(
+        SmartCustomDropDownWithTitle(
           title: "TM",
           hintText: "Select TM",
           enableSearch: true,
@@ -38,11 +38,12 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        CustomDropDownWithTitle(
+        SmartCustomDropDownWithTitle(
           title: "TM Recommendation",
           hintText: "Select an option",
           selectedItem: state.selectedTMRecommendation,
-          items: ref.read(yesNoNaValuesProvider),
+          asyncProvider: yesNoNaValuesProvider,
+          itemsBuilder: (values) => values,
           onChanged: (value) {
             if (value == null) return;
             controller.onChangeTMRecommendation(value.toString());
@@ -68,7 +69,7 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        CustomDropDownWithTitle(
+        SmartCustomDropDownWithTitle(
           title: "RM",
           hintText: "Select RM",
           enableSearch: true,
@@ -85,11 +86,12 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        CustomDropDownWithTitle(
+        SmartCustomDropDownWithTitle(
           title: "RM Recommendation",
           hintText: "Select an option",
           selectedItem: state.selectedRMRecommendation,
-          items: ref.read(yesNoNaValuesProvider),
+          asyncProvider: yesNoNaValuesProvider,
+          itemsBuilder: (values) => values,
           onChanged: (value) {
             if (value == null) return;
             controller.onChangeRMRecommendation(value.toString());

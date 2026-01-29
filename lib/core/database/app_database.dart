@@ -8,4 +8,5 @@ class AppDatabase {
   static const String trafficTradeFormsTable = 'traffic_trade_forms';
   static const String syncMetadataTable = 'sync_metadata';
   static const String userInfoTable = 'user_info';
+  static const String siteStatusTable = 'site_status';
 }

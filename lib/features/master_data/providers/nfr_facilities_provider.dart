@@ -1,14 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/master_data/data/master_data_local_data_source.dart';
 
-final nfrFacilitiesProvider = Provider<List<String>>((ref) {
-  return [
-    'Electricity',
-    'Water Supply',
-    'Sewage System',
-    'Road Access',
-    'Telecommunication',
-    'Waste Management',
-    'Fire Safety Measures',
-    'Security Services',
-  ];
+final nfrFacilitiesProvider = FutureProvider<List<String>>((ref) async {
+  final masterDataLocalDataSource = ref.watch(masterDataLocalDataSourceProvider);
+  return await masterDataLocalDataSource.getNFRList();
 });

@@ -19,11 +19,12 @@ class DealerProfileFormCard extends ConsumerWidget {
     return SectionDetailCard(
       title: "Dealer Profile",
       children: [
-        CustomDropDownWithTitle(
+        SmartCustomDropDownWithTitle(
           title: "Is this dealer?",
           hintText: "Select an option",
           selectedItem: state.isThisDealer,
-          items: ref.read(yesNoNaValuesProvider),
+          asyncProvider: yesNoNaValuesProvider,
+          itemsBuilder: (values) => values,
           onChanged: (value) {
             if (value == null) return;
             controller.onChangeIsThisDealer(value.toString());
@@ -69,11 +70,12 @@ class DealerProfileFormCard extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 10),
-          CustomDropDownWithTitle(
+          SmartCustomDropDownWithTitle(
             title: "How involved is the dealer in petrol pump business?",
             hintText: "Select dealer involvement",
             selectedItem: state.selectedDealerInvolvement,
-            items: ref.read(dealerInvolvementNamesProvider),
+            asyncProvider: dealerInvolvementNamesProvider,
+            itemsBuilder: (values) => values,
             onChanged: (value) {
               if (value == null) return;
               controller.onChangeDealerInvolvement(value.toString());
@@ -85,12 +87,13 @@ class DealerProfileFormCard extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 10),
-          CustomDropDownWithTitle(
+          SmartCustomDropDownWithTitle(
             title:
                 "Is the dealer ready to inject working capital on site and operate on cash?*",
             hintText: "Select an option",
             selectedItem: state.isDealerReadyToInvest,
-            items: ref.read(yesNoNaValuesProvider),
+            asyncProvider: yesNoNaValuesProvider,
+            itemsBuilder: (values) => values,
             onChanged: (value) {
               if (value == null) return;
               controller.onChangeIsDealerReadyToInvest(value.toString());
@@ -135,12 +138,13 @@ class DealerProfileFormCard extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 10),
-          CustomDropDownWithTitle(
+          SmartCustomDropDownWithTitle(
             title:
                 "Is the dealer agreed to follow all TGPL operating standards?",
             hintText: "Select an option",
             selectedItem: state.isDealerAgreedToFollowTgplStandards,
-            items: ref.read(yesNoNaValuesProvider),
+            asyncProvider: yesNoNaValuesProvider,
+            itemsBuilder: (values) => values,
             onChanged: (value) {
               if (value == null) return;
               controller.onChangeIsDealerAgreedToFollowTgplStandards(

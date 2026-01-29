@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
+import 'package:tgpl_network/common/widgets/empty_applications_view.dart';
+import 'package:tgpl_network/common/widgets/error_widget.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/module_applications/presentation/module_applications_controller.dart';
@@ -73,32 +75,48 @@ class _ModuleApplicationsViewState
 
                   return state.when(
                     skipLoadingOnRefresh: false,
-                    data: (data) => RefreshIndicator(
-                      onRefresh: () async {
-                        ref.invalidate(
-                          moduleApplicationsAsyncControllerProvider(
-                            widget.subModule,
-                          ),
+                    data: (data) {
+                      if (data.applications.isEmpty) {
+                        return ApplicationsEmptyState(
+                          reason: data.searchQuery?.isNotEmpty ?? false
+                              ? EmptyApplicationsReason.noSearchResults
+                              : EmptyApplicationsReason.noData,
+                          onClearFilters: () {
+                            ref.invalidate(
+                              moduleApplicationsAsyncControllerProvider(
+                                widget.subModule,
+                              ),
+                            );
+                          },
                         );
-                      },
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        itemCount:
-                            data.applications.length +
-                            (data.hasMoreData ? 1 : 0),
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        itemBuilder: (context, index) {
-                          if (index == data.applications.length) {
-                            return const ModuleApplicationShimmerCard();
-                          }
-                          return ModuleApplicationContainer(
-                            application: data.applications[index],
-                            submoduleName: widget.subModule.title,
+                      }
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          ref.invalidate(
+                            moduleApplicationsAsyncControllerProvider(
+                              widget.subModule,
+                            ),
                           );
                         },
-                      ),
-                    ),
-                    error: (e, s) => Text("Error: $e"),
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount:
+                              data.applications.length +
+                              (data.hasMoreData ? 1 : 0),
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          itemBuilder: (context, index) {
+                            if (index == data.applications.length) {
+                              return const ModuleApplicationShimmerCard();
+                            }
+                            return ModuleApplicationContainer(
+                              application: data.applications[index],
+                              submoduleName: widget.subModule.title,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    error: (e, s) => errorWidget(e.toString()),
                     loading: () => ModuleApplicationsShimmer(),
                   );
                 },

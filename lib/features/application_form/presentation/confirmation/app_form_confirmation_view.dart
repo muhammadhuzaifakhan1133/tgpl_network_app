@@ -5,13 +5,13 @@ import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
-import 'package:tgpl_network/features/station_form/presentation/confirmation/widgets/application_id_container.dart';
-import 'package:tgpl_network/features/station_form/presentation/confirmation/widgets/next_step_or_help_container.dart';
+import 'package:tgpl_network/features/application_form/presentation/confirmation/widgets/application_id_container.dart';
+import 'package:tgpl_network/features/application_form/presentation/confirmation/widgets/next_step_or_help_container.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 
-class StationFormConfirmationView extends ConsumerWidget {
+class AppFormConfirmationView extends ConsumerWidget {
   final String applicationId;
-  const StationFormConfirmationView({super.key, required this.applicationId});
+  const AppFormConfirmationView({super.key, required this.applicationId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

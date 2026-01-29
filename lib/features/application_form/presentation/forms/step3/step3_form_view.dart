@@ -7,8 +7,8 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/site_location_selection/presentation/site_location_selection_controller.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step3/step3_form_controller.dart';
-import 'package:tgpl_network/features/station_form/presentation/station_form_controller.dart';
+import 'package:tgpl_network/features/application_form/presentation/forms/step3/step3_form_controller.dart';
+import 'package:tgpl_network/features/application_form/presentation/app_form_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
@@ -145,11 +145,11 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
           ),
 
           const SizedBox(height: 20),
-          // change this button to use stationSubmissionProvider for showing loading state
+          // change this button to use appFormSubmissionProvider for showing loading state
           CustomButton(
             text: "",
             child: ref
-                .watch(stationSubmissionProvider)
+                .watch(appFormSubmissionProvider)
                 .when(
                   data: (_) => Text(
                     "Submit",
@@ -164,8 +164,9 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
                     style: AppTextstyles.neutra500white22,
                   ),
                 ),
-            onPressed: () {
+            onPressed: () async {
               if (_formKey.currentState!.validate()) {
+                // await ref.read(appFormSubmissionProvider.notifier).submitAppForm();
                 ref
                     .read(goRouterProvider)
                     .pushReplacement(

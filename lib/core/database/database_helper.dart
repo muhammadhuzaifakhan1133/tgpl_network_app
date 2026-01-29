@@ -54,6 +54,9 @@ class DatabaseHelper {
     
     // User Info Table
     await db.execute(CreateDbQueries.createUserInfoTable);
+    
+    // Site Status Table
+    await db.execute(CreateDbQueries.createSiteStatusTable);
 
     // Sync Metadata Table
     await db.execute(CreateDbQueries.syncMetadataTable);
@@ -86,5 +89,7 @@ class DatabaseHelper {
     await db.delete(AppDatabase.surveyFormsTable);
     await db.delete(AppDatabase.trafficTradeFormsTable);
     await db.delete(AppDatabase.syncMetadataTable);
+    await db.delete(AppDatabase.userInfoTable);
+    await db.delete(AppDatabase.siteStatusTable);
   }
 }

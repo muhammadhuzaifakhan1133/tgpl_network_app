@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
-import 'package:tgpl_network/features/station_form/presentation/forms/step1/step1_form_controller.dart';
-import 'package:tgpl_network/features/station_form/presentation/station_form_controller.dart';
+import 'package:tgpl_network/features/application_form/presentation/forms/step1/step1_form_controller.dart';
+import 'package:tgpl_network/features/application_form/presentation/app_form_controller.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class Step1FormView extends ConsumerStatefulWidget {
@@ -54,8 +54,8 @@ class _Step1FormViewState extends ConsumerState<Step1FormView> {
 Widget build(BuildContext context) {
   final step1Controller =
       ref.read(step1FormControllerProvider.notifier);
-  final stationController =
-      ref.read(stationFormControllerProvider.notifier);
+  final appFormController =
+      ref.read(appFormControllerProvider.notifier);
 
   return Form(
     key: _formKey,
@@ -131,7 +131,7 @@ Widget build(BuildContext context) {
           text: "Next",
           onPressed: () {
             if (_formKey.currentState!.validate()) {
-              stationController.nextStep();
+              appFormController.nextStep();
             }
           },
         ),

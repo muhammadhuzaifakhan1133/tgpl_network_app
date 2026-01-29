@@ -280,4 +280,12 @@ class CreateDbQueries {
       hasTrafficTradeFormAccess INTEGER
     )
   ''';
+
+  static String createSiteStatusTable = '''
+    CREATE TABLE IF NOT EXISTS ${AppDatabase.siteStatusTable} (
+      id $idType,
+      siteStatusId $intType UNIQUE,
+      name $textType
+    )
+  ''';
 }
