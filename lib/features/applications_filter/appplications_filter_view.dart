@@ -127,7 +127,8 @@ class FilterScreen extends ConsumerWidget {
                                 child: SmartCustomDropDownWithTitle(
                                   title: "City",
                                   asyncProvider: cityNamesProvider,
-                                  itemsBuilder: (city) => city.map((e)=>e.name).toList(),
+                                  itemsBuilder: (city) =>
+                                      city.map((e) => e.name).toList(),
                                   enableSearch: true,
                                   hintText: "Select City",
                                   onChanged: (v) {

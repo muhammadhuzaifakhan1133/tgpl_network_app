@@ -13,15 +13,15 @@ class ApplicationModel {
   static String get orderBy => "$orderByField ${orderDirection.key}";
 
   static List<String> mapColumns = [
-    "id",
-    "applicationId",
-    "entryCode",
-    "dealerName",
-    "googleLocation",
-    "locationAddress",
-    "statusId",
-    "priority",
-    "proposedSiteName1",
+    "$alias.id",
+    "$alias.applicationId",
+    "$alias.entryCode",
+    "$alias.dealerName",
+    "$alias.googleLocation",
+    "$alias.locationAddress",
+    "$alias.statusId",
+    "$alias.priority",
+    "$alias.proposedSiteName1",
   ];
 
   double get latitude =>

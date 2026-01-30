@@ -8,21 +8,55 @@ import 'package:tgpl_network/common/widgets/section_detail_card.dart';
 import 'package:tgpl_network/features/survey_form/presentation/widgets/dealer_profile/dealer_profile_form_controller.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
-class DealerProfileFormCard extends ConsumerWidget {
+class DealerProfileFormCard extends ConsumerStatefulWidget {
   const DealerProfileFormCard({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.read(dealerProfileFormControllerProvider.notifier);
-    final state = ref.watch(dealerProfileFormControllerProvider);
+  ConsumerState<DealerProfileFormCard> createState() =>
+      _DealerProfileFormCardState();
+}
 
+class _DealerProfileFormCardState extends ConsumerState<DealerProfileFormCard> {
+  // create controllers for editable text fields
+  TextEditingController dealerPlatformController = TextEditingController();
+  TextEditingController dealerBusinessesController = TextEditingController();
+  TextEditingController dealerOpinionController = TextEditingController();
+  TextEditingController monthlySalaryController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final state = ref.read(dealerProfileFormControllerProvider);
+
+    dealerPlatformController.text = state.dealerPlatform ?? "";
+    dealerBusinessesController.text = state.dealerBusinesses ?? "";
+    dealerOpinionController.text = state.dealerOpinion ?? "";
+    monthlySalaryController.text = state.monthlySalary ?? "";
+  }
+
+  @override
+  void dispose() {
+    dealerPlatformController.dispose();
+    dealerBusinessesController.dispose();
+    dealerOpinionController.dispose();
+    monthlySalaryController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = ref.read(dealerProfileFormControllerProvider.notifier);
+    // final state = ref.watch(dealerProfileFormControllerProvider);
+    final isThisDealer = ref.watch(
+      dealerProfileFormControllerProvider.select((s) => s.isThisDealer),
+    );
     return SectionDetailCard(
       title: "Dealer Profile",
       children: [
         SmartCustomDropDownWithTitle(
           title: "Is this dealer?",
           hintText: "Select an option",
-          selectedItem: state.isThisDealer,
+          selectedItem: isThisDealer,
           asyncProvider: yesNoNaValuesProvider,
           itemsBuilder: (values) => values,
           onChanged: (value) {
@@ -39,7 +73,7 @@ class DealerProfileFormCard extends ConsumerWidget {
         CustomTextFieldWithTitle(
           title: "Platform",
           hintText: "Enter platform",
-          initialValue: state.dealerPlatform,
+          controller: dealerPlatformController,
           onChanged: (value) {
             controller.updateDealerPlatform(value);
           },
@@ -50,13 +84,13 @@ class DealerProfileFormCard extends ConsumerWidget {
           },
         ),
         // BELOW ALL FIELDS ACTIVE ONLY WHEN IS THIS DEALER = YES
-        if (state.isThisDealer == 'Yes') ...[
+        if (isThisDealer == 'Yes') ...[
           const SizedBox(height: 10),
           CustomTextFieldWithTitle(
             title:
                 "What other businesses does the dealer have, Mention # of business and types.",
             hintText: "Enter dealer businesses",
-            initialValue: state.dealerBusinesses,
+            controller: dealerBusinessesController,
             onChanged: (value) {
               controller.updateDealerBusinesses(value);
             },
@@ -70,45 +104,63 @@ class DealerProfileFormCard extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 10),
-          SmartCustomDropDownWithTitle(
-            title: "How involved is the dealer in petrol pump business?",
-            hintText: "Select dealer involvement",
-            selectedItem: state.selectedDealerInvolvement,
-            asyncProvider: dealerInvolvementNamesProvider,
-            itemsBuilder: (values) => values,
-            onChanged: (value) {
-              if (value == null) return;
-              controller.onChangeDealerInvolvement(value.toString());
-            },
-            validator: (v) => v.validate(),
-            showClearButton: true,
-            onClear: () {
-              controller.clearField('selectedDealerInvolvement');
+          Consumer(
+            builder: (context, ref, child) {
+              final selectedDealerInvolvement = ref.watch(
+                dealerProfileFormControllerProvider.select(
+                  (s) => s.selectedDealerInvolvement,
+                ),
+              );
+              return SmartCustomDropDownWithTitle(
+                title: "How involved is the dealer in petrol pump business?",
+                hintText: "Select dealer involvement",
+                selectedItem: selectedDealerInvolvement,
+                asyncProvider: dealerInvolvementNamesProvider,
+                itemsBuilder: (values) => values,
+                onChanged: (value) {
+                  if (value == null) return;
+                  controller.onChangeDealerInvolvement(value.toString());
+                },
+                validator: (v) => v.validate(),
+                showClearButton: true,
+                onClear: () {
+                  controller.clearField('selectedDealerInvolvement');
+                },
+              );
             },
           ),
           const SizedBox(height: 10),
-          SmartCustomDropDownWithTitle(
-            title:
-                "Is the dealer ready to inject working capital on site and operate on cash?*",
-            hintText: "Select an option",
-            selectedItem: state.isDealerReadyToInvest,
-            asyncProvider: yesNoNaValuesProvider,
-            itemsBuilder: (values) => values,
-            onChanged: (value) {
-              if (value == null) return;
-              controller.onChangeIsDealerReadyToInvest(value.toString());
-            },
-            validator: (v) => v.validate(),
-            showClearButton: true,
-            onClear: () {
-              controller.clearField('isDealerReadyToInvest');
+          Consumer(
+            builder: (context, ref, _) {
+              final isDealerReadyToInvest = ref.watch(
+                dealerProfileFormControllerProvider.select(
+                  (s) => s.isDealerReadyToInvest,
+                ),
+              );
+              return SmartCustomDropDownWithTitle(
+                title:
+                    "Is the dealer ready to inject working capital on site and operate on cash?*",
+                hintText: "Select an option",
+                selectedItem: isDealerReadyToInvest,
+                asyncProvider: yesNoNaValuesProvider,
+                itemsBuilder: (values) => values,
+                onChanged: (value) {
+                  if (value == null) return;
+                  controller.onChangeIsDealerReadyToInvest(value.toString());
+                },
+                validator: (v) => v.validate(),
+                showClearButton: true,
+                onClear: () {
+                  controller.clearField('isDealerReadyToInvest');
+                },
+              );
             },
           ),
           const SizedBox(height: 10),
           CustomTextFieldWithTitle(
             title: "Why does the dealer want to convert to Taj?",
             hintText: "Enter dealer opinion",
-            initialValue: state.dealerOpinion,
+            controller: dealerOpinionController,
             onChanged: (value) {
               controller.updateDealerOpinion(value);
             },
@@ -127,7 +179,7 @@ class DealerProfileFormCard extends ConsumerWidget {
                 "In case it is an operational site, what is the current salary of attendant / month",
             hintText: "Enter monthly salary",
             keyboardType: TextInputType.number,
-            initialValue: state.monthlySalary,
+            controller: monthlySalaryController,
             onChanged: (value) {
               controller.updateMonthlySalary(value);
             },
@@ -138,23 +190,32 @@ class DealerProfileFormCard extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 10),
-          SmartCustomDropDownWithTitle(
-            title:
-                "Is the dealer agreed to follow all TGPL operating standards?",
-            hintText: "Select an option",
-            selectedItem: state.isDealerAgreedToFollowTgplStandards,
-            asyncProvider: yesNoNaValuesProvider,
-            itemsBuilder: (values) => values,
-            onChanged: (value) {
-              if (value == null) return;
-              controller.onChangeIsDealerAgreedToFollowTgplStandards(
-                value.toString(),
+          Consumer(
+            builder: (context, ref, _) {
+              final isDealerAgreedToFollowTgplStandards = ref.watch(
+                dealerProfileFormControllerProvider.select(
+                  (s) => s.isDealerAgreedToFollowTgplStandards,
+                ),
               );
-            },
-            validator: (v) => v.validate(),
-            showClearButton: true,
-            onClear: () {
-              controller.clearField('isDealerAgreedToFollowTgplStandards');
+              return SmartCustomDropDownWithTitle(
+                title:
+                    "Is the dealer agreed to follow all TGPL operating standards?",
+                hintText: "Select an option",
+                selectedItem: isDealerAgreedToFollowTgplStandards,
+                asyncProvider: yesNoNaValuesProvider,
+                itemsBuilder: (values) => values,
+                onChanged: (value) {
+                  if (value == null) return;
+                  controller.onChangeIsDealerAgreedToFollowTgplStandards(
+                    value.toString(),
+                  );
+                },
+                validator: (v) => v.validate(),
+                showClearButton: true,
+                onClear: () {
+                  controller.clearField('isDealerAgreedToFollowTgplStandards');
+                },
+              );
             },
           ),
         ],

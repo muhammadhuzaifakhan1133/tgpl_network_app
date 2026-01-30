@@ -81,7 +81,10 @@ class SelectedApplicationCard extends ConsumerWidget {
               Expanded(
                 child: CustomButton(
                   onPressed: () {
-                    MapUtils.openGoogleMap(application.latitude, application.longitude);
+                    MapUtils.openGoogleMap(
+                      application.latitude,
+                      application.longitude,
+                    );
                   },
                   text: "Directions",
                   leftPadding: 0,
@@ -98,12 +101,12 @@ class SelectedApplicationCard extends ConsumerWidget {
                 child: CustomButton(
                   onPressed: () {
                     ref
-                      .read(goRouterProvider)
-                      .push(
-                        AppRoutes.applicationDetail(
-                          application.applicationId?.toString() ?? '',
-                        ),
-                      );
+                        .read(goRouterProvider)
+                        .push(
+                          AppRoutes.applicationDetail(
+                            application.applicationId?.toString() ?? '',
+                          ),
+                        );
                   },
                   text: "View Details",
                   leftPadding: 0,

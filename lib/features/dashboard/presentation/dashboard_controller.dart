@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/common/providers/user_provider.dart';
 import 'package:tgpl_network/features/dashboard/data/dashboard_data_source.dart';
 import 'package:tgpl_network/features/dashboard/models/dashboard_response_model.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';

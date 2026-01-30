@@ -40,7 +40,7 @@ class _ApplicationsViewState extends ConsumerState<ApplicationsView> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(applicationControllerProvider);
+    AsyncValue<ApplicationStates> state = ref.watch(applicationControllerProvider);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Column(
@@ -59,7 +59,7 @@ class _ApplicationsViewState extends ConsumerState<ApplicationsView> {
                       .push(AppRoutes.applicationsFilter);
                   if (result != null) {
                     // filter applied or reset
-                    ref.invalidate(applicationControllerProvider);
+                    state = ref.refresh(applicationControllerProvider);
                   }
                 },
               );

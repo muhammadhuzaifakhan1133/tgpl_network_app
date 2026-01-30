@@ -26,4 +26,9 @@ class AppFormDropdownsValuesModel {
           .toList(),
     );
   }
+
+  @override
+  String toString() {
+    return 'AppFormDropdownsValuesModel(cities: $cities, siteStatuses: $siteStatuses, hmlList: $hmlList)';
+  }
 }

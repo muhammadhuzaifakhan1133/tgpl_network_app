@@ -45,7 +45,7 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
   Future<void> saveMasterData(MasterDataResponseModel data) async {
     final db = await _databaseHelper.database;
 
-    await db.transaction((txn) async {
+    final result = await db.transaction((txn) async {
       // Clear existing data
       for (final table in _databaseHelper.masterDataTables) {
         await txn.delete(table);
@@ -107,6 +107,7 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
         'lastSyncTime': DateTime.now().toIso8601String(),
       });
     });
+    debugPrint("Result of saving master data: $result");
   }
 
   Future<void> _insertInChunks(

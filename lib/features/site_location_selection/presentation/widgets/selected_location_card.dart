@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/site_location_selection/presentation/site_location_selection_controller.dart';
+import 'package:tgpl_network/utils/show_snackbar.dart';
 
 class SelectedLocationCard extends StatelessWidget {
   final LocationData locationData;
   final VoidCallback onClose;
   final VoidCallback onConfirm;
 
-  const SelectedLocationCard({super.key, 
+  const SelectedLocationCard({
+    super.key,
     required this.locationData,
     required this.onClose,
     required this.onConfirm,
@@ -83,10 +86,28 @@ class SelectedLocationCard extends StatelessWidget {
                 const SizedBox(height: 16),
 
                 // Address
-                _buildInfoRow(
-                  Icons.place,
-                  'Address',
-                  locationData.address ?? 'Fetching address...'
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildInfoRow(
+                        Icons.place,
+                        'Address',
+                        locationData.address ?? 'Fetching address...',
+                      ),
+                    ),
+                    // copy button
+                    if (locationData.address != null)
+                      IconButton(
+                        icon: const Icon(Icons.copy),
+                        onPressed: () {
+                          // Copy to clipboard
+                          Clipboard.setData(
+                            ClipboardData(text: locationData.address!),
+                          );
+                          showSnackBar(context, "Address copied to clipboard");
+                        },
+                      ),
+                  ],
                 ),
                 const SizedBox(height: 12),
 
@@ -101,7 +122,10 @@ class SelectedLocationCard extends StatelessWidget {
                 // Action button
                 SizedBox(
                   width: double.infinity,
-                  child: CustomButton(onPressed: locationData.address == null ? null : onConfirm, text: "Confirm Location"),
+                  child: CustomButton(
+                    onPressed: locationData.address == null ? null : onConfirm,
+                    text: "Confirm Location",
+                  ),
                 ),
               ],
             ),
@@ -121,15 +145,12 @@ class SelectedLocationCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                label,
-                style: AppTextstyles.googleInter400LightGrey12,
-              ),
+              Text(label, style: AppTextstyles.googleInter400LightGrey12),
               const SizedBox(height: 4),
               Text(
                 value,
                 style: AppTextstyles.googleInter400Grey14.copyWith(
-                  color: AppColors.black2Color
+                  color: AppColors.black2Color,
                 ),
               ),
             ],

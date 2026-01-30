@@ -156,7 +156,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
                       );
                 },
               ),
-              if (submoduleName == "Survey & Dealer Profile" ||
+              if (submoduleName == "Survey & Dealer Profile" &&
                   user.hasSurveyFormAccess) ...[
                 const SizedBox(width: 8),
                 actionContainer(
@@ -172,7 +172,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
                   },
                 ),
               ],
-              if (submoduleName == "Traffic & Trade" ||
+              if (submoduleName == "Traffic & Trade" &&
                   user.hasTrafficTradeFormAccess) ...[
                 const SizedBox(width: 8),
                 actionContainer(

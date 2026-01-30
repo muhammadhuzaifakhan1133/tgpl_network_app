@@ -8,23 +8,64 @@ import 'package:tgpl_network/common/widgets/section_detail_card.dart';
 import 'package:tgpl_network/features/survey_form/presentation/widgets/contact_and_dealer/contact_and_dealer_form_controller.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
-class ContactAndDealerFormCard extends ConsumerWidget {
+class ContactAndDealerFormCard extends ConsumerStatefulWidget {
   const ContactAndDealerFormCard({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ContactAndDealerFormCard> createState() => _ContactAndDealerFormCardState();
+}
+
+class _ContactAndDealerFormCardState extends ConsumerState<ContactAndDealerFormCard> {
+  // create controllers for editable text fields
+  TextEditingController dealerNameController = TextEditingController();
+  TextEditingController dealerContactController = TextEditingController();
+  TextEditingController referenceByController = TextEditingController();
+  TextEditingController locationAddressController = TextEditingController();
+  TextEditingController landmarkController = TextEditingController();
+  TextEditingController plotFrontController = TextEditingController();
+  TextEditingController plotDepthController = TextEditingController();
+  TextEditingController distanceFromDepoController = TextEditingController();
+
+  @override
+  void initState() {
+    // get initial values from State
+    final state = ref.read(contactAndDealerFormControllerProvider);
+    dealerNameController.text = state.dealerName ?? "";
+    dealerContactController.text = state.dealerContact ?? "";
+    referenceByController.text = state.referenceBy ?? "";
+    locationAddressController.text = state.locationAddress ?? "";
+    landmarkController.text = state.landmark ?? "";
+    plotFrontController.text = state.plotFront ?? "";
+    plotDepthController.text = state.plotDepth ?? "";
+    distanceFromDepoController.text = state.distanceFromDepo ?? "";
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    dealerNameController.dispose();
+    dealerContactController.dispose();
+    referenceByController.dispose();
+    locationAddressController.dispose();
+    landmarkController.dispose();
+    plotFrontController.dispose();
+    plotDepthController.dispose();
+    distanceFromDepoController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final controller = ref.read(
       contactAndDealerFormControllerProvider.notifier,
     );
-    final state = ref.watch(contactAndDealerFormControllerProvider);
-
     return SectionDetailCard(
       title: "Contact & Dealer Detail",
       children: [
         CustomTextFieldWithTitle(
           title: "Dealer Name",
           hintText: "Enter dealer name",
-          initialValue: state.dealerName,
+          controller: dealerNameController,
           onChanged: (value) {
             controller.updateDealerInfo(dealerName: value);
           },
@@ -39,7 +80,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
           title: "Dealer Contact",
           hintText: "Enter dealer contact number",
           keyboardType: TextInputType.phone,
-          initialValue: state.dealerContact,
+          controller: dealerContactController,
           onChanged: (value) {
             controller.updateDealerInfo(dealerContact: value);
           },
@@ -53,7 +94,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
         CustomTextFieldWithTitle(
           title: "Reference By",
           hintText: "Enter reference",
-          initialValue: state.referenceBy,
+          controller: referenceByController,
           onChanged: (value) {
             controller.updateDealerInfo(referenceBy: value);
           },
@@ -67,7 +108,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
         CustomTextFieldWithTitle(
           title: "Location Address",
           hintText: "Enter location address",
-          initialValue: state.locationAddress,
+          controller: locationAddressController,
           onChanged: (value) {
             controller.updateLocationInfo(locationAddress: value);
           },
@@ -81,7 +122,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
         CustomTextFieldWithTitle(
           title: "Landmark",
           hintText: "Enter landmark",
-          initialValue: state.landmark,
+          controller: landmarkController,
           onChanged: (value) {
             controller.updateLocationInfo(landmark: value);
           },
@@ -92,19 +133,26 @@ class ContactAndDealerFormCard extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        CustomTextFieldWithTitle(
-          title: "Plot Area",
-          readOnly: true,
-          hintText: "Enter plot area",
-          controller: TextEditingController(text: state.plotArea ?? ""),
-          keyboardType: TextInputType.number,
+        Consumer(
+          builder: (context, ref, child) {
+            ref.watch(contactAndDealerFormControllerProvider.select((s)=>s.plotFront));
+            ref.watch(contactAndDealerFormControllerProvider.select((s)=>s.plotDepth));
+            final plotArea = ref.read(contactAndDealerFormControllerProvider).plotArea;
+            return CustomTextFieldWithTitle(
+              title: "Plot Area",
+              readOnly: true,
+              hintText: "Enter plot area",
+              controller: TextEditingController(text: plotArea ?? ""),
+              keyboardType: TextInputType.number,
+            );
+          }
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           title: "Plot Front",
           hintText: "Enter plot front",
           keyboardType: TextInputType.number,
-          initialValue: state.plotFront,
+          controller: plotFrontController,
           onChanged: (value) {
             controller.updatePlotDimensions(front: value);
           },
@@ -118,7 +166,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
           title: "Plot Depth",
           hintText: "Enter plot depth",
           keyboardType: TextInputType.number,
-          initialValue: state.plotDepth,
+          controller: plotDepthController,
           onChanged: (value) {
             controller.updatePlotDimensions(depth: value);
           },
@@ -128,29 +176,36 @@ class ContactAndDealerFormCard extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        SmartCustomDropDownWithTitle(
-          title: "Nearest Depo",
-          hintText: "Select nearest depo",
-          enableSearch: true,
-          selectedItem: state.nearestDepo,
-          asyncProvider: depoNamesProvider,
-          itemsBuilder: (depos) => depos,
-          onChanged: (value) {
-            if (value == null) return;
-            controller.updateLocationInfo(nearestDepo: value.toString());
-          },
-          validator: (v) => v.validate(),
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('nearestDepo');
-          },
+        Consumer(
+          builder: (context, ref, child) {
+            final nearestDepo = ref.watch(
+              contactAndDealerFormControllerProvider.select((s) => s.nearestDepo),
+            );
+            return SmartCustomDropDownWithTitle(
+              title: "Nearest Depo",
+              hintText: "Select nearest depo",
+              enableSearch: true,
+              selectedItem: nearestDepo,
+              asyncProvider: depoNamesProvider,
+              itemsBuilder: (depos) => depos,
+              onChanged: (value) {
+                if (value == null) return;
+                controller.updateLocationInfo(nearestDepo: value.toString());
+              },
+              validator: (v) => v.validate(),
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('nearestDepo');
+              },
+            );
+          }
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           title: "Distance from Depo",
           hintText: "Enter distance from depo",
           keyboardType: TextInputType.number,
-          initialValue: state.distanceFromDepo,
+          controller: distanceFromDepoController,
           onChanged: (value) {
             controller.updateDistanceFromDepo(value);
           },
@@ -161,22 +216,29 @@ class ContactAndDealerFormCard extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        SmartCustomDropDownWithTitle(
-          title: "Type of Trade Area",
-          hintText: "Select type of trade area",
-          enableSearch: true,
-          selectedItem: state.typeOfTradeArea,
-          asyncProvider: tradeAreaNamesProvider,
-          itemsBuilder: (tradeAreas) => tradeAreas,
-          onChanged: (value) {
-            if (value == null) return;
-            controller.updateLocationInfo(typeOfTradeArea: value.toString());
-          },
-          validator: (v) => v.validate(),
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('typeOfTradeArea');
-          },
+        Consumer(
+          builder: (context, ref, child) {
+            final typeOfTradeArea = ref.watch(
+              contactAndDealerFormControllerProvider.select((s) => s.typeOfTradeArea),
+            );
+            return SmartCustomDropDownWithTitle(
+              title: "Type of Trade Area",
+              hintText: "Select type of trade area",
+              enableSearch: true,
+              selectedItem: typeOfTradeArea,
+              asyncProvider: tradeAreaNamesProvider,
+              itemsBuilder: (tradeAreas) => tradeAreas,
+              onChanged: (value) {
+                if (value == null) return;
+                controller.updateLocationInfo(typeOfTradeArea: value.toString());
+              },
+              validator: (v) => v.validate(),
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('typeOfTradeArea');
+              },
+            );
+          }
         ),
       ],
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tgpl_network/common/models/sync_enum.dart';
+import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_shimmer.dart';
 import 'package:tgpl_network/utils/get_time_duration_till_now.dart';
 
 class SyncStatusCard extends StatelessWidget {
@@ -23,6 +24,8 @@ class SyncStatusCard extends StatelessWidget {
         return _buildSyncingCard();
       case SyncStatus.synchronized:
         return _buildSynchronizedCard();
+      case SyncStatus.loading:
+        return SyncStatusCardShimmer();
     }
   }
 

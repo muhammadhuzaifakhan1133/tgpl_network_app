@@ -8,11 +8,36 @@ import 'package:tgpl_network/common/widgets/section_detail_card.dart';
 import 'package:tgpl_network/features/survey_form/presentation/widgets/survey_recommendation/survey_recommendation_form_controller.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
-class SurveyRecommendationFormCard extends ConsumerWidget {
+class SurveyRecommendationFormCard extends ConsumerStatefulWidget {
   const SurveyRecommendationFormCard({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SurveyRecommendationFormCard> createState() => _SurveyRecommendationFormCardState();
+}
+
+class _SurveyRecommendationFormCardState extends ConsumerState<SurveyRecommendationFormCard> {
+  
+  TextEditingController tmRemarksController = TextEditingController();
+  TextEditingController rmRemarksController = TextEditingController();
+
+  @override
+  void dispose() {
+    tmRemarksController.dispose();
+    rmRemarksController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final state = ref.read(surveyRecommendationFormControllerProvider);
+
+    tmRemarksController.text = state.tmRemarks ?? "";
+    rmRemarksController.text = state.rmRemarks ?? "";
+  }
+  
+  @override
+  Widget build(BuildContext context) {
     final controller = ref.read(
       surveyRecommendationFormControllerProvider.notifier,
     );
@@ -58,7 +83,7 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
         CustomTextFieldWithTitle(
           title: "TM Remarks",
           hintText: "Enter TM remarks",
-          initialValue: state.tmRemarks,
+          controller: tmRemarksController,
           onChanged: (value) {
             controller.updateTMRemarks(value);
           },
@@ -106,7 +131,7 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
         CustomTextFieldWithTitle(
           title: "RM Remarks",
           hintText: "Enter RM remarks",
-          initialValue: state.rmRemarks,
+          controller: rmRemarksController,
           onChanged: (value) {
             controller.updateRMRemarks(value);
           },

@@ -40,8 +40,8 @@ class UserModel {
       contact: json['Contact'] ?? '',
       treePath: json['TreePath'] ?? '',
       isSuperAdmin: json['IsSuperAdmin'] ?? false,
-      hasSurveyFormAccess: _hasSurveyFormAccess(json['UserMenu'] ?? []),
-      hasTrafficTradeFormAccess: _hasTrafficTradeFormAccess(json['UserMenu'] ?? []),
+      hasSurveyFormAccess: _hasSurveyFormAccess(List<Map<String, dynamic>>.from(json['UserMenu'] ?? [])),
+      hasTrafficTradeFormAccess: _hasTrafficTradeFormAccess(List<Map<String, dynamic>>.from(json['UserMenu'] ?? [])),
     );
   }
 

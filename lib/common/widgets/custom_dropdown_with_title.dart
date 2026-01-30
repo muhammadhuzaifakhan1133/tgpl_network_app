@@ -127,7 +127,7 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
             if (enableSearch) {
               return CustomSearchableDropDown<T>(
                 items: const [],
-                onChanged: null,
+                onChanged: onChanged,
                 initialValue: selectedItem,
                 displayString: displayString,
                 hintText:
@@ -139,7 +139,7 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
             return CustomDropDown<T>(
               items: const [],
               selectedItem: selectedItem,
-              onChanged: null,
+              onChanged: onChanged,
               hintText: loadingHintText ?? "Loading ${title.toLowerCase()}...",
             );
           },

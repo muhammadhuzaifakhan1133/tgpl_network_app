@@ -35,8 +35,7 @@ class _SiteLocationSelectionViewState
   }
 
   Future<void> _setInitialPosition(LatLng position) async {
-    ref.read(locationActionProvider.notifier).state =
-    const AsyncLoading();
+    ref.read(locationActionProvider.notifier).state = const AsyncLoading();
 
     final locationService = ref.read(locationServiceProvider);
     final address = await locationService.getAddressFromCoordinates(position);
@@ -68,13 +67,11 @@ class _SiteLocationSelectionViewState
       ),
     );
 
-    ref.read(locationActionProvider.notifier).state =
-    const AsyncData(null);
+    ref.read(locationActionProvider.notifier).state = const AsyncData(null);
   }
 
   Future<void> _getCurrentLocation() async {
-    ref.read(locationActionProvider.notifier).state =
-    const AsyncLoading();
+    ref.read(locationActionProvider.notifier).state = const AsyncLoading();
 
     final locationService = ref.read(locationServiceProvider);
     final position = await locationService.getCurrentLocation();
@@ -83,17 +80,19 @@ class _SiteLocationSelectionViewState
       ref.read(currentLocationProvider.notifier).state = position;
 
       // Add current location marker
-      final markers = ref.read(markersProvider.notifier);
-      markers.state = {
-        ...markers.state,
+      final markers = ref.read(markersProvider);
+      final updatedMarkers = markers
+          .where((m) => m.markerId.value != AppKeys.currentMarkerId)
+          .toSet();
+      updatedMarkers.add(
         Marker(
           markerId: MarkerId(AppKeys.currentMarkerId),
           position: position,
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
           infoWindow: const InfoWindow(title: 'Your Location'),
         ),
-      };
-
+      );
+      ref.read(markersProvider.notifier).state = updatedMarkers;
       // Move camera to current location
       final mapController = ref.read(mapControllerProvider);
       mapController?.animateCamera(
@@ -103,17 +102,18 @@ class _SiteLocationSelectionViewState
       );
     } else {
       if (context.mounted) {
-        showSnackBar(context, 'Failed to get location. Please check permissions.');
+        showSnackBar(
+          context,
+          'Failed to get location. Please check permissions.',
+        );
       }
     }
 
-    ref.read(locationActionProvider.notifier).state =
-    const AsyncData(null);
+    ref.read(locationActionProvider.notifier).state = const AsyncData(null);
   }
 
   Future<void> _onMapTapped(LatLng position) async {
-    ref.read(locationActionProvider.notifier).state =
-    const AsyncLoading();
+    ref.read(locationActionProvider.notifier).state = const AsyncLoading();
 
     final locationService = ref.read(locationServiceProvider);
     final address = await locationService.getAddressFromCoordinates(position);
@@ -143,8 +143,7 @@ class _SiteLocationSelectionViewState
     );
 
     ref.read(markersProvider.notifier).state = updatedMarkers;
-    ref.read(locationActionProvider.notifier).state =
-    const AsyncData(null);
+    ref.read(locationActionProvider.notifier).state = const AsyncData(null);
   }
 
   @override
@@ -152,6 +151,7 @@ class _SiteLocationSelectionViewState
     final currentPosition = ref.watch(currentLocationProvider);
     final selectedLocation = ref.watch(selectedLocationProvider);
     final markers = ref.watch(markersProvider);
+    ref.watch(mapControllerProvider);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -208,7 +208,9 @@ class _SiteLocationSelectionViewState
                     ref.read(selectedLocationProvider.notifier).state = null;
                     final currentMarkers = ref.read(markersProvider);
                     ref.read(markersProvider.notifier).state = currentMarkers
-                        .where((m) => m.markerId.value != AppKeys.selectedMarkerId)
+                        .where(
+                          (m) => m.markerId.value != AppKeys.selectedMarkerId,
+                        )
                         .toSet();
                   },
                   onConfirm: () {

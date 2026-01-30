@@ -101,7 +101,7 @@ class MasterDataResponseModel {
       nfrList: List<NFRModel>.from(
         json['NFRList']?.map((x) => NFRModel(x)) ?? [],
       ),
-      userInfo: json['UserInfo'] != null 
+      userInfo: json['UserInfo'] != null
           ? UserModel.fromAPIResponseMap(json['UserInfo'])
           : null,
     );
@@ -145,5 +145,10 @@ class MasterDataResponseModel {
       MasterListTypeTable.databaseColName: type.key,
       'listValues': jsonEncode(values),
     };
+  }
+
+  @override
+  String toString() {
+    return 'MasterDataResponseModel(applicationAndSurveyList: $applicationAndSurveyList, traficTradeSitesList: $traficTradeSitesList, userCityList: $userCityList, nearestDepo: $nearestDepo, tradeAreaType: $tradeAreaType, dealerInvestmentType: $dealerInvestmentType, gfbList: $gfbList, recommendationList: $recommendationList, shiftHourList: $shiftHourList, hmlList: $hmlList, ynList: $ynList, ynnList: $ynnList, nfrList: $nfrList, userInfo: $userInfo)';
   }
 }

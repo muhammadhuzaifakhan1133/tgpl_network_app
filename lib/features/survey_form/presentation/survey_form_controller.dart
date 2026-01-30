@@ -15,10 +15,6 @@ final surveyFormControllerProvider = AsyncNotifierProvider.family
       return SurveyFormController(applicationId);
     });
 
-final surveyFormSubmissionControllerProvider =
-    AsyncNotifierProvider<SurveyFormSubmissionController, void>(
-        SurveyFormSubmissionController.new);
-
 class SurveyFormController extends AsyncNotifier<SurveyFormModel> {
   final String applicationId;
 
@@ -45,11 +41,6 @@ class SurveyFormController extends AsyncNotifier<SurveyFormModel> {
       return surveyForm;
     }
   }
-}
-
-class SurveyFormSubmissionController extends AsyncNotifier<void> {
-  @override
-  FutureOr<void> build() async {}
 
   Future<bool> submitSurveyForm() async {
     try {
@@ -57,7 +48,16 @@ class SurveyFormSubmissionController extends AsyncNotifier<void> {
       final surveyFormData = SurveyFormAssembler.assemble(ref);
       debugPrint('Survey Form Data: ${surveyFormData.toDatabaseMap()}');
       final validateMessage = surveyFormData.validate;
-      if (validateMessage == null) {
+      if (validateMessage != null) {
+        state = AsyncValue.data(state.requireValue.copyWith(
+          errorMessage: validateMessage,
+        ));
+        return false;
+      }
+        state = AsyncValue.data(state.requireValue.copyWith(
+            isSubmitting: true,
+            errorMessage: null,
+          ));
         if (await InternetConnectivity.hasInternet()) {
           final response = await ref
               .read(surveyFormRemoteDataSourceProvider)
@@ -65,10 +65,10 @@ class SurveyFormSubmissionController extends AsyncNotifier<void> {
           if (response.success) {
             return true;
           } else {
-            state = AsyncValue.error(
-              Exception('Submission failed: ${response.message}'),
-              StackTrace.current,
-            );
+            state = AsyncValue.data(state.requireValue.copyWith(
+              errorMessage: 'Submission failed: ${response.message}',
+              isSubmitting: false,
+            ));
             return false;
           }
         } else {
@@ -78,12 +78,11 @@ class SurveyFormSubmissionController extends AsyncNotifier<void> {
               .saveSurveyForm(surveyFormData);
         }
         return true;
-      } else {
-        state = AsyncValue.error(validateMessage, StackTrace.current);
-        return false;
-      }
-    } catch (e, s) {
-      state = AsyncValue.error(e, s);
+     
+    } catch (e, _) {
+      state = AsyncValue.data(state.requireValue.copyWith(
+        errorMessage: 'An error occurred: $e',
+      ));
       return false;
     }
   }

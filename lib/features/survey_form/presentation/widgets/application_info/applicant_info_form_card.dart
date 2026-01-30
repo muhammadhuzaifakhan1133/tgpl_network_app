@@ -17,53 +17,95 @@ import 'package:tgpl_network/utils/custom_date_picker.dart';
 import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
-class ApplicantInfoFormCard extends ConsumerWidget {
+class ApplicantInfoFormCard extends ConsumerStatefulWidget {
   const ApplicantInfoFormCard({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ApplicantInfoFormCard> createState() =>
+      _ApplicantInfoFormCardState();
+}
+
+class _ApplicantInfoFormCardState extends ConsumerState<ApplicantInfoFormCard> {
+  TextEditingController dateConductedController = TextEditingController();
+  TextEditingController conductedByController = TextEditingController();
+  TextEditingController googleLocationController = TextEditingController();
+  TextEditingController districtController = TextEditingController();
+  TextEditingController npNameController = TextEditingController();
+  TextEditingController sourceController = TextEditingController();
+  TextEditingController sourceNameController = TextEditingController();
+
+  @override
+  void initState() {
+    final state = ref.read(applicationInfoFormControllerProvider);
+    dateConductedController.text =
+        state.dateConducted?.formatFromIsoToDDMMYYY() ?? '';
+    conductedByController.text = state.conductedBy ?? '';
+    googleLocationController.text = state.googleLocation ?? '';
+    districtController.text = state.district ?? '';
+    npNameController.text = state.npName ?? '';
+    sourceController.text = state.source ?? '';
+    sourceNameController.text = state.sourceName ?? '';
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    dateConductedController.dispose();
+    conductedByController.dispose();
+    googleLocationController.dispose();
+    districtController.dispose();
+    npNameController.dispose();
+    sourceController.dispose();
+    sourceNameController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final controller = ref.read(applicationInfoFormControllerProvider.notifier);
-    final state = ref.watch(applicationInfoFormControllerProvider);
+    final state = ref.read(applicationInfoFormControllerProvider);
     return SectionDetailCard(
       title: "Applicant Info",
       children: [
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Applicant ID",
-          hintText: state.applicantId ?? "2196",
+          hintText: state.applicantId ?? "e.g. 2196",
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Entry Code",
-          hintText: state.entryCode ?? "TGPL-2196",
+          hintText: state.entryCode ?? "e.g. TGPL-2196",
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Date Conducted",
           hintText: "dd/mm/yyyy",
-          controller: TextEditingController(text: state.dateConducted ?? ""),
+          controller: dateConductedController,
           onTap: () {
             customDatePicker(
               context: context,
               onUserSelectedDate: (date) {
+                dateConductedController.text = date.formatToDDMMYYY();
                 controller.updateConductedInfo(
-                  dateConducted: date.formatToDDMMYYY(),
+                  dateConducted: date.toIso8601String(),
                 );
               },
             );
           },
-          showClearButton: !state.dateConducted.isNullOrEmpty,
+          showClearButton: true,
           onClear: () {
+            dateConductedController.clear();
             controller.clearField('dateConducted');
           },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           title: "Conducted By",
-          hintText: "Asif",
-          initialValue: state.conductedBy,
+          hintText: "e.g. Asif",
+          controller: conductedByController,
           validator: (v) => v.validate(),
           onChanged: (value) {
             controller.updateConductedInfo(conductedBy: value);
@@ -76,9 +118,9 @@ class ApplicantInfoFormCard extends ConsumerWidget {
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           title: "Google Location*",
-          hintText: "Tap to select location",
+          hintText: "e.g. Tap to select location",
           readOnly: true,
-          controller: TextEditingController(text: state.googleLocation ?? ""),
+          controller: googleLocationController,
           suffixIcon: actionContainer(
             icon: AppImages.locationIconSvg,
             iconColor: AppColors.black,
@@ -88,38 +130,46 @@ class ApplicantInfoFormCard extends ConsumerWidget {
                   .read(goRouterProvider)
                   .push(AppRoutes.siteLocationSelection);
               if (selectedLocation != null) {
+                googleLocationController.text =
+                    "${selectedLocation.position.latitude}, ${selectedLocation.position.longitude}";
                 controller.updateLocation(
-                  googleLocation:
-                      "${selectedLocation.position.latitude}, ${selectedLocation.position.longitude}",
+                  googleLocation: googleLocationController.text,
                 );
               }
             },
           ),
         ),
         const SizedBox(height: 10),
-        SmartCustomDropDownWithTitle(
-          title: "City",
-          hintText: "Select city",
-          enableSearch: true,
-          selectedItem: state.selectedCity,
-          asyncProvider: cityNamesProvider,
-          itemsBuilder: (cities) => cities.map((city) => city.name).toList(),
-          onChanged: (value) {
-            if (value == null) return;
-            controller.updateLocation(city: value.toString());
-          },
-          validator: (v) => v.validate(),
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('selectedCity');
-          },
+        Consumer(
+          builder: (context, ref, child) {
+            final selectedCity = ref
+                .watch(applicationInfoFormControllerProvider.select(
+                    (state) => state.selectedCity));
+            return SmartCustomDropDownWithTitle(
+              title: "City",
+              hintText: "e.g. Select city",
+              enableSearch: true,
+              selectedItem: selectedCity,
+              asyncProvider: cityNamesProvider,
+              itemsBuilder: (cities) => cities.map((city) => city.name).toList(),
+              onChanged: (value) {
+                if (value == null) return;
+                controller.updateLocation(city: value.toString());
+              },
+              validator: (v) => v.validate(),
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('selectedCity');
+              },
+            );
+          }
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           title: "District",
-          hintText: "Lahore",
-          initialValue: state.district,
+          hintText: "e.g. Lahore",
           validator: (v) => v.validate(),
+          controller: districtController,
           onChanged: (value) {
             controller.updateLocation(district: value);
           },
@@ -129,27 +179,35 @@ class ApplicantInfoFormCard extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        SmartCustomDropDownWithTitle(
-          title: "Site Status",
-          selectedItem: state.siteStatus,
-          hintText: "Select site status",
-          asyncProvider: siteStatusesProvider,
-          itemsBuilder: (statuses) => statuses.map((status) => status.name).toList(),
-          onChanged: (value) {
-            if (value == null) return;
-            controller.updateSiteInfo(status: value.toString());
-          },
-          showClearButton: !state.siteStatus.isNullOrEmpty,
-          onClear: () {
-            controller.clearField('siteStatus');
-          },
-          validator: (v) => v.validate(),
+        Consumer(
+          builder: (context, ref, child) {
+            final selectedSiteStatus = ref
+                .watch(applicationInfoFormControllerProvider.select(
+                    (state) => state.siteStatus));
+            return SmartCustomDropDownWithTitle(
+              title: "Site Status",
+              selectedItem: selectedSiteStatus,
+              hintText: "e.g. Select site status",
+              asyncProvider: siteStatusesProvider,
+              itemsBuilder: (statuses) =>
+                  statuses.map((status) => status.name).toList(),
+              onChanged: (value) {
+                if (value == null) return;
+                controller.updateSiteInfo(status: value.toString());
+              },
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('siteStatus');
+              },
+              validator: (v) => v.validate(),
+            );
+          }
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           title: "NP. Name",
-          hintText: "Kashif",
-          initialValue: state.npName,
+          hintText: "e.g. Kashif",
+          controller: npNameController,
           validator: (v) => v.validate(),
           onChanged: (value) {
             controller.updateNpName(value);
@@ -162,8 +220,8 @@ class ApplicantInfoFormCard extends ConsumerWidget {
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           title: "Source",
-          hintText: "Dealer",
-          initialValue: state.source,
+          hintText: "e.g. Dealer",
+          controller: sourceController,
           validator: (v) => v.validate(),
           onChanged: (value) {
             controller.updateSourceInfo(source: value);
@@ -176,8 +234,8 @@ class ApplicantInfoFormCard extends ConsumerWidget {
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           title: "Source Name",
-          hintText: "TGPL Dealer",
-          initialValue: state.sourceName,
+          hintText: "e.g. TGPL Dealer",
+          controller: sourceNameController,
           validator: (v) => v.validate(),
           onChanged: (value) {
             controller.updateSourceInfo(sourceName: value);
@@ -188,21 +246,28 @@ class ApplicantInfoFormCard extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        SmartCustomDropDownWithTitle(
-          title: "Priority",
-          selectedItem: state.selectedPriority,
-          asyncProvider: prioritiesProvider,
-          hintText: "Select site priority",
-          itemsBuilder: (priorities) => priorities,
-          onChanged: (value) {
-            if (value == null) return;
-            controller.updateSiteInfo(priority: value.toString());
-          },
-          validator: (v) => v.validate(),
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('selectedPriority');
-          },
+        Consumer(
+          builder: (context, ref, child) {
+            final selectedPriority = ref
+                .watch(applicationInfoFormControllerProvider.select(
+                    (state) => state.selectedPriority));
+            return SmartCustomDropDownWithTitle(
+              title: "Priority",
+              selectedItem: selectedPriority,
+              asyncProvider: prioritiesProvider,
+              hintText: "e.g. Select site priority",
+              itemsBuilder: (priorities) => priorities,
+              onChanged: (value) {
+                if (value == null) return;
+                controller.updateSiteInfo(priority: value.toString());
+              },
+              validator: (v) => v.validate(),
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('selectedPriority');
+              },
+            );
+          }
         ),
       ],
     );

@@ -33,7 +33,7 @@ class DashboardShimmerView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
           child: Column(
             children: const [
-              _SyncStatusCardShimmer(),
+              SyncStatusCardShimmer(),
               SizedBox(height: 20),
               _ModulesListShimmer(),
             ],
@@ -144,8 +144,8 @@ class _CountCardsShimmer extends StatelessWidget {
   }
 }
 
-class _SyncStatusCardShimmer extends StatelessWidget {
-  const _SyncStatusCardShimmer();
+class SyncStatusCardShimmer extends StatelessWidget {
+  const SyncStatusCardShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -44,6 +44,9 @@ class SurveyFormModel {
   final String? rmRecommendation;
   final String? rmRemarks;
 
+  final bool isSubmitting;
+  final String errorMessage;
+
   const SurveyFormModel({
     this.applicantId,
     this.entryCode,
@@ -82,6 +85,8 @@ class SurveyFormModel {
     this.selectedRM,
     this.rmRecommendation,
     this.rmRemarks,
+    this.isSubmitting = false,
+    this.errorMessage = '',
   });
 
   Map<String, dynamic> toDatabaseMap() {
@@ -247,6 +252,8 @@ class SurveyFormModel {
     String? selectedRM,
     String? rmRecommendation,
     String? rmRemarks,
+    bool? isSubmitting,
+    String? errorMessage,
   }) {
     return SurveyFormModel(
       applicantId: applicantId ?? this.applicantId,
@@ -289,6 +296,8 @@ class SurveyFormModel {
       selectedRM: selectedRM ?? this.selectedRM,
       rmRecommendation: rmRecommendation ?? this.rmRecommendation,
       rmRemarks: rmRemarks ?? this.rmRemarks,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 

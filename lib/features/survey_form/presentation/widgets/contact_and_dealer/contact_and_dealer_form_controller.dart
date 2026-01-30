@@ -5,7 +5,8 @@ import 'package:tgpl_network/utils/extensions/nullable_fields_helper.dart';
 
 final contactAndDealerFormControllerProvider =
     NotifierProvider<ContactAndDealerFormController, ContactAndDealerFormState>(
-        ContactAndDealerFormController.new);
+      ContactAndDealerFormController.new,
+    );
 
 class ContactAndDealerFormState {
   // Dealer / Contact
@@ -54,45 +55,73 @@ class ContactAndDealerFormState {
     List<String>? fieldsToNull,
   }) {
     return ContactAndDealerFormState(
-      dealerName: fieldsToNull.apply("dealerName", dealerName , this.dealerName),
-      dealerContact: fieldsToNull.apply("dealerContact", dealerContact , this.dealerContact),
-      referenceBy: fieldsToNull.apply("referenceBy", referenceBy , this.referenceBy),
-      locationAddress: fieldsToNull.apply("locationAddress", locationAddress , this.locationAddress),
-      landmark: fieldsToNull.apply("landmark", landmark , this.landmark),
-      nearestDepo: fieldsToNull.apply("nearestDepo", nearestDepo , this.nearestDepo),
-      typeOfTradeArea: fieldsToNull.apply("typeOfTradeArea", typeOfTradeArea , this.typeOfTradeArea),
-      plotFront: fieldsToNull.apply("plotFront", plotFront , this.plotFront),
-      plotDepth: fieldsToNull.apply("plotDepth", plotDepth , this.plotDepth),
-      plotArea: fieldsToNull.apply("plotArea", plotArea , this.plotArea),
-      distanceFromDepo: fieldsToNull.apply("distanceFromDepo", distanceFromDepo , this.distanceFromDepo),
+      dealerName: fieldsToNull.apply("dealerName", dealerName, this.dealerName),
+      dealerContact: fieldsToNull.apply(
+        "dealerContact",
+        dealerContact,
+        this.dealerContact,
+      ),
+      referenceBy: fieldsToNull.apply(
+        "referenceBy",
+        referenceBy,
+        this.referenceBy,
+      ),
+      locationAddress: fieldsToNull.apply(
+        "locationAddress",
+        locationAddress,
+        this.locationAddress,
+      ),
+      landmark: fieldsToNull.apply("landmark", landmark, this.landmark),
+      nearestDepo: fieldsToNull.apply(
+        "nearestDepo",
+        nearestDepo,
+        this.nearestDepo,
+      ),
+      typeOfTradeArea: fieldsToNull.apply(
+        "typeOfTradeArea",
+        typeOfTradeArea,
+        this.typeOfTradeArea,
+      ),
+      plotFront: fieldsToNull.apply("plotFront", plotFront, this.plotFront),
+      plotDepth: fieldsToNull.apply("plotDepth", plotDepth, this.plotDepth),
+      plotArea: fieldsToNull.apply("plotArea", plotArea, this.plotArea),
+      distanceFromDepo: fieldsToNull.apply(
+        "distanceFromDepo",
+        distanceFromDepo,
+        this.distanceFromDepo,
+      ),
     );
   }
 
   ContactAndDealerFormState.loadFromApplication(ApplicationModel app)
-      : dealerName = app.dealerName,
-        dealerContact = app.dealerContact,
-        referenceBy = app.referedBy,
-        locationAddress = app.locationAddress,
-        landmark = app.landmark,
-        nearestDepo = app.nearestDepo,
-        typeOfTradeArea = app.typeOfTradeArea,
-        plotFront = app.plotFront?.toString(),
-        plotDepth = app.plotDepth?.toString(),
-        plotArea = app.plotArea?.toString(),
-        distanceFromDepo = app.distanceFromDetp?.toString();
+    : dealerName = app.dealerName,
+      dealerContact = app.dealerContact,
+      referenceBy = app.referedBy,
+      locationAddress = app.locationAddress,
+      landmark = app.landmark,
+      nearestDepo = app.nearestDepo,
+      typeOfTradeArea = app.typeOfTradeArea,
+      plotFront = app.plotFront?.toString(),
+      plotDepth = app.plotDepth?.toString(),
+      plotArea =
+          app.plotArea?.toString() ??
+          ((app.plotFront != null && app.plotDepth != null)
+              ? (app.plotFront! * app.plotDepth!).toStringAsFixed(2)
+              : null),
+      distanceFromDepo = app.distanceFromDetp?.toString();
 
   ContactAndDealerFormState.loadFromSurveyFormModel(SurveyFormModel form)
-      : dealerName = form.dealerName,
-        dealerContact = form.dealerContact,
-        referenceBy = form.referenceBy,
-        locationAddress = form.locationAddress,
-        landmark = form.landmark,
-        nearestDepo = form.nearestDepo,
-        typeOfTradeArea = form.typeOfTradeArea,
-        plotFront = form.plotFront,
-        plotDepth = form.plotDepth,
-        plotArea = form.plotArea,
-        distanceFromDepo = form.distanceFromDepo;
+    : dealerName = form.dealerName,
+      dealerContact = form.dealerContact,
+      referenceBy = form.referenceBy,
+      locationAddress = form.locationAddress,
+      landmark = form.landmark,
+      nearestDepo = form.nearestDepo,
+      typeOfTradeArea = form.typeOfTradeArea,
+      plotFront = form.plotFront,
+      plotDepth = form.plotDepth,
+      plotArea = form.plotArea,
+      distanceFromDepo = form.distanceFromDepo;
 
   @override
   String toString() {
@@ -139,10 +168,7 @@ class ContactAndDealerFormController
 
   /* ---------------- Plot ---------------- */
 
-  void updatePlotDimensions({
-    String? front,
-    String? depth,
-  }) {
+  void updatePlotDimensions({String? front, String? depth}) {
     final plotFront = front ?? state.plotFront;
     final plotDepth = depth ?? state.plotDepth;
 
@@ -174,5 +200,5 @@ class ContactAndDealerFormController
 
   void loadFromSurveyFormModel(SurveyFormModel form) {
     state = ContactAndDealerFormState.loadFromSurveyFormModel(form);
-  }  
+  }
 }

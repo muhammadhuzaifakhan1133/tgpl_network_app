@@ -11,6 +11,7 @@ import 'package:tgpl_network/features/survey_form/presentation/widgets/contact_a
 import 'package:tgpl_network/features/survey_form/presentation/widgets/dealer_profile/dealer_profile_form_card.dart';
 import 'package:tgpl_network/features/survey_form/presentation/widgets/survey_recommendation/survey_recommendation_form_card.dart';
 import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 import 'package:tgpl_network/utils/show_snackbar.dart';
 
 class SurveyFormView extends ConsumerStatefulWidget {
@@ -27,14 +28,14 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
   @override
   Widget build(BuildContext context) {
     final asyncValue = ref.watch(surveyFormControllerProvider(widget.appId));
-    final submissionController = ref.read(
-      surveyFormSubmissionControllerProvider.notifier,
+    final controller = ref.read(
+      surveyFormControllerProvider(widget.appId).notifier,
     );
-    ref.listen(surveyFormSubmissionControllerProvider, (p, n) {
-      if (n.hasError) {
+    ref.listen(surveyFormControllerProvider(widget.appId), (p, n) {
+      if (n.value?.errorMessage.isNullOrEmpty == false) {
         showSnackBar(
           context,
-          'Error submitting form: ${n.error}',
+          'Error submitting form: ${n.value?.errorMessage}',
           bgColor: AppColors.emailUsIconColor,
         );
       }
@@ -51,7 +52,7 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
                 subtitle: "Form # ${widget.appId}",
                 showBackButton: true,
               ),
-              Expanded(child: _buildForm(submissionController)),
+              Expanded(child: _buildForm(controller)),
             ],
           ),
           loading: () =>
@@ -62,7 +63,7 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
     );
   }
 
-  Widget _buildForm(SurveyFormSubmissionController submissionController) {
+  Widget _buildForm(SurveyFormController controller) {
     return Form(
       key: _formKey,
       child: SingleChildScrollView(
@@ -80,15 +81,15 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
               const SizedBox(height: 30),
               Consumer(
                 builder: (context, ref, child) {
-                  final state = ref.watch(
-                    surveyFormSubmissionControllerProvider,
+                  final isLoading = ref.watch(
+                    surveyFormControllerProvider(widget.appId).select((s) => s.isLoading),
                   );
                   return CustomButton(
-                    onPressed: state.isLoading
+                    onPressed: isLoading
                         ? null
-                        : () => _handleSubmit(submissionController),
+                        : () => _handleSubmit(controller),
                     text: "Submit",
-                    child: state.isLoading
+                    child: isLoading
                         ? Center(
                             child: const CircularProgressIndicator(
                               color: AppColors.white,
@@ -107,7 +108,7 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
   }
 
   Future<void> _handleSubmit(
-    SurveyFormSubmissionController submissionController,
+    SurveyFormController controller,
   ) async {
     // Unfocus any active text field
     FocusScope.of(context).unfocus();
@@ -116,8 +117,14 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
 
     // Validate form
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-      // success = await submissionController.submitSurveyForm();
-      success = true; // Temporary bypass for submission
+      success = await controller.submitSurveyForm();
+      // success = true; // Temporary bypass for submission
+    } else {
+       showSnackBar(
+        context,
+        'Please correct the errors in the form.',
+        bgColor: AppColors.emailUsIconColor,
+      );
     }
 
     if (!mounted) return;
@@ -130,12 +137,6 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
       );
       // Navigate back or to success screen
       ref.read(goRouterProvider).pop(true);
-    } else {
-      showSnackBar(
-        context,
-        'Please correct the errors in the form.',
-        bgColor: AppColors.emailUsIconColor,
-      );
     }
   }
 }

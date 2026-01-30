@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tgpl_network/core/database/app_database.dart';
@@ -15,12 +16,11 @@ class AppFormDropdownsLocalDataSourceImpl
 
   AppFormDropdownsLocalDataSourceImpl(this._databaseHelper);
 
-
   @override
   Future<void> saveSiteStatuses(List<SiteStatusModel> siteStatuses) async {
     final db = await _databaseHelper.database;
 
-    await db.transaction((txn) async {
+    final result = await db.transaction((txn) async {
       for (final siteStatus in siteStatuses) {
         await txn.insert(
           AppDatabase.siteStatusTable,
@@ -29,6 +29,7 @@ class AppFormDropdownsLocalDataSourceImpl
         );
       }
     });
+    debugPrint("Result of saving site statuses: $result");
   }
 
   @override

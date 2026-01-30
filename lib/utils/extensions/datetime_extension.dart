@@ -1,6 +1,7 @@
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 extension DatetimeExtension on DateTime {
+  // e.g. 25/12/2023
   String formatToDDMMYYY() {
     final day = this.day.toString().padLeft(2, '0');
     final month = this.month.toString().padLeft(2, '0');
@@ -21,6 +22,7 @@ extension StrDateTimeExtension2 on String? {
 }
 
 extension StrDateTimeExtension on String {
+  // Converts "25/12/2023" to ISO date string "2023-12-25T00:00:00.000"
   String formatFromDDMMYYYToIsoDate() {
     try {
       final parts = split('/');
@@ -35,8 +37,20 @@ extension StrDateTimeExtension on String {
     }
   }
 
- 
+  // Converts ISO date string "2023-12-25T00:00:00.000" to "25/12/2023"
+  String formatFromIsoToDDMMYYY() {
+    try {
+      final dateTime = DateTime.parse(this);
+      final day = dateTime.day.toString().padLeft(2, '0');
+      final month = dateTime.month.toString().padLeft(2, '0');
+      final year = dateTime.year;
+      return '$day/$month/$year';
+    } catch (e) {
+      return this;
+    }
+  }
 
+  // Converts ISO date string "2023-12-25T00:00:00.000" to "25 Dec, 2023"
   String formatTodMMMyyyy() {
     try {
       final dateTime = DateTime.parse(this);

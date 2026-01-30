@@ -73,7 +73,7 @@ class SelectDbQueries {
         ),
       ],
       whereClause: whereConditions != null && whereConditions.isNotEmpty
-          ? whereConditions.join(operator.value)
+          ? whereConditions.join(" ${operator.value} ")
           : null,
       orderBy: orderBy,
       limit: limit,
