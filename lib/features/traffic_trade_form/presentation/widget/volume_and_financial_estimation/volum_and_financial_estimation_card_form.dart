@@ -13,7 +13,7 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(volumeFinancialControllerProvider.notifier);
-    final state = ref.watch(volumeFinancialControllerProvider);
+    final state = ref.read(volumeFinancialControllerProvider);
 
     return SectionDetailCard(
       title: "Volume & Financial Estimation",
@@ -88,55 +88,79 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        SmartCustomDropDownWithTitle(
-          title: "Truck Port Potential?",
-          hintText: "Select truck port potential",
-          selectedItem: state.truckPortPotential,
-          asyncProvider: yesNoNaValuesProvider,
-          itemsBuilder: (values) => values,
-          onChanged: (value) {
-            if (value == null) return;
-            controller.setTruckPortPotential(value.toString());
-          },
-          validator: (v) => v.validate(),
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('truckPortPotential');
-          },
+        Consumer(
+          builder: (context, ref, _) {
+            final truckPortPotential =
+                ref.watch(volumeFinancialControllerProvider.select(
+              (state) => state.truckPortPotential,
+            ));
+            return SmartCustomDropDownWithTitle(
+              title: "Truck Port Potential?",
+              hintText: "Select truck port potential",
+              selectedItem: truckPortPotential,
+              asyncProvider: yesNoNaValuesProvider,
+              itemsBuilder: (values) => values,
+              onChanged: (value) {
+                if (value == null) return;
+                controller.setTruckPortPotential(value.toString());
+              },
+              validator: (v) => v.validate(),
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('truckPortPotential');
+              },
+            );
+          }
         ),
         const SizedBox(height: 10),
-        SmartCustomDropDownWithTitle(
-          title: "Salam Mart Potential?",
-          hintText: "Select salam mart potential",
-          selectedItem: state.salamMartPotential,
-          asyncProvider: yesNoNaValuesProvider,
-          itemsBuilder: (values) => values,
-          onChanged: (value) {
-            if (value == null) return;
-            controller.setSalamMartPotential(value.toString());
-          },
-          validator: (v) => v.validate(),
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('salamMartPotential');
-          },
+        Consumer(
+          builder: (context, ref, _) {
+            final salamMartPotential =
+                ref.watch(volumeFinancialControllerProvider.select(
+              (state) => state.salamMartPotential,
+            ));
+            return SmartCustomDropDownWithTitle(
+              title: "Salam Mart Potential?",
+              hintText: "Select salam mart potential",
+              selectedItem: salamMartPotential,
+              asyncProvider: yesNoNaValuesProvider,
+              itemsBuilder: (values) => values,
+              onChanged: (value) {
+                if (value == null) return;
+                controller.setSalamMartPotential(value.toString());
+              },
+              validator: (v) => v.validate(),
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('salamMartPotential');
+              },
+            );
+          }
         ),
         const SizedBox(height: 10),
-        SmartCustomDropDownWithTitle(
-          title: "Restaurant Potential?",
-          hintText: "Select restaurant potential",
-          selectedItem: state.restaurantPotential,
-          asyncProvider: yesNoNaValuesProvider,
-          itemsBuilder: (values) => values,
-          onChanged: (value) {
-            if (value == null) return;
-            controller.setRestaurantPotential(value.toString());
-          },
-          validator: (v) => v.validate(),
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('restaurantPotential');
-          },
+        Consumer(
+          builder: (context, ref, _) {
+            final restaurantPotential =
+                ref.watch(volumeFinancialControllerProvider.select(
+              (state) => state.restaurantPotential,
+            ));
+            return SmartCustomDropDownWithTitle(
+              title: "Restaurant Potential?",
+              hintText: "Select restaurant potential",
+              selectedItem: restaurantPotential,
+              asyncProvider: yesNoNaValuesProvider,
+              itemsBuilder: (values) => values,
+              onChanged: (value) {
+                if (value == null) return;
+                controller.setRestaurantPotential(value.toString());
+              },
+              validator: (v) => v.validate(),
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('restaurantPotential');
+              },
+            );
+          }
         ),
       ],
     );

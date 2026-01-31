@@ -51,6 +51,7 @@ class CreateDbQueries {
         siteNumber $intType,
         estimateDailyDieselSale $intType,
         estimateDailySuperSale $intType,
+        estimateDailyHOBCSale $intType,
         estimateLubricantSale $intType,
         expectedLeaseRentPerManth $intType,
         nflFacilityAvailable $textType,
@@ -228,6 +229,7 @@ class CreateDbQueries {
     rmRecommendation $textType,
     rmRemarks $textType,
     isSynced $intType DEFAULT 0,
+    errorMessage $textType,
     createdAt $textType,
     updatedAt $textType
   )
@@ -256,6 +258,7 @@ class CreateDbQueries {
     tmRemarks $textType,
     rmRemarks $textType,
     isSynced $intType DEFAULT 0,
+    errorMessage $textType,
     createdAt $textType,
     updatedAt $textType
   )

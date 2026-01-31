@@ -81,6 +81,7 @@ class ApplicationModel {
   final int? siteNumber;
   final int? estimateDailyDieselSale;
   final int? estimateDailySuperSale;
+  final int? estimateDailyHOBCSale;
   final int? estimateLubricantSale;
   final int? expectedLeaseRentPerManth;
   final String? nflFacilityAvailable;
@@ -214,6 +215,7 @@ class ApplicationModel {
     this.siteNumber,
     this.estimateDailyDieselSale,
     this.estimateDailySuperSale,
+    this.estimateDailyHOBCSale,
     this.estimateLubricantSale,
     this.expectedLeaseRentPerManth,
     this.nflFacilityAvailable,
@@ -351,6 +353,7 @@ class ApplicationModel {
       siteNumber: json['sitenumber'],
       estimateDailyDieselSale: json['EstimateDailyDieselSale'],
       estimateDailySuperSale: json['EstimateDailySuperSale'],
+      estimateDailyHOBCSale: json['EstimatedDailyHOBCSale'],
       estimateLubricantSale: json['EstimateLubricantSale'],
       expectedLeaseRentPerManth: json['ExpectedLeaseRentPerManth'],
       nflFacilityAvailable: json['NFLFacilityAvailable'],
@@ -489,6 +492,7 @@ class ApplicationModel {
       siteNumber: map['siteNumber'],
       estimateDailyDieselSale: map['estimateDailyDieselSale'],
       estimateDailySuperSale: map['estimateDailySuperSale'],
+      estimateDailyHOBCSale: map['estimateDailyHOBCSale'],
       estimateLubricantSale: map['estimateLubricantSale'],
       expectedLeaseRentPerManth: map['expectedLeaseRentPerManth'],
       nflFacilityAvailable: map['nflFacilityAvailable'],
@@ -627,6 +631,7 @@ class ApplicationModel {
       'siteNumber': siteNumber,
       'estimateDailyDieselSale': estimateDailyDieselSale,
       'estimateDailySuperSale': estimateDailySuperSale,
+      'estimateDailyHOBCSale': estimateDailyHOBCSale,
       'estimateLubricantSale': estimateLubricantSale,
       'expectedLeaseRentPerManth': expectedLeaseRentPerManth,
       'nflFacilityAvailable': nflFacilityAvailable,

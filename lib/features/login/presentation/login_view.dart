@@ -147,7 +147,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                             loginAuthControllerProvider,
                           );
                           return CustomButton(
-                            onPressed: () async {
+                            onPressed: loginAuth.isLoading ? null : () async {
                               if (_formKey.currentState!.validate()) {
                                 final LoginResponseModel? response = await ref
                                     .read(loginAuthControllerProvider.notifier)

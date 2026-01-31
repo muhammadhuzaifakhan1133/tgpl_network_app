@@ -28,7 +28,7 @@ class DioClient {
     _dio.options.headers = {
       'Accept': 'application/json',
     };
-
+    
     // Add interceptors with SharedPreferences
     _dio.interceptors.addAll([
       AuthInterceptor(sharedPreferences),

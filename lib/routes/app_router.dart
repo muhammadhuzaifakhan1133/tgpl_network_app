@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/home_shell/presentation/home_shell_view.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_view.dart';
@@ -45,7 +46,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.siteLocationSelection,
-        builder: (context, state) => const SiteLocationSelectionView(),
+        builder: (context, state) => SiteLocationSelectionView(
+          initialPosition: state.extra != null ? state.extra as LatLng : null,
+        ),
       ),
       GoRoute(
         path: AppRoutes.stationFormConfirmation(),
@@ -53,7 +56,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           return AppFormConfirmationView(
             applicationId: state.pathParameters['applicationId'] ?? '',
           );
-        }
+        },
       ),
       GoRoute(
         path: AppRoutes.login,
@@ -112,9 +115,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.moduleApplications,
-        builder: (context, state) => ModuleApplicationsView(
-          subModule: state.extra as SubModuleModel,
-        ),
+        builder: (context, state) =>
+            ModuleApplicationsView(subModule: state.extra as SubModuleModel),
       ),
       GoRoute(
         path: AppRoutes.applicationDetail(),

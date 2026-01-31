@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
@@ -48,12 +49,34 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
     super.dispose();
   }
 
+  (double?, double?) _getLatLngFromLocation(String location) {
+    try {
+      final parts = location.split(',');
+      if (parts.length != 2) return (null, null);
+      final lat = double.parse(parts[0].trim());
+      final lng = double.parse(parts[1].trim());
+      return (lat, lng);
+    } catch (e) {
+      return (null, null);
+    }
+  }
+
   Future<void> _pickLocation() async {
     final controller = ref.read(step3FormControllerProvider.notifier);
 
+    double? latitude, longitude;
+    (latitude, longitude) =
+        _getLatLngFromLocation(_locationController.text);
     LocationData? selectedLocation = await ref
         .read(goRouterProvider)
-        .push(AppRoutes.siteLocationSelection);
+        .push(AppRoutes.siteLocationSelection,
+        extra: latitude != null && longitude != null
+            ? LatLng(
+                latitude,
+                longitude,
+              )
+            : null
+        );
 
     if (selectedLocation != null) {
       final value =

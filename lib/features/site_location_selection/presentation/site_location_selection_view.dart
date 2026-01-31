@@ -26,48 +26,13 @@ class _SiteLocationSelectionViewState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // If initial position is provided, set it as selected
+      ref.read(markersProvider.notifier).state = {};
       if (widget.initialPosition != null) {
-        _setInitialPosition(widget.initialPosition!);
+        _onMapTapped(widget.initialPosition!);
       } else {
         _getCurrentLocation();
       }
     });
-  }
-
-  Future<void> _setInitialPosition(LatLng position) async {
-    ref.read(locationActionProvider.notifier).state = const AsyncLoading();
-
-    final locationService = ref.read(locationServiceProvider);
-    final address = await locationService.getAddressFromCoordinates(position);
-
-    // Set as selected location
-    ref.read(selectedLocationProvider.notifier).state = LocationData(
-      position: position,
-      address: address,
-    );
-
-    // Add marker
-    ref.read(markersProvider.notifier).state = {
-      Marker(
-        markerId: MarkerId(AppKeys.selectedMarkerId),
-        position: position,
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-        infoWindow: InfoWindow(
-          title: 'Selected Location',
-          snippet: address ?? 'Loading...',
-        ),
-      ),
-    };
-
-    // Move camera
-    final mapController = ref.read(mapControllerProvider);
-    mapController?.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(target: position, zoom: 15),
-      ),
-    );
-
-    ref.read(locationActionProvider.notifier).state = const AsyncData(null);
   }
 
   Future<void> _getCurrentLocation() async {
@@ -80,19 +45,19 @@ class _SiteLocationSelectionViewState
       ref.read(currentLocationProvider.notifier).state = position;
 
       // Add current location marker
-      final markers = ref.read(markersProvider);
-      final updatedMarkers = markers
-          .where((m) => m.markerId.value != AppKeys.currentMarkerId)
-          .toSet();
-      updatedMarkers.add(
-        Marker(
-          markerId: MarkerId(AppKeys.currentMarkerId),
-          position: position,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-          infoWindow: const InfoWindow(title: 'Your Location'),
-        ),
-      );
-      ref.read(markersProvider.notifier).state = updatedMarkers;
+      // final markers = ref.read(markersProvider);
+      // final updatedMarkers = markers
+      //     .where((m) => m.markerId.value != AppKeys.currentMarkerId)
+      //     .toSet();
+      // updatedMarkers.add(
+      //   Marker(
+      //     markerId: MarkerId(AppKeys.currentMarkerId),
+      //     position: position,
+      //     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      //     infoWindow: const InfoWindow(title: 'Your Location'),
+      //   ),
+      // );
+      // ref.read(markersProvider.notifier).state = updatedMarkers;
       // Move camera to current location
       final mapController = ref.read(mapControllerProvider);
       mapController?.animateCamera(
@@ -173,6 +138,13 @@ class _SiteLocationSelectionViewState
           GoogleMap(
             onMapCreated: (controller) {
               ref.read(mapControllerProvider.notifier).state = controller;
+              if (widget.initialPosition != null) {
+                controller.animateCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(target: widget.initialPosition!, zoom: 15),
+                  ),
+                );
+              }
             },
             initialCameraPosition: CameraPosition(
               target: currentPosition ?? const LatLng(24.8607, 67.0011),
@@ -181,17 +153,10 @@ class _SiteLocationSelectionViewState
             markers: markers,
             onTap: _onMapTapped,
             myLocationEnabled: true,
-            myLocationButtonEnabled: false,
-            mapType: MapType.normal,
-            zoomControlsEnabled: false,
+            myLocationButtonEnabled: true,
+            mapType: MapType.satellite,
+            // zoomControlsEnabled: false,
           ),
-
-          // Loading indicator
-          // if (isLoading)
-          //   Container(
-          //     color: Colors.black26,
-          //     child: const Center(child: CircularProgressIndicator()),
-          //   ),
 
           // Location details card
           if (selectedLocation != null)

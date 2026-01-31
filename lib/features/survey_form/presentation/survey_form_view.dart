@@ -81,9 +81,13 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
               const SizedBox(height: 30),
               Consumer(
                 builder: (context, ref, child) {
-                  final isLoading = ref.watch(
-                    surveyFormControllerProvider(widget.appId).select((s) => s.isLoading),
-                  );
+                  final isLoading =
+                      ref.watch(
+                        surveyFormControllerProvider(
+                          widget.appId,
+                        ).select((s) => s.value?.isSubmitting),
+                      ) ??
+                      false;
                   return CustomButton(
                     onPressed: isLoading
                         ? null
@@ -107,9 +111,7 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
     );
   }
 
-  Future<void> _handleSubmit(
-    SurveyFormController controller,
-  ) async {
+  Future<void> _handleSubmit(SurveyFormController controller) async {
     // Unfocus any active text field
     FocusScope.of(context).unfocus();
 
@@ -117,10 +119,10 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
 
     // Validate form
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      // Submit form (validation happens inside too)
       success = await controller.submitSurveyForm();
-      // success = true; // Temporary bypass for submission
     } else {
-       showSnackBar(
+      showSnackBar(
         context,
         'Please correct the errors in the form.',
         bgColor: AppColors.emailUsIconColor,

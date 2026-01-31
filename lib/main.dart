@@ -13,26 +13,25 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  
+
   await DatabaseHelper.instance.database;
-  
+
   final prefs = await SharedPreferences.getInstance();
-  
-  runApp(ProviderScope(
-    overrides: [
-      sharedPreferencesProvider.overrideWithValue(prefs),
-    ],
-    child: const MyApp()));
+
+  runApp(
+    ProviderScope(
+      overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   Widget screenBuilder(BuildContext context, Widget? child) {
-        return SafeArea(
-          child: child!,
-        );
-      }
+    return SafeArea(child: child!);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

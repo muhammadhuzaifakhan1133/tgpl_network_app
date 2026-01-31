@@ -14,42 +14,58 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(recommendationControllerProvider.notifier);
-    final state = ref.watch(recommendationControllerProvider);
+    final state = ref.read(recommendationControllerProvider);
     return SectionDetailCard(
       title: "Recommendation",
       children: [
-        SmartCustomDropDownWithTitle(
-          title: "TM",
-          hintText: "Select TM",
-          enableSearch: true,
-          selectedItem: state.selectedTM,
-          items: ref.read(tmNamesProvider),
-          onChanged: (value) {
-            if (value == null) return;
-            controller.onChangeTM(value.toString());
-          },
-          validator: (v) => v.validate(),
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('selectedTM');
-          },
+        Consumer(
+          builder: (context, ref, _) {
+            final selectedTM =
+                ref.watch(recommendationControllerProvider.select(
+              (state) => state.selectedTM,
+            ));
+            return SmartCustomDropDownWithTitle(
+              title: "TM",
+              hintText: "Select TM",
+              enableSearch: true,
+              selectedItem: selectedTM,
+              items: ref.read(tmNamesProvider),
+              onChanged: (value) {
+                if (value == null) return;
+                controller.onChangeTM(value.toString());
+              },
+              validator: (v) => v.validate(),
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('selectedTM');
+              },
+            );
+          }
         ),
         const SizedBox(height: 10),
-        SmartCustomDropDownWithTitle(
-          title: "TM Recommendation",
-          hintText: "Select an option",
-          selectedItem: state.selectedTMRecommendation,
-          asyncProvider: yesNoNaValuesProvider,
-          itemsBuilder: (values) => values,
-          onChanged: (value) {
-            if (value == null) return;
-            controller.onChangeTMRecommendation(value.toString());
-          },
-          validator: (v) => v.validate(),
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('selectedTMRecommendation');
-          },
+        Consumer(
+          builder: (context, ref, _) {
+            final selectedTMRecommendation =
+                ref.watch(recommendationControllerProvider.select(
+              (state) => state.selectedTMRecommendation,
+            ));
+            return SmartCustomDropDownWithTitle(
+              title: "TM Recommendation",
+              hintText: "Select an option",
+              selectedItem: selectedTMRecommendation,
+              asyncProvider: yesNoNaValuesProvider,
+              itemsBuilder: (values) => values,
+              onChanged: (value) {
+                if (value == null) return;
+                controller.onChangeTMRecommendation(value.toString());
+              },
+              validator: (v) => v.validate(),
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('selectedTMRecommendation');
+              },
+            );
+          }
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -66,38 +82,54 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 10),
-        SmartCustomDropDownWithTitle(
-          title: "RM",
-          hintText: "Select RM",
-          enableSearch: true,
-          selectedItem: state.selectedRM,
-          items: ref.read(tmNamesProvider),
-          onChanged: (value) {
-            if (value == null) return;
-            controller.onChangeRM(value.toString());
-          },
-          validator: (v) => v.validate(),
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('selectedRM');
-          },
+        Consumer(
+          builder: (context, ref, _) {
+            final selectedRM =
+                ref.watch(recommendationControllerProvider.select(
+              (state) => state.selectedRM,
+            ));
+            return SmartCustomDropDownWithTitle(
+              title: "RM",
+              hintText: "Select RM",
+              enableSearch: true,
+              selectedItem: selectedRM,
+              items: ref.read(tmNamesProvider),
+              onChanged: (value) {
+                if (value == null) return;
+                controller.onChangeRM(value.toString());
+              },
+              validator: (v) => v.validate(),
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('selectedRM');
+              },
+            );
+          }
         ),
         const SizedBox(height: 10),
-        SmartCustomDropDownWithTitle(
-          title: "RM Recommendation",
-          hintText: "Select an option",
-          selectedItem: state.selectedRMRecommendation,
-          asyncProvider: yesNoNaValuesProvider,
-          itemsBuilder: (values) => values,
-          onChanged: (value) {
-            if (value == null) return;
-            controller.onChangeRMRecommendation(value.toString());
-          },
-          validator: (v) => v.validate(),
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('selectedRMRecommendation');
-          },
+        Consumer(
+          builder: (context, ref, _) {
+            final selectedRMRecommendation =
+                ref.watch(recommendationControllerProvider.select(
+              (state) => state.selectedRMRecommendation,
+            ));
+            return SmartCustomDropDownWithTitle(
+              title: "RM Recommendation",
+              hintText: "Select an option",
+              selectedItem: selectedRMRecommendation,
+              asyncProvider: yesNoNaValuesProvider,
+              itemsBuilder: (values) => values,
+              onChanged: (value) {
+                if (value == null) return;
+                controller.onChangeRMRecommendation(value.toString());
+              },
+              validator: (v) => v.validate(),
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('selectedRMRecommendation');
+              },
+            );
+          }
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(

@@ -15,11 +15,6 @@ final trafficTradeFormControllerProvider = AsyncNotifierProvider.family
       return TrafficTradeFormController(applicationId);
     });
 
-final trafficTradeFormSubmissionControllerProvider =
-    AsyncNotifierProvider<TrafficTradeFormSubmissionController, void>(
-      TrafficTradeFormSubmissionController.new,
-    );
-
 class TrafficTradeFormController extends AsyncNotifier<TrafficTradeFormModel> {
   final String applicationId;
 
@@ -49,11 +44,6 @@ class TrafficTradeFormController extends AsyncNotifier<TrafficTradeFormModel> {
       return trafficTradeForm;
     }
   }
-}
-
-class TrafficTradeFormSubmissionController extends AsyncNotifier<void> {
-  @override
-  FutureOr<void> build() async {}
 
   Future<bool> submitTrafficTradeForm() async {
     try {
@@ -63,33 +53,44 @@ class TrafficTradeFormSubmissionController extends AsyncNotifier<void> {
         'Traffic Trade Form Data: ${trafficTradeFormData.toDatabaseMap()}',
       );
       final validateMessage = trafficTradeFormData.validate;
-      if (validateMessage == null) {
-        if (await InternetConnectivity.hasInternet()) {
-          final response = await ref
-              .read(trafficTradeFormRemoteDataSourceProvider)
-              .submitTrafficTradeForm(trafficTradeFormData);
-          if (response.success) {
-            return true;
-          } else {
-            state = AsyncValue.error(
-              Exception('Submission failed: ${response.message}'),
-              StackTrace.current,
-            );
-            return false;
-          }
-        } else {
-          // Save locally if no internet
-          await ref
-              .read(trafficTradeFormLocalDataSourceProvider)
-              .saveTrafficTradeForm(trafficTradeFormData);
-        }
-        return true;
-      } else {
-        state = AsyncValue.error(validateMessage, StackTrace.current);
+      if (validateMessage != null) {
+        state = AsyncValue.data(
+          state.requireValue.copyWith(errorMessage: validateMessage),
+        );
         return false;
       }
-    } catch (e, s) {
-      state = AsyncValue.error(e, s);
+      state = AsyncValue.data(
+        state.requireValue.copyWith(isSubmitting: true, errorMessage: null),
+      );
+      if (await InternetConnectivity.hasInternet()) {
+        final response = await ref
+            .read(trafficTradeFormRemoteDataSourceProvider)
+            .submitTrafficTradeForm(trafficTradeFormData);
+        if (response.success) {
+          return true;
+        } else {
+          state = AsyncValue.data(
+            state.requireValue.copyWith(
+              errorMessage: 'Submission failed: ${response.message}',
+              isSubmitting: false,
+            ),
+          );
+          return false;
+        }
+      } else {
+        // Save locally if no internet
+        await ref
+            .read(trafficTradeFormLocalDataSourceProvider)
+            .saveTrafficTradeForm(trafficTradeFormData);
+      }
+      return true;
+    } catch (e, _) {
+      state = AsyncValue.data(
+        state.requireValue.copyWith(
+          isSubmitting: false,
+          errorMessage: 'An error occurred: $e',
+        ),
+      );
       return false;
     }
   }

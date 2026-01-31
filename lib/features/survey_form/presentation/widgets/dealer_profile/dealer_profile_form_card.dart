@@ -8,45 +8,13 @@ import 'package:tgpl_network/common/widgets/section_detail_card.dart';
 import 'package:tgpl_network/features/survey_form/presentation/widgets/dealer_profile/dealer_profile_form_controller.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
-class DealerProfileFormCard extends ConsumerStatefulWidget {
+class DealerProfileFormCard extends ConsumerWidget {
   const DealerProfileFormCard({super.key});
 
   @override
-  ConsumerState<DealerProfileFormCard> createState() =>
-      _DealerProfileFormCardState();
-}
-
-class _DealerProfileFormCardState extends ConsumerState<DealerProfileFormCard> {
-  // create controllers for editable text fields
-  TextEditingController dealerPlatformController = TextEditingController();
-  TextEditingController dealerBusinessesController = TextEditingController();
-  TextEditingController dealerOpinionController = TextEditingController();
-  TextEditingController monthlySalaryController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    final state = ref.read(dealerProfileFormControllerProvider);
-
-    dealerPlatformController.text = state.dealerPlatform ?? "";
-    dealerBusinessesController.text = state.dealerBusinesses ?? "";
-    dealerOpinionController.text = state.dealerOpinion ?? "";
-    monthlySalaryController.text = state.monthlySalary ?? "";
-  }
-
-  @override
-  void dispose() {
-    dealerPlatformController.dispose();
-    dealerBusinessesController.dispose();
-    dealerOpinionController.dispose();
-    monthlySalaryController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(dealerProfileFormControllerProvider.notifier);
-    // final state = ref.watch(dealerProfileFormControllerProvider);
+    final state = ref.read(dealerProfileFormControllerProvider);
     final isThisDealer = ref.watch(
       dealerProfileFormControllerProvider.select((s) => s.isThisDealer),
     );
@@ -59,6 +27,7 @@ class _DealerProfileFormCardState extends ConsumerState<DealerProfileFormCard> {
           selectedItem: isThisDealer,
           asyncProvider: yesNoNaValuesProvider,
           itemsBuilder: (values) => values,
+          isRequired: true,
           onChanged: (value) {
             if (value == null) return;
             controller.onChangeIsThisDealer(value.toString());
@@ -73,7 +42,8 @@ class _DealerProfileFormCardState extends ConsumerState<DealerProfileFormCard> {
         CustomTextFieldWithTitle(
           title: "Platform",
           hintText: "Enter platform",
-          controller: dealerPlatformController,
+          isRequired: true,
+          initialValue: state.dealerPlatform,
           onChanged: (value) {
             controller.updateDealerPlatform(value);
           },
@@ -90,7 +60,8 @@ class _DealerProfileFormCardState extends ConsumerState<DealerProfileFormCard> {
             title:
                 "What other businesses does the dealer have, Mention # of business and types.",
             hintText: "Enter dealer businesses",
-            controller: dealerBusinessesController,
+            initialValue: state.dealerBusinesses,
+            isRequired: true,
             onChanged: (value) {
               controller.updateDealerBusinesses(value);
             },
@@ -117,6 +88,7 @@ class _DealerProfileFormCardState extends ConsumerState<DealerProfileFormCard> {
                 selectedItem: selectedDealerInvolvement,
                 asyncProvider: dealerInvolvementNamesProvider,
                 itemsBuilder: (values) => values,
+                isRequired: true,
                 onChanged: (value) {
                   if (value == null) return;
                   controller.onChangeDealerInvolvement(value.toString());
@@ -144,6 +116,7 @@ class _DealerProfileFormCardState extends ConsumerState<DealerProfileFormCard> {
                 selectedItem: isDealerReadyToInvest,
                 asyncProvider: yesNoNaValuesProvider,
                 itemsBuilder: (values) => values,
+                isRequired: true,
                 onChanged: (value) {
                   if (value == null) return;
                   controller.onChangeIsDealerReadyToInvest(value.toString());
@@ -160,14 +133,13 @@ class _DealerProfileFormCardState extends ConsumerState<DealerProfileFormCard> {
           CustomTextFieldWithTitle(
             title: "Why does the dealer want to convert to Taj?",
             hintText: "Enter dealer opinion",
-            controller: dealerOpinionController,
+            initialValue: state.dealerOpinion,
             onChanged: (value) {
               controller.updateDealerOpinion(value);
             },
             multiline: true,
             minLines: 2,
             maxLines: 3,
-            validator: (v) => v.validate(),
             showClearButton: true,
             onClear: () {
               controller.clearField('dealerOpinion');
@@ -179,11 +151,10 @@ class _DealerProfileFormCardState extends ConsumerState<DealerProfileFormCard> {
                 "In case it is an operational site, what is the current salary of attendant / month",
             hintText: "Enter monthly salary",
             keyboardType: TextInputType.number,
-            controller: monthlySalaryController,
+            initialValue: state.monthlySalary,
             onChanged: (value) {
               controller.updateMonthlySalary(value);
             },
-            validator: (v) => v.validate(),
             showClearButton: true,
             onClear: () {
               controller.clearField('monthlySalary');
@@ -204,6 +175,7 @@ class _DealerProfileFormCardState extends ConsumerState<DealerProfileFormCard> {
                 selectedItem: isDealerAgreedToFollowTgplStandards,
                 asyncProvider: yesNoNaValuesProvider,
                 itemsBuilder: (values) => values,
+                isRequired: true,
                 onChanged: (value) {
                   if (value == null) return;
                   controller.onChangeIsDealerAgreedToFollowTgplStandards(

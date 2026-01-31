@@ -29,6 +29,7 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
   final void Function(List<T>)? onMultiChanged;
   final bool showClearButton;
   final VoidCallback? onClear;
+  final bool isRequired;
 
   const SmartCustomDropDownWithTitle({
     super.key,
@@ -51,6 +52,7 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
     this.onMultiChanged,
     this.showClearButton = false,
     this.onClear,
+    this.isRequired = false,
   }) : assert(
          (items != null && asyncProvider == null) ||
              (items == null && asyncProvider != null && itemsBuilder != null),
@@ -78,6 +80,7 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
         onMultiChanged: onMultiChanged,
         showClearButton: showClearButton,
         onClear: onClear,
+        isRequired: isRequired,
       );
     }
 
@@ -87,7 +90,22 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: AppTextstyles.googleJakarta500Grey12),
+        RichText(
+          text: TextSpan(
+            text: title,
+            style: AppTextstyles.googleJakarta500Grey12,
+            children: [
+              if (isRequired)
+                TextSpan(
+                  text: ' *',
+                  style: AppTextstyles.googleJakarta500Grey12.copyWith(
+                    color: Colors.red,
+                    fontSize: 14,
+                  ),
+                ),
+            ],
+          ),
+        ),
         const SizedBox(height: 8),
         asyncState.when(
           data: (data) {
@@ -185,6 +203,7 @@ class _CustomDropDownWithTitle<T extends Object> extends StatelessWidget {
   final void Function(List<T>)? onMultiChanged;
   final bool showClearButton;
   final VoidCallback? onClear;
+  final bool isRequired;
 
   const _CustomDropDownWithTitle({
     super.key,
@@ -204,6 +223,7 @@ class _CustomDropDownWithTitle<T extends Object> extends StatelessWidget {
     this.onMultiChanged,
     this.showClearButton = false,
     this.onClear,
+    this.isRequired = false,
   });
 
   @override
@@ -213,7 +233,22 @@ class _CustomDropDownWithTitle<T extends Object> extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: AppTextstyles.googleJakarta500Grey12),
+        RichText(
+          text: TextSpan(
+            text: title,
+            style: AppTextstyles.googleJakarta500Grey12,
+            children: [
+              if (isRequired)
+                TextSpan(
+                  text: ' *',
+                  style: AppTextstyles.googleJakarta500Grey12.copyWith(
+                    color: Colors.red,
+                    fontSize: 14,
+                  ),
+                ),
+            ],
+          ),
+        ),
         const SizedBox(height: 8),
         if (enableSearch)
           CustomSearchableDropDown(

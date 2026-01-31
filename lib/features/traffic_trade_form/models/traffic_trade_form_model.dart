@@ -27,6 +27,9 @@ class TrafficTradeFormModel {
   final String? tmRemarks;
   final String? rmRemarks;
 
+  final bool isSubmitting;
+  final String errorMessage;
+
   const TrafficTradeFormModel({
     this.nearbyTrafficSites = const [],
     this.trafficCountTruck,
@@ -46,6 +49,8 @@ class TrafficTradeFormModel {
     this.selectedRMRecommendation,
     this.tmRemarks,
     this.rmRemarks,
+    this.isSubmitting = false,
+    this.errorMessage = '',
   });
 
   Map<String, dynamic> toDatabaseMap() {
@@ -122,6 +127,8 @@ class TrafficTradeFormModel {
     String? selectedRMRecommendation,
     String? tmRemarks,
     String? rmRemarks,
+    bool? isSubmitting,
+    String? errorMessage,
   }) {
     return TrafficTradeFormModel(
       nearbyTrafficSites: nearbyTrafficSites ?? this.nearbyTrafficSites,
@@ -144,6 +151,8 @@ class TrafficTradeFormModel {
           selectedRMRecommendation ?? this.selectedRMRecommendation,
       tmRemarks: tmRemarks ?? this.tmRemarks,
       rmRemarks: rmRemarks ?? this.rmRemarks,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 

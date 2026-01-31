@@ -22,6 +22,20 @@ class ApplicationInfoFormState {
   final String? source;
   final String? sourceName;
 
+  double? get latitude {
+    if (googleLocation == null) return null;
+    final parts = googleLocation!.split(',');
+    if (parts.length != 2) return null;
+    return double.tryParse(parts[0].trim());
+  }
+
+  double? get longitude {
+    if (googleLocation == null) return null;
+    final parts = googleLocation!.split(',');
+    if (parts.length != 2) return null;
+    return double.tryParse(parts[1].trim());
+  }
+
   const ApplicationInfoFormState({
     this.selectedCity,
     this.siteStatus,

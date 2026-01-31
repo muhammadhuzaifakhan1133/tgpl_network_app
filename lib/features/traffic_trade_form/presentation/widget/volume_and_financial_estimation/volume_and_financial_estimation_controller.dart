@@ -60,7 +60,7 @@ class VolumeFinancialState {
   VolumeFinancialState.loadFromApplication(ApplicationModel app)
       : dailyDieselSales = app.estimateDailyDieselSale?.toString(),
         dailySuperSales = app.estimateDailySuperSale?.toString(),
-        dailyHOBCSales = null, // TODO: Addd hobc field
+        dailyHOBCSales = app.estimateDailyHOBCSale?.toString(),
         dailyLubricantSales = app.estimateLubricantSale?.toString(),
         rentExpectation = app.expectedLeaseRentPerManth?.toString(),
         truckPortPotential = app.trucPortPotentail?.toString(),

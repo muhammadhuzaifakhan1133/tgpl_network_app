@@ -49,40 +49,41 @@ class SurveyFormController extends AsyncNotifier<SurveyFormModel> {
       debugPrint('Survey Form Data: ${surveyFormData.toDatabaseMap()}');
       final validateMessage = surveyFormData.validate;
       if (validateMessage != null) {
-        state = AsyncValue.data(state.requireValue.copyWith(
-          errorMessage: validateMessage,
-        ));
+        state = AsyncValue.data(
+          state.requireValue.copyWith(errorMessage: validateMessage),
+        );
         return false;
       }
-        state = AsyncValue.data(state.requireValue.copyWith(
-            isSubmitting: true,
-            errorMessage: null,
-          ));
-        if (await InternetConnectivity.hasInternet()) {
-          final response = await ref
-              .read(surveyFormRemoteDataSourceProvider)
-              .submitSurveyForm(surveyFormData);
-          if (response.success) {
-            return true;
-          } else {
-            state = AsyncValue.data(state.requireValue.copyWith(
+      state = AsyncValue.data(
+        state.requireValue.copyWith(isSubmitting: true, errorMessage: null),
+      );
+      if (false) {
+      // if (await InternetConnectivity.hasInternet()) {
+        final response = await ref
+            .read(surveyFormRemoteDataSourceProvider)
+            .submitSurveyForm(surveyFormData);
+        if (response.success) {
+          return true;
+        } else {
+          state = AsyncValue.data(
+            state.requireValue.copyWith(
               errorMessage: 'Submission failed: ${response.message}',
               isSubmitting: false,
-            ));
-            return false;
-          }
-        } else {
-          // Save locally if no internet
-          await ref
-              .read(surveyFormLocalDataSourceProvider)
-              .saveSurveyForm(surveyFormData);
+            ),
+          );
+          return false;
         }
-        return true;
-     
+      } else {
+        // Save locally if no internet
+        await ref
+            .read(surveyFormLocalDataSourceProvider)
+            .saveSurveyForm(surveyFormData);
+      }
+      return true;
     } catch (e, _) {
-      state = AsyncValue.data(state.requireValue.copyWith(
-        errorMessage: 'An error occurred: $e',
-      ));
+      state = AsyncValue.data(
+        state.requireValue.copyWith(isSubmitting: false, errorMessage: 'An error occurred: $e'),
+      );
       return false;
     }
   }

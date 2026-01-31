@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:tgpl_network/common/providers/user_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/priorities_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/site_statuses_provider.dart';
@@ -17,51 +19,11 @@ import 'package:tgpl_network/utils/custom_date_picker.dart';
 import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
-class ApplicantInfoFormCard extends ConsumerStatefulWidget {
+class ApplicantInfoFormCard extends ConsumerWidget {
   const ApplicantInfoFormCard({super.key});
 
   @override
-  ConsumerState<ApplicantInfoFormCard> createState() =>
-      _ApplicantInfoFormCardState();
-}
-
-class _ApplicantInfoFormCardState extends ConsumerState<ApplicantInfoFormCard> {
-  TextEditingController dateConductedController = TextEditingController();
-  TextEditingController conductedByController = TextEditingController();
-  TextEditingController googleLocationController = TextEditingController();
-  TextEditingController districtController = TextEditingController();
-  TextEditingController npNameController = TextEditingController();
-  TextEditingController sourceController = TextEditingController();
-  TextEditingController sourceNameController = TextEditingController();
-
-  @override
-  void initState() {
-    final state = ref.read(applicationInfoFormControllerProvider);
-    dateConductedController.text =
-        state.dateConducted?.formatFromIsoToDDMMYYY() ?? '';
-    conductedByController.text = state.conductedBy ?? '';
-    googleLocationController.text = state.googleLocation ?? '';
-    districtController.text = state.district ?? '';
-    npNameController.text = state.npName ?? '';
-    sourceController.text = state.source ?? '';
-    sourceNameController.text = state.sourceName ?? '';
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    dateConductedController.dispose();
-    conductedByController.dispose();
-    googleLocationController.dispose();
-    districtController.dispose();
-    npNameController.dispose();
-    sourceController.dispose();
-    sourceNameController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(applicationInfoFormControllerProvider.notifier);
     final state = ref.read(applicationInfoFormControllerProvider);
     return SectionDetailCard(
@@ -79,79 +41,107 @@ class _ApplicantInfoFormCardState extends ConsumerState<ApplicantInfoFormCard> {
           hintText: state.entryCode ?? "e.g. TGPL-2196",
         ),
         const SizedBox(height: 10),
-        CustomTextFieldWithTitle(
-          readOnly: true,
-          title: "Date Conducted",
-          hintText: "dd/mm/yyyy",
-          controller: dateConductedController,
-          onTap: () {
-            customDatePicker(
-              context: context,
-              onUserSelectedDate: (date) {
-                dateConductedController.text = date.formatToDDMMYYY();
-                controller.updateConductedInfo(
-                  dateConducted: date.toIso8601String(),
+        Consumer(
+          builder: (context, ref, _) {
+            final dateConducted =
+                ref
+                    .watch(
+                      applicationInfoFormControllerProvider.select(
+                        (state) => state.dateConducted,
+                      ),
+                    )
+                    ?.formatFromIsoToDDMMYYY() ??
+                '';
+
+            return CustomTextFieldWithTitle(
+              readOnly: true,
+              title: "Date Conducted",
+              hintText: "dd/mm/yyyy",
+              isRequired: true,
+              initialValue: dateConducted,
+              greyedOutWhenReadOnly: false,
+              onTap: () {
+                customDatePicker(
+                  context: context,
+                  onUserSelectedDate: (date) {
+                    controller.updateConductedInfo(
+                      dateConducted: date.toIso8601String(),
+                    );
+                  },
                 );
               },
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('dateConducted');
+              },
+              validator: (v) => v.validate(),
             );
-          },
-          showClearButton: true,
-          onClear: () {
-            dateConductedController.clear();
-            controller.clearField('dateConducted');
           },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           title: "Conducted By",
           hintText: "e.g. Asif",
-          controller: conductedByController,
-          validator: (v) => v.validate(),
-          onChanged: (value) {
-            controller.updateConductedInfo(conductedBy: value);
-          },
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('conductedBy');
-          },
-        ),
-        const SizedBox(height: 10),
-        CustomTextFieldWithTitle(
-          title: "Google Location*",
-          hintText: "e.g. Tap to select location",
           readOnly: true,
-          controller: googleLocationController,
-          suffixIcon: actionContainer(
-            icon: AppImages.locationIconSvg,
-            iconColor: AppColors.black,
-            rightMargin: 5,
-            onTap: () async {
-              LocationData? selectedLocation = await ref
-                  .read(goRouterProvider)
-                  .push(AppRoutes.siteLocationSelection);
-              if (selectedLocation != null) {
-                googleLocationController.text =
-                    "${selectedLocation.position.latitude}, ${selectedLocation.position.longitude}";
-                controller.updateLocation(
-                  googleLocation: googleLocationController.text,
-                );
-              }
-            },
-          ),
+          initialValue: state.conductedBy ?? ref.read(userProvider).value?.userName,
         ),
         const SizedBox(height: 10),
         Consumer(
           builder: (context, ref, child) {
-            final selectedCity = ref
-                .watch(applicationInfoFormControllerProvider.select(
-                    (state) => state.selectedCity));
+            final googleLocation = ref.watch(
+              applicationInfoFormControllerProvider.select(
+                (state) => state.googleLocation,
+              ),
+            );
+            return CustomTextFieldWithTitle(
+              title: "Google Location*",
+              hintText: "e.g. Tap to select location",
+              readOnly: true,
+              isRequired: true,
+              validator: (v) => v.validate(),
+              greyedOutWhenReadOnly: false,
+              initialValue: googleLocation,
+              suffixIcon: actionContainer(
+                icon: AppImages.locationIconSvg,
+                iconColor: AppColors.black,
+                rightMargin: 5,
+                onTap: () async {
+                  LocationData? selectedLocation = await ref
+                      .read(goRouterProvider)
+                      .push(
+                        AppRoutes.siteLocationSelection,
+                        extra: state.latitude != null && state.longitude != null
+                            ? LatLng(state.latitude!, state.longitude!)
+                            : null,
+                      );
+                  if (selectedLocation != null) {
+                    controller.updateLocation(
+                      googleLocation:
+                          "${selectedLocation.position.latitude}, ${selectedLocation.position.longitude}",
+                    );
+                  }
+                },
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 10),
+        Consumer(
+          builder: (context, ref, child) {
+            final selectedCity = ref.watch(
+              applicationInfoFormControllerProvider.select(
+                (state) => state.selectedCity,
+              ),
+            );
             return SmartCustomDropDownWithTitle(
               title: "City",
               hintText: "e.g. Select city",
               enableSearch: true,
+              isRequired: true,
               selectedItem: selectedCity,
               asyncProvider: cityNamesProvider,
-              itemsBuilder: (cities) => cities.map((city) => city.name).toList(),
+              itemsBuilder: (cities) =>
+                  cities.map((city) => city.name).toList(),
               onChanged: (value) {
                 if (value == null) return;
                 controller.updateLocation(city: value.toString());
@@ -162,14 +152,15 @@ class _ApplicantInfoFormCardState extends ConsumerState<ApplicantInfoFormCard> {
                 controller.clearField('selectedCity');
               },
             );
-          }
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           title: "District",
           hintText: "e.g. Lahore",
+          isRequired: true,
           validator: (v) => v.validate(),
-          controller: districtController,
+          initialValue: state.district,
           onChanged: (value) {
             controller.updateLocation(district: value);
           },
@@ -181,13 +172,16 @@ class _ApplicantInfoFormCardState extends ConsumerState<ApplicantInfoFormCard> {
         const SizedBox(height: 10),
         Consumer(
           builder: (context, ref, child) {
-            final selectedSiteStatus = ref
-                .watch(applicationInfoFormControllerProvider.select(
-                    (state) => state.siteStatus));
+            final selectedSiteStatus = ref.watch(
+              applicationInfoFormControllerProvider.select(
+                (state) => state.siteStatus,
+              ),
+            );
             return SmartCustomDropDownWithTitle(
               title: "Site Status",
               selectedItem: selectedSiteStatus,
               hintText: "e.g. Select site status",
+              isRequired: true,
               asyncProvider: siteStatusesProvider,
               itemsBuilder: (statuses) =>
                   statuses.map((status) => status.name).toList(),
@@ -201,13 +195,14 @@ class _ApplicantInfoFormCardState extends ConsumerState<ApplicantInfoFormCard> {
               },
               validator: (v) => v.validate(),
             );
-          }
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           title: "NP. Name",
           hintText: "e.g. Kashif",
-          controller: npNameController,
+          isRequired: true,
+          initialValue: state.npName,
           validator: (v) => v.validate(),
           onChanged: (value) {
             controller.updateNpName(value);
@@ -221,7 +216,8 @@ class _ApplicantInfoFormCardState extends ConsumerState<ApplicantInfoFormCard> {
         CustomTextFieldWithTitle(
           title: "Source",
           hintText: "e.g. Dealer",
-          controller: sourceController,
+          isRequired: true,
+          initialValue: state.source,
           validator: (v) => v.validate(),
           onChanged: (value) {
             controller.updateSourceInfo(source: value);
@@ -235,7 +231,8 @@ class _ApplicantInfoFormCardState extends ConsumerState<ApplicantInfoFormCard> {
         CustomTextFieldWithTitle(
           title: "Source Name",
           hintText: "e.g. TGPL Dealer",
-          controller: sourceNameController,
+          isRequired: true,
+          initialValue: state.sourceName,
           validator: (v) => v.validate(),
           onChanged: (value) {
             controller.updateSourceInfo(sourceName: value);
@@ -248,12 +245,15 @@ class _ApplicantInfoFormCardState extends ConsumerState<ApplicantInfoFormCard> {
         const SizedBox(height: 10),
         Consumer(
           builder: (context, ref, child) {
-            final selectedPriority = ref
-                .watch(applicationInfoFormControllerProvider.select(
-                    (state) => state.selectedPriority));
+            final selectedPriority = ref.watch(
+              applicationInfoFormControllerProvider.select(
+                (state) => state.selectedPriority,
+              ),
+            );
             return SmartCustomDropDownWithTitle(
               title: "Priority",
               selectedItem: selectedPriority,
+              isRequired: true,
               asyncProvider: prioritiesProvider,
               hintText: "e.g. Select site priority",
               itemsBuilder: (priorities) => priorities,
@@ -267,7 +267,7 @@ class _ApplicantInfoFormCardState extends ConsumerState<ApplicantInfoFormCard> {
                 controller.clearField('selectedPriority');
               },
             );
-          }
+          },
         ),
       ],
     );

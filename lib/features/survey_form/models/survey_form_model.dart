@@ -211,6 +211,7 @@ class SurveyFormModel {
       selectedRM: json['selectedRM'] as String?,
       rmRecommendation: json['rmRecommendation'] as String?,
       rmRemarks: json['rmRemarks'] as String?,
+      errorMessage: json['errorMessage'] as String? ?? '',
     );
   }
 

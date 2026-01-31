@@ -8,64 +8,23 @@ import 'package:tgpl_network/common/widgets/section_detail_card.dart';
 import 'package:tgpl_network/features/survey_form/presentation/widgets/contact_and_dealer/contact_and_dealer_form_controller.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
-class ContactAndDealerFormCard extends ConsumerStatefulWidget {
+class ContactAndDealerFormCard extends ConsumerWidget {
   const ContactAndDealerFormCard({super.key});
 
   @override
-  ConsumerState<ContactAndDealerFormCard> createState() => _ContactAndDealerFormCardState();
-}
-
-class _ContactAndDealerFormCardState extends ConsumerState<ContactAndDealerFormCard> {
-  // create controllers for editable text fields
-  TextEditingController dealerNameController = TextEditingController();
-  TextEditingController dealerContactController = TextEditingController();
-  TextEditingController referenceByController = TextEditingController();
-  TextEditingController locationAddressController = TextEditingController();
-  TextEditingController landmarkController = TextEditingController();
-  TextEditingController plotFrontController = TextEditingController();
-  TextEditingController plotDepthController = TextEditingController();
-  TextEditingController distanceFromDepoController = TextEditingController();
-
-  @override
-  void initState() {
-    // get initial values from State
-    final state = ref.read(contactAndDealerFormControllerProvider);
-    dealerNameController.text = state.dealerName ?? "";
-    dealerContactController.text = state.dealerContact ?? "";
-    referenceByController.text = state.referenceBy ?? "";
-    locationAddressController.text = state.locationAddress ?? "";
-    landmarkController.text = state.landmark ?? "";
-    plotFrontController.text = state.plotFront ?? "";
-    plotDepthController.text = state.plotDepth ?? "";
-    distanceFromDepoController.text = state.distanceFromDepo ?? "";
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    dealerNameController.dispose();
-    dealerContactController.dispose();
-    referenceByController.dispose();
-    locationAddressController.dispose();
-    landmarkController.dispose();
-    plotFrontController.dispose();
-    plotDepthController.dispose();
-    distanceFromDepoController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(
       contactAndDealerFormControllerProvider.notifier,
     );
+      final state = ref.read(contactAndDealerFormControllerProvider);
     return SectionDetailCard(
       title: "Contact & Dealer Detail",
       children: [
         CustomTextFieldWithTitle(
           title: "Dealer Name",
           hintText: "Enter dealer name",
-          controller: dealerNameController,
+          isRequired: true,
+          initialValue: state.dealerName,
           onChanged: (value) {
             controller.updateDealerInfo(dealerName: value);
           },
@@ -80,7 +39,8 @@ class _ContactAndDealerFormCardState extends ConsumerState<ContactAndDealerFormC
           title: "Dealer Contact",
           hintText: "Enter dealer contact number",
           keyboardType: TextInputType.phone,
-          controller: dealerContactController,
+          initialValue: state.dealerContact,
+          isRequired: true,
           onChanged: (value) {
             controller.updateDealerInfo(dealerContact: value);
           },
@@ -94,11 +54,10 @@ class _ContactAndDealerFormCardState extends ConsumerState<ContactAndDealerFormC
         CustomTextFieldWithTitle(
           title: "Reference By",
           hintText: "Enter reference",
-          controller: referenceByController,
+          initialValue: state.referenceBy,
           onChanged: (value) {
             controller.updateDealerInfo(referenceBy: value);
           },
-          validator: (v) => v.validate(),
           showClearButton: true,
           onClear: () {
             controller.clearField('referenceBy');
@@ -108,7 +67,8 @@ class _ContactAndDealerFormCardState extends ConsumerState<ContactAndDealerFormC
         CustomTextFieldWithTitle(
           title: "Location Address",
           hintText: "Enter location address",
-          controller: locationAddressController,
+          initialValue: state.locationAddress,
+          isRequired: true,
           onChanged: (value) {
             controller.updateLocationInfo(locationAddress: value);
           },
@@ -122,7 +82,8 @@ class _ContactAndDealerFormCardState extends ConsumerState<ContactAndDealerFormC
         CustomTextFieldWithTitle(
           title: "Landmark",
           hintText: "Enter landmark",
-          controller: landmarkController,
+          initialValue: state.landmark,
+          isRequired: true,
           onChanged: (value) {
             controller.updateLocationInfo(landmark: value);
           },
@@ -142,8 +103,10 @@ class _ContactAndDealerFormCardState extends ConsumerState<ContactAndDealerFormC
               title: "Plot Area",
               readOnly: true,
               hintText: "Enter plot area",
+              isRequired: true,
               controller: TextEditingController(text: plotArea ?? ""),
               keyboardType: TextInputType.number,
+              validator: (v) => v.validate("Enter valid plot front or depth"),
             );
           }
         ),
@@ -152,7 +115,8 @@ class _ContactAndDealerFormCardState extends ConsumerState<ContactAndDealerFormC
           title: "Plot Front",
           hintText: "Enter plot front",
           keyboardType: TextInputType.number,
-          controller: plotFrontController,
+          isRequired: true,
+          initialValue: state.plotFront,
           onChanged: (value) {
             controller.updatePlotDimensions(front: value);
           },
@@ -160,13 +124,15 @@ class _ContactAndDealerFormCardState extends ConsumerState<ContactAndDealerFormC
           onClear: () {
             controller.clearField('plotFront');
           },
+          validator: (v) => v.validateNumber(),
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
           title: "Plot Depth",
           hintText: "Enter plot depth",
           keyboardType: TextInputType.number,
-          controller: plotDepthController,
+          initialValue: state.plotDepth,
+          isRequired: true,
           onChanged: (value) {
             controller.updatePlotDimensions(depth: value);
           },
@@ -174,6 +140,7 @@ class _ContactAndDealerFormCardState extends ConsumerState<ContactAndDealerFormC
           onClear: () {
             controller.clearField('plotDepth');
           },
+          validator: (v) => v.validateNumber(),
         ),
         const SizedBox(height: 10),
         Consumer(
@@ -186,6 +153,7 @@ class _ContactAndDealerFormCardState extends ConsumerState<ContactAndDealerFormC
               hintText: "Select nearest depo",
               enableSearch: true,
               selectedItem: nearestDepo,
+              isRequired: true,
               asyncProvider: depoNamesProvider,
               itemsBuilder: (depos) => depos,
               onChanged: (value) {
@@ -205,11 +173,12 @@ class _ContactAndDealerFormCardState extends ConsumerState<ContactAndDealerFormC
           title: "Distance from Depo",
           hintText: "Enter distance from depo",
           keyboardType: TextInputType.number,
-          controller: distanceFromDepoController,
+          initialValue: state.distanceFromDepo,
           onChanged: (value) {
             controller.updateDistanceFromDepo(value);
           },
           validator: (v) => v.validate(),
+          isRequired: true,
           showClearButton: true,
           onClear: () {
             controller.clearField('distanceFromDepo');
@@ -225,6 +194,8 @@ class _ContactAndDealerFormCardState extends ConsumerState<ContactAndDealerFormC
               title: "Type of Trade Area",
               hintText: "Select type of trade area",
               enableSearch: true,
+              isRequired: true,
+              validator: (v) => v.validate(),
               selectedItem: typeOfTradeArea,
               asyncProvider: tradeAreaNamesProvider,
               itemsBuilder: (tradeAreas) => tradeAreas,
@@ -232,7 +203,6 @@ class _ContactAndDealerFormCardState extends ConsumerState<ContactAndDealerFormC
                 if (value == null) return;
                 controller.updateLocationInfo(typeOfTradeArea: value.toString());
               },
-              validator: (v) => v.validate(),
               showClearButton: true,
               onClear: () {
                 controller.clearField('typeOfTradeArea');
