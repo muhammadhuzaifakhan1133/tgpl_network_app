@@ -47,6 +47,9 @@ class SurveyFormModel {
   final bool isSubmitting;
   final String errorMessage;
 
+  final String createdAt;
+  final String updatedAt;
+
   const SurveyFormModel({
     this.applicantId,
     this.entryCode,
@@ -87,11 +90,13 @@ class SurveyFormModel {
     this.rmRemarks,
     this.isSubmitting = false,
     this.errorMessage = '',
+    this.createdAt = '',
+    this.updatedAt = '',
   });
 
   Map<String, dynamic> toDatabaseMap() {
     return {
-      'applicantId': applicantId,
+      'applicationId': applicantId,
       'entryCode': entryCode,
       'dateConducted': dateConducted,
       'conductedBy': conductedBy,
@@ -134,6 +139,8 @@ class SurveyFormModel {
 
   Map<String, dynamic> toApiMap() {
     return {
+      "applicationId": applicantId,
+      "entryCode": entryCode,
       "dateConducted": dateConducted,
       "googleLocation": googleLocation,
       "cityName": city,
@@ -173,7 +180,7 @@ class SurveyFormModel {
 
   factory SurveyFormModel.fromDatabaseMap(Map<String, dynamic> json) {
     return SurveyFormModel(
-      applicantId: json['applicantId'] as String?,
+      applicantId: json['applicationId'] as String?,
       entryCode: json['entryCode'] as String?,
       dateConducted: json['dateConducted'] as String?,
       conductedBy: json['conductedBy'] as String?,
@@ -212,6 +219,8 @@ class SurveyFormModel {
       rmRecommendation: json['rmRecommendation'] as String?,
       rmRemarks: json['rmRemarks'] as String?,
       errorMessage: json['errorMessage'] as String? ?? '',
+      createdAt: json['createdAt'] as String? ?? '',
+      updatedAt: json['updatedAt'] as String? ?? '',
     );
   }
 

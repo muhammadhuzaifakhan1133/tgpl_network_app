@@ -1,6 +1,7 @@
 import 'package:tgpl_network/features/traffic_trade_form/models/traffic_site_model.dart';
 
 class TrafficTradeFormModel {
+  final String? applicationId;
   // Nearby Sites
   final List<TrafficSiteModel> nearbyTrafficSites;
 
@@ -29,8 +30,11 @@ class TrafficTradeFormModel {
 
   final bool isSubmitting;
   final String errorMessage;
+  final String createdAt;
+  final String updatedAt;
 
   const TrafficTradeFormModel({
+    this.applicationId,
     this.nearbyTrafficSites = const [],
     this.trafficCountTruck,
     this.trafficCountCar,
@@ -51,10 +55,13 @@ class TrafficTradeFormModel {
     this.rmRemarks,
     this.isSubmitting = false,
     this.errorMessage = '',
+    this.createdAt = '',
+    this.updatedAt = '',
   });
 
   Map<String, dynamic> toDatabaseMap() {
     return {
+      'applicationId': applicationId,
       'nearbyTrafficSites': nearbyTrafficSites
           .map((site) => site.toDatabaseMap())
           .toList(),
@@ -80,6 +87,7 @@ class TrafficTradeFormModel {
 
   factory TrafficTradeFormModel.fromDatabaseMap(Map<String, dynamic> json) {
     return TrafficTradeFormModel(
+      applicationId: json['applicationId'] as String?,
       nearbyTrafficSites:
           (json['nearbyTrafficSites'] as List<dynamic>?)
               ?.map(
@@ -105,6 +113,9 @@ class TrafficTradeFormModel {
       selectedRMRecommendation: json['selectedRMRecommendation'] as String?,
       tmRemarks: json['tmRemarks'] as String?,
       rmRemarks: json['rmRemarks'] as String?,
+      errorMessage: json['errorMessage'] as String? ?? '',
+      createdAt: json['createdAt'] as String? ?? '',
+      updatedAt: json['updatedAt'] as String? ?? '',
     );
   }
 
@@ -163,6 +174,7 @@ class TrafficTradeFormModel {
 
   Map<String, dynamic> toApiMap() {
     return {
+      "applicationId": applicationId,
       "nearbyTrafficSites": nearbyTrafficSites
           .map((site) => site.toApiMap())
           .toList(),

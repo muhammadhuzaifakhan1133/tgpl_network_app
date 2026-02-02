@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/features/master_data/providers/tm_names_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/tm_rm_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/yes_no_na_values_provider.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
@@ -20,10 +20,11 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
       children: [
         Consumer(
           builder: (context, ref, _) {
-            final selectedTM =
-                ref.watch(recommendationControllerProvider.select(
-              (state) => state.selectedTM,
-            ));
+            final selectedTM = ref.watch(
+              recommendationControllerProvider.select(
+                (state) => state.selectedTM,
+              ),
+            );
             return SmartCustomDropDownWithTitle(
               title: "TM",
               hintText: "Select TM",
@@ -35,20 +36,22 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
                 controller.onChangeTM(value.toString());
               },
               validator: (v) => v.validate(),
+              isRequired: true,
               showClearButton: true,
               onClear: () {
                 controller.clearField('selectedTM');
               },
             );
-          }
+          },
         ),
         const SizedBox(height: 10),
         Consumer(
           builder: (context, ref, _) {
-            final selectedTMRecommendation =
-                ref.watch(recommendationControllerProvider.select(
-              (state) => state.selectedTMRecommendation,
-            ));
+            final selectedTMRecommendation = ref.watch(
+              recommendationControllerProvider.select(
+                (state) => state.selectedTMRecommendation,
+              ),
+            );
             return SmartCustomDropDownWithTitle(
               title: "TM Recommendation",
               hintText: "Select an option",
@@ -60,12 +63,13 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
                 controller.onChangeTMRecommendation(value.toString());
               },
               validator: (v) => v.validate(),
+              isRequired: true,
               showClearButton: true,
               onClear: () {
                 controller.clearField('selectedTMRecommendation');
               },
             );
-          }
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -76,6 +80,7 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
             controller.updateTMRemarks(value);
           },
           validator: (v) => v.validate(),
+          isRequired: true,
           showClearButton: true,
           onClear: () {
             controller.clearField('tmRemarks');
@@ -84,10 +89,11 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
         const SizedBox(height: 10),
         Consumer(
           builder: (context, ref, _) {
-            final selectedRM =
-                ref.watch(recommendationControllerProvider.select(
-              (state) => state.selectedRM,
-            ));
+            final selectedRM = ref.watch(
+              recommendationControllerProvider.select(
+                (state) => state.selectedRM,
+              ),
+            );
             return SmartCustomDropDownWithTitle(
               title: "RM",
               hintText: "Select RM",
@@ -99,20 +105,22 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
                 controller.onChangeRM(value.toString());
               },
               validator: (v) => v.validate(),
+              isRequired: true,
               showClearButton: true,
               onClear: () {
                 controller.clearField('selectedRM');
               },
             );
-          }
+          },
         ),
         const SizedBox(height: 10),
         Consumer(
           builder: (context, ref, _) {
-            final selectedRMRecommendation =
-                ref.watch(recommendationControllerProvider.select(
-              (state) => state.selectedRMRecommendation,
-            ));
+            final selectedRMRecommendation = ref.watch(
+              recommendationControllerProvider.select(
+                (state) => state.selectedRMRecommendation,
+              ),
+            );
             return SmartCustomDropDownWithTitle(
               title: "RM Recommendation",
               hintText: "Select an option",
@@ -124,12 +132,13 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
                 controller.onChangeRMRecommendation(value.toString());
               },
               validator: (v) => v.validate(),
+              isRequired: true,
               showClearButton: true,
               onClear: () {
                 controller.clearField('selectedRMRecommendation');
               },
             );
-          }
+          },
         ),
         const SizedBox(height: 10),
         CustomTextFieldWithTitle(
@@ -140,6 +149,7 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
             controller.updateRMRemarks(value);
           },
           validator: (v) => v.validate(),
+          isRequired: true,
           showClearButton: true,
           onClear: () {
             controller.clearField('rmRemarks');

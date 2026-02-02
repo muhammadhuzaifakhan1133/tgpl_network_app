@@ -20,6 +20,7 @@ class TrafficCountCardForm extends ConsumerWidget {
                   title: "Truck",
                   hintText: "e.g. 2196",
                   initialValue: state.trafficCountTruck,
+                  isRequired: true,
                   onChanged: (value) {
                     controller.updateTrafficCountTruck(value);
                   },
@@ -39,6 +40,7 @@ class TrafficCountCardForm extends ConsumerWidget {
                   onChanged: (value) {
                     controller.updateTrafficCountCar(value);
                   },
+                  isRequired: true,
                   validator: (v) => v.validate(),
                   showClearButton: true,
                   onClear: () {
@@ -55,6 +57,7 @@ class TrafficCountCardForm extends ConsumerWidget {
                   onChanged: (value) {
                     controller.updateTrafficCountBike(value);
                   },
+                  isRequired: true,
                   validator: (v) => v.validate(),
                   showClearButton: true,
                   onClear: () {

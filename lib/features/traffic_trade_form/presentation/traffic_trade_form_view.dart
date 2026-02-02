@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/common/providers/auto_validate_form.dart';
 import 'package:tgpl_network/common/widgets/application_fields_shimmer_widget.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
@@ -31,6 +32,7 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
     final asyncValue = ref.watch(
       trafficTradeFormControllerProvider(widget.appId),
     );
+    final autoValidate = ref.watch(autoValidateFormModeProvider);
     final controller = ref.read(
       trafficTradeFormControllerProvider(widget.appId).notifier,
     );
@@ -48,6 +50,18 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
       }
     });
 
+    ref.listen(trafficTradeFormStatusChangedProvider(widget.appId), (previous, next) {
+      if (next) {
+        // Status changed - navigate back to module applications
+        showSnackBar(
+          context,
+          'Application status has changed. Form is no longer available.',
+          bgColor: AppColors.emailUsIconColor,
+        );
+        ref.read(goRouterProvider).pop();
+      }
+    });
+
     return Scaffold(
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -59,19 +73,41 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
                 subtitle: "Form # ${widget.appId}",
                 showBackButton: true,
               ),
-              Expanded(child: _buildForm(controller)),
+              Expanded(child: _buildForm(controller, autoValidate: autoValidate)),
             ],
           ),
           loading: () => ApplicationFieldsShimmer(title: "Traffic / Trade"),
-          error: (error, stack) => errorWidget(error.toString()),
+          error: (error, stack) {
+            // Check if error is due to status change
+            if (error.toString().contains('status has changed')) {
+              // Navigate back on next frame
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  showSnackBar(
+                    context,
+                    'Application status has changed. Redirecting...',
+                    bgColor: AppColors.emailUsIconColor,
+                  );
+                  ref.read(goRouterProvider).pop();
+                }
+              });
+              return const Center(child: CircularProgressIndicator());
+            }
+            return errorWidget(error.toString());
+          },
         ),
       ),
     );
   }
 
-  Widget _buildForm(TrafficTradeFormController controller) {
+  Widget _buildForm(TrafficTradeFormController controller, {
+    required bool autoValidate,
+  }) {
     return Form(
       key: _formKey,
+      autovalidateMode: autoValidate
+          ? AutovalidateMode.onUserInteraction
+          : AutovalidateMode.disabled,
       child: Column(
         children: [
           Expanded(
@@ -128,6 +164,11 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
     FocusScope.of(context).unfocus();
 
     bool? success;
+
+    // Turn on auto-validation after first submit attempt
+    if (!ref.read(autoValidateFormModeProvider)) {
+      ref.read(autoValidateFormModeProvider.notifier).state = true;
+    }
 
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       // Submit form (validation happens inside too)

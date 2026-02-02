@@ -191,7 +191,7 @@ class CreateDbQueries {
   static String createSurveyFormsTable = '''
   CREATE TABLE ${AppDatabase.surveyFormsTable} (
     id $idType,
-    applicationId $textType,
+    applicationId $textType UNIQUE,
     entryCode $textType,
     dateConducted $textType,
     conductedBy $textType,
@@ -238,7 +238,7 @@ class CreateDbQueries {
   static String createTrafficTradeFormsTable = '''
   CREATE TABLE ${AppDatabase.trafficTradeFormsTable} (
     id $idType,
-    applicationId $textType,
+    applicationId $textType UNIQUE,
     nearbyTrafficSites $textType,
     trafficCountTruck $textType,
     trafficCountCar $textType,

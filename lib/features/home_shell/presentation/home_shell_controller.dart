@@ -13,6 +13,7 @@ import 'package:tgpl_network/features/application_detail/application_detail_cont
 import 'package:tgpl_network/features/applications/presentation/application_controller.dart';
 import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
+import 'package:tgpl_network/features/data_sync/presentation/data_sync_controller.dart';
 import 'package:tgpl_network/features/master_data/data/master_data_local_data_source.dart';
 import 'package:tgpl_network/features/master_data/data/master_data_remote_data_source.dart';
 import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
@@ -20,6 +21,8 @@ import 'package:tgpl_network/features/master_data/providers/priorities_provider.
 import 'package:tgpl_network/features/module_applications/presentation/module_applications_controller.dart';
 import 'package:tgpl_network/features/application_form/data/app_form_dropdowns_local_data_source.dart';
 import 'package:tgpl_network/features/application_form/data/app_form_dropdowns_remote_data_source.dart';
+import 'package:tgpl_network/features/survey_form/presentation/survey_form_controller.dart';
+import 'package:tgpl_network/features/traffic_trade_form/presentation/traffic_trade_form_controller.dart';
 import 'package:tgpl_network/utils/internet_connectivity.dart';
 
 final homeShellControllerProvider =
@@ -46,6 +49,9 @@ class HomeShellController extends AsyncNotifier<void> {
     // mapMarkersProvider // this is expensive, avoid refreshing unless necessary
     moduleApplicationsAsyncControllerProvider,
     applicationDetailAsyncControllerProvider,
+    dataSyncControllerProvider,
+    surveyFormControllerProvider,
+    trafficTradeFormControllerProvider,
   ];
   StreamSubscription<InternetStatus>? _connectivitySubscription;
 
@@ -132,6 +138,7 @@ class HomeShellController extends AsyncNotifier<void> {
 
   bool _isAutoSyncRunning = false;
 
+  /// 🔥 Even better: Check if there are actually pending forms before syncing
   Future<void> getMasterDataAndSaveLocally({bool forcefulSync = false}) async {
     if (_isAutoSyncRunning) return;
     _isAutoSyncRunning = true;
@@ -144,46 +151,48 @@ class HomeShellController extends AsyncNotifier<void> {
       return;
     }
 
-    if (!await shouldAutoSync(ref) && !forcefulSync) {
-      ref.read(syncStatusProvider.notifier).state = SyncStatus.synchronized;
-      _isAutoSyncRunning = false;
-      return;
-    }
-    try {
-      final username = ref.read(sharedPrefsDataSourceProvider).getUsername();
+    // Check if master data sync is needed
+    final shouldSyncMasterData = await shouldAutoSync(ref) || forcefulSync;
 
-      if (username == null) {
-        throw Exception('Username not found in shared preferences.');
+    try {
+      ref.read(syncStatusProvider.notifier).state = SyncStatus.syncing;
+
+      // Sync pending forms first
+      final hasPendingForms = await _hasPendingForms();
+      if (hasPendingForms) {
+        await _syncPendingForms();
       }
 
-      ref.read(syncStatusProvider.notifier).state = SyncStatus.syncing;
-      ref.read(snackbarMessageProvider.notifier).state =
-          'Fetching latest data...';
-      final masterData = await ref
-          .read(masterDataRemoteDataSourceProvider)
-          .getMasterDataFromApi(username: username);
-      final dropdownValues = await ref
-          .read(appFormDropdownsRemoteDataSourceProvider)
-          .fetchAppFormDropdownValues();
-      debugPrint('Fetched master data: $masterData');
-      debugPrint('Fetched dropdown values: $dropdownValues');
-      ref.read(snackbarMessageProvider.notifier).state =
-          'Data fetched successfully. Saving locally...';
-      await ref
-          .read(appFormDropdownsLocalDataSourceProvider)
-          .saveSiteStatuses(dropdownValues.siteStatuses);
-      await ref
-          .read(masterDataLocalDataSourceProvider)
-          .saveMasterData(masterData);
+      // Sync master data (only if needed)
+      if (shouldSyncMasterData) {
+        await _syncMasterData();
+      } else {
+        ref.read(snackbarMessageProvider.notifier).state = hasPendingForms
+            ? 'Pending forms synced. Master data is up to date.'
+            : 'All data is up to date.';
+      }
+
       ref.read(syncStatusProvider.notifier).state = SyncStatus.synchronized;
-      ref.read(snackbarMessageProvider.notifier).state =
-          'Data synchronized successfully.';
+
+      // Refresh providers
       _refreshAllDependentProviders();
     } catch (e, stack) {
       ref.read(snackbarMessageProvider.notifier).state = 'Data sync failed: $e';
+      ref.read(syncStatusProvider.notifier).state = SyncStatus.offline;
       Error.throwWithStackTrace(e, stack);
     } finally {
       _isAutoSyncRunning = false;
+    }
+  }
+
+  Future<bool> _hasPendingForms() async {
+    try {
+      final dataSync = await ref.read(dataSyncControllerProvider.future);
+      final pendingItems = dataSync.pendingItems;
+      return pendingItems.isNotEmpty;
+    } catch (e) {
+      debugPrint('Error checking pending forms: $e');
+      return false; // Assume no forms on error
     }
   }
 
@@ -209,6 +218,58 @@ class HomeShellController extends AsyncNotifier<void> {
       return difference.inMinutes >= autoSyncThresholdMinutes;
     } catch (e) {
       return true; // Sync on error to be safe
+    }
+  }
+
+  Future<void> _syncMasterData() async {
+    final username = ref.read(sharedPrefsDataSourceProvider).getUsername();
+
+    if (username == null) {
+      throw Exception('Username not found in shared preferences.');
+    }
+
+    ref.read(snackbarMessageProvider.notifier).state =
+        'Fetching latest master data...';
+
+    final masterData = await ref
+        .read(masterDataRemoteDataSourceProvider)
+        .getMasterDataFromApi(username: username);
+
+    final dropdownValues = await ref
+        .read(appFormDropdownsRemoteDataSourceProvider)
+        .fetchAppFormDropdownValues();
+
+
+    ref.read(snackbarMessageProvider.notifier).state =
+        'Data fetched successfully. Saving locally...';
+
+    await ref
+        .read(appFormDropdownsLocalDataSourceProvider)
+        .saveSiteStatuses(dropdownValues.siteStatuses);
+
+    await ref
+        .read(masterDataLocalDataSourceProvider)
+        .saveMasterData(masterData);
+
+    ref.read(snackbarMessageProvider.notifier).state =
+        'Data synchronized successfully.';
+  }
+
+
+  Future<void> _syncPendingForms() async {
+    try {
+      ref.read(snackbarMessageProvider.notifier).state =
+          'Syncing pending forms...';
+
+      final dataSyncController = ref.read(dataSyncControllerProvider.notifier);
+      await dataSyncController.retryPendingForms();
+
+      debugPrint('Pending forms synced successfully');
+    } catch (e) {
+      debugPrint('Error syncing pending forms: $e');
+      // Don't throw - let master data sync continue
+      ref.read(snackbarMessageProvider.notifier).state =
+          'Warning: Some forms failed to sync. Will retry later.';
     }
   }
 }

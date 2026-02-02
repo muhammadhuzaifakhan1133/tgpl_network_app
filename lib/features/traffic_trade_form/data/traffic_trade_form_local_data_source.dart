@@ -1,6 +1,7 @@
 // lib/features/traffic_trade_form/data/datasources/traffic_trade_form_local_data_source.dart
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/features/traffic_trade_form/models/traffic_trade_form_model.dart';
 import 'package:tgpl_network/core/database/app_database.dart';
@@ -10,10 +11,12 @@ abstract class TrafficTradeFormLocalDataSource {
   Future<TrafficTradeFormModel?> getSingleTrafficTradeForm(
     String applicationId,
   );
-  Future<List<TrafficTradeFormModel>> getPendingTrafficTradeForms();
-  Future<List<TrafficTradeFormModel>> getSyncedTrafficTradeForms();
-  Future<void> markAsSynced(int id);
-  Future<void> deleteTrafficTradeForm(int id);
+  Future<void> markTrafficTradeFormAsSynced(String id);
+  Future<void> updateTrafficTradeFormErrorMessage(
+    String id,
+    String errorMessage,
+  );
+  Future<void> deleteTrafficTradeForm(String id);
 }
 
 class TrafficTradeFormLocalDataSourceImpl
@@ -31,12 +34,11 @@ class TrafficTradeFormLocalDataSourceImpl
     // Convert nearbyTrafficSites list to JSON string for storage
     formData['nearbyTrafficSites'] = jsonEncode(formData['nearbyTrafficSites']);
 
-    return await db.insert(AppDatabase.trafficTradeFormsTable, {
-      ...formData,
-      'isSynced': 0,
-      'createdAt': now,
-      'updatedAt': now,
-    });
+    return await db.insert(
+      AppDatabase.trafficTradeFormsTable,
+      {...formData, 'isSynced': 0, 'createdAt': now},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   @override
@@ -59,58 +61,41 @@ class TrafficTradeFormLocalDataSourceImpl
   }
 
   @override
-  Future<List<TrafficTradeFormModel>> getPendingTrafficTradeForms() async {
-    final db = await _databaseHelper.database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      'traffic_trade_forms',
-      where: 'isSynced = ?',
-      whereArgs: [0],
-      orderBy: 'createdAt DESC',
-    );
-
-    return maps.map((map) {
-      // Convert JSON string back to list for nearbyTrafficSites
-      if (map['nearbyTrafficSites'] is String) {
-        map['nearbyTrafficSites'] = jsonDecode(map['nearbyTrafficSites']);
-      }
-      return TrafficTradeFormModel.fromDatabaseMap(map);
-    }).toList();
-  }
-
-  @override
-  Future<List<TrafficTradeFormModel>> getSyncedTrafficTradeForms() async {
-    final db = await _databaseHelper.database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      'traffic_trade_forms',
-      where: 'isSynced = ?',
-      whereArgs: [1],
-      orderBy: 'updatedAt DESC',
-      limit: 20,
-    );
-
-    return maps.map((map) {
-      if (map['nearbyTrafficSites'] is String) {
-        map['nearbyTrafficSites'] = jsonDecode(map['nearbyTrafficSites']);
-      }
-      return TrafficTradeFormModel.fromDatabaseMap(map);
-    }).toList();
-  }
-
-  @override
-  Future<void> markAsSynced(int id) async {
+  Future<void> markTrafficTradeFormAsSynced(String id) async {
     final db = await _databaseHelper.database;
     await db.update(
-      'traffic_trade_forms',
+      AppDatabase.trafficTradeFormsTable,
       {'isSynced': 1, 'updatedAt': DateTime.now().toIso8601String()},
-      where: 'id = ?',
+      where: 'applicationId = ?',
       whereArgs: [id],
     );
   }
 
   @override
-  Future<void> deleteTrafficTradeForm(int id) async {
+  Future<void> updateTrafficTradeFormErrorMessage(
+    String id,
+    String errorMessage,
+  ) async {
     final db = await _databaseHelper.database;
-    await db.delete('traffic_trade_forms', where: 'id = ?', whereArgs: [id]);
+    await db.update(
+      AppDatabase.trafficTradeFormsTable,
+      {
+        'errorMessage': errorMessage,
+        'updatedAt': DateTime.now().toIso8601String(),
+      },
+      where: 'applicationId = ?',
+      whereArgs: [id],
+    );
+  }
+
+  @override
+  Future<void> deleteTrafficTradeForm(String id) async {
+    final db = await _databaseHelper.database;
+    await db.delete(
+      AppDatabase.trafficTradeFormsTable,
+      where: 'applicationId = ?',
+      whereArgs: [id],
+    );
   }
 }
 

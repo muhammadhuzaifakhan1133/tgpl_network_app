@@ -25,6 +25,7 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
           onChanged: (value) {
             controller.updateDailyDieselSales(value);
           },
+          isRequired: true,
           validator: (v) => v.validate(),
           showClearButton: true,
           onClear: () {
@@ -39,7 +40,8 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
           onChanged: (value) {
             controller.updateDailySuperSales(value);
           },
-          validator: (v) => v.validate(),
+          isRequired: true,
+            validator: (v) => v.validate(),
           showClearButton: true,
           onClear: () {
             controller.clearField('dailySuperSales');
@@ -53,6 +55,7 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
           onChanged: (value) {
             controller.updateDailyHOBCSales(value);
           },
+          isRequired: true,
           validator: (v) => v.validate(),
           showClearButton: true,
           onClear: () {
@@ -67,6 +70,7 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
           onChanged: (value) {
             controller.updateDailyLubricantSales(value);
           },
+          isRequired: true,
           validator: (v) => v.validate(),
           showClearButton: true,
           onClear: () {
@@ -82,6 +86,7 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             controller.updateRentExpectation(value);
           },
           validator: (v) => v.validate(),
+          isRequired: true,
           showClearButton: true,
           onClear: () {
             controller.clearField('rentExpectation');
@@ -105,6 +110,7 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
                 controller.setTruckPortPotential(value.toString());
               },
               validator: (v) => v.validate(),
+              isRequired: true,
               showClearButton: true,
               onClear: () {
                 controller.clearField('truckPortPotential');
@@ -130,6 +136,7 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
                 controller.setSalamMartPotential(value.toString());
               },
               validator: (v) => v.validate(),
+              isRequired: true,
               showClearButton: true,
               onClear: () {
                 controller.clearField('salamMartPotential');
@@ -155,6 +162,7 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
                 controller.setRestaurantPotential(value.toString());
               },
               validator: (v) => v.validate(),
+              isRequired: true,
               showClearButton: true,
               onClear: () {
                 controller.clearField('restaurantPotential');

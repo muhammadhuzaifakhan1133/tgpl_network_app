@@ -10,6 +10,7 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/nearby_sites/nearby_sites_form_controller.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class NearbySitesFormSection extends ConsumerWidget {
   const NearbySitesFormSection({super.key});
@@ -146,6 +147,8 @@ class _SiteFormCard extends ConsumerWidget {
             key: ValueKey('site_name_${site.id}'),
             title: "Site Name",
             hintText: "Enter site name",
+            isRequired: true,
+            validator: (v) => v.validate(),
             initialValue: site.siteName,
             onChanged: (value) {
               controller.updateSite(index: index, siteName: value);
@@ -161,6 +164,8 @@ class _SiteFormCard extends ConsumerWidget {
             title: "Estimated Daily Diesel Sale",
             hintText: "Enter daily diesel sale",
             keyboardType: TextInputType.number,
+            isRequired: true,
+            validator: (v) => v.validate(),
             initialValue: site.estimatedDailyDieselSale,
             onChanged: (value) {
               controller.updateSite(
@@ -179,6 +184,8 @@ class _SiteFormCard extends ConsumerWidget {
             title: "Estimated Daily Super Sale",
             hintText: "Enter daily super sale",
             keyboardType: TextInputType.number,
+            isRequired: true,
+            validator: (v) => v.validate(),
             initialValue: site.estimatedDailySuperSale,
             onChanged: (value) {
               controller.updateSite(
@@ -196,6 +203,8 @@ class _SiteFormCard extends ConsumerWidget {
             key: ValueKey('lubricant_sale_${site.id}'),
             title: "Estimated Lubricant Sale",
             hintText: "Enter daily lubricant sale",
+            isRequired: true,
+            validator: (v) => v.validate(),
             keyboardType: TextInputType.number,
             initialValue: site.estimatedDailyLubricantSale,
             onChanged: (value) {
@@ -233,6 +242,8 @@ class _SiteFormCard extends ConsumerWidget {
             hintText: "Select an option",
             selectedItem: site.isNfrFacility,
             asyncProvider: yesNoValuesProvider,
+            isRequired: true,
+            validator: (v) => v.validate(),
             itemsBuilder: (values) => values,
             onChanged: (value) {
               if (value == null) return;

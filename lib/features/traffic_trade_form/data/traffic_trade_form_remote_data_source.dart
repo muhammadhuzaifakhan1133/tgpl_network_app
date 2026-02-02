@@ -11,11 +11,17 @@ class TrafficTradeFormRemoteDataSource {
   Future<TrafficTradeFormSubmissionResponseModel> submitTrafficTradeForm(
     TrafficTradeFormModel trafficTradeForm,
   ) async {
-    final response = await _dioClient.post(
-      AppApis.submitTrafficTradeFormEndpoint,
-      data: trafficTradeForm.toApiMap(),
+    // Simulate network call with a delay
+    await Future.delayed(const Duration(seconds: 3));
+    return TrafficTradeFormSubmissionResponseModel(
+      success: true,
+      message: 'Traffic Trade Form submitted successfully',
     );
-    return TrafficTradeFormSubmissionResponseModel.fromJson(response.data);
+    // final response = await _dioClient.post(
+    //   AppApis.submitTrafficTradeFormEndpoint,
+    //   data: trafficTradeForm.toApiMap(),
+    // );
+    // return TrafficTradeFormSubmissionResponseModel.fromJson(response.data);
   }
 }
 

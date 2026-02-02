@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/features/master_data/providers/tm_names_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/tm_rm_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/yes_no_na_values_provider.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
@@ -102,7 +102,7 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
               hintText: "Select RM",
               enableSearch: true,
               selectedItem: selectedRM,
-              items: ref.read(tmNamesProvider),
+              items: ref.read(rmNamesProvider),
               onChanged: (value) {
                 if (value == null) return;
                 controller.onChangeRM(value.toString());
