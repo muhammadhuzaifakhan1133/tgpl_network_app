@@ -25,18 +25,47 @@ class TrafficTradeFormLocalDataSourceImpl
 
   TrafficTradeFormLocalDataSourceImpl(this._databaseHelper);
 
+  // @override
+  // Future<int> saveSurveyForm(SurveyFormModel form) async {
+  //   final db = await _databaseHelper.database;
+  //   final now = DateTime.now().toIso8601String();
+
+  //   final existingForm = await getSingleSurveyForm(form.applicationId ?? '');
+  //   final updatedData = {...form.toDatabaseMap(), 'isSynced': 0};
+  //   if (existingForm != null) {
+  //     updatedData['updatedAt'] = now;
+  //   } else {
+  //     updatedData['createdAt'] = now;
+  //   }
+  //   return await db.insert(
+  //     AppDatabase.surveyFormsTable,
+  //     updatedData,
+  //     conflictAlgorithm: ConflictAlgorithm.replace,
+  //   );
+  // }
+
   @override
   Future<int> saveTrafficTradeForm(TrafficTradeFormModel form) async {
     final db = await _databaseHelper.database;
     final now = DateTime.now().toIso8601String();
 
-    final formData = form.toDatabaseMap();
+    final formData = {...form.toDatabaseMap(), 'isSynced': 0};
     // Convert nearbyTrafficSites list to JSON string for storage
     formData['nearbyTrafficSites'] = jsonEncode(formData['nearbyTrafficSites']);
 
+    final existingForm = await getSingleTrafficTradeForm(
+      form.applicationId ?? '',
+    );
+
+    if (existingForm != null) {
+      formData['updatedAt'] = now;
+    } else {
+      formData['createdAt'] = now;
+    }
+
     return await db.insert(
       AppDatabase.trafficTradeFormsTable,
-      {...formData, 'isSynced': 0, 'createdAt': now},
+      formData,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }

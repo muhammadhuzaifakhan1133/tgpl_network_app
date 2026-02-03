@@ -1,6 +1,6 @@
 class SurveyFormModel {
   // Application Info
-  final String? applicantId;
+  final String? applicationId;
   final String? entryCode;
   final String? dateConducted;
   final String? conductedBy;
@@ -51,7 +51,7 @@ class SurveyFormModel {
   final String updatedAt;
 
   const SurveyFormModel({
-    this.applicantId,
+    this.applicationId,
     this.entryCode,
     this.dateConducted,
     this.conductedBy,
@@ -96,7 +96,7 @@ class SurveyFormModel {
 
   Map<String, dynamic> toDatabaseMap() {
     return {
-      'applicationId': applicantId,
+      'applicationId': applicationId,
       'entryCode': entryCode,
       'dateConducted': dateConducted,
       'conductedBy': conductedBy,
@@ -139,7 +139,7 @@ class SurveyFormModel {
 
   Map<String, dynamic> toApiMap() {
     return {
-      "applicationId": applicantId,
+      "applicationId": applicationId,
       "entryCode": entryCode,
       "dateConducted": dateConducted,
       "googleLocation": googleLocation,
@@ -180,7 +180,7 @@ class SurveyFormModel {
 
   factory SurveyFormModel.fromDatabaseMap(Map<String, dynamic> json) {
     return SurveyFormModel(
-      applicantId: json['applicationId'] as String?,
+      applicationId: json['applicationId'] as String?,
       entryCode: json['entryCode'] as String?,
       dateConducted: json['dateConducted'] as String?,
       conductedBy: json['conductedBy'] as String?,
@@ -266,7 +266,7 @@ class SurveyFormModel {
     String? errorMessage,
   }) {
     return SurveyFormModel(
-      applicantId: applicantId ?? this.applicantId,
+      applicationId: applicantId ?? this.applicationId,
       entryCode: entryCode ?? this.entryCode,
       dateConducted: dateConducted ?? this.dateConducted,
       conductedBy: conductedBy ?? this.conductedBy,
@@ -313,7 +313,7 @@ class SurveyFormModel {
 
   @override
   String toString() {
-    return 'SurveyFormModel(applicantId: $applicantId, entryCode: $entryCode, dateConducted: $dateConducted, conductedBy: $conductedBy, googleLocation: $googleLocation, city: $city, district: $district, siteStatus: $siteStatus, npName: $npName, source: $source, sourceName: $sourceName, priority: $priority, dealerName: $dealerName, dealerContact: $dealerContact, referenceBy: $referenceBy, locationAddress: $locationAddress, landmark: $landmark, plotFront: $plotFront, plotDepth: $plotDepth, plotArea: $plotArea, nearestDepo: $nearestDepo, distanceFromDepo: $distanceFromDepo, typeOfTradeArea: $typeOfTradeArea, isThisDealer: $isThisDealer, dealerPlatform: $dealerPlatform, dealerBusinesses: $dealerBusinesses, dealerInvolvement: $dealerInvolvement, isDealerReadyToInvest: $isDealerReadyToInvest, dealerOpinion: $dealerOpinion, monthlySalary: $monthlySalary, isDealerAgreedToFollowTgplStandards: $isDealerAgreedToFollowTgplStandards, selectedTM: $selectedTM, tmRecommendation: $tmRecommendation, tmRemarks: $tmRemarks, selectedRM: $selectedRM, rmRecommendation: $rmRecommendation, rmRemarks: $rmRemarks)';
+    return 'SurveyFormModel(applicantId: $applicationId, entryCode: $entryCode, dateConducted: $dateConducted, conductedBy: $conductedBy, googleLocation: $googleLocation, city: $city, district: $district, siteStatus: $siteStatus, npName: $npName, source: $source, sourceName: $sourceName, priority: $priority, dealerName: $dealerName, dealerContact: $dealerContact, referenceBy: $referenceBy, locationAddress: $locationAddress, landmark: $landmark, plotFront: $plotFront, plotDepth: $plotDepth, plotArea: $plotArea, nearestDepo: $nearestDepo, distanceFromDepo: $distanceFromDepo, typeOfTradeArea: $typeOfTradeArea, isThisDealer: $isThisDealer, dealerPlatform: $dealerPlatform, dealerBusinesses: $dealerBusinesses, dealerInvolvement: $dealerInvolvement, isDealerReadyToInvest: $isDealerReadyToInvest, dealerOpinion: $dealerOpinion, monthlySalary: $monthlySalary, isDealerAgreedToFollowTgplStandards: $isDealerAgreedToFollowTgplStandards, selectedTM: $selectedTM, tmRecommendation: $tmRecommendation, tmRemarks: $tmRemarks, selectedRM: $selectedRM, rmRecommendation: $rmRecommendation, rmRemarks: $rmRemarks)';
   }
 
   String? get validate {

@@ -23,11 +23,18 @@ class SurveyFormLocalDataSourceImpl implements SurveyFormLocalDataSource {
     final db = await _databaseHelper.database;
     final now = DateTime.now().toIso8601String();
 
-    return await db.insert(AppDatabase.surveyFormsTable, {
-      ...form.toDatabaseMap(),
-      'isSynced': 0,
-      'createdAt': now,
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+    final existingForm = await getSingleSurveyForm(form.applicationId ?? '');
+    final updatedData = {...form.toDatabaseMap(), 'isSynced': 0};
+    if (existingForm != null) {
+      updatedData['updatedAt'] = now;
+    } else {
+      updatedData['createdAt'] = now;
+    }
+    return await db.insert(
+      AppDatabase.surveyFormsTable,
+      updatedData,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   @override

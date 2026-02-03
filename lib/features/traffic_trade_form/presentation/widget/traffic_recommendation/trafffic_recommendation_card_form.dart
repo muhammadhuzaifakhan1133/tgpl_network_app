@@ -99,7 +99,7 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
               hintText: "Select RM",
               enableSearch: true,
               selectedItem: selectedRM,
-              items: ref.read(tmNamesProvider),
+              items: ref.read(rmNamesProvider),
               onChanged: (value) {
                 if (value == null) return;
                 controller.onChangeRM(value.toString());

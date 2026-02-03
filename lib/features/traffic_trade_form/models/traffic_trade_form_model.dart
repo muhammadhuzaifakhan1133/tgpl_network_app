@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:tgpl_network/features/traffic_trade_form/models/traffic_site_model.dart';
 
 class TrafficTradeFormModel {
@@ -89,7 +91,7 @@ class TrafficTradeFormModel {
     return TrafficTradeFormModel(
       applicationId: json['applicationId'] as String?,
       nearbyTrafficSites:
-          (json['nearbyTrafficSites'] as List<dynamic>?)
+          (jsonDecode((json['nearbyTrafficSites'])) as List<dynamic>?)
               ?.map(
                 (site) =>
                     TrafficSiteModel.fromJson(site as Map<String, dynamic>),

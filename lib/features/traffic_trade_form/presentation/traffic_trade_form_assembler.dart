@@ -21,7 +21,7 @@ class TrafficTradeFormAssembler {
     ref.read(recommendationControllerProvider.notifier).loadFromTrafficTradeFormModel(form);
   }
   
-  static TrafficTradeFormModel assemble(Ref ref) {
+  static TrafficTradeFormModel assemble(Ref ref, String applicationId) {
 
    final nearbySites = ref.read(nearbySitesControllerProvider);
     final trafficCount = ref.read(trafficCountControllerProvider);
@@ -31,6 +31,7 @@ class TrafficTradeFormAssembler {
     return TrafficTradeFormModel(
       // Nearby Sites
       nearbyTrafficSites: nearbySites.nearbyTrafficSites,
+      applicationId: applicationId,
 
       // Traffic Count
       trafficCountTruck: trafficCount.trafficCountTruck,

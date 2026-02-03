@@ -17,9 +17,10 @@ final trafficTradeFormControllerProvider = AsyncNotifierProvider.family
       return TrafficTradeFormController(applicationId);
     });
 
-final trafficTradeFormStatusChangedProvider = StateProvider.autoDispose.family<bool, String>((ref, applicationId) {
-  return false;
-});
+final trafficTradeFormStatusChangedProvider = StateProvider.autoDispose
+    .family<bool, String>((ref, applicationId) {
+      return false;
+    });
 
 class TrafficTradeFormController extends AsyncNotifier<TrafficTradeFormModel> {
   final String applicationId;
@@ -29,35 +30,40 @@ class TrafficTradeFormController extends AsyncNotifier<TrafficTradeFormModel> {
   @override
   Future<TrafficTradeFormModel> build() async {
     final application = await ref
-          .read(applicationDetailDataSourceProvider)
-          .getApplicationDetail(applicationId);
-        
+        .read(applicationDetailDataSourceProvider)
+        .getApplicationDetail(applicationId);
+
     // if ("$_alias.trafficTradeDone = 0 AND $_alias.statusId < 13")
-    if (application.trafficTradeDone == 1 || (application.statusId ?? 0) >= 13) {
+    if (application.trafficTradeDone == 1 ||
+        (application.statusId ?? 0) >= 13) {
       // Mark status as changed so UI can navigate back
       Future.microtask(() {
-        ref.read(trafficTradeFormStatusChangedProvider(applicationId).notifier).state = true;
+        ref
+                .read(
+                  trafficTradeFormStatusChangedProvider(applicationId).notifier,
+                )
+                .state =
+            true;
       });
-      throw Exception('Application status has changed. Traffic Trade form is no longer available.');
+      throw Exception(
+        'Application status has changed. Traffic Trade form is no longer available.',
+      );
     }
     final trafficTradeForm = await ref
         .read(trafficTradeFormLocalDataSourceProvider)
         .getSingleTrafficTradeForm(applicationId);
     if (trafficTradeForm == null) {
       // Prefill all form controllers from application data
-  
+
       TrafficTradeFormAssembler.dessembleFromApp(
         ref,
         application,
       ); // fill all form controllers
-      return TrafficTradeFormAssembler.assemble(ref);
+      return TrafficTradeFormAssembler.assemble(ref, applicationId);
     } else {
       // Refill form controllers with updated application data
       // (in case data changed but status is still valid)
-      TrafficTradeFormAssembler.dessembleFromApp(
-        ref,
-        application,
-      );
+      TrafficTradeFormAssembler.dessembleFromApp(ref, application);
 
       // Prefill all form controllers from saved traffic trade form
       TrafficTradeFormAssembler.dessembleFromTrafficTradeFormModel(
@@ -73,11 +79,12 @@ class TrafficTradeFormController extends AsyncNotifier<TrafficTradeFormModel> {
       final application = await ref
           .read(applicationDetailDataSourceProvider)
           .getApplicationDetail(applicationId);
-      return (application.trafficTradeDone == 0) && ((application.statusId ?? 0) < 13);
+      return (application.trafficTradeDone == 0) &&
+          ((application.statusId ?? 0) < 13);
     } catch (e) {
       return false;
     }
-  } 
+  }
 
   Future<bool> submitTrafficTradeForm() async {
     try {
@@ -87,11 +94,19 @@ class TrafficTradeFormController extends AsyncNotifier<TrafficTradeFormModel> {
             errorMessage: 'Application status has changed. Cannot submit form.',
           ),
         );
-        ref.read(trafficTradeFormStatusChangedProvider(applicationId).notifier).state = true;
+        ref
+                .read(
+                  trafficTradeFormStatusChangedProvider(applicationId).notifier,
+                )
+                .state =
+            true;
         return false;
       }
       // Gather all form data
-      final trafficTradeFormData = TrafficTradeFormAssembler.assemble(ref);
+      final trafficTradeFormData = TrafficTradeFormAssembler.assemble(
+        ref,
+        applicationId,
+      );
       debugPrint(
         'Traffic Trade Form Data: ${trafficTradeFormData.toDatabaseMap()}',
       );
@@ -106,7 +121,7 @@ class TrafficTradeFormController extends AsyncNotifier<TrafficTradeFormModel> {
         state.requireValue.copyWith(isSubmitting: true, errorMessage: null),
       );
       if (false) {
-      // if (await InternetConnectivity.hasInternet()) {
+        // if (await InternetConnectivity.hasInternet()) {
         final response = await ref
             .read(trafficTradeFormRemoteDataSourceProvider)
             .submitTrafficTradeForm(trafficTradeFormData);
@@ -126,7 +141,8 @@ class TrafficTradeFormController extends AsyncNotifier<TrafficTradeFormModel> {
         await ref
             .read(trafficTradeFormLocalDataSourceProvider)
             .saveTrafficTradeForm(trafficTradeFormData);
-        ref.invalidate(dataSyncControllerProvider);
+        // ignore: unused_result
+        ref.refresh(dataSyncControllerProvider);
       }
       return true;
     } catch (e, _) {

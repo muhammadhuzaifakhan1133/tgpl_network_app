@@ -67,15 +67,38 @@ class ApplicationInfoFormState {
     List<String>? fieldsToNull,
   }) {
     return ApplicationInfoFormState(
-      selectedCity: fieldsToNull
-          .apply('selectedCity', selectedCity, this.selectedCity),
+      selectedCity: fieldsToNull.apply(
+        'selectedCity',
+        selectedCity,
+        this.selectedCity,
+      ),
       siteStatus: fieldsToNull.apply("siteStatus", siteStatus, this.siteStatus),
-      selectedPriority: fieldsToNull.apply("selectedPriority", selectedPriority, this.selectedPriority),
-      applicantId: fieldsToNull.apply("applicantId", applicantId, this.applicantId),
+      selectedPriority: fieldsToNull.apply(
+        "selectedPriority",
+        selectedPriority,
+        this.selectedPriority,
+      ),
+      applicantId: fieldsToNull.apply(
+        "applicantId",
+        applicantId,
+        this.applicantId,
+      ),
       entryCode: fieldsToNull.apply("entryCode", entryCode, this.entryCode),
-      dateConducted: fieldsToNull.apply("dateConducted", dateConducted, this.dateConducted),
-      conductedBy: fieldsToNull.apply("conductedBy", conductedBy, this.conductedBy),
-      googleLocation: fieldsToNull.apply("googleLocation", googleLocation, this.googleLocation),
+      dateConducted: fieldsToNull.apply(
+        "dateConducted",
+        dateConducted,
+        this.dateConducted,
+      ),
+      conductedBy: fieldsToNull.apply(
+        "conductedBy",
+        conductedBy,
+        this.conductedBy,
+      ),
+      googleLocation: fieldsToNull.apply(
+        "googleLocation",
+        googleLocation,
+        this.googleLocation,
+      ),
       district: fieldsToNull.apply("district", district, this.district),
       npName: fieldsToNull.apply("npName", npName, this.npName),
       source: fieldsToNull.apply("source", source, this.source),
@@ -84,32 +107,32 @@ class ApplicationInfoFormState {
   }
 
   ApplicationInfoFormState.loadFromApplication(ApplicationModel app)
-      : selectedCity = app.cityName,
-        siteStatus = app.siteStatusName,
-        selectedPriority = app.priority,
-        applicantId = app.applicationId?.toString(),
-        entryCode = app.entryCode,
-        dateConducted = app.dateConducted,
-        conductedBy = null,
-        googleLocation = app.googleLocation,
-        district = app.district,
-        npName = app.npPersonName,
-        source = app.source,
-        sourceName = app.sourceName;
+    : selectedCity = app.cityName,
+      siteStatus = app.siteStatusName,
+      selectedPriority = app.priority,
+      applicantId = app.applicationId?.toString(),
+      entryCode = app.entryCode,
+      dateConducted = app.dateConducted,
+      conductedBy = null,
+      googleLocation = app.googleLocation,
+      district = app.district,
+      npName = app.npPersonName,
+      source = app.source,
+      sourceName = app.sourceName;
 
   ApplicationInfoFormState.loadFromSurveyFormModel(SurveyFormModel form)
-      : selectedCity = form.city,
-        siteStatus = form.siteStatus,
-        selectedPriority = form.priority,
-        applicantId = form.applicantId,
-        entryCode = form.entryCode,
-        dateConducted = form.dateConducted,
-        conductedBy = form.conductedBy,
-        googleLocation = form.googleLocation,
-        district = form.district,
-        npName = form.npName,
-        source = form.source,
-        sourceName = form.sourceName;
+    : selectedCity = form.city,
+      siteStatus = form.siteStatus,
+      selectedPriority = form.priority,
+      applicantId = form.applicationId,
+      entryCode = form.entryCode,
+      dateConducted = form.dateConducted,
+      conductedBy = form.conductedBy,
+      googleLocation = form.googleLocation,
+      district = form.district,
+      npName = form.npName,
+      source = form.source,
+      sourceName = form.sourceName;
 
   @override
   String toString() {
@@ -165,6 +188,7 @@ class ApplicationInfoFormController extends Notifier<ApplicationInfoFormState> {
   void loadFromSurveyFormModel(SurveyFormModel form) {
     state = ApplicationInfoFormState.loadFromSurveyFormModel(form);
   }
+
   // void prefillFormData({
   //   required String applicantId,
   //   required String entryCode,

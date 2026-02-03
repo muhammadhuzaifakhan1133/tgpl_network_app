@@ -159,6 +159,8 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
               selectedItem: selectedItem,
               onChanged: onChanged,
               hintText: loadingHintText ?? "Loading ${title.toLowerCase()}...",
+              isMultiSelect: isMultiSelect,
+              onMultiChanged: onMultiChanged,
             );
           },
           error: (error, stack) {
@@ -178,6 +180,8 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
               selectedItem: selectedItem,
               onChanged: onChanged,
               hintText: "Error loading ${title.toLowerCase()}",
+              isMultiSelect: isMultiSelect,
+              onMultiChanged: onMultiChanged,
             );
           },
         ),

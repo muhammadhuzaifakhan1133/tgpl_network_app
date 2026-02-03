@@ -27,8 +27,8 @@ class DataSyncDataSourceImpl implements DataSyncDataSource {
     for (var form in pendingSurveyForms) {
       syncItems.add(
         SyncItem(
-          id: form.applicantId ?? '',
-          title: 'Survey Form - ${form.applicantId}',
+          id: form.applicationId ?? '',
+          title: 'Survey Form - ${form.applicationId}',
           subtitle: form.errorMessage.isNullOrEmpty
               ? (form.updatedAt.isEmpty
                     ? 'Created on ${getFormattedTimeDuration(form.createdAt)}'
@@ -77,8 +77,8 @@ class DataSyncDataSourceImpl implements DataSyncDataSource {
     for (var form in syncedSurveyForms) {
       syncItems.add(
         SyncItem(
-          id: form.applicantId ?? '',
-          title: 'Survey Form - ${form.applicantId}',
+          id: form.applicationId ?? '',
+          title: 'Survey Form - ${form.applicationId}',
           subtitle: 'Synced on ${getFormattedTimeDuration(form.updatedAt)}',
           status: SyncItemStatus.success,
           surveyForm: form,

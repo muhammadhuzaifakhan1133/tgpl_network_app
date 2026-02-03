@@ -198,7 +198,9 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                               onPressed: () {
                                 ref
                                     .read(homeShellControllerProvider.notifier)
-                                    .getMasterDataAndSaveLocally();
+                                    .getMasterDataAndSaveLocally(
+                                      forcefulSync: true,
+                                    );
                               },
                               label: const Text("Resync"),
                               icon: syncStatus == SyncStatus.syncing

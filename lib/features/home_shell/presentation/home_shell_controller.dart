@@ -239,7 +239,6 @@ class HomeShellController extends AsyncNotifier<void> {
         .read(appFormDropdownsRemoteDataSourceProvider)
         .fetchAppFormDropdownValues();
 
-
     ref.read(snackbarMessageProvider.notifier).state =
         'Data fetched successfully. Saving locally...';
 
@@ -254,7 +253,6 @@ class HomeShellController extends AsyncNotifier<void> {
     ref.read(snackbarMessageProvider.notifier).state =
         'Data synchronized successfully.';
   }
-
 
   Future<void> _syncPendingForms() async {
     try {

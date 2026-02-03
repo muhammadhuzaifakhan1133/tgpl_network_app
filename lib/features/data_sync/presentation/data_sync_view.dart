@@ -4,6 +4,7 @@ import 'package:tgpl_network/common/models/sync_enum.dart';
 import 'package:tgpl_network/common/providers/last_sync_time_provider.dart';
 import 'package:tgpl_network/common/providers/sync_status_provider.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
+import 'package:tgpl_network/common/widgets/error_widget.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/features/data_sync/presentation/data_sync_controller.dart';
 import 'package:tgpl_network/features/data_sync/presentation/data_sync_state.dart';
@@ -30,7 +31,8 @@ class DataSyncView extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: RefreshIndicator(
               onRefresh: () async {
-                ref.invalidate(dataSyncControllerProvider);
+                // ignore: unused_result
+                ref.refresh(dataSyncControllerProvider);
               },
               child: ListView(
                 children: [
@@ -56,7 +58,7 @@ class DataSyncView extends ConsumerWidget {
                     },
                   ),
                   const SizedBox(height: 20),
-              
+
                   Row(
                     children: [
                       Expanded(
@@ -75,18 +77,17 @@ class DataSyncView extends ConsumerWidget {
                         child: SyncStatsCard(
                           icon: Icons.cloud_done,
                           iconColor: AppColors.syncedCountColor,
-                          backgroundColor: AppColors.syncedCountColor.withOpacity(
-                            0.1,
-                          ),
+                          backgroundColor: AppColors.syncedCountColor
+                              .withOpacity(0.1),
                           count: data.syncedItems.length.toString(),
                           label: 'Synced Today',
                         ),
                       ),
                     ],
                   ),
-              
+
                   const SizedBox(height: 16),
-              
+
                   Consumer(
                     builder: (context, ref, child) {
                       final isCollapsed = ref.watch(isPendingCollapsedProvider);
@@ -111,9 +112,9 @@ class DataSyncView extends ConsumerWidget {
                       );
                     },
                   ),
-              
+
                   const SizedBox(height: 16),
-              
+
                   Consumer(
                     builder: (context, ref, child) {
                       final isCollapsed = ref.watch(isSyncedCollapsedProvider);
@@ -141,9 +142,12 @@ class DataSyncView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(dataSyncControllerProvider);
     return state.when(
+      skipLoadingOnRefresh: false,
       data: (dataSyncState) => _buildContent(ref, dataSyncState),
       loading: () => const DataSyncShimmerView(),
-      error: (error, stack) => Center(child: Text('Error: $error')),
+      error: (error, stack) => SingleChildScrollView(
+        child: errorWidget(error.toString(), stack.toString()),
+      ),
     );
   }
 }
