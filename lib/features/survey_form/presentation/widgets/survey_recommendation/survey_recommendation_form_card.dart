@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/features/master_data/providers/tm_names_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/tm_rm_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/yes_no_na_values_provider.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
@@ -16,41 +16,62 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
     final controller = ref.read(
       surveyRecommendationFormControllerProvider.notifier,
     );
-    final state = ref.watch(surveyRecommendationFormControllerProvider);
+    final state = ref.read(surveyRecommendationFormControllerProvider);
 
     return SectionDetailCard(
       title: "Recommendation",
       children: [
-        CustomDropDownWithTitle(
-          title: "TM",
-          hintText: "Select TM",
-          enableSearch: true,
-          selectedItem: state.selectedTM,
-          items: ref.read(tmNamesProvider),
-          onChanged: (value) {
-            if (value == null) return;
-            controller.onChangeTM(value.toString());
-          },
-          validator: (v) => v.validate(),
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('selectedTM');
+        Consumer(
+          builder: (context, ref, _) {
+            final selectedTM = ref.watch(
+              surveyRecommendationFormControllerProvider.select(
+                (state) => state.selectedTM,
+              ),
+            );
+            return SmartCustomDropDownWithTitle(
+              title: "TM",
+              hintText: "Select TM",
+              enableSearch: true,
+              isRequired: true,
+              selectedItem: selectedTM,
+              items: ref.read(tmNamesProvider),
+              onChanged: (value) {
+                if (value == null) return;
+                controller.onChangeTM(value.toString());
+              },
+              validator: (v) => v.validate(),
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('selectedTM');
+              },
+            );
           },
         ),
         const SizedBox(height: 10),
-        CustomDropDownWithTitle(
-          title: "TM Recommendation",
-          hintText: "Select an option",
-          selectedItem: state.selectedTMRecommendation,
-          items: ref.read(yesNoNaValuesProvider),
-          onChanged: (value) {
-            if (value == null) return;
-            controller.onChangeTMRecommendation(value.toString());
-          },
-          validator: (v) => v.validate(),
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('selectedTMRecommendation');
+        Consumer(
+          builder: (context, ref, _) {
+            final selectedTMRecommendation = ref.watch(
+              surveyRecommendationFormControllerProvider.select(
+                (state) => state.selectedTMRecommendation,
+              ),
+            );
+            return SmartCustomDropDownWithTitle(
+              title: "TM Recommendation",
+              hintText: "Select an option",
+              selectedItem: selectedTMRecommendation,
+              asyncProvider: yesNoNaValuesProvider,
+              itemsBuilder: (values) => values,
+              isRequired: true,
+              onChanged: (value) {
+                if (value == null) return;
+                controller.onChangeTMRecommendation(value.toString());
+              },
+              validator: (v) => v.validate(),
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('selectedTMRecommendation');
+              },
+            );
           },
         ),
         const SizedBox(height: 10),
@@ -62,42 +83,64 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
             controller.updateTMRemarks(value);
           },
           validator: (v) => v.validate(),
+          isRequired: true,
           showClearButton: true,
           onClear: () {
             controller.clearField('tmRemarks');
           },
         ),
         const SizedBox(height: 10),
-        CustomDropDownWithTitle(
-          title: "RM",
-          hintText: "Select RM",
-          enableSearch: true,
-          selectedItem: state.selectedRM,
-          items: ref.read(tmNamesProvider),
-          onChanged: (value) {
-            if (value == null) return;
-            controller.onChangeRM(value.toString());
-          },
-          validator: (v) => v.validate(),
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('selectedRM');
+        Consumer(
+          builder: (context, ref, _) {
+            final selectedRM = ref.watch(
+              surveyRecommendationFormControllerProvider.select(
+                (state) => state.selectedRM,
+              ),
+            );
+            return SmartCustomDropDownWithTitle(
+              title: "RM",
+              hintText: "Select RM",
+              enableSearch: true,
+              selectedItem: selectedRM,
+              items: ref.read(rmNamesProvider),
+              onChanged: (value) {
+                if (value == null) return;
+                controller.onChangeRM(value.toString());
+              },
+              validator: (v) => v.validate(),
+              isRequired: true,
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('selectedRM');
+              },
+            );
           },
         ),
         const SizedBox(height: 10),
-        CustomDropDownWithTitle(
-          title: "RM Recommendation",
-          hintText: "Select an option",
-          selectedItem: state.selectedRMRecommendation,
-          items: ref.read(yesNoNaValuesProvider),
-          onChanged: (value) {
-            if (value == null) return;
-            controller.onChangeRMRecommendation(value.toString());
-          },
-          validator: (v) => v.validate(),
-          showClearButton: true,
-          onClear: () {
-            controller.clearField('selectedRMRecommendation');
+        Consumer(
+          builder: (context, ref, _) {
+            final selectedRMRecommendation = ref.watch(
+              surveyRecommendationFormControllerProvider.select(
+                (state) => state.selectedRMRecommendation,
+              ),
+            );
+            return SmartCustomDropDownWithTitle(
+              title: "RM Recommendation",
+              hintText: "Select an option",
+              selectedItem: selectedRMRecommendation,
+              asyncProvider: yesNoNaValuesProvider,
+              itemsBuilder: (values) => values,
+              isRequired: true,
+              onChanged: (value) {
+                if (value == null) return;
+                controller.onChangeRMRecommendation(value.toString());
+              },
+              validator: (v) => v.validate(),
+              showClearButton: true,
+              onClear: () {
+                controller.clearField('selectedRMRecommendation');
+              },
+            );
           },
         ),
         const SizedBox(height: 10),
@@ -105,6 +148,7 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
           title: "RM Remarks",
           hintText: "Enter RM remarks",
           initialValue: state.rmRemarks,
+          isRequired: true,
           onChanged: (value) {
             controller.updateRMRemarks(value);
           },

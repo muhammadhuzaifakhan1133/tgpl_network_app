@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:tgpl_network/common/models/sync_enum.dart';
+import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_shimmer.dart';
 import 'package:tgpl_network/utils/get_time_duration_till_now.dart';
 
 class SyncStatusCard extends StatelessWidget {
   final SyncStatus status;
   final String lastSyncTime;
-  final VoidCallback? onResync;
+  final VoidCallback? onPressActionButton;
 
   const SyncStatusCard({
     super.key,
     required this.status,
     required this.lastSyncTime,
-    this.onResync,
+    this.onPressActionButton,
   });
 
   @override
@@ -23,6 +24,8 @@ class SyncStatusCard extends StatelessWidget {
         return _buildSyncingCard();
       case SyncStatus.synchronized:
         return _buildSynchronizedCard();
+      case SyncStatus.loading:
+        return SyncStatusCardShimmer();
     }
   }
 
@@ -67,15 +70,15 @@ class SyncStatusCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Last sync: ${getTimeDurationTillNow(lastSyncTime)}',
+                  'Last sync: ${getFormattedTimeDuration(lastSyncTime)}',
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],
             ),
           ),
-          if (onResync != null)
+          if (onPressActionButton != null)
             IconButton(
-              onPressed: onResync,
+              onPressed: onPressActionButton,
               icon: const Icon(Icons.refresh, size: 24),
               style: IconButton.styleFrom(
                 backgroundColor: Colors.white.withOpacity(0.2),
@@ -127,7 +130,7 @@ class SyncStatusCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Last sync: ${getTimeDurationTillNow(lastSyncTime)}',
+                  'Last sync: ${getFormattedTimeDuration(lastSyncTime)}',
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],
@@ -178,15 +181,15 @@ class SyncStatusCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Last sync: ${getTimeDurationTillNow(lastSyncTime)}',
+                  'Last sync: ${getFormattedTimeDuration(lastSyncTime)}',
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],
             ),
           ),
-          if (onResync != null)
+          if (onPressActionButton != null)
             IconButton(
-              onPressed: onResync,
+              onPressed: onPressActionButton,
               icon: const Icon(Icons.refresh, size: 24),
               style: IconButton.styleFrom(
                 backgroundColor: Colors.white.withOpacity(0.2),

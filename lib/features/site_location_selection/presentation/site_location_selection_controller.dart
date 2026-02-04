@@ -10,15 +10,18 @@ class LocationData {
 }
 
 // Providers
-final currentLocationProvider = StateProvider<LatLng?>((ref) => null);
+final currentLocationProvider = StateProvider.autoDispose<LatLng?>(
+  (ref) => null,
+);
 
-final selectedLocationProvider = StateProvider<LocationData?>((ref) => null);
+final selectedLocationProvider = StateProvider.autoDispose<LocationData?>(
+  (ref) => null,
+);
 
 final markersProvider = StateProvider<Set<Marker>>((ref) => {});
-
-final locationActionProvider =
-    StateProvider<AsyncValue<void>>((ref) => const AsyncData(null));
-
+final locationActionProvider = StateProvider.autoDispose<AsyncValue<void>>(
+  (ref) => const AsyncData(null),
+);
 
 // Map Controller Provider
 final mapControllerProvider = StateProvider.autoDispose<GoogleMapController?>(

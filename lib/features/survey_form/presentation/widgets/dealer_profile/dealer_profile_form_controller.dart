@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/features/survey_form/models/survey_form_model.dart';
 import 'package:tgpl_network/utils/extensions/nullable_fields_helper.dart';
 
 final dealerProfileFormControllerProvider =
@@ -74,6 +76,26 @@ class DealerProfileFormState {
   String toString() {
     return 'DealerProfileFormState(isThisDealer: $isThisDealer, dealerPlatform: $dealerPlatform, dealerBusinesses: $dealerBusinesses, selectedDealerInvolvement: $selectedDealerInvolvement, isDealerReadyToInvest: $isDealerReadyToInvest, dealerOpinion: $dealerOpinion, monthlySalary: $monthlySalary, isDealerAgreedToFollowTgplStandards: $isDealerAgreedToFollowTgplStandards)';
   }
+
+  DealerProfileFormState.loadFromApplication(ApplicationModel app)
+      : isThisDealer = app.isThisDealerSite,
+        dealerPlatform = app.platform,
+        dealerBusinesses = app.whatOtherBusiness,
+        selectedDealerInvolvement = app.howInvolveDealerInPetrol,
+        isDealerReadyToInvest = app.isDealerReadyToCapitalInvestment,
+        dealerOpinion = app.whyDoesTaj,
+        monthlySalary = app.managerCurrentSalary?.toString(),
+        isDealerAgreedToFollowTgplStandards = app.isAgreeToTGPLStandard;
+
+  DealerProfileFormState.loadFromSurveyFormModel(SurveyFormModel form)
+      : isThisDealer = form.isThisDealer,
+        dealerPlatform = form.dealerPlatform,
+        dealerBusinesses = form.dealerBusinesses,
+        selectedDealerInvolvement = form.dealerInvolvement,
+        isDealerReadyToInvest = form.isDealerReadyToInvest,
+        dealerOpinion = form.dealerOpinion,
+        monthlySalary = form.monthlySalary,
+        isDealerAgreedToFollowTgplStandards = form.isDealerAgreedToFollowTgplStandards;
 }
 
 class DealerProfileFormController extends Notifier<DealerProfileFormState> {
@@ -130,25 +152,33 @@ class DealerProfileFormController extends Notifier<DealerProfileFormState> {
     state = state.copyWith(fieldsToNull: [fieldName]);
   }
 
-  void prefillFormData({
-    required String dealerPlatform,
-    required String dealerBusinesses,
-    required String dealerOpinion,
-    required String monthlySalary,
-    required String isThisDealer,
-    required String selectedDealerInvolvement,
-    required String isDealerReadyToInvest,
-    required String isDealerAgreedToFollowTgplStandards,
-  }) {
-    state = state.copyWith(
-      dealerPlatform: dealerPlatform,
-      dealerBusinesses: dealerBusinesses,
-      dealerOpinion: dealerOpinion,
-      monthlySalary: monthlySalary,
-      isThisDealer: isThisDealer,
-      selectedDealerInvolvement: selectedDealerInvolvement,
-      isDealerReadyToInvest: isDealerReadyToInvest,
-      isDealerAgreedToFollowTgplStandards: isDealerAgreedToFollowTgplStandards,
-    );
+  void loadFromApplication(ApplicationModel app) {
+    state = DealerProfileFormState.loadFromApplication(app);
   }
+
+  void loadFromSurveyFormModel(SurveyFormModel form) {
+    state = DealerProfileFormState.loadFromSurveyFormModel(form);
+  }
+
+  // void prefillFormData({
+  //   required String dealerPlatform,
+  //   required String dealerBusinesses,
+  //   required String dealerOpinion,
+  //   required String monthlySalary,
+  //   required String isThisDealer,
+  //   required String selectedDealerInvolvement,
+  //   required String isDealerReadyToInvest,
+  //   required String isDealerAgreedToFollowTgplStandards,
+  // }) {
+  //   state = state.copyWith(
+  //     dealerPlatform: dealerPlatform,
+  //     dealerBusinesses: dealerBusinesses,
+  //     dealerOpinion: dealerOpinion,
+  //     monthlySalary: monthlySalary,
+  //     isThisDealer: isThisDealer,
+  //     selectedDealerInvolvement: selectedDealerInvolvement,
+  //     isDealerReadyToInvest: isDealerReadyToInvest,
+  //     isDealerAgreedToFollowTgplStandards: isDealerAgreedToFollowTgplStandards,
+  //   );
+  // }
 }

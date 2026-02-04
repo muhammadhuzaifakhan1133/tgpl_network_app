@@ -11,6 +11,6 @@ class SyncStatusController extends Notifier<SyncStatus> {
 
   @override
   SyncStatus build() {
-    return SyncStatus.offline;
+    return SyncStatus.loading;
   }
 }

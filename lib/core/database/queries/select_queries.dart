@@ -1,8 +1,13 @@
+import 'package:tgpl_network/common/models/logical_operator_enum.dart';
 import 'package:tgpl_network/core/database/app_database.dart';
+import 'package:tgpl_network/common/models/join_clause_model.dart';
 import 'package:tgpl_network/core/database/modules_db_conditions.dart';
+import 'package:tgpl_network/features/application_form/models/site_status_model.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
 
 class SelectDbQueries {
-  static const String selectDashboardCounts = '''
+  static String selectDashboardCounts =
+      '''
       SELECT COUNT(CASE WHEN ${ModulesDbConditions.inprocess} THEN 1 END) AS inProcessCount,
              COUNT(CASE WHEN ${ModulesDbConditions.siteScreeningOpenApplications} THEN 1 END) AS openApplicationsCount,
              COUNT(CASE WHEN ${ModulesDbConditions.siteScreeningSurveyAndDealerProfile} THEN 1 END) AS surveyAndDealerProfileCount,
@@ -29,13 +34,104 @@ class SelectDbQueries {
              COUNT(CASE WHEN ${ModulesDbConditions.holdByTgpl} THEN 1 END) AS holdByTgplCount,
              COUNT(CASE WHEN ${ModulesDbConditions.rejectedByDealer} THEN 1 END) AS rejectedByDealerCount,
              COUNT(CASE WHEN ${ModulesDbConditions.rejectedByTgpl} THEN 1 END) AS rejectedByTgplCount
-      FROM ${AppDatabase.applicationTable}
+      FROM ${AppDatabase.applicationTable} ${ApplicationModel.alias}
     ''';
 
-  static const String selectLastSyncTime = '''
+  static const String selectLastSyncTime =
+      '''
       SELECT lastSyncTime
       FROM ${AppDatabase.syncMetadataTable}
       ORDER BY id DESC
       LIMIT 1
     ''';
+
+  static String buildApplicationQuery({
+    List<String>? whereConditions,
+    LogicalOperator operator = LogicalOperator.and,
+    String? orderBy,
+    int? limit,
+    int? offset,
+    List<String>? selectColumns,
+  }) {
+    return _buildApplicationsRawQuery(
+      tableName: AppDatabase.applicationTable,
+      tableAlias: ApplicationModel.alias,
+      selectColumns: [
+        if (selectColumns != null)
+          ...selectColumns
+        else
+          '${ApplicationModel.alias}.*',
+        '${SiteStatusModel.alias}.name as siteStatusName',
+      ],
+      joins: [
+        JoinClause(
+          type: JoinType.leftJoin,
+          tableName: AppDatabase.siteStatusTable,
+          tableAlias: SiteStatusModel.alias,
+          onCondition:
+              '${ApplicationModel.alias}.siteStatusId = ${SiteStatusModel.alias}.siteStatusId',
+        ),
+      ],
+      whereClause: whereConditions != null && whereConditions.isNotEmpty
+          ? whereConditions.join(" ${operator.value} ")
+          : null,
+      orderBy: orderBy,
+      limit: limit,
+      offset: offset,
+    );
+  }
+
+  static String _buildApplicationsRawQuery({
+    required String tableName,
+    String tableAlias = 'main',
+    List<String>? selectColumns,
+    List<JoinClause>? joins,
+    String? whereClause,
+    String? orderBy,
+    int? limit,
+    int? offset,
+  }) {
+    final buffer = StringBuffer();
+
+    // SELECT clause
+    buffer.write('SELECT ');
+    if (selectColumns != null && selectColumns.isNotEmpty) {
+      buffer.write(selectColumns.join(', '));
+    } else {
+      buffer.write('$tableAlias.*');
+    }
+
+    // FROM clause
+    buffer.write('\nFROM $tableName $tableAlias');
+
+    // JOIN clauses
+    if (joins != null && joins.isNotEmpty) {
+      for (final join in joins) {
+        buffer.write('\n${join.type} ${join.tableName} ${join.tableAlias}');
+        buffer.write('\n  ON ${join.onCondition}');
+      }
+    }
+
+    // WHERE clause
+    if (whereClause != null && whereClause.isNotEmpty) {
+      buffer.write('\nWHERE $whereClause');
+    }
+
+    // ORDER BY clause
+    if (orderBy != null && orderBy.isNotEmpty) {
+      buffer.write('\nORDER BY $orderBy');
+    }
+
+    // LIMIT clause
+    if (limit != null) {
+      buffer.write('\nLIMIT $limit');
+    }
+
+    // OFFSET clause
+    if (offset != null) {
+      buffer.write('\nOFFSET $offset');
+    }
+
+    return buffer.toString();
+  }
 }

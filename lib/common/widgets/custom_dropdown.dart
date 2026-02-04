@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/routes/app_router.dart';
 
 class CustomDropDown<T> extends StatefulWidget {
   final List<T> items;
@@ -14,6 +16,9 @@ class CustomDropDown<T> extends StatefulWidget {
   final int? maxSelection;
   final bool showClearButton;
   final VoidCallback? onClear;
+  final Color? backgroundColor;
+  final TextStyle? textStyle;
+  final TextStyle Function(T item)? itemTextStyle;
 
   const CustomDropDown({
     super.key,
@@ -30,6 +35,9 @@ class CustomDropDown<T> extends StatefulWidget {
     this.maxSelection,
     this.showClearButton = false,
     this.onClear,
+    this.backgroundColor,
+    this.textStyle,
+    this.itemTextStyle,
   }) : assert(isMultiSelect ? onMultiChanged != null : onChanged != null);
 
   @override
@@ -84,7 +92,7 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
         validator: (_) => widget.multiValidator?.call(_selectedItems),
         builder: (state) {
           return InkWell(
-            onTap: _showMultiSelectDialog,
+            onTap: showMultiSelectDialog,
             child: InputDecorator(
               decoration: InputDecoration(
                 hintText: widget.hintText,
@@ -104,6 +112,7 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
                     ? widget.hintText ?? ''
                     : _textController.text,
                 overflow: TextOverflow.ellipsis,
+                style: widget.textStyle,
               ),
             ),
           );
@@ -122,14 +131,24 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
                 widget.displayString != null
                     ? widget.displayString!(item)
                     : item.toString(),
+                style: widget.itemTextStyle != null
+                    ? widget.itemTextStyle!(item)
+                    : widget.textStyle,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ),
           )
           .toList(),
       onChanged: widget.onChanged,
       validator: widget.validator,
+      style: widget.selectedItem != null && widget.itemTextStyle != null
+          ? widget.itemTextStyle!(widget.selectedItem!)
+          : widget.textStyle,
       decoration: InputDecoration(
         hintText: widget.hintText,
+        fillColor: widget.backgroundColor,
+        filled: widget.backgroundColor != null,
         suffixIcon: widget.showClearButton && _hasValue
             ? IconButton(icon: const Icon(Icons.close), onPressed: _clear)
             : null,
@@ -138,7 +157,7 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
     );
   }
 
-  void _showMultiSelectDialog() {
+  void showMultiSelectDialog() {
     showDialog(
       context: context,
       builder: (context) {
@@ -176,22 +195,30 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
                 ),
               ),
               actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Cancel'),
+                Consumer(
+                  builder: (context, ref, _) {
+                    return TextButton(
+                      onPressed: () {
+                        ref.read(goRouterProvider).pop();
+                      },
+                      child: const Text('Cancel'),
+                    );
+                  }
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _selectedItems = tempSelectedItems;
-                      _updateDisplayText();
-                    });
-                    widget.onMultiChanged?.call(_selectedItems);
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('OK'),
+                Consumer(
+                  builder: (context, ref, _) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _selectedItems = tempSelectedItems;
+                          _updateDisplayText();
+                        });
+                        widget.onMultiChanged?.call(_selectedItems);
+                        ref.read(goRouterProvider).pop();
+                      },
+                      child: const Text('OK'),
+                    );
+                  }
                 ),
               ],
             );

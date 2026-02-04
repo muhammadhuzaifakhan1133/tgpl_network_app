@@ -3,9 +3,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/features/master_data/models/user_model.dart';
 
 class ContactInformationSection extends StatelessWidget {
-  const ContactInformationSection({super.key});
+  final UserModel user;
+  const ContactInformationSection({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -18,22 +20,23 @@ class ContactInformationSection extends StatelessWidget {
           color: AppColors.nextStep2Color,
           icon: AppImages.emailIconSvg,
           title: "Email",
-          value: "ahmad.hassan@tgpl.com",
+          value: user.email,
         ),
         const SizedBox(height: 14),
         _ContactInfoCard(
           color: AppColors.nextStep3Color,
           icon: AppImages.phoneIconSvg,
           title: "Phone",
-          value: "0321-1234567",
+          value: user.contact,
         ),
-        const SizedBox(height: 14),
-        _ContactInfoCard(
-          color: AppColors.emailUsIconColor,
-          icon: AppImages.locationIconSvg,
-          title: "Region",
-          value: "Karachi Region",
-        ),
+        // TODO: add region info in user model
+        // const SizedBox(height: 14),
+        // _ContactInfoCard(
+        //   color: AppColors.emailUsIconColor,
+        //   icon: AppImages.locationIconSvg,
+        //   title: "Region",
+        //   value: "Karachi Region",
+        // ),
       ],
     );
   }

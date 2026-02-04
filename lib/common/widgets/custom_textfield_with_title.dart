@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield.dart';
+import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 
 class CustomTextFieldWithTitle extends StatelessWidget {
@@ -19,10 +20,10 @@ class CustomTextFieldWithTitle extends StatelessWidget {
   final void Function()? onTap;
   final void Function(String)? onChanged;
   final String? initialValue;
-
-  /// 🔹 NEW
   final bool showClearButton;
   final VoidCallback? onClear;
+  final bool isRequired;
+  final bool greyedOutWhenReadOnly;
 
   const CustomTextFieldWithTitle({
     super.key,
@@ -44,6 +45,8 @@ class CustomTextFieldWithTitle extends StatelessWidget {
     this.initialValue,
     this.showClearButton = false,
     this.onClear,
+    this.isRequired = false,
+    this.greyedOutWhenReadOnly = true,
   });
 
   @override
@@ -51,7 +54,23 @@ class CustomTextFieldWithTitle extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: AppTextstyles.googleJakarta500Grey12),
+        // Text(title, style: AppTextstyles.googleJakarta500Grey12),
+        RichText(
+          text: TextSpan(
+            text: title,
+            style: AppTextstyles.googleJakarta500Grey12,
+            children: [
+              if (isRequired)
+                TextSpan(
+                  text: ' *',
+                  style: AppTextstyles.googleJakarta500Grey12.copyWith(
+                    color: Colors.red,
+                    fontSize: 14,
+                  ),
+                ),
+            ],
+          ),
+        ),
         const SizedBox(height: 8),
         CustomTextField(
           controller: controller,
@@ -71,6 +90,9 @@ class CustomTextFieldWithTitle extends StatelessWidget {
           title: title,
           showClearButton: showClearButton,
           onClear: onClear,
+          backgroundColor: readOnly && greyedOutWhenReadOnly
+              ? AppColors.grey[100]
+              : null,
         ),
         if (extraInformation != null) ...[
           const SizedBox(height: 2),

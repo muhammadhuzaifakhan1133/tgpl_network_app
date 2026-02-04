@@ -1,6 +1,10 @@
 // lib/features/master_data/data/datasources/master_data_local_data_source.dart
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:tgpl_network/core/database/queries/select_queries.dart';
+import 'package:tgpl_network/features/master_data/models/user_model.dart';
 import 'package:tgpl_network/core/database/app_database.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_state.dart';
@@ -14,6 +18,8 @@ abstract class MasterDataLocalDataSource {
   Future<void> saveMasterData(MasterDataResponseModel data);
   Future<List<ApplicationModel>> getApplications({
     FilterSelectionState? filters,
+    int page,
+    int pageSize,
   });
   Future<List<String>> getNearestDepos();
   Future<List<String>> getTradeAreaTypes();
@@ -26,7 +32,8 @@ abstract class MasterDataLocalDataSource {
   Future<List<String>> getYNNList();
   Future<List<String>> getNFRList();
   Future<List<CityModel>> getCities();
-  Future<void> clearAllData();
+  Future<UserModel?> getUserInfo();
+  // Future<void> clearAllData();
 }
 
 class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
@@ -38,16 +45,11 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
   Future<void> saveMasterData(MasterDataResponseModel data) async {
     final db = await _databaseHelper.database;
 
-    await db.transaction((txn) async {
-      final batch = txn.batch();
-
+    final result = await db.transaction((txn) async {
       // Clear existing data
-      batch.delete(AppDatabase.applicationTable);
-      batch.delete(AppDatabase.cityTable);
-      batch.delete(AppDatabase.trafficTradeTable);
-      batch.delete(AppDatabase.masterListsTable);
-
-      await batch.commit(noResult: true);
+      for (final table in _databaseHelper.masterDataTables) {
+        await txn.delete(table);
+      }
 
       // Insert in chunks to avoid memory issues
       const chunkSize = 500;
@@ -76,9 +78,6 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
         chunkSize,
       );
 
-      // Master lists and sync metadata (small data)
-      final finalBatch = txn.batch();
-
       final masterListTypes = [
         MasterListType.nearestDepo,
         MasterListType.tradeAreaType,
@@ -93,21 +92,22 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
       ];
 
       for (var listType in masterListTypes) {
-        finalBatch.insert(
-          AppDatabase.masterListsTable,
-          data.listTypeToMap(listType),
-        );
+        txn.insert(AppDatabase.masterListsTable, data.listTypeToMap(listType));
       }
 
-      
-      batch.delete(AppDatabase.syncMetadataTable);
+      if (data.userInfo != null) {
+        // Insert user info
+        txn.insert(AppDatabase.userInfoTable, data.userInfo!.toDatabaseMap());
+      }
 
-      finalBatch.insert(AppDatabase.syncMetadataTable, {
+      // Update sync metadata
+      txn.delete(AppDatabase.syncMetadataTable);
+
+      txn.insert(AppDatabase.syncMetadataTable, {
         'lastSyncTime': DateTime.now().toIso8601String(),
       });
-
-      await finalBatch.commit(noResult: true);
     });
+    debugPrint("Result of saving master data: $result");
   }
 
   Future<void> _insertInChunks(
@@ -131,26 +131,38 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
   @override
   Future<List<ApplicationModel>> getApplications({
     FilterSelectionState? filters,
+    int page = 1,
+    int? pageSize,
   }) async {
+    pageSize ??= ApplicationModel.pageSize;
     final db = await _databaseHelper.database;
 
-    String? whereClause;
-    final whereArgs = <dynamic>[];
+    var whereConditions = <String>[];
+    var whereArgs = <dynamic>[];
 
     if (filters != null) {
       final whereData = ApplicationModel.getWhereClauseAndArgs(filters);
-      whereClause = whereData.$1;
-      whereArgs.addAll(whereData.$2);
+      whereConditions = whereData.$1;
+      whereArgs = whereData.$2;
     }
 
-    final List<Map<String, dynamic>> maps = await db.query(
-      AppDatabase.applicationTable,
-      where: whereClause,
-      whereArgs: whereArgs.isNotEmpty ? whereArgs : null,
+    final mainQuery = SelectDbQueries.buildApplicationQuery(
+      whereConditions: whereConditions,
       orderBy: ApplicationModel.orderBy,
+      limit: pageSize,
+      offset: (page - 1) * pageSize,
     );
 
-    return maps.map((map) => ApplicationModel.fromDatabaseMap(map)).toList();
+    final List<Map<String, dynamic>> applicationsResult = await db.rawQuery(
+      mainQuery,
+      whereArgs.isNotEmpty ? whereArgs : null,
+    );
+
+    final applications = applicationsResult
+        .map((map) => ApplicationModel.fromDatabaseMap(map))
+        .toList();
+
+    return applications;
   }
 
   @override
@@ -169,7 +181,7 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
       where: '${MasterListTypeTable.databaseColName} = ?',
       whereArgs: [type.key],
     );
-
+    debugPrint('Master list for ${type.key}: $result');
     if (result.isEmpty) return [];
     return List<String>.from(jsonDecode(result.first['listValues'] as String));
   }
@@ -215,8 +227,16 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
       _getMasterListByType(MasterListType.nfrList);
 
   @override
-  Future<void> clearAllData() async {
-    await _databaseHelper.clearMasterDataTables();
+  Future<UserModel?> getUserInfo() async {
+    final db = await _databaseHelper.database;
+
+    final userInfoResult = await db.query(AppDatabase.userInfoTable, limit: 1);
+
+    if (userInfoResult.isEmpty) return null;
+
+    final userInfoMap = userInfoResult.first;
+
+    return UserModel.fromDatabaseMap(userInfoMap);
   }
 }
 

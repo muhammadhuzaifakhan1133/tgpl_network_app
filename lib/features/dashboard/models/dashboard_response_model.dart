@@ -1,11 +1,7 @@
-import 'package:tgpl_network/common/models/user_model.dart';
-
 class DashboardResponseModel {
-  final UserModel user;
   final DashboardApplicationsCounts counts;
 
   DashboardResponseModel({
-    required this.user,
     required this.counts,
   });
 }

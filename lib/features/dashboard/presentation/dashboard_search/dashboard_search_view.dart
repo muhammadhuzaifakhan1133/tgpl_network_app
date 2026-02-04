@@ -63,12 +63,7 @@ class DashboardSearchView extends ConsumerWidget {
                         onTap: () {
                           ref
                               .read(goRouterProvider)
-                              .push(
-                                AppRoutes.moduleApplications(
-                                  subModule.moduleName,
-                                  subModule.title,
-                                ),
-                              );
+                              .push(AppRoutes.moduleApplications, extra: subModule);
                         },
                       );
                     },

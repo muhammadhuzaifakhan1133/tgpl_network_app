@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tgpl_network/common/widgets/shimmer_wrapper.dart';
+import 'package:tgpl_network/common/widgets/shimmer_widget.dart';
 
 class DashboardShimmerView extends StatelessWidget {
   const DashboardShimmerView({super.key});
@@ -21,7 +21,7 @@ class DashboardShimmerView extends StatelessWidget {
           child: Column(
             children: const [
               SizedBox(height: 10),
-              _HeaderProfileShimmer(),
+              HeaderProfileShimmer(),
               SizedBox(height: 30),
               _GreetingTextShimmer(),
               SizedBox(height: 20),
@@ -33,7 +33,7 @@ class DashboardShimmerView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
           child: Column(
             children: const [
-              _SyncStatusCardShimmer(),
+              SyncStatusCardShimmer(),
               SizedBox(height: 20),
               _ModulesListShimmer(),
             ],
@@ -44,35 +44,41 @@ class DashboardShimmerView extends StatelessWidget {
   }
 }
 
-class _HeaderProfileShimmer extends StatelessWidget {
-  const _HeaderProfileShimmer();
+class HeaderProfileShimmer extends StatelessWidget {
+  const HeaderProfileShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        ShimmerWrapper(
-          borderRadius: BorderRadius.circular(16),
-          child: Container(height: 48, width: 48, color: Colors.white),
+        const ShimmerBox(
+          width: 48,
+          height: 48,
+          borderRadius: 16,
         ),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ShimmerWrapper(
-                child: Container(height: 18, width: 140, color: Colors.white),
+            children: const [
+              ShimmerBox(
+                width: 140,
+                height: 18,
+                borderRadius: 4,
               ),
-              const SizedBox(height: 6),
-              ShimmerWrapper(
-                child: Container(height: 14, width: 100, color: Colors.white),
+              SizedBox(height: 6),
+              ShimmerBox(
+                width: 100,
+                height: 14,
+                borderRadius: 4,
               ),
             ],
           ),
         ),
-        ShimmerWrapper(
-          borderRadius: BorderRadius.circular(16),
-          child: Container(height: 44, width: 44, color: Colors.white),
+        const ShimmerBox(
+          width: 44,
+          height: 44,
+          borderRadius: 16,
         ),
       ],
     );
@@ -86,13 +92,17 @@ class _GreetingTextShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ShimmerWrapper(
-          child: Container(height: 28, width: 220, color: Colors.white),
+      children: const [
+        ShimmerBox(
+          width: 220,
+          height: 28,
+          borderRadius: 4,
         ),
-        const SizedBox(height: 8),
-        ShimmerWrapper(
-          child: Container(height: 16, width: 280, color: Colors.white),
+        SizedBox(height: 8),
+        ShimmerBox(
+          width: 280,
+          height: 16,
+          borderRadius: 4,
         ),
       ],
     );
@@ -103,12 +113,10 @@ class _CountCardsShimmer extends StatelessWidget {
   const _CountCardsShimmer();
 
   Widget _card() {
-    return ShimmerWrapper(
-      borderRadius: BorderRadius.circular(24),
-      child: Container(
-        height: 115,
-        color: Colors.white,
-      ),
+    return const ShimmerBox(
+      width: double.infinity,
+      height: 115,
+      borderRadius: 24,
     );
   }
 
@@ -136,18 +144,15 @@ class _CountCardsShimmer extends StatelessWidget {
   }
 }
 
-class _SyncStatusCardShimmer extends StatelessWidget {
-  const _SyncStatusCardShimmer();
+class SyncStatusCardShimmer extends StatelessWidget {
+  const SyncStatusCardShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ShimmerWrapper(
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        height: 90,
-        width: double.infinity,
-        color: Colors.white,
-      ),
+    return const ShimmerBox(
+      width: double.infinity,
+      height: 90,
+      borderRadius: 20,
     );
   }
 }
@@ -156,13 +161,12 @@ class _ModulesListShimmer extends StatelessWidget {
   const _ModulesListShimmer();
 
   Widget _moduleItem() {
-    return ShimmerWrapper(
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        height: 72,
+    return const Padding(
+      padding: EdgeInsets.only(bottom: 16),
+      child: ShimmerBox(
         width: double.infinity,
-        margin: const EdgeInsets.only(bottom: 16),
-        color: Colors.white,
+        height: 72,
+        borderRadius: 16,
       ),
     );
   }
@@ -171,10 +175,12 @@ class _ModulesListShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Align(
+        const Align(
           alignment: Alignment.centerLeft,
-          child: ShimmerWrapper(
-            child: Container(height: 24, width: 120, color: Colors.white),
+          child: ShimmerBox(
+            width: 120,
+            height: 24,
+            borderRadius: 4,
           ),
         ),
         const SizedBox(height: 12),

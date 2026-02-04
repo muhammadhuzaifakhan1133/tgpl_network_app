@@ -11,15 +11,16 @@ class TrafficCountCardForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(trafficCountControllerProvider.notifier);
-    final state = ref.watch(trafficCountControllerProvider);
+    final state = ref.read(trafficCountControllerProvider);
     return SectionDetailCard(title: "Traffic Count", children: [
       Row(
             children: [
               Expanded(
                 child: CustomTextFieldWithTitle(
                   title: "Truck",
-                  hintText: "2196",
+                  hintText: "e.g. 2196",
                   initialValue: state.trafficCountTruck,
+                  isRequired: true,
                   onChanged: (value) {
                     controller.updateTrafficCountTruck(value);
                   },
@@ -34,11 +35,12 @@ class TrafficCountCardForm extends ConsumerWidget {
               Expanded(
                 child: CustomTextFieldWithTitle(
                   title: "Car",
-                  hintText: "1500",
+                  hintText: "e.g. 1500",
                   initialValue: state.trafficCountCar,
                   onChanged: (value) {
                     controller.updateTrafficCountCar(value);
                   },
+                  isRequired: true,
                   validator: (v) => v.validate(),
                   showClearButton: true,
                   onClear: () {
@@ -50,11 +52,12 @@ class TrafficCountCardForm extends ConsumerWidget {
               Expanded(
                 child: CustomTextFieldWithTitle(
                   title: "Bike",
-                  hintText: "3000",
+                  hintText: "e.g. 3000",
                   initialValue: state.trafficCountBike,
                   onChanged: (value) {
                     controller.updateTrafficCountBike(value);
                   },
+                  isRequired: true,
                   validator: (v) => v.validate(),
                   showClearButton: true,
                   onClear: () {

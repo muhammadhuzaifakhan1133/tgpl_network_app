@@ -11,7 +11,9 @@ class DashboardCountContainers extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dashboardData = ref.watch(dashboardAsyncControllerProvider).requireValue;
+    final dashboardData = ref
+        .watch(dashboardAsyncControllerProvider)
+        .requireValue;
     return Column(
       children: [
         Row(
@@ -19,8 +21,8 @@ class DashboardCountContainers extends ConsumerWidget {
             Expanded(
               child: _DashboardCountContainer(
                 icon: AppImages.inProcessIconSvg,
-                color1: AppColors.inProcessCountColor,
-                color2: AppColors.inProcessCountDarkColor,
+                color1: AppColors.nextStep1Color,
+                color2: AppColors.headerDarkBlueColor,
                 title: "In Process",
                 count: dashboardData.counts.inProcess,
               ),
@@ -52,9 +54,9 @@ class DashboardCountContainers extends ConsumerWidget {
             const SizedBox(width: 16),
             Expanded(
               child: _DashboardCountContainer(
-                icon: AppImages.totalActiveIconSvg,
-                color1: AppColors.nextStep1Color,
-                color2: AppColors.headerDarkBlueColor,
+                icon: AppImages.holdIconSvg,
+                color1: AppColors.inProcessCountColor,
+                color2: AppColors.inProcessCountDarkColor,
                 title: "Hold",
                 count: dashboardData.counts.hold,
               ),

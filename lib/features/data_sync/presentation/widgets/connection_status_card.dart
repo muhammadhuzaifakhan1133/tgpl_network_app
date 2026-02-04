@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/utils/get_time_duration_till_now.dart';
 
 class ConnectionStatusCard extends StatelessWidget {
   final bool isOnline;
@@ -77,7 +78,7 @@ class ConnectionStatusCard extends StatelessWidget {
               Text('Last Synced', style: AppTextstyles.neutra500grey12),
               const SizedBox(height: 8),
               Text(
-                lastSyncTime,
+                getFormattedTimeDuration(lastSyncTime),
                 style: AppTextstyles.neutra700black224.copyWith(fontSize: 16),
               ),
             ],

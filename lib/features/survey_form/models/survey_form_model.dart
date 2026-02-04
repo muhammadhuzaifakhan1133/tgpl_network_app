@@ -1,6 +1,6 @@
 class SurveyFormModel {
   // Application Info
-  final String? applicantId;
+  final String? applicationId;
   final String? entryCode;
   final String? dateConducted;
   final String? conductedBy;
@@ -44,8 +44,14 @@ class SurveyFormModel {
   final String? rmRecommendation;
   final String? rmRemarks;
 
+  final bool isSubmitting;
+  final String errorMessage;
+
+  final String createdAt;
+  final String updatedAt;
+
   const SurveyFormModel({
-    this.applicantId,
+    this.applicationId,
     this.entryCode,
     this.dateConducted,
     this.conductedBy,
@@ -82,11 +88,15 @@ class SurveyFormModel {
     this.selectedRM,
     this.rmRecommendation,
     this.rmRemarks,
+    this.isSubmitting = false,
+    this.errorMessage = '',
+    this.createdAt = '',
+    this.updatedAt = '',
   });
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toDatabaseMap() {
     return {
-      'applicantId': applicantId,
+      'applicationId': applicationId,
       'entryCode': entryCode,
       'dateConducted': dateConducted,
       'conductedBy': conductedBy,
@@ -127,9 +137,50 @@ class SurveyFormModel {
     };
   }
 
-  factory SurveyFormModel.fromJson(Map<String, dynamic> json) {
+  Map<String, dynamic> toApiMap() {
+    return {
+      "applicationId": applicationId,
+      "entryCode": entryCode,
+      "dateConducted": dateConducted,
+      "googleLocation": googleLocation,
+      "cityName": city,
+      "district": district,
+      "siteStatus": siteStatus,
+      "npName": npName,
+      "source": source,
+      "sourceName": sourceName,
+      "priority": priority,
+      "dealerName": dealerName,
+      "dealerContact": dealerContact,
+      "referenceBy": referenceBy,
+      "locationAddress": locationAddress,
+      "landmark": landmark,
+      "plotFront": plotFront,
+      "plotDepth": plotDepth,
+      "nearestDepo": nearestDepo,
+      "distanceFromDepo": distanceFromDepo,
+      "typeOfTradeArea": typeOfTradeArea,
+      "isThisDealer": isThisDealer,
+      "dealerPlatform": dealerPlatform,
+      "dealerBusinesses": dealerBusinesses,
+      "dealerInvolvement": dealerInvolvement,
+      "isDealerReadyToInvest": isDealerReadyToInvest,
+      "dealerOpinion": dealerOpinion,
+      "monthlySalary": monthlySalary,
+      "isDealerAgreedToFollowTgplStandards":
+          isDealerAgreedToFollowTgplStandards,
+      "selectedTM": selectedTM,
+      "tmRecommendation": tmRecommendation,
+      "tmRemarks": tmRemarks,
+      "selectedRM": selectedRM,
+      "rmRecommendation": rmRecommendation,
+      "rmRemarks": rmRemarks,
+    };
+  }
+
+  factory SurveyFormModel.fromDatabaseMap(Map<String, dynamic> json) {
     return SurveyFormModel(
-      applicantId: json['applicantId'] as String?,
+      applicationId: json['applicationId'] as String?,
       entryCode: json['entryCode'] as String?,
       dateConducted: json['dateConducted'] as String?,
       conductedBy: json['conductedBy'] as String?,
@@ -167,6 +218,9 @@ class SurveyFormModel {
       selectedRM: json['selectedRM'] as String?,
       rmRecommendation: json['rmRecommendation'] as String?,
       rmRemarks: json['rmRemarks'] as String?,
+      errorMessage: json['errorMessage'] as String? ?? '',
+      createdAt: json['createdAt'] as String? ?? '',
+      updatedAt: json['updatedAt'] as String? ?? '',
     );
   }
 
@@ -208,9 +262,11 @@ class SurveyFormModel {
     String? selectedRM,
     String? rmRecommendation,
     String? rmRemarks,
+    bool? isSubmitting,
+    String? errorMessage,
   }) {
     return SurveyFormModel(
-      applicantId: applicantId ?? this.applicantId,
+      applicationId: applicantId ?? this.applicationId,
       entryCode: entryCode ?? this.entryCode,
       dateConducted: dateConducted ?? this.dateConducted,
       conductedBy: conductedBy ?? this.conductedBy,
@@ -250,11 +306,18 @@ class SurveyFormModel {
       selectedRM: selectedRM ?? this.selectedRM,
       rmRecommendation: rmRecommendation ?? this.rmRecommendation,
       rmRemarks: rmRemarks ?? this.rmRemarks,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
   String toString() {
-    return 'SurveyFormModel(applicantId: $applicantId, entryCode: $entryCode, dateConducted: $dateConducted, conductedBy: $conductedBy, googleLocation: $googleLocation, city: $city, district: $district, siteStatus: $siteStatus, npName: $npName, source: $source, sourceName: $sourceName, priority: $priority, dealerName: $dealerName, dealerContact: $dealerContact, referenceBy: $referenceBy, locationAddress: $locationAddress, landmark: $landmark, plotFront: $plotFront, plotDepth: $plotDepth, plotArea: $plotArea, nearestDepo: $nearestDepo, distanceFromDepo: $distanceFromDepo, typeOfTradeArea: $typeOfTradeArea, isThisDealer: $isThisDealer, dealerPlatform: $dealerPlatform, dealerBusinesses: $dealerBusinesses, dealerInvolvement: $dealerInvolvement, isDealerReadyToInvest: $isDealerReadyToInvest, dealerOpinion: $dealerOpinion, monthlySalary: $monthlySalary, isDealerAgreedToFollowTgplStandards: $isDealerAgreedToFollowTgplStandards, selectedTM: $selectedTM, tmRecommendation: $tmRecommendation, tmRemarks: $tmRemarks, selectedRM: $selectedRM, rmRecommendation: $rmRecommendation, rmRemarks: $rmRemarks)';
+    return 'SurveyFormModel(applicantId: $applicationId, entryCode: $entryCode, dateConducted: $dateConducted, conductedBy: $conductedBy, googleLocation: $googleLocation, city: $city, district: $district, siteStatus: $siteStatus, npName: $npName, source: $source, sourceName: $sourceName, priority: $priority, dealerName: $dealerName, dealerContact: $dealerContact, referenceBy: $referenceBy, locationAddress: $locationAddress, landmark: $landmark, plotFront: $plotFront, plotDepth: $plotDepth, plotArea: $plotArea, nearestDepo: $nearestDepo, distanceFromDepo: $distanceFromDepo, typeOfTradeArea: $typeOfTradeArea, isThisDealer: $isThisDealer, dealerPlatform: $dealerPlatform, dealerBusinesses: $dealerBusinesses, dealerInvolvement: $dealerInvolvement, isDealerReadyToInvest: $isDealerReadyToInvest, dealerOpinion: $dealerOpinion, monthlySalary: $monthlySalary, isDealerAgreedToFollowTgplStandards: $isDealerAgreedToFollowTgplStandards, selectedTM: $selectedTM, tmRecommendation: $tmRecommendation, tmRemarks: $tmRemarks, selectedRM: $selectedRM, rmRecommendation: $rmRecommendation, rmRemarks: $rmRemarks)';
+  }
+
+  String? get validate {
+    // TODO: add custom validation logic
+    return null;
   }
 }

@@ -11,6 +11,7 @@ import 'package:tgpl_network/features/applications_filter/applications_filter_co
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/features/applications_filter/widgets/yes_no_dropdown_field.dart';
+import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/utils/custom_date_picker.dart';
 import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
@@ -21,7 +22,7 @@ class FilterScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(filterSelectionProvider.notifier);
-
+    final state = ref.read(filterSelectionProvider);
     return Scaffold(
       body: GestureDetector(
         onTap: () {
@@ -123,11 +124,13 @@ class FilterScreen extends ConsumerWidget {
                                 ),
                               );
                               return Expanded(
-                                child: CustomDropDownWithTitle(
+                                child: SmartCustomDropDownWithTitle(
                                   title: "City",
-                                  items: ref.read(cityNamesProvider),
+                                  asyncProvider: cityNamesProvider,
+                                  itemsBuilder: (city) =>
+                                      city.map((e) => e.name).toList(),
                                   enableSearch: true,
-                                  hintText: "City",
+                                  hintText: "Select City",
                                   onChanged: (v) {
                                     if (v == null) return;
                                     controller.updateDropdown(city: v);
@@ -150,10 +153,11 @@ class FilterScreen extends ConsumerWidget {
                                 ),
                               );
                               return Expanded(
-                                child: CustomDropDownWithTitle(
+                                child: SmartCustomDropDownWithTitle(
                                   title: "Priority",
-                                  items: ref.read(prioritiesProvider),
-                                  hintText: "Priority",
+                                  asyncProvider: prioritiesProvider,
+                                  itemsBuilder: (data) => data,
+                                  hintText: "Select Priority",
                                   onChanged: (v) {
                                     if (v == null) return;
                                     controller.updateDropdown(priority: v);
@@ -177,25 +181,39 @@ class FilterScreen extends ConsumerWidget {
                         children: [
                           Consumer(
                             builder: (context, ref, child) {
+                              final statuses = ref.read(statusesProvider);
                               final selectedStatus = ref.watch(
                                 filterSelectionProvider.select(
-                                  (s) => s.selectedStatus,
+                                  (s) => s.selectedStatusId,
                                 ),
                               );
                               return Expanded(
-                                child: CustomDropDownWithTitle(
+                                child: SmartCustomDropDownWithTitle(
                                   title: "Status",
-                                  items: ref.read(statusesProvider),
+                                  items: statuses.entries
+                                      .map((e) => e.key)
+                                      .toList(),
                                   hintText: "Status",
                                   onChanged: (v) {
                                     if (v == null) return;
-                                    controller.updateDropdown(status: v);
+                                    controller.updateDropdown(
+                                      statusId: statuses[v]!,
+                                    );
                                   },
-                                  selectedItem: selectedStatus,
+                                  selectedItem: selectedStatus != null
+                                      ? statuses.entries
+                                            .firstWhere(
+                                              (entry) =>
+                                                  entry.value == selectedStatus,
+                                            )
+                                            .key
+                                      : null,
                                   showClearButton:
                                       !selectedStatus.isNullOrEmpty,
                                   onClear: () {
-                                    controller.clearFields(["selectedStatus"]);
+                                    controller.clearFields([
+                                      "selectedStatusId",
+                                    ]);
                                   },
                                 ),
                               );
@@ -207,8 +225,89 @@ class FilterScreen extends ConsumerWidget {
                               showClearButton: true,
                               title: "Site Name",
                               hintText: "Site Name",
+                              initialValue: state.siteName,
                               onChanged: (v) {
                                 controller.updateTextFields(siteName: v);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 13),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomTextFieldWithTitle(
+                              showClearButton: true,
+                              title: "Dealer Name",
+                              hintText: "Dealer Name",
+                              onChanged: (v) {
+                                controller.updateTextFields(dealerName: v);
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: CustomTextFieldWithTitle(
+                              showClearButton: true,
+                              title: "Dealer Contact",
+                              hintText: "Dealer Contact",
+                              onChanged: (v) {
+                                controller.updateTextFields(dealerContact: v);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 13),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomTextFieldWithTitle(
+                              showClearButton: true,
+                              title: "Application #",
+                              hintText: "Application #",
+                              initialValue: state.applicationId,
+                              onChanged: (v) {
+                                controller.updateTextFields(applicationId: v);
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: CustomTextFieldWithTitle(
+                              showClearButton: true,
+                              title: "Entry Code",
+                              hintText: "Entry Code",
+                              onChanged: (v) {
+                                controller.updateTextFields(entryCode: v);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 13),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomTextFieldWithTitle(
+                              showClearButton: true,
+                              title: "Prepared By",
+                              hintText: "Prepared By",
+                              onChanged: (v) {
+                                controller.updateTextFields(preparedBy: v);
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: CustomTextFieldWithTitle(
+                              showClearButton: true,
+                              title: "District",
+                              hintText: "District",
+                              onChanged: (v) {
+                                controller.updateTextFields(district: v);
                               },
                             ),
                           ),
@@ -284,84 +383,6 @@ class FilterScreen extends ConsumerWidget {
                                   showClearButton:
                                       !selectedCondDate.isNullOrEmpty,
                                 );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 13),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextFieldWithTitle(
-                              showClearButton: true,
-                              title: "Application #",
-                              hintText: "Application #",
-                              onChanged: (v) {
-                                controller.updateTextFields(applicationId: v);
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: CustomTextFieldWithTitle(
-                              showClearButton: true,
-                              title: "Entry Code",
-                              hintText: "Entry Code",
-                              onChanged: (v) {
-                                controller.updateTextFields(entryCode: v);
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 13),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextFieldWithTitle(
-                              showClearButton: true,
-                              title: "Prepared By",
-                              hintText: "Prepared By",
-                              onChanged: (v) {
-                                controller.updateTextFields(preparedBy: v);
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: CustomTextFieldWithTitle(
-                              showClearButton: true,
-                              title: "District",
-                              hintText: "District",
-                              onChanged: (v) {
-                                controller.updateTextFields(district: v);
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 13),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextFieldWithTitle(
-                              showClearButton: true,
-                              title: "Dealer Name",
-                              hintText: "Dealer Name",
-                              onChanged: (v) {
-                                controller.updateTextFields(dealerName: v);
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: CustomTextFieldWithTitle(
-                              showClearButton: true,
-                              title: "Dealer Contact",
-                              hintText: "Dealer Contact",
-                              onChanged: (v) {
-                                controller.updateTextFields(dealerContact: v);
                               },
                             ),
                           ),
@@ -628,7 +649,10 @@ class FilterScreen extends ConsumerWidget {
           children: [
             Expanded(
               child: CustomButton(
-                onPressed: controller.clearAll,
+                onPressed: () {
+                  controller.clearAll();
+                  ref.read(goRouterProvider).pop(false);
+                },
                 text: "Clear All",
                 backgroundColor: AppColors.actionContainerColor,
                 textStyle: AppTextstyles.neutra500white22.copyWith(
@@ -640,7 +664,7 @@ class FilterScreen extends ConsumerWidget {
             Expanded(
               child: CustomButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  ref.read(goRouterProvider).pop(true);
                 },
                 text: "Apply Filters",
                 backgroundColor: AppColors.nextStep1Color,

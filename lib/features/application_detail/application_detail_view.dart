@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
-import 'package:tgpl_network/features/application_detail/widgets/applicant_info_card.dart';
+import 'package:tgpl_network/common/widgets/error_widget.dart';
+import 'package:tgpl_network/features/application_detail/application_detail_controller.dart';
+import 'package:tgpl_network/common/widgets/application_fields_shimmer_widget.dart';
 import 'package:tgpl_network/features/application_detail/widgets/contact_dealer_tgpl_card.dart';
 import 'package:tgpl_network/features/application_detail/widgets/dealer_profile_card.dart';
 import 'package:tgpl_network/features/application_detail/widgets/feasibility_card.dart';
@@ -9,23 +12,34 @@ import 'package:tgpl_network/features/application_detail/widgets/site_detail_car
 import 'package:tgpl_network/features/application_detail/widgets/recommendation_card.dart';
 import 'package:tgpl_network/features/application_detail/widgets/traffic_count_card.dart';
 import 'package:tgpl_network/features/application_detail/widgets/volum_and_financial_estimation_card.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
+import 'package:tgpl_network/utils/map_utils.dart';
 
-class ApplicationDetailView extends StatelessWidget {
-  final String appId;
-  final int statusId;
-  const ApplicationDetailView({
-    super.key,
-    required this.appId,
-    required this.statusId,
-  });
+class ApplicationDetailView extends ConsumerWidget {
+  final String applicationId;
+  const ApplicationDetailView({super.key, required this.applicationId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(
+      applicationDetailAsyncControllerProvider(applicationId),
+    );
+    return state.when(
+      data: (application) => _buildDetailView(application),
+      loading: () => ApplicationFieldsShimmer(
+        title: "Application Details",
+      ),
+      error: (error, stack) => Scaffold(body: errorWidget(error.toString())),
+    );
+  }
+
+  Widget _buildDetailView(ApplicationModel application) {
     return Scaffold(
       body: Column(
         children: [
           CustomAppBar(
-            title: appId,
+            title: application.entryCode ?? '',
             subtitle: "Application Details",
             showBackButton: true,
           ),
@@ -33,107 +47,143 @@ class ApplicationDetailView extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(20.0),
               children: [
-                ApplicantInfoCard(
-                  applicantName: "Huzaifa",
-                  contactPerson: "Basit",
-                  currentPresence: "Karachi",
-                  emergencyContactPerson: "Abu Bakar",
-                  whatsappNumber: "03001234567",
-                ),
+                // TODO: Add fields of Application Info
+                // ApplicantInfoCard(
+                //   applicantName: "Huzaifa",
+                //   contactPerson: "Basit",
+                //   currentPresence: "Karachi",
+                //   emergencyContactPerson: "Abu Bakar",
+                //   whatsappNumber: "03001234567",
+                // ),
                 const SizedBox(height: 20),
                 SiteDetailCard(
-                  entryCode: "TGPL-0001",
-                  dateConducted: "2023-10-01",
-                  googleLocation: "https://maps.google.com/?q=24.8607,67.0011",
-                  city: "Karachi",
-                  district: "Karachi South",
-                  priority: "High",
-                  locationAddress: "Sufi CNG, Shahdapur",
-                  landmark: "The Citizen English Grammer School",
-                  plotArea: "300",
-                  plotFront: "150",
-                  plotDepth: "150",
-                  nearestDepo: "Habibabad",
-                  distanceFromDepo: "593.00",
-                  typeOfTrade: "High Populated Urban Area",
+                  entryCode: application.entryCode ?? "",
+                  dateConducted:
+                      application.dateConducted?.formatTodMMMyyyy() ?? "",
+                  googleLocation: application.googleLocation ?? "",
+                  city: application.cityName ?? "",
+                  district: application.district ?? "",
+                  priority: application.priority ?? "",
+                  locationAddress: application.locationAddress ?? "",
+                  landmark: application.landmark ?? "",
+                  plotArea: application.plotArea ?? "",
+                  plotFront: application.plotFront?.toString() ?? "",
+                  plotDepth: application.plotDepth?.toString() ?? "",
+                  nearestDepo: application.nearestDepo ?? "",
+                  distanceFromDepo:
+                      application.distanceFromDetp?.toString() ?? "",
+                  typeOfTrade: application.typeOfTradeArea ?? "",
                 ),
                 const SizedBox(height: 20),
                 ContactDealerTGPLCard(
-                  npName: "Shadman",
-                  source: "NW Manager (North & KPK)",
-                  sourceName: "Shadman Khattak",
-                  conductedBy: "Shadman",
-                  dealerName: "Qamar Alam",
-                  dealerContact: "03001234567",
-                  referenceBy: "Basit",
+                  npName: application.npPersonName ?? "",
+                  source: application.source ?? "",
+                  sourceName: application.sourceName ?? "",
+                  // TODO: Add this field in Applicaiton Model
+                  conductedBy: "",
+                  dealerName: application.dealerName ?? "",
+                  dealerContact: application.dealerContact ?? "",
+                  referenceBy: application.referedBy ?? "",
                 ),
                 const SizedBox(height: 20),
                 DealerProfileCard(
-                  isDealer: "Yes",
-                  platform: "MF-DO (Rental)",
-                  otherDealerBusinesses: "0",
+                  isDealer: application.isThisDealerSite ?? "",
+                  platform: application.platform ?? "",
+                  otherDealerBusinesses: application.whatOtherBusiness ?? "",
                   dealerInvolvementInBusiness:
-                      "Low (Less than 1 hour on site daily)",
-                  isReadyToInjectCapital: "Yes",
-                  reasonForConversion: "0",
-                  currentAttendantSalary: "0",
-                  isAgreedToFollowStandards: "Yes",
+                      application.howInvolveDealerInPetrol ?? "",
+                  isReadyToInjectCapital:
+                      application.isDealerReadyToCapitalInvestment ?? "",
+                  reasonForConversion: application.whyDoesTaj ?? "",
+                  currentAttendantSalary:
+                      application.managerCurrentSalary?.toString() ?? "",
+                  isAgreedToFollowStandards:
+                      application.isAgreeToTGPLStandard ?? "",
                 ),
                 const SizedBox(height: 20),
                 RecommendationCard(
-                  tm: "TM Hyderabad(TM)",
-                  tmRecommend: "Yes",
-                  tmRemarks: "Good Site",
-                  rm: "RM Hyderabad(RM)",
-                  rmRecommend: "Yes",
-                  rmRemarks: "It has Potential",
+                  tm: application.ssRecommendationTmName ?? "",
+                  tmRecommend: application.ssTmRecommendation ?? "",
+                  tmRemarks: application.ssTmRemarks ?? "",
+                  rm: application.ssRecommendationRmName ?? "",
+                  rmRecommend: application.ssRmRecommendation ?? "",
+                  rmRemarks: application.ssRmRemarks ?? "",
                 ),
-                if (statusId >= 3) ...[
+                // is traffic trade done?
+                if (application.trafficTradeDone == 1) ...[
                   const SizedBox(height: 20),
-                  TrafficCountCard(cars: "1,250", bikes: "850", trucks: "320"),
+                  TrafficCountCard(
+                    cars: application.carCount?.toString() ?? "",
+                    bikes: application.bikeCount?.toString() ?? "",
+                    trucks: application.truckCount?.toString() ?? "",
+                  ),
                   const SizedBox(height: 20),
                   VolumAndFinancialEstimationCard(
-                    estimatedDailyDieselSales: "0",
-                    estimatedDailySuperSales: "0",
-                    estimatedDailyLubricantSales: "0",
-                    dealerExpectationOfLeaseRentalPerMonth: "0",
-                    truckPortPotential: "No",
-                    salamMartPotential: "No",
-                    restaurantPotential: "No",
+                    estimatedDailyDieselSales:
+                        application.estimateDailyDieselSale?.toString() ?? "0",
+                    estimatedDailySuperSales:
+                        application.estimateDailySuperSale?.toString() ?? "0",
+                    estimatedDailyLubricantSales:
+                        application.estimateLubricantSale?.toString() ?? "0",
+                    dealerExpectationOfLeaseRentalPerMonth:
+                        application.expectedLeaseRentPerManth?.toString() ??
+                        "0",
+                    truckPortPotential: application.trucPortPotentail ?? "",
+                    salamMartPotential: application.salamMartPotential ?? "",
+                    restaurantPotential: application.resturantPotential ?? "",
                   ),
                   const SizedBox(height: 20),
                   RecommendationCard(
-                    tm: "TM Hyderabad(TM)",
-                    tmRecommend: "Yes",
-                    tmRemarks: "Good Site",
-                    rm: "RM Hyderabad(RM)",
-                    rmRecommend: "Yes",
-                    rmRemarks: "It has Potential",
+                    tm: application.ttRecommendationTmName ?? "",
+                    tmRecommend: application.ttTmRecommendation ?? "",
+                    tmRemarks: application.ttTmRemarks ?? "",
+                    rm: application.ttRecommendationRmName ?? "",
+                    rmRecommend: application.ttRmRecommendation ?? "",
+                    rmRemarks: application.ttRmRemarks ?? "",
                   ),
                 ],
-                if (statusId >= 4) ...[
+                if (application.feasibilityDone == 1) ...[
                   const SizedBox(height: 20),
                   FeasibilityCard(
-                    isConversionPump: "Yes",
-                    currentOMCName: "PSO",
-                    isDealerInvestedSite: "Yes",
-                    numberOfOperationYear: "5 Years",
-                    isCurrentlyOperational: "Yes",
-                    currentLeaseExpired: "Dec 2025",
-                    dieselUGTSizeLitre: "5000",
-                    superUGTSizeLitre: "3000",
-                    numberOfDieselDispenser: "4",
-                    numberOfSuperDispenser: "2",
-                    currentlyCanopyCondition: "Good",
-                    conditionOfDispensors: "Good",
-                    conditionOfForecourt: "Good",
-                    recommendation: "Recommended",
-                    recommendationDetail: "",
+                    isConversionPump: application.isThisConversionPump ?? "",
+                    currentOMCName: application.currentOMCName ?? "",
+                    isDealerInvestedSite:
+                        application.isThisDealerInvestedSite ?? "",
+                    numberOfOperationYear:
+                        application.numberOfOperationYear?.toString() ?? "",
+                    isCurrentlyOperational:
+                        application.isCurrentlyOperational ?? "",
+                    currentLeaseExpired: application.currentLeaseExpried ?? "",
+                    dieselUGTSizeLitre:
+                        application.dieselUGTSizeLiter?.toString() ?? "",
+                    superUGTSizeLitre:
+                        application.superUGTSizeLiter?.toString() ?? "",
+                    numberOfDieselDispenser:
+                        application.numberOfDieselDispenser?.toString() ?? "",
+                    numberOfSuperDispenser:
+                        application.numberOfSuperDispenser?.toString() ?? "",
+                    currentlyCanopyCondition:
+                        application.currentlyCanopyCondition ?? "",
+                    conditionOfDispensors:
+                        application.conditionOfDispensors ?? "",
+                    conditionOfForecourt:
+                        application.conditionOfForecourt ?? "",
+                    recommendation: application.recommendation ?? "",
+                    recommendationDetail:
+                        application.recommendationDetail ?? "",
                   ),
                 ],
                 // button for view on map
                 const SizedBox(height: 20),
-                CustomButton(text: "View on Map", onPressed: () {}),
+                CustomButton(
+                  text: "View on Map",
+                  onPressed: () {
+                    MapUtils.openGoogleMap(
+                      application.latitude,
+                      application.longitude,
+                    );
+                  },
+                ),
               ],
             ),
           ),

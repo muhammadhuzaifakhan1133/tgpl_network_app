@@ -12,6 +12,7 @@ import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 import 'package:tgpl_network/utils/extensions/screen_size_extension.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
+import 'package:tgpl_network/utils/show_snackbar.dart';
 
 class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
@@ -28,9 +29,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
       data: (_) {},
       loading: () {},
       error: (error, stackTrace) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(error.toString())));
+        showSnackBar(context, error.toString());
       },
     );
   }
@@ -148,7 +147,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                             loginAuthControllerProvider,
                           );
                           return CustomButton(
-                            onPressed: () async {
+                            onPressed: loginAuth.isLoading ? null : () async {
                               if (_formKey.currentState!.validate()) {
                                 final LoginResponseModel? response = await ref
                                     .read(loginAuthControllerProvider.notifier)

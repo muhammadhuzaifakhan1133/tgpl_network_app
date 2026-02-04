@@ -1,138 +1,148 @@
 import 'dart:async';
-import 'dart:developer';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
+import 'package:tgpl_network/features/application_detail/data/application_detail_data_source.dart';
+import 'package:tgpl_network/features/data_sync/presentation/data_sync_controller.dart';
+import 'package:tgpl_network/features/survey_form/data/survey_form_local_data_source.dart';
+import 'package:tgpl_network/features/survey_form/data/survey_form_remote_data_source.dart';
+import 'package:tgpl_network/features/survey_form/models/survey_form_model.dart';
 import 'package:tgpl_network/features/survey_form/presentation/survey_form_assembler.dart';
 
-final surveyFormControllerProvider =
-    AsyncNotifierProvider.autoDispose<SurveyFormController, void>(
-  SurveyFormController.new,
-);
+final surveyFormControllerProvider = AsyncNotifierProvider.family
+    .autoDispose<SurveyFormController, SurveyFormModel, String>((
+      applicationId,
+    ) {
+      return SurveyFormController(applicationId);
+    });
 
-class SurveyFormController extends AsyncNotifier<void> {
+final surveyFormStatusChangedProvider = StateProvider.autoDispose
+    .family<bool, String>((ref, applicationId) {
+      return false;
+    });
+
+class SurveyFormController extends AsyncNotifier<SurveyFormModel> {
+  final String applicationId;
+
+  SurveyFormController(this.applicationId);
 
   @override
-  FutureOr<void> build() {
-    // Initialize empty state
+  Future<SurveyFormModel> build() async {
+    // Check if application status is still valid for survey form
+    final application = await ref
+        .read(applicationDetailDataSourceProvider)
+        .getApplicationDetail(applicationId);
+
+    // statusId should be less than 2 for survey form
+    if ((application.statusId ?? 0) >= 2) {
+      // Mark status as changed so UI can navigate back
+      Future.microtask(() {
+        ref
+                .read(surveyFormStatusChangedProvider(applicationId).notifier)
+                .state =
+            true;
+      });
+      throw Exception(
+        'Application status has changed. Survey form is no longer available.',
+      );
+    }
+
+    final surveyForm = await ref
+        .read(surveyFormLocalDataSourceProvider)
+        .getSingleSurveyForm(applicationId);
+
+    if (surveyForm == null) {
+      // Prefill all form controllers from application data
+      SurveyFormAssembler.dessembleFromApp(
+        ref,
+        application,
+      ); // fill all form controllers
+      return SurveyFormAssembler.assemble(ref, applicationId);
+    } else {
+      // Refill form controllers with updated application data
+      // (in case data changed but status is still valid)
+      SurveyFormAssembler.dessembleFromApp(ref, application);
+
+      // Then overlay with saved form data
+      SurveyFormAssembler.dessembleFromSurveyFormModel(ref, surveyForm);
+      return surveyForm;
+    }
   }
 
-  /// Initialize form with data (for edit mode)
-  Future<void> initialize(String appId) async {
-    state = const AsyncValue.loading();
-    
-    state = await AsyncValue.guard(() async {
-      // TODO: Fetch existing data from API if editing
-      // Example:
-      // final data = await ref.read(surveyRepositoryProvider).getSurveyForm(appId);
-      // if (data != null) {
-      //   _prefillFormData(data);
-      // }
-      
-      // For now, just complete successfully
-      await Future.delayed(const Duration(milliseconds: 500));
-    });
-  }
-
-  /// Submit the survey form
-  Future<bool> submitSurveyForm() async {
-    // Validate form using FormKey
-    
-
-    state = const AsyncValue.loading();
-
+  Future<bool> isStatusValid() async {
     try {
-      // Gather all form data
-      final surveyFormData = SurveyFormAssembler.assemble(ref);
-
-      // Additional custom validation if needed
-      // if (!_validateFormData(surveyFormData)) {
-      //   state = const AsyncValue.data(null);
-      //   return false;
-      // }
-
-      // TODO: Submit to API
-      // Example:
-      // await ref.read(surveyRepositoryProvider).submitSurveyForm(surveyFormData);
-
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-
-      log('Survey Form Data: ${surveyFormData.toJson()}');
-
-      state = const AsyncValue.data(null);
-      return true;
-    } catch (e, stack) {
-      state = AsyncValue.error(e, stack);
-      log('Error submitting form: $e');
+      final application = await ref
+          .read(applicationDetailDataSourceProvider)
+          .getApplicationDetail(applicationId);
+      return (application.statusId ?? 0) < 2;
+    } catch (e) {
       return false;
     }
   }
 
-  /// Additional custom validation (optional)
-  /// This is for business logic validation beyond form field validators
-  // bool _validateFormData(SurveyFormModel data) {
-  //   // Add custom validation logic here if needed
-  //   // For example, cross-field validation
-    
-  //   // Example: If dealer is ready to invest, monthly salary should be provided
-  //   if (data.isDealerReadyToInvest == 'Yes' && 
-  //       (data.monthlySalary == null || data.monthlySalary!.isEmpty)) {
-  //     log('Validation failed: Monthly salary required when dealer is ready to invest');
-  //     return false;
-  //   }
-    
-  //   // Add more custom validation as needed
-    
-  //   return true;
-  // }
-
-  /// Prefill form data (for edit mode)
-  // void _prefillFormData(SurveyFormModel data) {
-  //   ref.read(applicationInfoFormControllerProvider.notifier).prefillFormData(
-  //     applicantId: data.applicantId ?? '',
-  //     entryCode: data.entryCode ?? '',
-  //     dateConducted: data.dateConducted ?? '',
-  //     conductedBy: data.conductedBy ?? '',
-  //     googleLocation: data.googleLocation ?? '',
-  //     district: data.district ?? '',
-  //     npName: data.npName ?? '',
-  //     source: data.source ?? '',
-  //     sourceName: data.sourceName ?? '',
-  //     city: data.city ?? '',
-  //     status: data.siteStatus ?? '',
-  //     priority: data.priority ?? '',
-  //   );
-
-  //   ref.read(contactAndDealerFormControllerProvider.notifier).prefillFormData(
-  //     dealerName: data.dealerName ?? '',
-  //     dealerContact: data.dealerContact ?? '',
-  //     referenceBy: data.referenceBy ?? '',
-  //     locationAddress: data.locationAddress ?? '',
-  //     nearestDepo: data.nearestDepo ?? '',
-  //     typeOfTradeArea: data.typeOfTradeArea ?? '',
-  //     landmark: data.landmark ?? '',
-  //     plotFront: data.plotFront ?? '',
-  //     plotDepth: data.plotDepth ?? '',
-  //     distanceFromDepo: data.distanceFromDepo ?? '',
-  //   );
-
-  //   ref.read(dealerProfileFormControllerProvider.notifier).prefillFormData(
-  //     dealerPlatform: data.dealerPlatform ?? '',
-  //     dealerBusinesses: data.dealerBusinesses ?? '',
-  //     dealerOpinion: data.dealerOpinion ?? '',
-  //     monthlySalary: data.monthlySalary ?? '',
-  //     isThisDealer: data.isThisDealer ?? '',
-  //     selectedDealerInvolvement: data.dealerInvolvement ?? '',
-  //     isDealerReadyToInvest: data.isDealerReadyToInvest ?? '',
-  //     isDealerAgreedToFollowTgplStandards: data.isDealerAgreedToFollowTgplStandards ?? '',
-  //   );
-
-  //   ref.read(surveyRecommendationFormControllerProvider.notifier).prefillFormData(
-  //     selectedTM: data.selectedTM ?? '',
-  //     selectedRM: data.selectedRM ?? '',
-  //     selectedTMRecommendation: data.tmRecommendation ?? '',
-  //     selectedRMRecommendation: data.rmRecommendation ?? '',
-  //     tmRemarks: data.tmRemarks ?? '',
-  //     rmRemarks: data.rmRemarks ?? '',
-  //   );
-  // }
+  Future<bool> submitSurveyForm() async {
+    try {
+      if (!await isStatusValid()) {
+        state = AsyncValue.data(
+          state.requireValue.copyWith(
+            errorMessage: 'Application status has changed. Cannot submit form.',
+          ),
+        );
+        ref
+                .read(surveyFormStatusChangedProvider(applicationId).notifier)
+                .state =
+            true;
+        return false;
+      }
+      // Gather all form data
+      final surveyFormData = SurveyFormAssembler.assemble(ref, applicationId);
+      debugPrint('Survey Form Data: ${surveyFormData.toDatabaseMap()}');
+      final validateMessage = surveyFormData.validate;
+      if (validateMessage != null) {
+        state = AsyncValue.data(
+          state.requireValue.copyWith(errorMessage: validateMessage),
+        );
+        return false;
+      }
+      state = AsyncValue.data(
+        state.requireValue.copyWith(isSubmitting: true, errorMessage: null),
+      );
+      if (false) {
+        // if (await InternetConnectivity.hasInternet()) {
+        final response = await ref
+            .read(surveyFormRemoteDataSourceProvider)
+            .submitSurveyForm(surveyFormData);
+        if (response.success) {
+          ref
+              .read(dataSyncControllerProvider.notifier)
+              .deletePendingFormIfAny(applicationId);
+          return true;
+        } else {
+          state = AsyncValue.data(
+            state.requireValue.copyWith(
+              errorMessage: 'Submission failed: ${response.message}',
+              isSubmitting: false,
+            ),
+          );
+          return false;
+        }
+      } else {
+        // Save locally if no internet
+        await ref
+            .read(surveyFormLocalDataSourceProvider)
+            .saveSurveyForm(surveyFormData);
+        // ignore: unused_result
+        ref.refresh(dataSyncControllerProvider);
+      }
+      return true;
+    } catch (e, _) {
+      state = AsyncValue.data(
+        state.requireValue.copyWith(
+          isSubmitting: false,
+          errorMessage: 'An error occurred: $e',
+        ),
+      );
+      return false;
+    }
+  }
 }

@@ -6,7 +6,7 @@ import 'package:tgpl_network/features/login/models/login_response_model.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 final loginControllerProvider =
-    NotifierProvider.autoDispose<LoginController, LoginState>(() {
+    NotifierProvider<LoginController, LoginState>(() {
       return LoginController();
     });
 
@@ -62,7 +62,7 @@ class LoginController extends Notifier<LoginState> {
 }
 
 final loginAuthControllerProvider =
-    AsyncNotifierProvider.autoDispose<LoginAsyncController, void>(() {
+    AsyncNotifierProvider<LoginAsyncController, void>(() {
       return LoginAsyncController();
     });
 

@@ -51,6 +51,7 @@ class CreateDbQueries {
         siteNumber $intType,
         estimateDailyDieselSale $intType,
         estimateDailySuperSale $intType,
+        estimateDailyHOBCSale $intType,
         estimateLubricantSale $intType,
         expectedLeaseRentPerManth $intType,
         nflFacilityAvailable $textType,
@@ -190,7 +191,7 @@ class CreateDbQueries {
   static String createSurveyFormsTable = '''
   CREATE TABLE ${AppDatabase.surveyFormsTable} (
     id $idType,
-    applicationId $textType,
+    applicationId $textType UNIQUE,
     entryCode $textType,
     dateConducted $textType,
     conductedBy $textType,
@@ -228,6 +229,7 @@ class CreateDbQueries {
     rmRecommendation $textType,
     rmRemarks $textType,
     isSynced $intType DEFAULT 0,
+    errorMessage $textType,
     createdAt $textType,
     updatedAt $textType
   )
@@ -236,7 +238,7 @@ class CreateDbQueries {
   static String createTrafficTradeFormsTable = '''
   CREATE TABLE ${AppDatabase.trafficTradeFormsTable} (
     id $idType,
-    applicationId $textType,
+    applicationId $textType UNIQUE,
     nearbyTrafficSites $textType,
     trafficCountTruck $textType,
     trafficCountCar $textType,
@@ -256,8 +258,37 @@ class CreateDbQueries {
     tmRemarks $textType,
     rmRemarks $textType,
     isSynced $intType DEFAULT 0,
+    errorMessage $textType,
     createdAt $textType,
     updatedAt $textType
   )
 ''';
+
+  static String createUserInfoTable = '''
+    CREATE TABLE ${AppDatabase.userInfoTable} (
+      userId INTEGER PRIMARY KEY,
+      userName TEXT,
+      fullName TEXT,
+      companyId INTEGER,
+      companyDisplayName TEXT,
+      companyLogo TEXT,
+      positionId INTEGER,
+      email TEXT,
+      contact TEXT,
+      treePath TEXT,
+      isSuperAdmin INTEGER,
+      message TEXT,
+      success INTEGER,
+      hasSurveyFormAccess INTEGER,
+      hasTrafficTradeFormAccess INTEGER
+    )
+  ''';
+
+  static String createSiteStatusTable = '''
+    CREATE TABLE IF NOT EXISTS ${AppDatabase.siteStatusTable} (
+      id $idType,
+      siteStatusId $intType UNIQUE,
+      name $textType
+    )
+  ''';
 }

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/features/master_data/providers/nfr_facilities_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/yes_no_na_values_provider.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
-import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/nearby_sites/nearby_sites_form_controller.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class NearbySitesFormSection extends ConsumerWidget {
   const NearbySitesFormSection({super.key});
@@ -34,18 +35,23 @@ class NearbySitesFormSection extends ConsumerWidget {
             shrinkWrap: true,
             itemBuilder: (context, index) {
               // Get the actual site to use its unique ID as the key
-              final sites = ref.watch(
-                nearbySitesControllerProvider.select(
-                  (s) => s.nearbyTrafficSites,
-                ),
-              );
+              // final sites = ref.watch(
+              //   nearbySitesControllerProvider.select(
+              //     (s) => s.nearbyTrafficSites,
+              //   ),
+              // );
 
-              if (index >= sites.length) {
+              if (index >= sitesLength) {
                 return const SizedBox.shrink();
               }
 
+              final id = ref
+                  .read(nearbySitesControllerProvider)
+                  .nearbyTrafficSites[index]
+                  .id;
+
               return _SiteFormCard(
-                key: ValueKey(sites[index].id),
+                key: ValueKey(id),
                 index: index,
                 onRemove: sitesLength > 1
                     ? () {
@@ -92,21 +98,17 @@ class _SiteFormCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final site = ref.watch(
-      nearbySitesControllerProvider.select(
-        (s) => s.nearbyTrafficSites.length > index
-            ? s.nearbyTrafficSites[index]
-            : null,
-      ),
-    );
+    final state = ref.read(nearbySitesControllerProvider);
+    final site = state.nearbyTrafficSites.length > index
+        ? state.nearbyTrafficSites[index]
+        : null;
+    final sitesLength = state.totalSites;
+    final controller = ref.read(nearbySitesControllerProvider.notifier);
 
     // If site is null (index out of bounds), don't render
-    if (site == null) {
+    if (site == null || index >= sitesLength) {
       return const SizedBox.shrink();
     }
-
-    final sitesLength = ref.read(nearbySitesControllerProvider).totalSites;
-    final controller = ref.read(nearbySitesControllerProvider.notifier);
 
     return Container(
       padding: const EdgeInsets.all(10),
@@ -146,6 +148,8 @@ class _SiteFormCard extends ConsumerWidget {
             key: ValueKey('site_name_${site.id}'),
             title: "Site Name",
             hintText: "Enter site name",
+            isRequired: true,
+            validator: (v) => v.validate(),
             initialValue: site.siteName,
             onChanged: (value) {
               controller.updateSite(index: index, siteName: value);
@@ -161,6 +165,8 @@ class _SiteFormCard extends ConsumerWidget {
             title: "Estimated Daily Diesel Sale",
             hintText: "Enter daily diesel sale",
             keyboardType: TextInputType.number,
+            isRequired: true,
+            validator: (v) => v.validate(),
             initialValue: site.estimatedDailyDieselSale,
             onChanged: (value) {
               controller.updateSite(
@@ -179,6 +185,8 @@ class _SiteFormCard extends ConsumerWidget {
             title: "Estimated Daily Super Sale",
             hintText: "Enter daily super sale",
             keyboardType: TextInputType.number,
+            isRequired: true,
+            validator: (v) => v.validate(),
             initialValue: site.estimatedDailySuperSale,
             onChanged: (value) {
               controller.updateSite(
@@ -196,6 +204,8 @@ class _SiteFormCard extends ConsumerWidget {
             key: ValueKey('lubricant_sale_${site.id}'),
             title: "Estimated Lubricant Sale",
             hintText: "Enter daily lubricant sale",
+            isRequired: true,
+            validator: (v) => v.validate(),
             keyboardType: TextInputType.number,
             initialValue: site.estimatedDailyLubricantSale,
             onChanged: (value) {
@@ -227,38 +237,60 @@ class _SiteFormCard extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 10),
-          CustomDropDownWithTitle(
-            key: ValueKey('nfr_facility_${site.id}'),
-            title: "Is NFR Facility Available?",
-            hintText: "Select an option",
-            selectedItem: site.isNfrFacility,
-            items: ref.read(yesNoValuesProvider),
-            onChanged: (value) {
-              if (value == null) return;
-              controller.updateSite(
-                index: index,
-                isNfrFacility: value.toString(),
+          Consumer(
+            builder: (context, ref, _) {
+              final isNfrFacility = ref.watch(
+                nearbySitesControllerProvider.select(
+                  (state) => state.nearbyTrafficSites[index].isNfrFacility,
+                ),
               );
-            },
-            showClearButton: true,
-            onClear: () {
-              controller.clearField('isNfrFacility', index: index);
+              return SmartCustomDropDownWithTitle(
+                key: ValueKey('nfr_facility_${site.id}'),
+                title: "Is NFR Facility Available?",
+                hintText: "Select an option",
+                selectedItem: isNfrFacility,
+                asyncProvider: yesNoValuesProvider,
+                isRequired: true,
+                validator: (v) => v.validate(),
+                itemsBuilder: (values) => values,
+                onChanged: (value) {
+                  if (value == null) return;
+                  controller.updateSite(
+                    index: index,
+                    isNfrFacility: value.toString(),
+                  );
+                },
+                showClearButton: true,
+                onClear: () {
+                  controller.clearField('isNfrFacility', index: index);
+                },
+              );
             },
           ),
           const SizedBox(height: 10),
-          CustomDropDownWithTitle(
-            key: ValueKey('nfr_facilities_list_${site.id}'),
-            title: "Select NFR Facilities",
-            hintText: "Select nfr facilities",
-            isMultiSelect: true,
-            selectedItems: site.nfrFacilities,
-            items: ref.read(nfrFacilitiesProvider),
-            onMultiChanged: (values) {
-              controller.updateSite(index: index, nfrFacilities: values);
-            },
-            showClearButton: true,
-            onClear: () {
-              controller.clearField('nfrFacilities', index: index);
+          Consumer(
+            builder: (context, ref, _) {
+              final nfrFacilities = ref.watch(
+                nearbySitesControllerProvider.select(
+                  (state) => state.nearbyTrafficSites[index].nfrFacilities,
+                ),
+              );
+              return SmartCustomDropDownWithTitle(
+                key: ValueKey('nfr_facilities_list_${site.id}'),
+                title: "Select NFR Facilities",
+                hintText: "Select nfr facilities",
+                isMultiSelect: true,
+                selectedItems: nfrFacilities,
+                asyncProvider: nfrFacilitiesProvider,
+                itemsBuilder: (values) => values,
+                onMultiChanged: (values) {
+                  controller.updateSite(index: index, nfrFacilities: values);
+                },
+                showClearButton: true,
+                onClear: () {
+                  controller.clearField('nfrFacilities', index: index);
+                },
+              );
             },
           ),
         ],

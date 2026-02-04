@@ -15,7 +15,7 @@ class ServerException extends NetworkException {
 }
 
 class CacheException extends NetworkException {
-  CacheException([String message = 'Cache error occurred']) : super(message);
+  CacheException([super.message = 'Cache error occurred']);
 }
 
 class UnauthorizedException extends NetworkException {

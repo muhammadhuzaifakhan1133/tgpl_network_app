@@ -1,17 +1,21 @@
 extension StringValidation on String? {
-
   bool get isNullOrEmpty => this == null || this!.isEmpty;
 
-   String orDefault(String defaultValue) => (this?.isNotEmpty ?? false) ? this! : defaultValue;
+  bool get isNotNullOrEmpty => !isNullOrEmpty;
+
+  String orDefault(String defaultValue) =>
+      (this?.isNotEmpty ?? false) ? this! : defaultValue;
 
   String? validate([String message = "This field is required"]) {
-    if (this == null || this!.isEmpty) {
+    if (isNullOrEmpty) {
       return message;
     }
     return null;
   }
 
-  String? validatePhoneNumber([String message = "Please enter a valid phone number"]) {
+  String? validatePhoneNumber([
+    String message = "Please enter a valid phone number",
+  ]) {
     String? error = validate();
     if (error != null) return error;
     final phoneRegex = RegExp(r'^\+?[0-9]{7,15}$');
@@ -21,20 +25,22 @@ extension StringValidation on String? {
     return null;
   }
 
-  String? validateNumber([String message = "Please enter a valid number"]) {
+  String? validateNumber([
+    String message = "Please enter a valid number",
+    bool allowDecimal = true,
+  ]) {
     String? error = validate();
     if (error != null) return error;
-    final numberRegex = RegExp(r'^\d+$');
+    final numberRegex = allowDecimal
+        ? RegExp(r'^\d+(\.\d+)?$')
+        : RegExp(r'^\d+$');
     if (!numberRegex.hasMatch(this!)) {
       return message;
     }
     return null;
   }
 
-  String? validateSameValue({
-    required String value,
-    required String message,
-  }) {
+  String? validateSameValue({required String value, required String message}) {
     String? error = validate();
     if (error != null) return error;
     if (value != this) {

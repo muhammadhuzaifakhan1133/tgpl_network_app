@@ -14,16 +14,20 @@ class DealerProfileFormCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(dealerProfileFormControllerProvider.notifier);
-    final state = ref.watch(dealerProfileFormControllerProvider);
-
+    final state = ref.read(dealerProfileFormControllerProvider);
+    final isThisDealer = ref.watch(
+      dealerProfileFormControllerProvider.select((s) => s.isThisDealer),
+    );
     return SectionDetailCard(
       title: "Dealer Profile",
       children: [
-        CustomDropDownWithTitle(
+        SmartCustomDropDownWithTitle(
           title: "Is this dealer?",
           hintText: "Select an option",
-          selectedItem: state.isThisDealer,
-          items: ref.read(yesNoNaValuesProvider),
+          selectedItem: isThisDealer,
+          asyncProvider: yesNoNaValuesProvider,
+          itemsBuilder: (values) => values,
+          isRequired: true,
           onChanged: (value) {
             if (value == null) return;
             controller.onChangeIsThisDealer(value.toString());
@@ -38,6 +42,7 @@ class DealerProfileFormCard extends ConsumerWidget {
         CustomTextFieldWithTitle(
           title: "Platform",
           hintText: "Enter platform",
+          isRequired: true,
           initialValue: state.dealerPlatform,
           onChanged: (value) {
             controller.updateDealerPlatform(value);
@@ -49,13 +54,14 @@ class DealerProfileFormCard extends ConsumerWidget {
           },
         ),
         // BELOW ALL FIELDS ACTIVE ONLY WHEN IS THIS DEALER = YES
-        if (state.isThisDealer == 'Yes') ...[
+        if (isThisDealer == 'Yes') ...[
           const SizedBox(height: 10),
           CustomTextFieldWithTitle(
             title:
                 "What other businesses does the dealer have, Mention # of business and types.",
             hintText: "Enter dealer businesses",
             initialValue: state.dealerBusinesses,
+            isRequired: true,
             onChanged: (value) {
               controller.updateDealerBusinesses(value);
             },
@@ -69,36 +75,58 @@ class DealerProfileFormCard extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 10),
-          CustomDropDownWithTitle(
-            title: "How involved is the dealer in petrol pump business?",
-            hintText: "Select dealer involvement",
-            selectedItem: state.selectedDealerInvolvement,
-            items: ref.read(dealerInvolvementNamesProvider),
-            onChanged: (value) {
-              if (value == null) return;
-              controller.onChangeDealerInvolvement(value.toString());
-            },
-            validator: (v) => v.validate(),
-            showClearButton: true,
-            onClear: () {
-              controller.clearField('selectedDealerInvolvement');
+          Consumer(
+            builder: (context, ref, child) {
+              final selectedDealerInvolvement = ref.watch(
+                dealerProfileFormControllerProvider.select(
+                  (s) => s.selectedDealerInvolvement,
+                ),
+              );
+              return SmartCustomDropDownWithTitle(
+                title: "How involved is the dealer in petrol pump business?",
+                hintText: "Select dealer involvement",
+                selectedItem: selectedDealerInvolvement,
+                asyncProvider: dealerInvolvementNamesProvider,
+                itemsBuilder: (values) => values,
+                isRequired: true,
+                onChanged: (value) {
+                  if (value == null) return;
+                  controller.onChangeDealerInvolvement(value.toString());
+                },
+                validator: (v) => v.validate(),
+                showClearButton: true,
+                onClear: () {
+                  controller.clearField('selectedDealerInvolvement');
+                },
+              );
             },
           ),
           const SizedBox(height: 10),
-          CustomDropDownWithTitle(
-            title:
-                "Is the dealer ready to inject working capital on site and operate on cash?*",
-            hintText: "Select an option",
-            selectedItem: state.isDealerReadyToInvest,
-            items: ref.read(yesNoNaValuesProvider),
-            onChanged: (value) {
-              if (value == null) return;
-              controller.onChangeIsDealerReadyToInvest(value.toString());
-            },
-            validator: (v) => v.validate(),
-            showClearButton: true,
-            onClear: () {
-              controller.clearField('isDealerReadyToInvest');
+          Consumer(
+            builder: (context, ref, _) {
+              final isDealerReadyToInvest = ref.watch(
+                dealerProfileFormControllerProvider.select(
+                  (s) => s.isDealerReadyToInvest,
+                ),
+              );
+              return SmartCustomDropDownWithTitle(
+                title:
+                    "Is the dealer ready to inject working capital on site and operate on cash?*",
+                hintText: "Select an option",
+                selectedItem: isDealerReadyToInvest,
+                asyncProvider: yesNoNaValuesProvider,
+                itemsBuilder: (values) => values,
+                isRequired: true,
+                onChanged: (value) {
+                  if (value == null) return;
+                  controller.onChangeIsDealerReadyToInvest(value.toString());
+                },
+                validator: (v) => v.validate(),
+                showClearButton: true,
+                onClear: () {
+                  controller.clearField('isDealerReadyToInvest');
+                },
+              );
             },
           ),
           const SizedBox(height: 10),
@@ -112,7 +140,6 @@ class DealerProfileFormCard extends ConsumerWidget {
             multiline: true,
             minLines: 2,
             maxLines: 3,
-            validator: (v) => v.validate(),
             showClearButton: true,
             onClear: () {
               controller.clearField('dealerOpinion');
@@ -128,29 +155,39 @@ class DealerProfileFormCard extends ConsumerWidget {
             onChanged: (value) {
               controller.updateMonthlySalary(value);
             },
-            validator: (v) => v.validate(),
             showClearButton: true,
             onClear: () {
               controller.clearField('monthlySalary');
             },
           ),
           const SizedBox(height: 10),
-          CustomDropDownWithTitle(
-            title:
-                "Is the dealer agreed to follow all TGPL operating standards?",
-            hintText: "Select an option",
-            selectedItem: state.isDealerAgreedToFollowTgplStandards,
-            items: ref.read(yesNoNaValuesProvider),
-            onChanged: (value) {
-              if (value == null) return;
-              controller.onChangeIsDealerAgreedToFollowTgplStandards(
-                value.toString(),
+          Consumer(
+            builder: (context, ref, _) {
+              final isDealerAgreedToFollowTgplStandards = ref.watch(
+                dealerProfileFormControllerProvider.select(
+                  (s) => s.isDealerAgreedToFollowTgplStandards,
+                ),
               );
-            },
-            validator: (v) => v.validate(),
-            showClearButton: true,
-            onClear: () {
-              controller.clearField('isDealerAgreedToFollowTgplStandards');
+              return SmartCustomDropDownWithTitle(
+                title:
+                    "Is the dealer agreed to follow all TGPL operating standards?",
+                hintText: "Select an option",
+                selectedItem: isDealerAgreedToFollowTgplStandards,
+                asyncProvider: yesNoNaValuesProvider,
+                itemsBuilder: (values) => values,
+                isRequired: true,
+                onChanged: (value) {
+                  if (value == null) return;
+                  controller.onChangeIsDealerAgreedToFollowTgplStandards(
+                    value.toString(),
+                  );
+                },
+                validator: (v) => v.validate(),
+                showClearButton: true,
+                onClear: () {
+                  controller.clearField('isDealerAgreedToFollowTgplStandards');
+                },
+              );
             },
           ),
         ],

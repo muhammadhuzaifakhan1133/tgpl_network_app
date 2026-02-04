@@ -76,10 +76,8 @@ class _DashboardModuleContainer extends ConsumerWidget {
                           ref
                               .read(goRouterProvider)
                               .push(
-                                AppRoutes.moduleApplications(
-                                  module.title,
-                                  subModule.title,
-                                ),
+                                AppRoutes.moduleApplications,
+                                extra: subModule,
                               );
                         },
                       ),

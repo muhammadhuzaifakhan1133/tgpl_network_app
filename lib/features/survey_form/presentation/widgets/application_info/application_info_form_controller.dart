@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/features/survey_form/models/survey_form_model.dart';
 import 'package:tgpl_network/utils/extensions/nullable_fields_helper.dart';
 
 final applicationInfoFormControllerProvider =
@@ -19,6 +21,20 @@ class ApplicationInfoFormState {
   final String? npName;
   final String? source;
   final String? sourceName;
+
+  double? get latitude {
+    if (googleLocation == null) return null;
+    final parts = googleLocation!.split(',');
+    if (parts.length != 2) return null;
+    return double.tryParse(parts[0].trim());
+  }
+
+  double? get longitude {
+    if (googleLocation == null) return null;
+    final parts = googleLocation!.split(',');
+    if (parts.length != 2) return null;
+    return double.tryParse(parts[1].trim());
+  }
 
   const ApplicationInfoFormState({
     this.selectedCity,
@@ -51,21 +67,72 @@ class ApplicationInfoFormState {
     List<String>? fieldsToNull,
   }) {
     return ApplicationInfoFormState(
-      selectedCity: fieldsToNull
-          .apply('selectedCity', selectedCity, this.selectedCity),
+      selectedCity: fieldsToNull.apply(
+        'selectedCity',
+        selectedCity,
+        this.selectedCity,
+      ),
       siteStatus: fieldsToNull.apply("siteStatus", siteStatus, this.siteStatus),
-      selectedPriority: fieldsToNull.apply("selectedPriority", selectedPriority, this.selectedPriority),
-      applicantId: fieldsToNull.apply("applicantId", applicantId, this.applicantId),
+      selectedPriority: fieldsToNull.apply(
+        "selectedPriority",
+        selectedPriority,
+        this.selectedPriority,
+      ),
+      applicantId: fieldsToNull.apply(
+        "applicantId",
+        applicantId,
+        this.applicantId,
+      ),
       entryCode: fieldsToNull.apply("entryCode", entryCode, this.entryCode),
-      dateConducted: fieldsToNull.apply("dateConducted", dateConducted, this.dateConducted),
-      conductedBy: fieldsToNull.apply("conductedBy", conductedBy, this.conductedBy),
-      googleLocation: fieldsToNull.apply("googleLocation", googleLocation, this.googleLocation),
+      dateConducted: fieldsToNull.apply(
+        "dateConducted",
+        dateConducted,
+        this.dateConducted,
+      ),
+      conductedBy: fieldsToNull.apply(
+        "conductedBy",
+        conductedBy,
+        this.conductedBy,
+      ),
+      googleLocation: fieldsToNull.apply(
+        "googleLocation",
+        googleLocation,
+        this.googleLocation,
+      ),
       district: fieldsToNull.apply("district", district, this.district),
       npName: fieldsToNull.apply("npName", npName, this.npName),
       source: fieldsToNull.apply("source", source, this.source),
       sourceName: fieldsToNull.apply("sourceName", sourceName, this.sourceName),
     );
   }
+
+  ApplicationInfoFormState.loadFromApplication(ApplicationModel app)
+    : selectedCity = app.cityName,
+      siteStatus = app.siteStatusName,
+      selectedPriority = app.priority,
+      applicantId = app.applicationId?.toString(),
+      entryCode = app.entryCode,
+      dateConducted = app.dateConducted,
+      conductedBy = null,
+      googleLocation = app.googleLocation,
+      district = app.district,
+      npName = app.npPersonName,
+      source = app.source,
+      sourceName = app.sourceName;
+
+  ApplicationInfoFormState.loadFromSurveyFormModel(SurveyFormModel form)
+    : selectedCity = form.city,
+      siteStatus = form.siteStatus,
+      selectedPriority = form.priority,
+      applicantId = form.applicationId,
+      entryCode = form.entryCode,
+      dateConducted = form.dateConducted,
+      conductedBy = form.conductedBy,
+      googleLocation = form.googleLocation,
+      district = form.district,
+      npName = form.npName,
+      source = form.source,
+      sourceName = form.sourceName;
 
   @override
   String toString() {
@@ -114,33 +181,41 @@ class ApplicationInfoFormController extends Notifier<ApplicationInfoFormState> {
     state = state.copyWith(fieldsToNull: [fieldName]);
   }
 
-  void prefillFormData({
-    required String applicantId,
-    required String entryCode,
-    required String dateConducted,
-    required String conductedBy,
-    required String googleLocation,
-    required String district,
-    required String npName,
-    required String source,
-    required String sourceName,
-    required String city,
-    required String status,
-    required String priority,
-  }) {
-    state = state.copyWith(
-      applicantId: applicantId,
-      entryCode: entryCode,
-      dateConducted: dateConducted,
-      conductedBy: conductedBy,
-      googleLocation: googleLocation,
-      district: district,
-      npName: npName,
-      source: source,
-      sourceName: sourceName,
-      selectedCity: city,
-      siteStatus: status,
-      selectedPriority: priority,
-    );
+  void loadFromApplication(ApplicationModel app) {
+    state = ApplicationInfoFormState.loadFromApplication(app);
   }
+
+  void loadFromSurveyFormModel(SurveyFormModel form) {
+    state = ApplicationInfoFormState.loadFromSurveyFormModel(form);
+  }
+
+  // void prefillFormData({
+  //   required String applicantId,
+  //   required String entryCode,
+  //   required String dateConducted,
+  //   required String conductedBy,
+  //   required String googleLocation,
+  //   required String district,
+  //   required String npName,
+  //   required String source,
+  //   required String sourceName,
+  //   required String city,
+  //   required String status,
+  //   required String priority,
+  // }) {
+  //   state = state.copyWith(
+  //     applicantId: applicantId,
+  //     entryCode: entryCode,
+  //     dateConducted: dateConducted,
+  //     conductedBy: conductedBy,
+  //     googleLocation: googleLocation,
+  //     district: district,
+  //     npName: npName,
+  //     source: source,
+  //     sourceName: sourceName,
+  //     selectedCity: city,
+  //     siteStatus: status,
+  //     selectedPriority: priority,
+  //   );
+  // }
 }

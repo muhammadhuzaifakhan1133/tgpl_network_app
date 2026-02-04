@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:tgpl_network/common/data/shared_prefs_data_source.dart';
+import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/home_shell/presentation/home_shell_view.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_view.dart';
 import 'package:tgpl_network/features/applications_filter/appplications_filter_view.dart';
@@ -10,13 +13,13 @@ import 'package:tgpl_network/features/dashboard/presentation/dashboard_view.dart
 import 'package:tgpl_network/features/data_sync/presentation/data_sync_view.dart';
 import 'package:tgpl_network/features/login/presentation/login_view.dart';
 import 'package:tgpl_network/features/map/presentation/map_view.dart';
-import 'package:tgpl_network/features/module_applications/module_applications_view.dart';
+import 'package:tgpl_network/features/module_applications/presentation/module_applications_view.dart';
 import 'package:tgpl_network/features/onboarding/presentation/onboarding_view.dart';
 import 'package:tgpl_network/features/profile/presentation/profile_view.dart';
 import 'package:tgpl_network/features/splash/presentation/splash_view.dart';
-import 'package:tgpl_network/features/station_form/presentation/confirmation/station_form_confirmation_view.dart';
+import 'package:tgpl_network/features/application_form/presentation/confirmation/app_form_confirmation_view.dart';
 import 'package:tgpl_network/features/site_location_selection/presentation/site_location_selection_view.dart';
-import 'package:tgpl_network/features/station_form/presentation/station_form_view.dart';
+import 'package:tgpl_network/features/application_form/presentation/app_form_view.dart';
 import 'package:tgpl_network/features/survey_form/presentation/survey_form_view.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/traffic_trade_form_view.dart';
 import 'package:tgpl_network/features/welcome/presentation/welcome_view.dart';
@@ -44,19 +47,22 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.siteLocationSelection,
-        builder: (context, state) => const SiteLocationSelectionView(),
+        builder: (context, state) => SiteLocationSelectionView(
+          initialPosition: state.extra != null ? state.extra as LatLng : null,
+        ),
       ),
       GoRoute(
         path: AppRoutes.stationFormConfirmation(),
         builder: (context, state) {
-          return StationFormConfirmationView(
+          return AppFormConfirmationView(
             applicationId: state.pathParameters['applicationId'] ?? '',
           );
-        }
+        },
       ),
       GoRoute(
         path: AppRoutes.login,
         builder: (context, state) => const LoginView(),
+
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -110,18 +116,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => ChangePasswordView(),
       ),
       GoRoute(
-        path: AppRoutes.moduleApplications(),
-        builder: (context, state) => ModuleApplicationsView(
-          module: state.pathParameters['module'] ?? '',
-          subModule: state.pathParameters['subModule'] ?? '',
-        ),
+        path: AppRoutes.moduleApplications,
+        builder: (context, state) =>
+            ModuleApplicationsView(subModule: state.extra as SubModuleModel),
       ),
       GoRoute(
         path: AppRoutes.applicationDetail(),
         builder: (context, state) {
           return ApplicationDetailView(
-            appId: state.pathParameters['appId'] ?? '',
-            statusId: state.extra as int? ?? 0,
+            applicationId: state.pathParameters['appId'] ?? '',
           );
         },
       ),

@@ -10,8 +10,11 @@ import 'network_exceptions.dart';
 
 class DioClient {
   late final Dio _dio;
+  final Ref ref;
 
-  DioClient({
+  DioClient(
+    this.ref,
+    {
     Dio? dio,
     required String baseUrl,
     required SharedPreferences sharedPreferences,
@@ -28,10 +31,10 @@ class DioClient {
     _dio.options.headers = {
       'Accept': 'application/json',
     };
-
+    
     // Add interceptors with SharedPreferences
     _dio.interceptors.addAll([
-      AuthInterceptor(sharedPreferences),
+      AuthInterceptor(ref, sharedPreferences),
       LoggingInterceptor(),
     ]);
   }
@@ -162,5 +165,5 @@ class DioClient {
 // Updated Riverpod provider
 final dioClientProvider = Provider<DioClient>((ref) {
   final sharedPrefs = ref.watch(sharedPreferencesProvider);
-  return DioClient(baseUrl: AppApis.baseUrl, sharedPreferences: sharedPrefs);
+  return DioClient(ref, baseUrl: AppApis.baseUrl, sharedPreferences: sharedPrefs);
 });

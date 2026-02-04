@@ -1,4 +1,7 @@
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
+
 extension DatetimeExtension on DateTime {
+  // e.g. 25/12/2023
   String formatToDDMMYYY() {
     final day = this.day.toString().padLeft(2, '0');
     final month = this.month.toString().padLeft(2, '0');
@@ -6,29 +9,69 @@ extension DatetimeExtension on DateTime {
   }
 }
 
-extension StrDateTimeExtension on String {
-  String formatTod_MMM_yyyy() {
+extension StrDateTimeExtension2 on String? {
+   bool isValidDate() {
+    if (isNullOrEmpty) return false;
     try {
+      DateTime.parse(this!);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+}
 
-    final dateTime = DateTime.parse(this);
-    final day = dateTime.day.toString().padLeft(2, '0');
-    final monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
-    final month = monthNames[dateTime.month - 1];
-    final year = dateTime.year;
-    return '$day $month, $year';
+extension StrDateTimeExtension on String {
+  // Converts "25/12/2023" to ISO date string "2023-12-25T00:00:00.000"
+  String formatFromDDMMYYYToIsoDate() {
+    try {
+      final parts = split('/');
+      if (parts.length != 3) return this;
+      final day = int.parse(parts[0]);
+      final month = int.parse(parts[1]);
+      final year = int.parse(parts[2]);
+      final dateTime = DateTime(year, month, day);
+      return dateTime.toIso8601String();
+    } catch (e) {
+      return this;
+    }
+  }
+
+  // Converts ISO date string "2023-12-25T00:00:00.000" to "25/12/2023"
+  String formatFromIsoToDDMMYYY() {
+    try {
+      final dateTime = DateTime.parse(this);
+      final day = dateTime.day.toString().padLeft(2, '0');
+      final month = dateTime.month.toString().padLeft(2, '0');
+      final year = dateTime.year;
+      return '$day/$month/$year';
+    } catch (e) {
+      return this;
+    }
+  }
+
+  // Converts ISO date string "2023-12-25T00:00:00.000" to "25 Dec, 2023"
+  String formatTodMMMyyyy() {
+    try {
+      final dateTime = DateTime.parse(this);
+      final day = dateTime.day.toString().padLeft(2, '0');
+      final monthNames = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
+      final month = monthNames[dateTime.month - 1];
+      final year = dateTime.year;
+      return '$day $month, $year';
     } catch (e) {
       return this;
     }

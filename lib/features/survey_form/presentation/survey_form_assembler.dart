@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
 import 'package:tgpl_network/features/survey_form/models/survey_form_model.dart';
 import 'package:tgpl_network/features/survey_form/presentation/widgets/application_info/application_info_form_controller.dart';
 import 'package:tgpl_network/features/survey_form/presentation/widgets/contact_and_dealer/contact_and_dealer_form_controller.dart';
@@ -6,8 +7,37 @@ import 'package:tgpl_network/features/survey_form/presentation/widgets/dealer_pr
 import 'package:tgpl_network/features/survey_form/presentation/widgets/survey_recommendation/survey_recommendation_form_controller.dart';
 
 class SurveyFormAssembler {
-  static SurveyFormModel assemble(Ref ref) {
+  static void dessembleFromApp(Ref ref, ApplicationModel app) {
+    ref
+        .read(applicationInfoFormControllerProvider.notifier)
+        .loadFromApplication(app);
+    ref
+        .read(contactAndDealerFormControllerProvider.notifier)
+        .loadFromApplication(app);
+    ref
+        .read(dealerProfileFormControllerProvider.notifier)
+        .loadFromApplication(app);
+    ref
+        .read(surveyRecommendationFormControllerProvider.notifier)
+        .loadFromApplication(app);
+  }
 
+  static void dessembleFromSurveyFormModel(Ref ref, SurveyFormModel form) {
+    ref
+        .read(applicationInfoFormControllerProvider.notifier)
+        .loadFromSurveyFormModel(form);
+    ref
+        .read(contactAndDealerFormControllerProvider.notifier)
+        .loadFromSurveyFormModel(form);
+    ref
+        .read(dealerProfileFormControllerProvider.notifier)
+        .loadFromSurveyFormModel(form);
+    ref
+        .read(surveyRecommendationFormControllerProvider.notifier)
+        .loadFromSurveyFormModel(form);
+  }
+
+  static SurveyFormModel assemble(Ref ref, String applicationId) {
     final applicationInfo = ref.read(applicationInfoFormControllerProvider);
     final contactAndDealer = ref.read(contactAndDealerFormControllerProvider);
     final dealerProfile = ref.read(dealerProfileFormControllerProvider);
@@ -15,7 +45,7 @@ class SurveyFormAssembler {
 
     return SurveyFormModel(
       // Application Info
-      applicantId: applicationInfo.applicantId,
+      applicationId: applicationId,
       entryCode: applicationInfo.entryCode,
       dateConducted: applicationInfo.dateConducted,
       conductedBy: applicationInfo.conductedBy,
@@ -27,7 +57,7 @@ class SurveyFormAssembler {
       source: applicationInfo.source,
       sourceName: applicationInfo.sourceName,
       priority: applicationInfo.selectedPriority,
-      
+
       // Contact & Dealer
       dealerName: contactAndDealer.dealerName,
       dealerContact: contactAndDealer.dealerContact,
@@ -40,7 +70,7 @@ class SurveyFormAssembler {
       nearestDepo: contactAndDealer.nearestDepo,
       distanceFromDepo: contactAndDealer.distanceFromDepo,
       typeOfTradeArea: contactAndDealer.typeOfTradeArea,
-      
+
       // Dealer Profile
       isThisDealer: dealerProfile.isThisDealer,
       dealerPlatform: dealerProfile.dealerPlatform,
@@ -49,8 +79,9 @@ class SurveyFormAssembler {
       isDealerReadyToInvest: dealerProfile.isDealerReadyToInvest,
       dealerOpinion: dealerProfile.dealerOpinion,
       monthlySalary: dealerProfile.monthlySalary,
-      isDealerAgreedToFollowTgplStandards: dealerProfile.isDealerAgreedToFollowTgplStandards,
-      
+      isDealerAgreedToFollowTgplStandards:
+          dealerProfile.isDealerAgreedToFollowTgplStandards,
+
       // Recommendations
       selectedTM: recommendation.selectedTM,
       tmRecommendation: recommendation.selectedTMRecommendation,
@@ -60,5 +91,4 @@ class SurveyFormAssembler {
       rmRemarks: recommendation.rmRemarks,
     );
   }
-
 }

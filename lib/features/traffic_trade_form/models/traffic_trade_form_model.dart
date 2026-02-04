@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:tgpl_network/features/traffic_trade_form/models/traffic_site_model.dart';
 
 class TrafficTradeFormModel {
+  final String? applicationId;
   // Nearby Sites
   final List<TrafficSiteModel> nearbyTrafficSites;
 
@@ -27,7 +30,13 @@ class TrafficTradeFormModel {
   final String? tmRemarks;
   final String? rmRemarks;
 
+  final bool isSubmitting;
+  final String errorMessage;
+  final String createdAt;
+  final String updatedAt;
+
   const TrafficTradeFormModel({
+    this.applicationId,
     this.nearbyTrafficSites = const [],
     this.trafficCountTruck,
     this.trafficCountCar,
@@ -46,12 +55,17 @@ class TrafficTradeFormModel {
     this.selectedRMRecommendation,
     this.tmRemarks,
     this.rmRemarks,
+    this.isSubmitting = false,
+    this.errorMessage = '',
+    this.createdAt = '',
+    this.updatedAt = '',
   });
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toDatabaseMap() {
     return {
+      'applicationId': applicationId,
       'nearbyTrafficSites': nearbyTrafficSites
-          .map((site) => site.toJson())
+          .map((site) => site.toDatabaseMap())
           .toList(),
       'trafficCountTruck': trafficCountTruck,
       'trafficCountCar': trafficCountCar,
@@ -73,10 +87,11 @@ class TrafficTradeFormModel {
     };
   }
 
-  factory TrafficTradeFormModel.fromJson(Map<String, dynamic> json) {
+  factory TrafficTradeFormModel.fromDatabaseMap(Map<String, dynamic> json) {
     return TrafficTradeFormModel(
+      applicationId: json['applicationId'] as String?,
       nearbyTrafficSites:
-          (json['nearbyTrafficSites'] as List<dynamic>?)
+          (jsonDecode((json['nearbyTrafficSites'])) as List<dynamic>?)
               ?.map(
                 (site) =>
                     TrafficSiteModel.fromJson(site as Map<String, dynamic>),
@@ -100,6 +115,9 @@ class TrafficTradeFormModel {
       selectedRMRecommendation: json['selectedRMRecommendation'] as String?,
       tmRemarks: json['tmRemarks'] as String?,
       rmRemarks: json['rmRemarks'] as String?,
+      errorMessage: json['errorMessage'] as String? ?? '',
+      createdAt: json['createdAt'] as String? ?? '',
+      updatedAt: json['updatedAt'] as String? ?? '',
     );
   }
 
@@ -122,6 +140,8 @@ class TrafficTradeFormModel {
     String? selectedRMRecommendation,
     String? tmRemarks,
     String? rmRemarks,
+    bool? isSubmitting,
+    String? errorMessage,
   }) {
     return TrafficTradeFormModel(
       nearbyTrafficSites: nearbyTrafficSites ?? this.nearbyTrafficSites,
@@ -144,11 +164,44 @@ class TrafficTradeFormModel {
           selectedRMRecommendation ?? this.selectedRMRecommendation,
       tmRemarks: tmRemarks ?? this.tmRemarks,
       rmRemarks: rmRemarks ?? this.rmRemarks,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
   String toString() {
     return 'TrafficTradeFormModel(nearbyTrafficSites: $nearbyTrafficSites, trafficCountTruck: $trafficCountTruck, trafficCountCar: $trafficCountCar, trafficCountBike: $trafficCountBike, dailyDieselSales: $dailyDieselSales, dailySuperSales: $dailySuperSales, dailyHOBCSales: $dailyHOBCSales, dailyLubricantSales: $dailyLubricantSales, rentExpectation: $rentExpectation, truckPortPotential: $truckPortPotential, salamMartPotential: $salamMartPotential, restaurantPotential: $restaurantPotential, selectedTM: $selectedTM, selectedRM: $selectedRM, selectedTMRecommendation: $selectedTMRecommendation, selectedRMRecommendation: $selectedRMRecommendation, tmRemarks: $tmRemarks, rmRemarks: $rmRemarks)';
+  }
+
+  Map<String, dynamic> toApiMap() {
+    return {
+      "applicationId": applicationId,
+      "nearbyTrafficSites": nearbyTrafficSites
+          .map((site) => site.toApiMap())
+          .toList(),
+      "trafficCountTruck": trafficCountTruck,
+      "trafficCountCar": trafficCountCar,
+      "trafficCountBike": trafficCountBike,
+      "dailyDieselSales": dailyDieselSales,
+      "dailySuperSales": dailySuperSales,
+      "dailyHOBCSales": dailyHOBCSales,
+      "dailyLubricantSales": dailyLubricantSales,
+      "rentExpectation": rentExpectation,
+      "truckPortPotential": truckPortPotential,
+      "salamMartPotential": salamMartPotential,
+      "restaurantPotential": restaurantPotential,
+      "selectedTM": selectedTM,
+      "selectedRM": selectedRM,
+      "selectedTMRecommendation": selectedTMRecommendation,
+      "selectedRMRecommendation": selectedRMRecommendation,
+      "tmRemarks": tmRemarks,
+      "rmRemarks": rmRemarks,
+    };
+  }
+
+  String? get validate {
+    // TODO: add custom validation logic
+    return null;
   }
 }

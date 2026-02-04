@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/common/models/sync_enum.dart';
 import 'package:tgpl_network/common/providers/last_sync_time_provider.dart';
 import 'package:tgpl_network/common/providers/sync_status_provider.dart';
 import 'package:tgpl_network/common/widgets/error_widget.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
-import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_count_containers.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_greeting_text.dart';
@@ -17,8 +17,6 @@ import 'package:tgpl_network/features/home_shell/presentation/home_shell_control
 class DashboardView extends ConsumerWidget {
   const DashboardView({super.key});
 
-  
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final homeState = ref.watch(homeShellControllerProvider);
@@ -26,14 +24,15 @@ class DashboardView extends ConsumerWidget {
       data: (data) {
         final dashboardState = ref.watch(dashboardAsyncControllerProvider);
         return dashboardState.when(
+          skipLoadingOnRefresh: false,
           data: (dashboardData) => _DashboardView(),
-          loading: ()=> DashboardShimmerView(),
+          loading: () => DashboardShimmerView(),
           error: (e, st) {
             return errorWidget("Error loading data: $e");
           },
         );
       },
-      loading: ()=> DashboardShimmerView(),
+      loading: () => DashboardShimmerView(),
       error: (e, st) {
         return errorWidget("Error loading data: $e");
       },
@@ -41,75 +40,83 @@ class DashboardView extends ConsumerWidget {
   }
 }
 
-class _DashboardView extends StatelessWidget {
+class _DashboardView extends ConsumerWidget {
   const _DashboardView();
 
   @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        Container(
-          padding: EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(50),
-              bottomRight: Radius.circular(50),
+  Widget build(BuildContext context, WidgetRef ref) {
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.invalidate(dashboardAsyncControllerProvider);
+      },
+      child: ListView(
+        children: [
+          Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(50),
+                bottomRight: Radius.circular(50),
+              ),
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+                DashboardHeaderProfile(),
+                const SizedBox(height: 30),
+                DashboardGreetingText(),
+                const SizedBox(height: 10),
+                DashboardCountContainers(),
+                const SizedBox(height: 10),
+              ],
             ),
           ),
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              DashboardHeaderProfile(),
-              const SizedBox(height: 30),
-              DashboardGreetingText(),
-              const SizedBox(height: 10),
-              DashboardCountContainers(),
-              const SizedBox(height: 10),
-            ],
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            child: Column(
+              children: [
+                // RegionalManagersSection(),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final state = ref.watch(getLastSyncTimeProvider);
+                    final syncState = ref.watch(syncStatusProvider);
+                    return state.when(
+                      data: (lastSyncTime) => SyncStatusCard(
+                        status: syncState,
+                        lastSyncTime: lastSyncTime,
+                        onPressActionButton: () {
+                          ref
+                              .read(homeShellControllerProvider.notifier)
+                              .getMasterDataAndSaveLocally(
+                                forcefulSync:
+                                    syncState == SyncStatus.synchronized,
+                              );
+                        },
+                      ),
+                      loading: () => SyncStatusCard(
+                        status: syncState,
+                        lastSyncTime: "Loading...",
+                      ),
+                      error: (e, st) => SyncStatusCard(
+                        status: syncState,
+                        lastSyncTime: "Never",
+                        onPressActionButton: () {
+                          ref
+                              .read(homeShellControllerProvider.notifier)
+                              .getMasterDataAndSaveLocally();
+                        },
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
+                DashboardModulesSection(),
+              ],
+            ),
           ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-          child: Column(
-            children: [
-              // RegionalManagersSection(),
-              Consumer(
-                builder: (context, ref, child) {
-                  final state = ref.watch(getLastSyncTimeProvider);
-                  final syncState = ref.watch(syncStatusProvider);
-                  return state.when(
-                    data: (lastSyncTime) => SyncStatusCard(
-                      status: syncState,
-                      lastSyncTime: lastSyncTime,
-                      onResync: () {
-                        ref
-                            .read(homeShellControllerProvider.notifier)
-                            .getMasterDataAndSaveLocally();
-                      },
-                    ),
-                    loading: () => SyncStatusCard(
-                      status: syncState,
-                      lastSyncTime: "Loading...",
-                    ),
-                    error: (e, st) => SyncStatusCard(
-                      status: syncState,
-                      lastSyncTime: "Never",
-                      onResync: () {
-                        ref
-                            .read(homeShellControllerProvider.notifier)
-                            .getMasterDataAndSaveLocally();
-                      },
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 20),
-              DashboardModulesSection(),
-            ],
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
-import 'package:tgpl_network/utils/get_all_submodules_names.dart';
 
 final dashboardSearchControllerProvider =
     NotifierProvider.autoDispose<DashboardSearchController, List<SubModuleModel>>(

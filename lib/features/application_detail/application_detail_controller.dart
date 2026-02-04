@@ -1,8 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/application_detail/data/application_detail_data_source.dart';
+import 'package:tgpl_network/features/master_data/models/application_model.dart';
 
 final applicationDetailControllerProvider =
-    NotifierProvider.autoDispose<ApplicationDetailController, ApplicationDetailState>(
-        () => ApplicationDetailController());
+    NotifierProvider.autoDispose<
+      ApplicationDetailController,
+      ApplicationDetailState
+    >(() => ApplicationDetailController());
 
 class ApplicationDetailState {
   final bool isApplicationDetailCardExpanded;
@@ -37,16 +41,18 @@ class ApplicationDetailState {
   }) {
     return ApplicationDetailState(
       isApplicationDetailCardExpanded:
-          isApplicationDetailCardExpanded ?? this.isApplicationDetailCardExpanded,
+          isApplicationDetailCardExpanded ??
+          this.isApplicationDetailCardExpanded,
       isSiteDetailCardExpanded:
           isSiteDetailCardExpanded ?? this.isSiteDetailCardExpanded,
-      isContactDealerTGPLCardExpanded: isContactDealerTGPLCardExpanded ??
+      isContactDealerTGPLCardExpanded:
+          isContactDealerTGPLCardExpanded ??
           this.isContactDealerTGPLCardExpanded,
       isTrafficCountCardExpanded:
           isTrafficCountCardExpanded ?? this.isTrafficCountCardExpanded,
       isVolumeAndFinancialEstimationCardExpanded:
           isVolumeAndFinancialEstimationCardExpanded ??
-              this.isVolumeAndFinancialEstimationCardExpanded,
+          this.isVolumeAndFinancialEstimationCardExpanded,
       isRecommendationCardExpanded:
           isRecommendationCardExpanded ?? this.isRecommendationCardExpanded,
       isDealerProfileCardExpanded:
@@ -77,8 +83,7 @@ class ApplicationDetailController extends Notifier<ApplicationDetailState> {
 
   void toggleContactDealerTGPLCardExpanded() {
     state = state.copyWith(
-      isContactDealerTGPLCardExpanded:
-          !state.isContactDealerTGPLCardExpanded,
+      isContactDealerTGPLCardExpanded: !state.isContactDealerTGPLCardExpanded,
     );
   }
 
@@ -111,5 +116,34 @@ class ApplicationDetailController extends Notifier<ApplicationDetailState> {
     state = state.copyWith(
       isFeasibilityCardExpanded: !state.isFeasibilityCardExpanded,
     );
+  }
+}
+
+final applicationDetailAsyncControllerProvider =
+    AsyncNotifierProvider.family.autoDispose<
+      ApplicationDetailAsyncController,
+      ApplicationModel,
+      String
+    >(
+  (applicationId) {
+    return ApplicationDetailAsyncController(
+      applicationId: applicationId,
+    );
+  }
+    );
+
+class ApplicationDetailAsyncController extends AsyncNotifier<ApplicationModel> {
+  final String applicationId;
+  ApplicationDetailAsyncController({
+    required this.applicationId,
+  });
+
+  @override
+  Future<ApplicationModel> build() async {
+    final applicationDataSource = ref.read(applicationDetailDataSourceProvider);
+    final application = await applicationDataSource.getApplicationDetail(
+      applicationId,
+    );
+    return application;
   }
 }

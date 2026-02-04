@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:tgpl_network/common/widgets/custom_button.dart';
+import 'package:tgpl_network/common/widgets/custom_dropdown.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/map/presentation/map_controller.dart';
-import 'package:tgpl_network/features/master_data/providers/applications_provider.dart';
-import 'package:tgpl_network/utils/get_application_category_color.dart';
+import 'package:tgpl_network/features/map/presentation/widgets/selected_application_card.dart';
+import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/statuses_provider.dart';
 
 class MapView extends ConsumerWidget {
   const MapView({super.key});
@@ -14,151 +15,211 @@ class MapView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final markersAsync = ref.watch(mapMarkersProvider);
-    final selectedApplication = ref.watch(selectedSiteProvider);
-    final isMapLoaded = ref.watch(isMapLoadedProvider);
 
     return Stack(
       children: [
-        GoogleMap(
-          initialCameraPosition: const CameraPosition(
-            target: LatLng(24.8243808, 67.041284),
-            zoom: 13,
+        buildGoogleMap(markersAsync, ref),
+        // City Dropdown
+        Positioned(
+          top: 16,
+          left: 16,
+          right: 16,
+          child: Row(
+            children: [
+              buildCityDropDown(),
+              const SizedBox(width: 12),
+              buildStatusDropDown(),
+            ],
           ),
-          zoomControlsEnabled: false,
-          mapToolbarEnabled: false,
-          onMapCreated: (controller) async {
-            await Future.delayed(const Duration(milliseconds: 300));
-            ref.read(isMapLoadedProvider.notifier).state = true;
-          },
-          markers: markersAsync.when(
-            data: (markers) => Set<Marker>.from(markers),
-            loading: () => {},
-            error: (_, __) => {},
-          ),
-          onTap: (_) => ref.read(selectedSiteProvider.notifier).state = null,
         ),
-        if (!isMapLoaded)
-          const Positioned.fill(child: _MapSkeleton()),
-        if (selectedApplication != null)
+        // Add site count below dropdowns
+        Positioned(
+          top: 80,
+          left: 16,
+          child: buildSiteCountContainer(markersAsync),
+        ),
+
+        Positioned(
+          bottom: 40,
+          left: 20,
+          right: 20,
+          child: buildSelectedApplicationCard(),
+        ),
+        // linear loading indicator for marker generation (initially when applications are loading, and also when regenerating markers)
+        if (markersAsync.isLoading)
           Positioned(
-            bottom: 40,
-            left: 20,
-            right: 20,
-            child: _SelectedApplicationCard(application: selectedApplication),
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: buildLoadingIndicator(),
           ),
       ],
     );
   }
-}
 
-class _MapSkeleton extends StatelessWidget {
-  const _MapSkeleton();
+  Consumer buildLoadingIndicator() {
+    return Consumer(
+      builder: (context, ref, _) {
+        return LinearProgressIndicator(
+          value: ref.watch(markerGenerationProgressProvider),
+        );
+      },
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.grey.shade200,
-      child: const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
+  Consumer buildSelectedApplicationCard() {
+    return Consumer(
+      builder: (context, ref, _) {
+        final selectedApplication = ref.watch(selectedSiteProvider);
+        if (selectedApplication == null) {
+          return SizedBox.shrink();
+        }
+        return SelectedApplicationCard(application: selectedApplication);
+      },
+    );
+  }
+
+  Consumer buildSiteCountContainer(AsyncValue<List<Marker>> markersAsync) {
+    return Consumer(
+      builder: (context, ref, child) {
+        final selectedCity = ref.watch(selectedCityForMapProvider);
+        final selectedStatusId = ref.watch(selectedStatusForMapProvider);
+        if (markersAsync.isLoading ||
+            selectedCity == null ||
+            selectedStatusId == null) {
+          return SizedBox.shrink();
+        }
+        return Consumer(
+          builder: (context, ref, _) {
+            final selectedStatusId = ref.watch(selectedStatusForMapProvider);
+            final markerCount = markersAsync.value?.length ?? 0;
+
+            // Get color based on selected status, default to label color
+            final statusColor = selectedStatusId != null
+                ? AppColors.getApplicationStatusColor(
+                    int.tryParse(selectedStatusId.split(",").first) ?? 18,
+                  )
+                : AppColors.labelColor;
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: statusColor.withOpacity(0.3),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.location_on, size: 16, color: statusColor),
+                  const SizedBox(width: 4),
+                  Text(
+                    '$markerCount Site${markerCount == 1 ? '' : 's'}',
+                    style: AppTextstyles.googleInter500LabelColor14.copyWith(
+                      fontSize: 12,
+                      color: statusColor,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Expanded buildStatusDropDown() {
+    return Expanded(
+      child: Consumer(
+        builder: (context, ref, _) {
+          final statuses = ref.watch(statusesProvider);
+          final selectedStatusId = ref.watch(selectedStatusForMapProvider);
+          return CustomDropDown(
+            items: statuses.keys.toList(),
+            backgroundColor: AppColors.white,
+            itemTextStyle: (statusEntry) {
+              final statusIds = statuses[statusEntry];
+              final statusId =
+                  int.tryParse(statusIds?.split(",").first ?? '') ?? 18;
+              return TextStyle(
+                color: AppColors.getApplicationStatusColor(statusId),
+              );
+            },
+            selectedItem: selectedStatusId == null
+                ? null
+                : statuses.entries
+                      .firstWhere((entry) => entry.value == selectedStatusId)
+                      .key,
+            hintText: 'Select Status',
+            onChanged: (statusEntry) {
+              // ref.read(selectedStatusForMapProvider.notifier).state =
+              //     statuses[statusEntry!]!;
+              ref
+                  .read(mapMarkersProvider.notifier)
+                  .onChangeStatus(statuses[statusEntry!]!);
+            },
+          );
+        },
       ),
     );
   }
-}
 
-
-class _SelectedApplicationCard extends StatelessWidget {
-  final ApplicationLegacyModel application;
-  const _SelectedApplicationCard({required this.application});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: AppColors.white,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "${application.id} (${application.siteName})",
-                style: AppTextstyles.googleInter400Grey14.copyWith(fontSize: 12),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                  color: getApplicationCategoryColor(application.category)
-                      .withOpacity(0.08),
-                ),
-                child: Text(
-                  application.category,
-                  style: AppTextstyles.googleInter500LabelColor14.copyWith(
-                    fontSize: 12,
-                    color: getApplicationCategoryColor(application.category),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(
-            application.applicantName,
-            style: AppTextstyles.googleInter700black28.copyWith(
-              fontSize: 20,
-              color: AppColors.black2Color,
+  Expanded buildCityDropDown() {
+    return Expanded(
+      child: Consumer(
+        builder: (context, ref, _) {
+          final citiesAsync = ref.read(cityNamesProvider);
+          final selectedCity = ref.watch(selectedCityForMapProvider);
+          return CustomDropDown(
+            items: citiesAsync.when(
+              data: (cities) => cities,
+              error: (e, s) => [],
+              loading: () => [],
             ),
-          ),
-          Row(
-            children: [
-              const Icon(Icons.location_on_outlined),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  application.address,
-                  style: AppTextstyles.googleInter400Grey14,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 13),
-          Row(
-            children: [
-              Expanded(
-                child: CustomButton(
-                  onPressed: () {},
-                  text: "Directions",
-                  leftPadding: 0,
-                  rightPadding: 0,
-                  height: 41,
-                  backgroundColor: AppColors.actionContainerColor,
-                  textStyle: AppTextstyles.googleInter500LabelColor14.copyWith(
-                    color: AppColors.black2Color,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: CustomButton(
-                  onPressed: () {},
-                  text: "View Details",
-                  leftPadding: 0,
-                  rightPadding: 0,
-                  height: 41,
-                  backgroundColor: AppColors.nextStep1Color,
-                  textStyle: AppTextstyles.googleInter500LabelColor14.copyWith(
-                    color: AppColors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+            backgroundColor: AppColors.white,
+            displayString: (item) => item.name,
+            selectedItem: selectedCity,
+            hintText: citiesAsync.isLoading ? 'Loading...' : 'Select City',
+            onChanged: (city) {
+              ref.read(mapMarkersProvider.notifier).onChangeCity(city);
+            },
+          );
+        },
       ),
+    );
+  }
+
+  GoogleMap buildGoogleMap(
+    AsyncValue<List<Marker>> markersAsync,
+    WidgetRef ref,
+  ) {
+    return GoogleMap(
+      initialCameraPosition: const CameraPosition(
+        target: LatLng(24.8243808, 67.041284),
+        zoom: 13,
+      ),
+      zoomControlsEnabled: false,
+      mapToolbarEnabled: false,
+      onMapCreated: (controller) async {
+        await Future.delayed(const Duration(milliseconds: 300));
+        // ref.read(isMapLoadedProvider.notifier).state = true;
+      },
+      markers: markersAsync.when(
+        data: (markers) => Set<Marker>.from(markers),
+        loading: () => {},
+        error: (_, __) => {},
+      ),
+      onTap: (_) => ref.read(selectedSiteProvider.notifier).state = null,
     );
   }
 }

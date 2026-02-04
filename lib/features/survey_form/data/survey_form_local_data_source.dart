@@ -1,14 +1,16 @@
 // lib/features/survey_form/data/datasources/survey_form_local_data_source.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:tgpl_network/core/database/app_database.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/features/survey_form/models/survey_form_model.dart';
 
 abstract class SurveyFormLocalDataSource {
   Future<int> saveSurveyForm(SurveyFormModel form);
-  Future<List<SurveyFormModel>> getPendingSurveyForms();
-  Future<List<SurveyFormModel>> getSyncedSurveyForms();
-  Future<void> markAsSynced(int id);
-  Future<void> deleteSurveyForm(int id);
+  Future<SurveyFormModel?> getSingleSurveyForm(String applicationId);
+  Future<void> markSurveyFormAsSynced(String id);
+  Future<void> updateSurveyFormErrorMessage(String id, String errorMessage);
+  Future<void> deleteSurveyForm(String id);
 }
 
 class SurveyFormLocalDataSourceImpl implements SurveyFormLocalDataSource {
@@ -21,68 +23,79 @@ class SurveyFormLocalDataSourceImpl implements SurveyFormLocalDataSource {
     final db = await _databaseHelper.database;
     final now = DateTime.now().toIso8601String();
 
-    return await db.insert('survey_forms', {
-      ...form.toJson(),
-      'isSynced': 0,
-      'createdAt': now,
-      'updatedAt': now,
-    });
+    final existingForm = await getSingleSurveyForm(form.applicationId ?? '');
+    final updatedData = {...form.toDatabaseMap(), 'isSynced': 0};
+    if (existingForm != null) {
+      updatedData['updatedAt'] = now;
+    } else {
+      updatedData['createdAt'] = now;
+    }
+    return await db.insert(
+      AppDatabase.surveyFormsTable,
+      updatedData,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   @override
-  Future<List<SurveyFormModel>> getPendingSurveyForms() async {
+  Future<SurveyFormModel?> getSingleSurveyForm(String applicationId) async {
     final db = await _databaseHelper.database;
     final List<Map<String, dynamic>> maps = await db.query(
-      'survey_forms',
-      where: 'isSynced = ?',
-      whereArgs: [0],
-      orderBy: 'createdAt DESC',
+      AppDatabase.surveyFormsTable,
+      where: 'applicationId = ?',
+      whereArgs: [applicationId],
+      limit: 1,
     );
 
-    return maps.map((map) => SurveyFormModel.fromJson(map)).toList();
+    if (maps.isNotEmpty) {
+      return SurveyFormModel.fromDatabaseMap(maps.first);
+    } else {
+      return null;
+    }
   }
 
   @override
-  Future<List<SurveyFormModel>> getSyncedSurveyForms() async {
-    final db = await _databaseHelper.database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      'survey_forms',
-      where: 'isSynced = ?',
-      whereArgs: [1],
-      orderBy: 'updatedAt DESC',
-      limit: 20,
-    );
-
-    return maps.map((map) => SurveyFormModel.fromJson(map)).toList();
-  }
-
-  @override
-  Future<void> markAsSynced(int id) async {
+  Future<void> markSurveyFormAsSynced(String id) async {
     final db = await _databaseHelper.database;
     await db.update(
-      'survey_forms',
-      {
-        'isSynced': 1,
-        'updatedAt': DateTime.now().toIso8601String(),
-      },
-      where: 'id = ?',
+      AppDatabase.surveyFormsTable,
+      {'isSynced': 1, 'updatedAt': DateTime.now().toIso8601String()},
+      where: 'applicationId = ?',
       whereArgs: [id],
     );
   }
 
   @override
-  Future<void> deleteSurveyForm(int id) async {
+  Future<void> updateSurveyFormErrorMessage(
+    String id,
+    String errorMessage,
+  ) async {
+    final db = await _databaseHelper.database;
+    await db.update(
+      AppDatabase.surveyFormsTable,
+      {
+        'errorMessage': errorMessage,
+        'updatedAt': DateTime.now().toIso8601String(),
+      },
+      where: 'applicationId = ?',
+      whereArgs: [id],
+    );
+  }
+
+  @override
+  Future<void> deleteSurveyForm(String id) async {
     final db = await _databaseHelper.database;
     await db.delete(
-      'survey_forms',
-      where: 'id = ?',
+      AppDatabase.surveyFormsTable,
+      where: 'applicationId = ?',
       whereArgs: [id],
     );
   }
 }
 
 // Provider
-final surveyFormLocalDataSourceProvider =
-    Provider<SurveyFormLocalDataSource>((ref) {
+final surveyFormLocalDataSourceProvider = Provider<SurveyFormLocalDataSource>((
+  ref,
+) {
   return SurveyFormLocalDataSourceImpl(DatabaseHelper.instance);
 });

@@ -1,11 +1,43 @@
 import 'package:tgpl_network/common/models/sort_order_direction_enum.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_state.dart';
 import 'package:tgpl_network/common/models/yes_no_enum_with_extension.dart';
+import 'package:tgpl_network/features/master_data/models/traffic_trades_model.dart';
+import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class ApplicationModel {
-  static String orderByField = "addDate";
+  static int pageSize = 50;
+  static String orderByField = "$alias.applicationId";
+  static String alias = "app";
   static SortOrderDirection orderDirection = SortOrderDirection.descending;
   static String get orderBy => "$orderByField ${orderDirection.key}";
+
+  static List<String> mapColumns = [
+    "$alias.id",
+    "$alias.applicationId",
+    "$alias.entryCode",
+    "$alias.dealerName",
+    "$alias.googleLocation",
+    "$alias.locationAddress",
+    "$alias.statusId",
+    "$alias.priority",
+    "$alias.proposedSiteName1",
+  ];
+
+  double get latitude =>
+      double.tryParse(googleLocation?.split(',').first ?? '') ?? 0.0;
+  double get longitude =>
+      double.tryParse(googleLocation?.split(',').last ?? '') ?? 0.0;
+
+  double get plotAreaValue => plotArea.isNullOrEmpty
+      ? _plotArea
+      : double.tryParse(plotArea!) ?? _plotArea;
+
+  double get _plotArea => (plotFront ?? 0) * (plotDepth ?? 0);
+
+  // fields get by join table
+  final String? siteStatusName;
+  final List<TrafficTradesModel> nearbyTrafficSites;
 
   // fields
   final int? id;
@@ -49,6 +81,7 @@ class ApplicationModel {
   final int? siteNumber;
   final int? estimateDailyDieselSale;
   final int? estimateDailySuperSale;
+  final int? estimateDailyHOBCSale;
   final int? estimateLubricantSale;
   final int? expectedLeaseRentPerManth;
   final String? nflFacilityAvailable;
@@ -182,6 +215,7 @@ class ApplicationModel {
     this.siteNumber,
     this.estimateDailyDieselSale,
     this.estimateDailySuperSale,
+    this.estimateDailyHOBCSale,
     this.estimateLubricantSale,
     this.expectedLeaseRentPerManth,
     this.nflFacilityAvailable,
@@ -272,6 +306,8 @@ class ApplicationModel {
     this.message,
     this.recordId,
     this.accessLevel,
+    this.siteStatusName,
+    this.nearbyTrafficSites = const [],
   });
 
   factory ApplicationModel.fromAPIResponseMap(Map<String, dynamic> json) {
@@ -317,6 +353,7 @@ class ApplicationModel {
       siteNumber: json['sitenumber'],
       estimateDailyDieselSale: json['EstimateDailyDieselSale'],
       estimateDailySuperSale: json['EstimateDailySuperSale'],
+      estimateDailyHOBCSale: json['EstimatedDailyHOBCSale'],
       estimateLubricantSale: json['EstimateLubricantSale'],
       expectedLeaseRentPerManth: json['ExpectedLeaseRentPerManth'],
       nflFacilityAvailable: json['NFLFacilityAvailable'],
@@ -410,7 +447,9 @@ class ApplicationModel {
     );
   }
 
-  factory ApplicationModel.fromDatabaseMap(Map<String, dynamic> map) {
+  factory ApplicationModel.fromDatabaseMap(Map<String, dynamic> map, {
+  List<TrafficTradesModel>? nearbyTrafficSites,
+}) {
     return ApplicationModel(
       id: map['id'],
       applicationId: map['applicationId'],
@@ -453,6 +492,7 @@ class ApplicationModel {
       siteNumber: map['siteNumber'],
       estimateDailyDieselSale: map['estimateDailyDieselSale'],
       estimateDailySuperSale: map['estimateDailySuperSale'],
+      estimateDailyHOBCSale: map['estimateDailyHOBCSale'],
       estimateLubricantSale: map['estimateLubricantSale'],
       expectedLeaseRentPerManth: map['expectedLeaseRentPerManth'],
       nflFacilityAvailable: map['nflFacilityAvailable'],
@@ -543,6 +583,8 @@ class ApplicationModel {
       message: map['message'],
       recordId: map['recordId'],
       accessLevel: map['accessLevel'],
+      siteStatusName: map['siteStatusName'],
+    nearbyTrafficSites: nearbyTrafficSites ?? [],
     );
   }
 
@@ -589,6 +631,7 @@ class ApplicationModel {
       'siteNumber': siteNumber,
       'estimateDailyDieselSale': estimateDailyDieselSale,
       'estimateDailySuperSale': estimateDailySuperSale,
+      'estimateDailyHOBCSale': estimateDailyHOBCSale,
       'estimateLubricantSale': estimateLubricantSale,
       'expectedLeaseRentPerManth': expectedLeaseRentPerManth,
       'nflFacilityAvailable': nflFacilityAvailable,
@@ -682,202 +725,208 @@ class ApplicationModel {
     };
   }
 
-  static (String?, List<dynamic>) getWhereClauseAndArgs(
-    FilterSelectionState filters,
-  ) {
+  static (List<String>, List<dynamic>) getWhereClauseAndArgs(
+    FilterSelectionState filters) {
     final whereConditions = <String>[];
     final whereArgs = <dynamic>[];
 
-    if (filters.hasActiveFilters) {
+    if (filters.countofActiveFilters > 0) {
       if (filters.selectedCity != null) {
-        whereConditions.add('cityName = ?');
+        whereConditions.add('$alias.cityName LIKE ?');
         whereArgs.add(filters.selectedCity);
       }
 
       if (filters.selectedPriority != null) {
-        whereConditions.add('priority = ?');
+        whereConditions.add('$alias.priority = ?');
         whereArgs.add(filters.selectedPriority);
       }
 
-      if (filters.selectedStatus != null) {
-        whereConditions.add('statusId = ?');
-        whereArgs.add(int.tryParse(filters.selectedStatus!) ?? 0);
+      if (filters.selectedStatusId != null) {
+        if (filters.selectedStatusId!.split(",").length > 1) {
+          final statusIds = filters.selectedStatusId!
+              .split(",")
+              .map((e) => int.tryParse(e.trim()) ?? 0)
+              .toList();
+          final placeholders = List.filled(statusIds.length, '?').join(', ');
+          whereConditions.add('$alias.statusId IN ($placeholders)');
+          whereArgs.addAll(statusIds);
+        } else {
+          whereConditions.add('$alias.statusId = ?');
+          whereArgs.add(int.tryParse(filters.selectedStatusId!) ?? 0);
+        }
       }
 
-      if (filters.applicationId != null) {
-        whereConditions.add('applicationId = ?');
+      if (!filters.applicationId.isNullOrEmpty) {
+        whereConditions.add('$alias.applicationId = ?');
         whereArgs.add(int.tryParse(filters.applicationId!) ?? 0);
       }
 
-      if (filters.entryCode != null && filters.entryCode!.isNotEmpty) {
-        whereConditions.add('entryCode LIKE ?');
+      if (!filters.entryCode.isNullOrEmpty) {
+        whereConditions.add('$alias.entryCode LIKE ?');
         whereArgs.add('%${filters.entryCode}%');
       }
 
-      if (filters.preparedBy != null && filters.preparedBy!.isNotEmpty) {
-        whereConditions.add('preparedBy LIKE ?');
+      if (!filters.preparedBy.isNullOrEmpty) {
+        whereConditions.add('$alias.preparedBy LIKE ?');
         whereArgs.add('%${filters.preparedBy}%');
       }
 
-      if (filters.district != null && filters.district!.isNotEmpty) {
-        whereConditions.add('district LIKE ?');
+      if (!filters.district.isNullOrEmpty) {
+        whereConditions.add('$alias.district LIKE ?');
         whereArgs.add('%${filters.district}%');
       }
 
-      if (filters.dealerName != null && filters.dealerName!.isNotEmpty) {
-        whereConditions.add('dealerName LIKE ?');
+      if (!filters.dealerName.isNullOrEmpty) {
+        whereConditions.add('$alias.dealerName LIKE ?');
         whereArgs.add('%${filters.dealerName}%');
       }
 
-      if (filters.dealerContact != null && filters.dealerContact!.isNotEmpty) {
-        whereConditions.add('dealerContact LIKE ?');
+      if (!filters.dealerContact.isNullOrEmpty) {
+        whereConditions.add('$alias.dealerContact LIKE ?');
         whereArgs.add('%${filters.dealerContact}%');
       }
 
-      if (filters.address != null && filters.address!.isNotEmpty) {
-        whereConditions.add('locationAddress LIKE ?');
+      if (!filters.address.isNullOrEmpty) {
+        whereConditions.add('$alias.locationAddress LIKE ?');
         whereArgs.add('%${filters.address}%');
       }
 
-      if (filters.referredBy != null && filters.referredBy!.isNotEmpty) {
-        whereConditions.add('referedBy LIKE ?');
+      if (!filters.referredBy.isNullOrEmpty) {
+        whereConditions.add('$alias.referedBy LIKE ?');
         whereArgs.add('%${filters.referredBy}%');
       }
 
-      if (filters.source != null && filters.source!.isNotEmpty) {
-        whereConditions.add('source LIKE ?');
+      if (!filters.source.isNullOrEmpty) {
+        whereConditions.add('$alias.source LIKE ?');
         whereArgs.add('%${filters.source}%');
       }
 
-      if (filters.sourceName != null && filters.sourceName!.isNotEmpty) {
-        whereConditions.add('sourceName LIKE ?');
+      if (!filters.sourceName.isNullOrEmpty) {
+        whereConditions.add('$alias.sourceName LIKE ?');
         whereArgs.add('%${filters.sourceName}%');
       }
 
-      if (filters.siteName != null && filters.siteName!.isNotEmpty) {
-        whereConditions.add('proposedSiteName1 LIKE ?');
+      if (!filters.siteName.isNullOrEmpty) {
+        whereConditions.add('$alias.proposedSiteName1 LIKE ?');
         whereArgs.add('%${filters.siteName}%');
       }
 
       // Yes/No filters (stored as 0 or 1 in database)
       if (filters.surveyProfile != null) {
-        whereConditions.add('surveyDealerProfileDone = ?');
+        whereConditions.add('$alias.surveyDealerProfileDone = ?');
         whereArgs.add(filters.surveyProfile!.value);
       }
 
       if (filters.trafficTrade != null) {
-        whereConditions.add('trafficTradeDone = ?');
+        whereConditions.add('$alias.trafficTradeDone = ?');
         whereArgs.add(filters.trafficTrade!.value);
       }
 
       if (filters.feasibility != null) {
-        whereConditions.add('feasibilityDone = ?');
+        whereConditions.add('$alias.feasibilityDone = ?');
         whereArgs.add(filters.feasibility!.value);
       }
 
       if (filters.negotiation != null) {
-        whereConditions.add('negotiationDone = ?');
+        whereConditions.add('$alias.negotiationDone = ?');
         whereArgs.add(filters.negotiation!.value);
       }
 
       if (filters.mouSign != null) {
-        whereConditions.add('mouSignOffDone = ?');
+        whereConditions.add('$alias.mouSignOffDone = ?');
         whereArgs.add(filters.mouSign!.value);
       }
 
       if (filters.joiningFee != null) {
-        whereConditions.add('joiningFeeDone = ?');
+        whereConditions.add('$alias.joiningFeeDone = ?');
         whereArgs.add(filters.joiningFee!.value);
       }
 
       if (filters.franchiseAgreement != null) {
-        whereConditions.add('franchiseAgreementDone = ?');
+        whereConditions.add('$alias.franchiseAgreementDone = ?');
         whereArgs.add(filters.franchiseAgreement!.value);
       }
 
       if (filters.feasibilityFinalization != null) {
-        whereConditions.add('feasibilityFinalizationDone = ?');
+        whereConditions.add('$alias.feasibilityFinalizationDone = ?');
         whereArgs.add(filters.feasibilityFinalization!.value);
       }
 
       if (filters.explosiveLayout != null) {
-        whereConditions.add('explosiveLayoutDone = ?');
+        whereConditions.add('$alias.explosiveLayoutDone = ?');
         whereArgs.add(filters.explosiveLayout!.value);
       }
 
       if (filters.drawing != null) {
-        whereConditions.add('drawingsDone = ?');
+        whereConditions.add('$alias.drawingsDone = ?');
         whereArgs.add(filters.drawing!.value);
       }
 
       if (filters.topography != null) {
-        whereConditions.add('topographyDone = ?');
+        whereConditions.add('$alias.topographyDone = ?');
         whereArgs.add(filters.topography!.value);
       }
 
       if (filters.issuanceOfDrawing != null) {
-        whereConditions.add('issuanceOfDrawingsDone = ?');
+        whereConditions.add('$alias.issuanceOfDrawingsDone = ?');
         whereArgs.add(filters.issuanceOfDrawing!.value);
       }
 
       if (filters.appliedInExplosive != null) {
-        whereConditions.add('appliedInExplosiveDone = ?');
+        whereConditions.add('$alias.appliedInExplosiveDone = ?');
         whereArgs.add(filters.appliedInExplosive!.value);
       }
 
       if (filters.dcNoc != null) {
-        whereConditions.add('dcNocDone = ?');
+        whereConditions.add('$alias.dcNocDone = ?');
         whereArgs.add(filters.dcNoc!.value);
       }
 
       if (filters.capex != null) {
-        whereConditions.add('capexDone = ?');
+        whereConditions.add('$alias.capexDone = ?');
         whereArgs.add(filters.capex!.value);
       }
 
       if (filters.leaseAgreement != null) {
-        whereConditions.add('leaseAgreementDone = ?');
+        whereConditions.add('$alias.leaseAgreementDone = ?');
         whereArgs.add(filters.leaseAgreement!.value);
       }
 
       if (filters.hoto != null) {
-        whereConditions.add('hotoDone = ?');
+        whereConditions.add('$alias.hotoDone = ?');
         whereArgs.add(filters.hoto!.value);
       }
 
       if (filters.construction != null) {
-        whereConditions.add('constructionDone = ?');
+        whereConditions.add('$alias.constructionDone = ?');
         whereArgs.add(filters.construction!.value);
       }
 
       if (filters.inauguration != null) {
-        whereConditions.add('inaugurationDone = ?');
+        whereConditions.add('$alias.inaugurationDone = ?');
         whereArgs.add(filters.inauguration!.value);
       }
 
+      // TODO: addDate is updated when some one change application data on Server.
       // Date filters
-      if (filters.fromDate != null && filters.toDate != null) {
-        whereConditions.add('addDate BETWEEN ? AND ?');
-        whereArgs.add(filters.fromDate);
-        whereArgs.add(filters.toDate);
-      } else if (filters.fromDate != null) {
-        whereConditions.add('addDate >= ?');
-        whereArgs.add(filters.fromDate);
-      } else if (filters.toDate != null) {
-        whereConditions.add('addDate <= ?');
-        whereArgs.add(filters.toDate);
+      if (filters.fromDate.isValidDate() && filters.toDate.isValidDate()) {
+        whereConditions.add('$alias.addDate BETWEEN ? AND ?');
+        whereArgs.add(filters.fromDate?.formatFromDDMMYYYToIsoDate());
+        whereArgs.add(filters.toDate?.formatFromDDMMYYYToIsoDate());
+      } else if (filters.fromDate.isValidDate()) {
+        whereConditions.add('$alias.addDate >= ?');
+        whereArgs.add(filters.fromDate?.formatFromDDMMYYYToIsoDate());
+      } else if (filters.toDate.isValidDate()) {
+        whereConditions.add('$alias.addDate <= ?');
+        whereArgs.add(filters.toDate?.formatFromDDMMYYYToIsoDate());
       }
 
-      if (filters.condDate != null) {
-        whereConditions.add('dateConducted = ?');
-        whereArgs.add(filters.condDate);
+      if (filters.condDate.isValidDate()) {
+        whereConditions.add('$alias.dateConducted = ?');
+        whereArgs.add(filters.condDate?.formatFromDDMMYYYToIsoDate());
       }
     }
 
-    final whereClause = whereConditions.isNotEmpty
-        ? whereConditions.join(' AND ')
-        : null;
-
-    return (whereClause, whereArgs);
+    return (whereConditions, whereArgs);
   }
 }

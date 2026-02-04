@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tgpl_network/common/providers/shared_prefs_provider.dart';
+import 'package:tgpl_network/constants/pref_keys.dart';
 
 abstract class SharedPrefsDataSource {
   Future<void> saveAuthToken(String token);
@@ -13,9 +14,10 @@ abstract class SharedPrefsDataSource {
 }
 
 class SharedPrefsDataSourceImpl implements SharedPrefsDataSource {
+  final Ref ref;
   final SharedPreferences _prefs;
 
-  SharedPrefsDataSourceImpl(this._prefs);
+  SharedPrefsDataSourceImpl(this.ref, this._prefs);
 
   @override
   Future<void> saveAuthToken(String token) async {
@@ -59,5 +61,5 @@ class SharedPrefsDataSourceImpl implements SharedPrefsDataSource {
 // Provider
 final sharedPrefsDataSourceProvider = Provider<SharedPrefsDataSource>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
-  return SharedPrefsDataSourceImpl(prefs);
+  return SharedPrefsDataSourceImpl(ref, prefs);
 });

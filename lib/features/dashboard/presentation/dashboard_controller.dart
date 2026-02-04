@@ -3,11 +3,6 @@ import 'package:tgpl_network/features/dashboard/data/dashboard_data_source.dart'
 import 'package:tgpl_network/features/dashboard/models/dashboard_response_model.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
-import 'package:tgpl_network/common/models/user_model.dart';
-
-final userProvider = Provider<UserModel>((ref) {
-  return UserModel(name: "Ahmed Hassan", role: "Regional Manager", id: "EMP-2025-001");
-});
 
 final dashboardControllerProvider =
     NotifierProvider<DashboardController, DashboardState>(() {
@@ -16,7 +11,7 @@ final dashboardControllerProvider =
 
 final dashboardAsyncControllerProvider =
     AsyncNotifierProvider<DashboardAsyncController, DashboardResponseModel>(() {
-  return DashboardAsyncController();
+      return DashboardAsyncController();
     });
 
 class DashboardState {
