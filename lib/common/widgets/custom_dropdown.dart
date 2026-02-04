@@ -92,7 +92,7 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
         validator: (_) => widget.multiValidator?.call(_selectedItems),
         builder: (state) {
           return InkWell(
-            onTap: _showMultiSelectDialog,
+            onTap: showMultiSelectDialog,
             child: InputDecorator(
               decoration: InputDecoration(
                 hintText: widget.hintText,
@@ -157,7 +157,7 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
     );
   }
 
-  void _showMultiSelectDialog() {
+  void showMultiSelectDialog() {
     showDialog(
       context: context,
       builder: (context) {

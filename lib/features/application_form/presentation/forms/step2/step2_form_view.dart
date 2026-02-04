@@ -41,10 +41,13 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
   Widget build(BuildContext context) {
     final step2Controller = ref.read(step2FormControllerProvider.notifier);
     final appFormController = ref.read(appFormControllerProvider.notifier);
-    final state = ref.watch(step2FormControllerProvider);
     final dropDownsData = ref.read(formPrerequisiteValuesProvider).requireValue;
+    final autoValidate = ref.watch(
+      step2FormControllerProvider.select((s) => s.autoValidate),
+    );
     return Form(
       key: _formKey,
+      autovalidateMode: autoValidate ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
       child: Column(
         children: [
           Text(
@@ -53,62 +56,86 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
           ),
           const SizedBox(height: 24),
 
-          SmartCustomDropDownWithTitle(
-            title: "City",
-            hintText: "Select city",
-            enableSearch: true,
-            selectedItem: state.selectedCity,
-            items: dropDownsData.cities.map((city) => city.name).toList(),
-            onChanged: (value) {
-              if (value != null) {
-                step2Controller.updateCity(value.toString());
-              }
-            },
-            validator: (v) => v.validate(),
-            showClearButton: true,
-            onClear: () {
-              step2Controller.clearField('selectedCity');
-            },
+          Consumer(
+            builder: (context, ref, _) {
+              final selectedCity = ref.watch(
+                step2FormControllerProvider.select((s) => s.selectedCity),
+              );
+              return SmartCustomDropDownWithTitle(
+                title: "City",
+                hintText: "Select city",
+                enableSearch: true,
+                selectedItem: selectedCity,
+                items: dropDownsData.cities.map((city) => city.name).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    step2Controller.updateCity(value.toString());
+                  }
+                },
+                validator: (v) => v.validate(),
+                isRequired: true,
+                showClearButton: true,
+                onClear: () {
+                  step2Controller.clearField('selectedCity');
+                },
+              );
+            }
           ),
 
           const SizedBox(height: 16),
 
-          SmartCustomDropDownWithTitle(
-            title: "Site Status",
-            hintText: "Select site status",
-            selectedItem: state.selectedSiteStatus,
-            items: dropDownsData.siteStatuses
-                .map((status) => status.name)
-                .toList(),
-            onChanged: (value) {
-              if (value != null) {
-                step2Controller.updateSiteStatus(value.toString());
-              }
-            },
-            validator: (v) => v.validate(),
-            showClearButton: true,
-            onClear: () {
-              step2Controller.clearField('selectedSiteStatus');
-            },
+          Consumer(
+            builder: (context, ref, _) {
+              final selectedSiteStatus = ref.watch(
+                step2FormControllerProvider.select((s) => s.selectedSiteStatus),
+              );
+              return SmartCustomDropDownWithTitle(
+                title: "Site Status",
+                hintText: "Select site status",
+                selectedItem: selectedSiteStatus,
+                items: dropDownsData.siteStatuses
+                    .map((status) => status.name)
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    step2Controller.updateSiteStatus(value.toString());
+                  }
+                },
+                validator: (v) => v.validate(),
+                isRequired: true,
+                showClearButton: true,
+                onClear: () {
+                  step2Controller.clearField('selectedSiteStatus');
+                },
+              );
+            }
           ),
 
           const SizedBox(height: 16),
 
-          SmartCustomDropDownWithTitle(
-            title: "Priority",
-            hintText: "Select site priority",
-            selectedItem: state.selectedPriority,
-            items: dropDownsData.hmlList
-                .map((priority) => priority.hml)
-                .toList(),
-            onChanged: (value) {
-              if (value != null) {
-                step2Controller.updatePriority(value.toString());
-              }
-            },
-            validator: (v) => v.validate(),
-            showClearButton: true,
-            onClear: () => step2Controller.clearField('selectedPriority'),
+          Consumer(
+            builder: (context, ref, _) {
+              final selectedPriority = ref.watch(
+                step2FormControllerProvider.select((s) => s.selectedPriority),
+              );
+              return SmartCustomDropDownWithTitle(
+                title: "Priority",
+                hintText: "Select site priority",
+                selectedItem: selectedPriority,
+                items: dropDownsData.hmlList
+                    .map((priority) => priority.hml)
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    step2Controller.updatePriority(value.toString());
+                  }
+                },
+                validator: (v) => v.validate(),
+                isRequired: true,
+                showClearButton: true,
+                onClear: () => step2Controller.clearField('selectedPriority'),
+              );
+            }
           ),
 
           const SizedBox(height: 16),
@@ -118,6 +145,7 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
             controller: _sourceController,
             hintText: "Enter source",
             validator: (v) => v.validate(),
+            isRequired: true,
             onChanged: step2Controller.updateSource,
             showClearButton: true,
             onClear: () => step2Controller.clearField('source'),
@@ -130,6 +158,7 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
             controller: _sourceNameController,
             hintText: "Enter source name",
             validator: (v) => v.validate(),
+            isRequired: true,
             onChanged: step2Controller.updateSourceName,
             showClearButton: true,
             onClear: () => step2Controller.clearField('sourceName'),
@@ -140,7 +169,10 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
           CustomButton(
             text: "Next",
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
+              if (!autoValidate) {
+                ref.read(step2FormControllerProvider.notifier).updateAutoValidate(true);
+              }
+              if (_formKey.currentState != null && _formKey.currentState!.validate()) {
                 appFormController.nextStep();
               }
             },

@@ -12,12 +12,14 @@ class Step3FormState {
   final String? depthSize;
   final String? googleLocation;
   final String? address;
+  final bool autoValidateFrom;
 
   const Step3FormState({
     this.frontSize,
     this.depthSize,
     this.googleLocation,
     this.address,
+    this.autoValidateFrom = false,
   });
 
   Step3FormState copyWith({
@@ -25,6 +27,7 @@ class Step3FormState {
     String? depthSize,
     String? googleLocation,
     String? address,
+    bool? autoValidateForm,
     List<String>? fieldsToNull,
   }) {
     return Step3FormState(
@@ -32,6 +35,7 @@ class Step3FormState {
       depthSize: fieldsToNull.apply('depthSize', depthSize, this.depthSize),
       googleLocation: fieldsToNull.apply('googleLocation', googleLocation, this.googleLocation),
       address: fieldsToNull.apply('address', address, this.address),
+      autoValidateFrom: autoValidateFrom,
     );
   }
 }
@@ -57,6 +61,10 @@ class Step3FormController extends Notifier<Step3FormState> {
 
   void updateAddress(String value) {
     state = state.copyWith(address: value);
+  }
+
+  void updateAutoValidate(bool value) {
+    state = state.copyWith(autoValidateForm: value);
   }
 
   void clearField(String fieldName) {

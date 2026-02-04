@@ -12,6 +12,7 @@ class Step2FormState {
   final String? selectedPriority;
   final String? source;
   final String? sourceName;
+  final bool autoValidate;
 
   const Step2FormState({
     this.selectedCity,
@@ -19,6 +20,7 @@ class Step2FormState {
     this.selectedPriority,
     this.source,
     this.sourceName,
+    this.autoValidate = false,
   });
 
   Step2FormState copyWith({
@@ -27,6 +29,7 @@ class Step2FormState {
     String? selectedPriority,
     String? source,
     String? sourceName,
+    bool? autoValidate,
     List<String>? fieldsToNull,
   }) {
     return Step2FormState(
@@ -35,6 +38,7 @@ class Step2FormState {
       selectedPriority: fieldsToNull.apply('selectedPriority', selectedPriority, this.selectedPriority),
       source: fieldsToNull.apply('source', source, this.source),
       sourceName: fieldsToNull.apply('sourceName', sourceName, this.sourceName),
+      autoValidate: autoValidate ?? this.autoValidate
     );
   }
 }
@@ -63,6 +67,10 @@ class Step2FormController extends Notifier<Step2FormState> {
 
   void updateSourceName(String value) {
     state = state.copyWith(sourceName: value);
+  }
+
+  void updateAutoValidate(bool value) {
+    state = state.copyWith(autoValidate: value);
   }
 
   void clearField(String fieldName) {

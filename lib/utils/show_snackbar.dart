@@ -6,11 +6,10 @@ void showSnackBar(
   int seconds = 2,
   Color? bgColor,
 }) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(message),
-      duration: Duration(seconds: seconds),
-      backgroundColor: bgColor,
-    ),
+  final snackBar = SnackBar(
+    content: Text(message),
+    duration: Duration(seconds: seconds),
+    backgroundColor: bgColor,
   );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

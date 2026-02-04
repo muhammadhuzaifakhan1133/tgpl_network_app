@@ -14,9 +14,10 @@ abstract class SharedPrefsDataSource {
 }
 
 class SharedPrefsDataSourceImpl implements SharedPrefsDataSource {
+  final Ref ref;
   final SharedPreferences _prefs;
 
-  SharedPrefsDataSourceImpl(this._prefs);
+  SharedPrefsDataSourceImpl(this.ref, this._prefs);
 
   @override
   Future<void> saveAuthToken(String token) async {
@@ -60,5 +61,5 @@ class SharedPrefsDataSourceImpl implements SharedPrefsDataSource {
 // Provider
 final sharedPrefsDataSourceProvider = Provider<SharedPrefsDataSource>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
-  return SharedPrefsDataSourceImpl(prefs);
+  return SharedPrefsDataSourceImpl(ref, prefs);
 });

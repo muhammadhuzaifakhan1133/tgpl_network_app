@@ -94,9 +94,10 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
   @override
   Widget build(BuildContext context) {
     final step3Controller = ref.read(step3FormControllerProvider.notifier);
-
+    final autoValidate = ref.watch(step3FormControllerProvider.select((s)=>s.autoValidateFrom));
     return Form(
       key: _formKey,
+      autovalidateMode: autoValidate ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
       child: Column(
         children: [
           Text(
@@ -113,6 +114,7 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
                   controller: _frontController,
                   hintText: "Enter front size",
                   validator: (v) => v.validateNumber(),
+                  isRequired: true,
                   keyboardType: TextInputType.number,
                   onChanged: step3Controller.updateFrontSize,
                   showClearButton: true,
@@ -126,6 +128,7 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
                   controller: _depthController,
                   hintText: "Enter depth size",
                   validator: (v) => v.validateNumber(),
+                  isRequired: true,
                   keyboardType: TextInputType.number,
                   onChanged: step3Controller.updateDepthSize,
                   showClearButton: true,
@@ -150,6 +153,7 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
               onTap: _pickLocation,
             ),
             validator: (v) => v.validate(),
+            isRequired: true,
           ),
 
           const SizedBox(height: 16),
@@ -161,6 +165,7 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
             controller: _addressController,
             hintText: "Enter complete site address",
             validator: (v) => v.validate(),
+            isRequired: true,
             multiline: true,
             onChanged: step3Controller.updateAddress,
             showClearButton: true,
@@ -188,7 +193,10 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
                   ),
                 ),
             onPressed: () async {
-              if (_formKey.currentState!.validate()) {
+              if (!autoValidate) {
+                ref.read(step3FormControllerProvider.notifier).updateAutoValidate(true);
+              }
+              if (_formKey.currentState != null && _formKey.currentState!.validate()) {
                 // await ref.read(appFormSubmissionProvider.notifier).submitAppForm();
                 ref
                     .read(goRouterProvider)

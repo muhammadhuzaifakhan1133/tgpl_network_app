@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:tgpl_network/common/data/shared_prefs_data_source.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/home_shell/presentation/home_shell_view.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_view.dart';
@@ -61,6 +62,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.login,
         builder: (context, state) => const LoginView(),
+
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {

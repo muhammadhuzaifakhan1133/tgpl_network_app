@@ -4,6 +4,7 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/data_sync/models/sync_item.dart';
 import 'package:tgpl_network/features/data_sync/presentation/data_sync_controller.dart';
+import 'package:tgpl_network/dialogs/delete_form_dialog.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
@@ -226,13 +227,8 @@ class SyncListWidget extends ConsumerWidget {
                                   onPressed:
                                       item.status != SyncItemStatus.syncing
                                       ? () {
-                                          ref
-                                              .read(
-                                                dataSyncControllerProvider
-                                                    .notifier,
-                                              )
-                                              .deletePendingFormIfAny(item.id);
-                                        }
+                                          deleteFormDialog(context, ref, item);
+                                        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
                                       : null,
                                   icon: Icon(Icons.delete),
                                   color: AppColors.rejectedCountDarkColor,

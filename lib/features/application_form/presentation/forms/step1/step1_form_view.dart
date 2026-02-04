@@ -56,9 +56,12 @@ Widget build(BuildContext context) {
       ref.read(step1FormControllerProvider.notifier);
   final appFormController =
       ref.read(appFormControllerProvider.notifier);
-
+  final autoValidate = ref.watch(
+    step1FormControllerProvider.select((s) => s.autoValidate),
+  );
   return Form(
     key: _formKey,
+    autovalidateMode: autoValidate ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
     child: Column(
       children: [
         Text(
@@ -74,6 +77,7 @@ Widget build(BuildContext context) {
           validator: (v) => v.validate(),
           onChanged: step1Controller.updateApplicantName,
           showClearButton: true,
+          isRequired: true,
           onClear: () => step1Controller.clearField('applicantName'),
         ),
 
@@ -86,6 +90,7 @@ Widget build(BuildContext context) {
           validator: (v) => v.validate(),
           onChanged: step1Controller.updateContactPerson,
           showClearButton: true,
+          isRequired: true,
           onClear: () => step1Controller.clearField('contactPerson'),
         ),
 
@@ -98,6 +103,7 @@ Widget build(BuildContext context) {
           validator: (v) => v.validate(),
           onChanged: step1Controller.updateCurrentlyPresence,
           showClearButton: true,
+          isRequired: true,
           onClear: () => step1Controller.clearField('currentlyPresence'),
         ),
 
@@ -110,6 +116,7 @@ Widget build(BuildContext context) {
           validator: (v) => v.validatePhoneNumber(),
           onChanged: step1Controller.updateContactNumber,
           showClearButton: true,
+          isRequired: true,
           onClear: () => step1Controller.clearField('contactNumber'),
         ),
 
@@ -122,6 +129,7 @@ Widget build(BuildContext context) {
           validator: (v) => v.validatePhoneNumber(),
           onChanged: step1Controller.updateWhatsappNumber,
           showClearButton: true,
+          isRequired: true,
           onClear: () => step1Controller.clearField('whatsappNumber'),
         ),
 
@@ -130,7 +138,10 @@ Widget build(BuildContext context) {
         CustomButton(
           text: "Next",
           onPressed: () {
-            if (_formKey.currentState!.validate()) {
+            if (!autoValidate) {
+              ref.read(step1FormControllerProvider.notifier).updateAutoValidate(true);
+            }
+            if (_formKey.currentState != null && _formKey.currentState!.validate()) {
               appFormController.nextStep();
             }
           },

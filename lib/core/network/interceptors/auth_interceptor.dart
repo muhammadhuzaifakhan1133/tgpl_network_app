@@ -1,11 +1,14 @@
 // lib/core/network/interceptors/auth_interceptor.dart
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tgpl_network/dialogs/refresh_token_login_dialog.dart';
 
 class AuthInterceptor extends Interceptor {
+  final Ref ref;
   final SharedPreferences _prefs;
 
-  AuthInterceptor(this._prefs);
+  AuthInterceptor(this.ref, this._prefs);
 
   @override
   void onRequest(
@@ -23,24 +26,9 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode == 401) {
-      // Handle token refresh or logout
-      // Clear the token from SharedPreferences
-      await _prefs.remove('auth_token');
-
-      // You can implement token refresh logic here
-      // Example:
-      // final refreshToken = _prefs.getString('refresh_token');
-      // if (refreshToken != null) {
-      //   try {
-      //     final newToken = await _refreshToken(refreshToken);
-      //     await _prefs.setString('auth_token', newToken);
-      //     // Retry the original request
-      //     return handler.resolve(await _retry(err.requestOptions));
-      //   } catch (e) {
-      //     // Refresh failed, logout user
-      //   }
-      // }
+    if (err.response?.statusCode == 401 &&
+        !err.requestOptions.path.contains('/token')) {
+      refreshTokenLoginDialog(ref);
     }
     super.onError(err, handler);
   }

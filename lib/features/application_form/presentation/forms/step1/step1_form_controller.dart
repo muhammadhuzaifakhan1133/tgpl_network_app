@@ -12,6 +12,7 @@ class Step1FormState {
   final String? currentlyPresence;
   final String? contactNumber;
   final String? whatsappNumber;
+  final bool autoValidate;
 
   const Step1FormState({
     this.applicantName = '',
@@ -19,6 +20,7 @@ class Step1FormState {
     this.currentlyPresence = '',
     this.contactNumber = '',
     this.whatsappNumber = '',
+    this.autoValidate = false,
   });
 
   Step1FormState copyWith({
@@ -27,6 +29,7 @@ class Step1FormState {
     String? currentlyPresence,
     String? contactNumber,
     String? whatsappNumber,
+    bool? autoValidate,
     List<String>? fieldsToNull,
   }) {
     return Step1FormState(
@@ -35,6 +38,7 @@ class Step1FormState {
       currentlyPresence: fieldsToNull.apply('currentlyPresence', currentlyPresence, this.currentlyPresence),
       contactNumber: fieldsToNull.apply('contactNumber', contactNumber, this.contactNumber),
       whatsappNumber: fieldsToNull.apply('whatsappNumber', whatsappNumber, this.whatsappNumber),
+      autoValidate: autoValidate ?? this.autoValidate
     );
   }
 }
@@ -63,6 +67,10 @@ class Step1FormController extends Notifier<Step1FormState> {
 
   void updateWhatsappNumber(String value) {
     state = state.copyWith(whatsappNumber: value);
+  }
+
+  void updateAutoValidate(bool value) {
+    state = state.copyWith(autoValidate: value);
   }
 
   void clearField(String fieldName) {

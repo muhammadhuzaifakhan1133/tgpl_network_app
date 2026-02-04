@@ -14,6 +14,7 @@ import 'package:tgpl_network/features/applications/presentation/application_cont
 import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
 import 'package:tgpl_network/features/data_sync/presentation/data_sync_controller.dart';
+import 'package:tgpl_network/features/map/presentation/map_controller.dart';
 import 'package:tgpl_network/features/master_data/data/master_data_local_data_source.dart';
 import 'package:tgpl_network/features/master_data/data/master_data_remote_data_source.dart';
 import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
@@ -46,7 +47,7 @@ class HomeShellController extends AsyncNotifier<void> {
     appStatusesProvider,
     cityNamesProvider,
     prioritiesProvider,
-    // mapMarkersProvider // this is expensive, avoid refreshing unless necessary
+    mapMarkersProvider,
     moduleApplicationsAsyncControllerProvider,
     applicationDetailAsyncControllerProvider,
     dataSyncControllerProvider,
@@ -158,8 +159,8 @@ class HomeShellController extends AsyncNotifier<void> {
       ref.read(syncStatusProvider.notifier).state = SyncStatus.syncing;
 
       // Sync pending forms first
-      final hasPendingForms = await _hasPendingForms();
-      if (hasPendingForms) {
+      final isPendingFormsExist = await hasPendingForms();
+      if (isPendingFormsExist) {
         await _syncPendingForms();
       }
 
@@ -167,7 +168,7 @@ class HomeShellController extends AsyncNotifier<void> {
       if (shouldSyncMasterData) {
         await _syncMasterData();
       } else {
-        ref.read(snackbarMessageProvider.notifier).state = hasPendingForms
+        ref.read(snackbarMessageProvider.notifier).state = isPendingFormsExist
             ? 'Pending forms synced. Master data is up to date.'
             : 'All data is up to date.';
       }
@@ -175,7 +176,7 @@ class HomeShellController extends AsyncNotifier<void> {
       ref.read(syncStatusProvider.notifier).state = SyncStatus.synchronized;
 
       // Refresh providers
-      _refreshAllDependentProviders();
+      refreshAllDependentProviders();
     } catch (e, stack) {
       ref.read(snackbarMessageProvider.notifier).state = 'Data sync failed: $e';
       ref.read(syncStatusProvider.notifier).state = SyncStatus.offline;
@@ -185,7 +186,7 @@ class HomeShellController extends AsyncNotifier<void> {
     }
   }
 
-  Future<bool> _hasPendingForms() async {
+  Future<bool> hasPendingForms() async {
     try {
       final dataSync = await ref.read(dataSyncControllerProvider.future);
       final pendingItems = dataSync.pendingItems;
@@ -196,7 +197,7 @@ class HomeShellController extends AsyncNotifier<void> {
     }
   }
 
-  void _refreshAllDependentProviders() {
+  void refreshAllDependentProviders() {
     for (final provider in providersToRefresh) {
       ref.invalidate(provider);
     }
