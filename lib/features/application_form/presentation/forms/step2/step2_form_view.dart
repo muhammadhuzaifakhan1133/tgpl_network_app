@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
@@ -47,14 +48,21 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
     );
     return Form(
       key: _formKey,
-      autovalidateMode: autoValidate ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
+      autovalidateMode: autoValidate
+          ? AutovalidateMode.onUserInteraction
+          : AutovalidateMode.disabled,
       child: Column(
         children: [
-          Text(
-            "Site Information",
-            style: AppTextstyles.googleInter700black28.copyWith(fontSize: 24),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Site Information",
+              style: AppTextstyles.googleInter700black28.copyWith(
+                fontSize: 24.sp,
+              ),
+            ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           Consumer(
             builder: (context, ref, _) {
@@ -79,10 +87,10 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
                   step2Controller.clearField('selectedCity');
                 },
               );
-            }
+            },
           ),
 
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           Consumer(
             builder: (context, ref, _) {
@@ -108,10 +116,10 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
                   step2Controller.clearField('selectedSiteStatus');
                 },
               );
-            }
+            },
           ),
 
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           Consumer(
             builder: (context, ref, _) {
@@ -135,10 +143,10 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
                 showClearButton: true,
                 onClear: () => step2Controller.clearField('selectedPriority'),
               );
-            }
+            },
           ),
 
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           CustomTextFieldWithTitle(
             title: "Source*",
@@ -151,7 +159,7 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
             onClear: () => step2Controller.clearField('source'),
           ),
 
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           CustomTextFieldWithTitle(
             title: "Source Name*",
@@ -164,15 +172,18 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
             onClear: () => step2Controller.clearField('sourceName'),
           ),
 
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
 
           CustomButton(
             text: "Next",
             onPressed: () {
               if (!autoValidate) {
-                ref.read(step2FormControllerProvider.notifier).updateAutoValidate(true);
+                ref
+                    .read(step2FormControllerProvider.notifier)
+                    .updateAutoValidate(true);
               }
-              if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+              if (_formKey.currentState != null &&
+                  _formKey.currentState!.validate()) {
                 appFormController.nextStep();
               }
             },

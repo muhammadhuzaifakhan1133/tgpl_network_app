@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
@@ -32,15 +33,15 @@ class WelcomeCard extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 48,
-                height: 48,
+                width: 48.h,
+                height: 48.h,
                 decoration: BoxDecoration(
                   color: iconColor,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
                 child: Center(child: SvgPicture.asset(iconPath)),
               ),
-              const SizedBox(width: 15),
+              SizedBox(width: 16.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,23 +49,23 @@ class WelcomeCard extends StatelessWidget {
                     Text(
                       title,
                       style: AppTextstyles.googleInter700black28.copyWith(
-                        fontSize: 15,
+                        fontSize: 15.sp,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    // SizedBox(height: 4.h),
                     Text(
                       subtitle,
                       style: AppTextstyles.googleInter400black16.copyWith(
-                        fontSize: 13,
+                        fontSize: 13.sp,
                       ),
                     ),
                   ],
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(right: 8),
-                height: 30,
-                width: 30,
+                margin: EdgeInsets.only(right: 14.w),
+                height: 32.h,
+                width: 33.w,
                 decoration: BoxDecoration(
                   color: AppColors.lightGrey,
                   shape: BoxShape.circle,
@@ -72,7 +73,7 @@ class WelcomeCard extends StatelessWidget {
                 child: Center(
                   child: Icon(
                     Icons.arrow_forward_ios,
-                    size: 16,
+                    size: 16.w,
                     color: AppColors.black,
                   ),
                 ),

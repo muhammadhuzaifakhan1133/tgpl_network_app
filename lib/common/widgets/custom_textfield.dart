@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController? controller;
@@ -77,8 +78,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   bool get _hasValue => _internalController.text.isNotEmpty;
 
   Widget? _buildSuffixIcon() {
-    if (widget.showClearButton &&
-        (_hasValue || widget.readOnly)) {
+    if (widget.showClearButton && (_hasValue || widget.readOnly)) {
       return IconButton(
         icon: const Icon(Icons.close, size: 18),
         splashRadius: 18,
@@ -135,7 +135,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: widget.width,
-      height: widget.height,
+      height: widget.height ?? 46.h,
       child: TextFormField(
         controller: _internalController,
         // initialValue: widget.controller == null ? widget.initialValue : null,
@@ -151,11 +151,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
         decoration: InputDecoration(
           fillColor: widget.backgroundColor,
           filled: widget.backgroundColor != null,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 12.w,
+            vertical: widget.multiline ? 12.h : 0,
+          ),
           hint: widget.hint,
           hintText: widget.hintText,
           errorText: widget.errorText,
           suffixIcon: _buildSuffixIcon(),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
         ),
         validator: widget.validator,
         keyboardType: widget.multiline

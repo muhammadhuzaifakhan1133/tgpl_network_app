@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 
@@ -16,33 +17,33 @@ class ApplicationIdContainer extends ConsumerWidget {
             color: AppColors.white,
             shape: RoundedRectangleBorder(
               side: BorderSide(color: AppColors.whiteGreyColor),
-              borderRadius: BorderRadius.circular(18.25),
+              borderRadius: BorderRadius.circular(18.25.r),
             ),
             elevation: 8,
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+              padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w),
               child: Column(
                 children: [
                   Text(
                     "Your Application ID",
                     style: AppTextstyles.googleInter400LightGrey12.copyWith(
-                      fontSize: 9.89,
+                      fontSize: 9.89.sp,
                     ),
                   ),
-                  const SizedBox(height: 3),
+                  // SizedBox(height: 3.h),
                   Text(
                     applicationId,
                     style: AppTextstyles.googleInter700black28.copyWith(
-                      fontSize: 24.33,
+                      fontSize: 24.33.sp,
                       color: AppColors.black2Color,
                     ),
                   ),
-                  const SizedBox(height: 3),
+                  // SizedBox(height: 3.h),
                   Text(
                     "Please save this ID for future reference. You can use it to track your application status.",
                     textAlign: TextAlign.center,
                     style: AppTextstyles.neutra500white18.copyWith(
-                      fontSize: 12.17,
+                      fontSize: 12.17.sp,
                       color: AppColors.subHeadingColor,
                     ),
                   ),

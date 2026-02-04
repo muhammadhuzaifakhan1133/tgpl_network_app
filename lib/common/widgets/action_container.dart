@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 
@@ -14,11 +15,11 @@ Widget actionContainer({
   return GestureDetector(
     onTap: onTap,
     child: Container(
-      padding: EdgeInsets.all(padding),
-      margin: EdgeInsets.only(left: leftMargin, right: rightMargin),
+      padding: EdgeInsets.all(padding.w),
+      margin: EdgeInsets.only(left: leftMargin.w, right: rightMargin.w),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.r),
       ),
       child: SvgPicture.asset(icon, color: iconColor),
     ),

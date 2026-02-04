@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
@@ -32,30 +33,34 @@ class AppFormConfirmationView extends ConsumerWidget {
         child: Center(
           child: ListView(
             children: [
-              SvgPicture.asset(AppImages.tickWithCircleIconSvg),
-              const SizedBox(height: 12),
+              SvgPicture.asset(
+                AppImages.tickWithCircleIconSvg,
+                width: 72.w,
+                height: 72.h,
+              ),
+              SizedBox(height: 12.h),
               Text(
                 "Application Submitted!",
                 textAlign: TextAlign.center,
-                style: AppTextstyles.neutra700black32.copyWith(fontSize: 28),
+                style: AppTextstyles.neutra700black32.copyWith(fontSize: 28.sp),
               ),
-              const SizedBox(height: 13),
+              SizedBox(height: 13.h),
               Text(
                 "Thank you for applying with Taj Gasoline. Your application has been received successfully.",
                 textAlign: TextAlign.center,
                 style: AppTextstyles.googleInter400black16.copyWith(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               ApplicationIdContainer(applicationId: applicationId),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "What's Next?",
                   style: AppTextstyles.googleInter700black28.copyWith(
-                    fontSize: 24,
+                    fontSize: 24.sp,
                   ),
                 ),
               ),
@@ -66,7 +71,7 @@ class AppFormConfirmationView extends ConsumerWidget {
                   style: AppTextstyles.googleInter400black16,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               NextStepOrHelpContainer(
                 step: "1",
                 color: AppColors.nextStep1Color,
@@ -74,7 +79,7 @@ class AppFormConfirmationView extends ConsumerWidget {
                 subtitle:
                     "Our team will review your application within 24-48 hours",
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               NextStepOrHelpContainer(
                 step: "2",
                 color: AppColors.nextStep2Color,
@@ -82,7 +87,7 @@ class AppFormConfirmationView extends ConsumerWidget {
                 subtitle:
                     "We'll contact you to schedule a site visit and verification",
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               NextStepOrHelpContainer(
                 step: "3",
                 color: AppColors.nextStep3Color,
@@ -90,31 +95,31 @@ class AppFormConfirmationView extends ConsumerWidget {
                 subtitle:
                     "We'll guide you through the approval and setup process",
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Need Help?",
                   style: AppTextstyles.googleInter700black28.copyWith(
-                    fontSize: 24,
+                    fontSize: 24.sp,
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               NextStepOrHelpContainer(
                 icon: AppImages.helplineIconSvg,
                 color: AppColors.nextStep1Color,
                 title: "Call Helpline",
                 subtitle: "021-111-TGPL (8475)",
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               NextStepOrHelpContainer(
                 icon: AppImages.messageIconSvg,
                 color: AppColors.nextStep2Color,
                 title: "WhatsApp Support",
                 subtitle: "+92 300 1234567",
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               NextStepOrHelpContainer(
                 icon: AppImages.emailIconSvg,
                 color: AppColors.emailUsIconColor,

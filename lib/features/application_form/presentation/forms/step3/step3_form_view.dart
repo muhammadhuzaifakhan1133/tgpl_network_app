@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
@@ -65,17 +66,14 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
     final controller = ref.read(step3FormControllerProvider.notifier);
 
     double? latitude, longitude;
-    (latitude, longitude) =
-        _getLatLngFromLocation(_locationController.text);
+    (latitude, longitude) = _getLatLngFromLocation(_locationController.text);
     LocationData? selectedLocation = await ref
         .read(goRouterProvider)
-        .push(AppRoutes.siteLocationSelection,
-        extra: latitude != null && longitude != null
-            ? LatLng(
-                latitude,
-                longitude,
-              )
-            : null
+        .push(
+          AppRoutes.siteLocationSelection,
+          extra: latitude != null && longitude != null
+              ? LatLng(latitude, longitude)
+              : null,
         );
 
     if (selectedLocation != null) {
@@ -94,17 +92,26 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
   @override
   Widget build(BuildContext context) {
     final step3Controller = ref.read(step3FormControllerProvider.notifier);
-    final autoValidate = ref.watch(step3FormControllerProvider.select((s)=>s.autoValidateFrom));
+    final autoValidate = ref.watch(
+      step3FormControllerProvider.select((s) => s.autoValidateFrom),
+    );
     return Form(
       key: _formKey,
-      autovalidateMode: autoValidate ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
+      autovalidateMode: autoValidate
+          ? AutovalidateMode.onUserInteraction
+          : AutovalidateMode.disabled,
       child: Column(
         children: [
-          Text(
-            "Plot Details",
-            style: AppTextstyles.googleInter700black28.copyWith(fontSize: 24),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Plot Details",
+              style: AppTextstyles.googleInter700black28.copyWith(
+                fontSize: 24.sp,
+              ),
+            ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           Row(
             children: [
@@ -121,7 +128,7 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
                   onClear: () => step3Controller.clearField('frontSize'),
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16.w),
               Expanded(
                 child: CustomTextFieldWithTitle(
                   title: "Depth*",
@@ -138,7 +145,7 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
             ],
           ),
 
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           CustomTextFieldWithTitle(
             title: "Google Location*",
@@ -156,7 +163,7 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
             isRequired: true,
           ),
 
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           CustomTextFieldWithTitle(
             title: "Complete Site Address*",
@@ -172,7 +179,7 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
             onClear: () => step3Controller.clearField('address'),
           ),
 
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           // change this button to use appFormSubmissionProvider for showing loading state
           CustomButton(
             text: "",
@@ -194,9 +201,12 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
                 ),
             onPressed: () async {
               if (!autoValidate) {
-                ref.read(step3FormControllerProvider.notifier).updateAutoValidate(true);
+                ref
+                    .read(step3FormControllerProvider.notifier)
+                    .updateAutoValidate(true);
               }
-              if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+              if (_formKey.currentState != null &&
+                  _formKey.currentState!.validate()) {
                 // await ref.read(appFormSubmissionProvider.notifier).submitAppForm();
                 ref
                     .read(goRouterProvider)

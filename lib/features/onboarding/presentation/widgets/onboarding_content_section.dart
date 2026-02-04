@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/animated_text.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
@@ -37,7 +38,7 @@ class OnboardingContentSection extends ConsumerWidget {
               padding: const EdgeInsets.only(
                 right: 20.0,
                 left: 20.0,
-                top: 100.0,
+                top: 100,
                 bottom: 30.0,
               ),
               child: Column(
@@ -51,7 +52,7 @@ class OnboardingContentSection extends ConsumerWidget {
                       style: AppTextstyles.neutra500white32,
                     ),
                   ),
-                  const SizedBox(height: 15.0),
+                  SizedBox(height: 15.0.h),
                   AnimatedText(
                     child: Text(
                       data.description,
@@ -60,7 +61,7 @@ class OnboardingContentSection extends ConsumerWidget {
                       style: AppTextstyles.neutra500white18,
                     ),
                   ),
-                  const SizedBox(height: 35.0),
+                  SizedBox(height: 42.46.h),
                   CustomButton(
                     onPressed: controller.onActionButtonPressed,
                     text: "",
@@ -73,7 +74,7 @@ class OnboardingContentSection extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   _PageIndicators(
                     totalPages: totalPages,
                     currentPageIndex: currentPageIndex,
@@ -136,11 +137,11 @@ class _PageIndicator extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         margin: const EdgeInsets.symmetric(horizontal: 4),
-        height: 5,
-        width: isActive ? 30 : 15,
+        height: 5.h,
+        width: isActive ? 30.w : 15.w,
         decoration: BoxDecoration(
           color: isActive ? AppColors.white : AppColors.halfWhite,
-          borderRadius: BorderRadius.circular(11),
+          borderRadius: BorderRadius.circular(11.r),
         ),
       ),
     );

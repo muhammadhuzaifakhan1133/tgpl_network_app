@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
@@ -23,15 +24,15 @@ class NextStepOrHelpContainer extends StatelessWidget {
     return Card(
       color: AppColors.white,
       elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.4)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.4.r)),
       shadowColor: AppColors.black.withOpacity(0.5),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14.5, horizontal: 8),
+        padding: EdgeInsets.symmetric(vertical: 14.5.h, horizontal: 8.w),
         child: Row(
           children: [
             Container(
-              width: 45,
-              height: 45,
+              width: 48.w,
+              height: 48.h,
               decoration: BoxDecoration(
                 color: color.withOpacity(0.082),
                 borderRadius: BorderRadius.circular(16),
@@ -41,14 +42,14 @@ class NextStepOrHelpContainer extends StatelessWidget {
                     ? Text(
                         step!,
                         style: AppTextstyles.googleInter700black28.copyWith(
-                          fontSize: 18,
+                          fontSize: 18.sp,
                           color: color,
                         ),
                       )
                     : SvgPicture.asset(icon!, color: color),
               ),
             ),
-            const SizedBox(width: 15.5),
+            SizedBox(width: 16.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,15 +57,15 @@ class NextStepOrHelpContainer extends StatelessWidget {
                   Text(
                     title,
                     style: AppTextstyles.googleInter700black28.copyWith(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       color: AppColors.black2Color,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2.h),
                   Text(
                     subtitle,
                     style: AppTextstyles.googleInter400Grey14.copyWith(
-                      fontSize: 12,
+                      fontSize: 12.sp,
                     ),
                   ),
                 ],

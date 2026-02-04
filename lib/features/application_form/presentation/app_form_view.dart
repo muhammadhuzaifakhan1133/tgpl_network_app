@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/common/widgets/error_widget.dart';
@@ -62,7 +63,7 @@ class _StationFormViewState extends ConsumerState<StationFormView> {
               FocusScope.of(context).unfocus();
             },
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 50),
+              padding: EdgeInsets.symmetric(horizontal: 55.w, vertical: 50.h),
               child: Stack(
                 children: [
                   Consumer(
@@ -80,12 +81,13 @@ class _StationFormViewState extends ConsumerState<StationFormView> {
                         itemBuilder: (context, index) {
                           return ListView(
                             children: [
+                              SizedBox(height: 20.h),
                               SvgPicture.asset(
                                 AppImages.tajLogoSvg,
-                                width: 50,
-                                height: 50,
+                                width: 45.w,
+                                height: 45.h,
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(height: 10.h),
                               Text(
                                 "Welcome to\nTaj Gasoline",
                                 textAlign: TextAlign.center,
@@ -93,18 +95,18 @@ class _StationFormViewState extends ConsumerState<StationFormView> {
                                   height: 1,
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(height: 13.h),
                               Text(
                                 "Apply for a new TGPL retail station. Fill in the details below and our team will contact you shortly.",
                                 textAlign: TextAlign.center,
                                 style: AppTextstyles.googleInter400Grey14,
                               ),
-                              const SizedBox(height: 12),
+                              SizedBox(height: 12.h),
                               // steps indicator
                               FormStepsIndicator(),
-                              const SizedBox(height: 12),
+                              SizedBox(height: 12.h),
                               FormStepsTitle(),
-                              const SizedBox(height: 20),
+                              SizedBox(height: 24.h),
                               _steps[index],
                             ],
                           );

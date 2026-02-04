@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
@@ -28,16 +29,15 @@ class _Step1FormViewState extends ConsumerState<Step1FormView> {
     super.initState();
     final state = ref.read(step1FormControllerProvider);
 
-    _applicantNameController =
-        TextEditingController(text: state.applicantName);
-    _contactPersonController =
-        TextEditingController(text: state.contactPerson);
-    _currentlyPresenceController =
-        TextEditingController(text: state.currentlyPresence);
-    _contactNumberController =
-        TextEditingController(text: state.contactNumber);
-    _whatsappNumberController =
-        TextEditingController(text: state.whatsappNumber);
+    _applicantNameController = TextEditingController(text: state.applicantName);
+    _contactPersonController = TextEditingController(text: state.contactPerson);
+    _currentlyPresenceController = TextEditingController(
+      text: state.currentlyPresence,
+    );
+    _contactNumberController = TextEditingController(text: state.contactNumber);
+    _whatsappNumberController = TextEditingController(
+      text: state.whatsappNumber,
+    );
   }
 
   @override
@@ -51,104 +51,111 @@ class _Step1FormViewState extends ConsumerState<Step1FormView> {
   }
 
   @override
-Widget build(BuildContext context) {
-  final step1Controller =
-      ref.read(step1FormControllerProvider.notifier);
-  final appFormController =
-      ref.read(appFormControllerProvider.notifier);
-  final autoValidate = ref.watch(
-    step1FormControllerProvider.select((s) => s.autoValidate),
-  );
-  return Form(
-    key: _formKey,
-    autovalidateMode: autoValidate ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
-    child: Column(
-      children: [
-        Text(
-          "Basic Details",
-          style: AppTextstyles.googleInter700black28.copyWith(fontSize: 24),
-        ),
-        const SizedBox(height: 24),
+  Widget build(BuildContext context) {
+    final step1Controller = ref.read(step1FormControllerProvider.notifier);
+    final appFormController = ref.read(appFormControllerProvider.notifier);
+    final autoValidate = ref.watch(
+      step1FormControllerProvider.select((s) => s.autoValidate),
+    );
+    return Form(
+      key: _formKey,
+      autovalidateMode: autoValidate
+          ? AutovalidateMode.onUserInteraction
+          : AutovalidateMode.disabled,
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Basic Details",
+              style: AppTextstyles.googleInter700black28.copyWith(
+                fontSize: 24.sp,
+              ),
+            ),
+          ),
+          SizedBox(height: 24.h),
 
-        CustomTextFieldWithTitle(
-          title: "Applicant Name*",
-          controller: _applicantNameController,
-          hintText: "Enter applicant name",
-          validator: (v) => v.validate(),
-          onChanged: step1Controller.updateApplicantName,
-          showClearButton: true,
-          isRequired: true,
-          onClear: () => step1Controller.clearField('applicantName'),
-        ),
+          CustomTextFieldWithTitle(
+            title: "Applicant Name*",
+            controller: _applicantNameController,
+            hintText: "Enter applicant name",
+            validator: (v) => v.validate(),
+            onChanged: step1Controller.updateApplicantName,
+            showClearButton: true,
+            isRequired: true,
+            onClear: () => step1Controller.clearField('applicantName'),
+          ),
 
-        const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
-        CustomTextFieldWithTitle(
-          title: "Contact Person*",
-          controller: _contactPersonController,
-          hintText: "Enter contact person",
-          validator: (v) => v.validate(),
-          onChanged: step1Controller.updateContactPerson,
-          showClearButton: true,
-          isRequired: true,
-          onClear: () => step1Controller.clearField('contactPerson'),
-        ),
+          CustomTextFieldWithTitle(
+            title: "Contact Person*",
+            controller: _contactPersonController,
+            hintText: "Enter contact person",
+            validator: (v) => v.validate(),
+            onChanged: step1Controller.updateContactPerson,
+            showClearButton: true,
+            isRequired: true,
+            onClear: () => step1Controller.clearField('contactPerson'),
+          ),
 
-        const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
-        CustomTextFieldWithTitle(
-          title: "Currently Presence*",
-          controller: _currentlyPresenceController,
-          hintText: "Enter currently presence",
-          validator: (v) => v.validate(),
-          onChanged: step1Controller.updateCurrentlyPresence,
-          showClearButton: true,
-          isRequired: true,
-          onClear: () => step1Controller.clearField('currentlyPresence'),
-        ),
+          CustomTextFieldWithTitle(
+            title: "Currently Presence*",
+            controller: _currentlyPresenceController,
+            hintText: "Enter currently presence",
+            validator: (v) => v.validate(),
+            onChanged: step1Controller.updateCurrentlyPresence,
+            showClearButton: true,
+            isRequired: true,
+            onClear: () => step1Controller.clearField('currentlyPresence'),
+          ),
 
-        const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
-        CustomTextFieldWithTitle(
-          title: "Contact Number*",
-          controller: _contactNumberController,
-          hintText: "Enter contact number",
-          validator: (v) => v.validatePhoneNumber(),
-          onChanged: step1Controller.updateContactNumber,
-          showClearButton: true,
-          isRequired: true,
-          onClear: () => step1Controller.clearField('contactNumber'),
-        ),
+          CustomTextFieldWithTitle(
+            title: "Contact Number*",
+            controller: _contactNumberController,
+            hintText: "Enter contact number",
+            validator: (v) => v.validatePhoneNumber(),
+            onChanged: step1Controller.updateContactNumber,
+            showClearButton: true,
+            isRequired: true,
+            onClear: () => step1Controller.clearField('contactNumber'),
+          ),
 
-        const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
-        CustomTextFieldWithTitle(
-          title: "WhatsApp Number*",
-          controller: _whatsappNumberController,
-          hintText: "Enter WhatsApp number",
-          validator: (v) => v.validatePhoneNumber(),
-          onChanged: step1Controller.updateWhatsappNumber,
-          showClearButton: true,
-          isRequired: true,
-          onClear: () => step1Controller.clearField('whatsappNumber'),
-        ),
+          CustomTextFieldWithTitle(
+            title: "WhatsApp Number*",
+            controller: _whatsappNumberController,
+            hintText: "Enter WhatsApp number",
+            validator: (v) => v.validatePhoneNumber(),
+            onChanged: step1Controller.updateWhatsappNumber,
+            showClearButton: true,
+            isRequired: true,
+            onClear: () => step1Controller.clearField('whatsappNumber'),
+          ),
 
-        const SizedBox(height: 20),
+          SizedBox(height: 20.h),
 
-        CustomButton(
-          text: "Next",
-          onPressed: () {
-            if (!autoValidate) {
-              ref.read(step1FormControllerProvider.notifier).updateAutoValidate(true);
-            }
-            if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-              appFormController.nextStep();
-            }
-          },
-        ),
-      ],
-    ),
-  );
-}
-
+          CustomButton(
+            text: "Next",
+            onPressed: () {
+              if (!autoValidate) {
+                ref
+                    .read(step1FormControllerProvider.notifier)
+                    .updateAutoValidate(true);
+              }
+              if (_formKey.currentState != null &&
+                  _formKey.currentState!.validate()) {
+                appFormController.nextStep();
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 
 class CustomDropDown<T> extends StatefulWidget {
@@ -91,28 +92,31 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
       return FormField<List<T>>(
         validator: (_) => widget.multiValidator?.call(_selectedItems),
         builder: (state) {
-          return InkWell(
-            onTap: showMultiSelectDialog,
-            child: InputDecorator(
-              decoration: InputDecoration(
-                hintText: widget.hintText,
-                errorText: state.errorText,
-                suffixIcon: widget.showClearButton && _hasValue
-                    ? IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: _clear,
-                      )
-                    : const Icon(Icons.arrow_drop_down),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+          return SizedBox(
+            height: 46.h,
+            child: InkWell(
+              onTap: showMultiSelectDialog,
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  hintText: widget.hintText,
+                  errorText: state.errorText,
+                  suffixIcon: widget.showClearButton && _hasValue
+                      ? IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: _clear,
+                        )
+                      : const Icon(Icons.arrow_drop_down),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
                 ),
-              ),
-              child: Text(
-                _selectedItems.isEmpty
-                    ? widget.hintText ?? ''
-                    : _textController.text,
-                overflow: TextOverflow.ellipsis,
-                style: widget.textStyle,
+                child: Text(
+                  _selectedItems.isEmpty
+                      ? widget.hintText ?? ''
+                      : _textController.text,
+                  overflow: TextOverflow.ellipsis,
+                  style: widget.textStyle,
+                ),
               ),
             ),
           );
@@ -120,39 +124,42 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
       );
     }
 
-    return DropdownButtonFormField<T>(
-      isExpanded: true,
-      value: widget.selectedItem,
-      items: widget.items
-          .map(
-            (item) => DropdownMenuItem<T>(
-              value: item,
-              child: Text(
-                widget.displayString != null
-                    ? widget.displayString!(item)
-                    : item.toString(),
-                style: widget.itemTextStyle != null
-                    ? widget.itemTextStyle!(item)
-                    : widget.textStyle,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+    return SizedBox(
+      height: 46.h,
+      child: DropdownButtonFormField<T>(
+        isExpanded: true,
+        value: widget.selectedItem,
+        items: widget.items
+            .map(
+              (item) => DropdownMenuItem<T>(
+                value: item,
+                child: Text(
+                  widget.displayString != null
+                      ? widget.displayString!(item)
+                      : item.toString(),
+                  style: widget.itemTextStyle != null
+                      ? widget.itemTextStyle!(item)
+                      : widget.textStyle,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
               ),
-            ),
-          )
-          .toList(),
-      onChanged: widget.onChanged,
-      validator: widget.validator,
-      style: widget.selectedItem != null && widget.itemTextStyle != null
-          ? widget.itemTextStyle!(widget.selectedItem!)
-          : widget.textStyle,
-      decoration: InputDecoration(
-        hintText: widget.hintText,
-        fillColor: widget.backgroundColor,
-        filled: widget.backgroundColor != null,
-        suffixIcon: widget.showClearButton && _hasValue
-            ? IconButton(icon: const Icon(Icons.close), onPressed: _clear)
-            : null,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+            )
+            .toList(),
+        onChanged: widget.onChanged,
+        validator: widget.validator,
+        style: widget.selectedItem != null && widget.itemTextStyle != null
+            ? widget.itemTextStyle!(widget.selectedItem!)
+            : widget.textStyle,
+        decoration: InputDecoration(
+          hintText: widget.hintText,
+          fillColor: widget.backgroundColor,
+          filled: widget.backgroundColor != null,
+          suffixIcon: widget.showClearButton && _hasValue
+              ? IconButton(icon: const Icon(Icons.close), onPressed: _clear)
+              : null,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
+        ),
       ),
     );
   }
