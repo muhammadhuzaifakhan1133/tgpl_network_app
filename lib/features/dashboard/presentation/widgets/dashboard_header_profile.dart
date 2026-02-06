@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/providers/user_provider.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
@@ -19,10 +20,10 @@ class DashboardHeaderProfile extends ConsumerWidget {
     return Row(
       children: [
         Container(
-          height: 48,
-          width: 48,
+          height: 48.h,
+          width: 48.w,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -33,13 +34,13 @@ class DashboardHeaderProfile extends ConsumerWidget {
             child: Text(
               user.userName[0],
               style: AppTextstyles.googleInter700black28.copyWith(
-                fontSize: 20,
+                fontSize: 20.sp,
                 color: AppColors.white,
               ),
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12.w),
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -48,7 +49,7 @@ class DashboardHeaderProfile extends ConsumerWidget {
               Text(
                 user.userName,
                 style: AppTextstyles.googleInter700black28.copyWith(
-                  fontSize: 20,
+                  fontSize: 20.sp,
                   color: AppColors.black2Color,
                 ),
               ),
@@ -57,7 +58,7 @@ class DashboardHeaderProfile extends ConsumerWidget {
                 // user.position ?? "",
                 user.fullName,
                 style: AppTextstyles.googleInter400Grey14.copyWith(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   color: AppColors.black2Color,
                 ),
               ),

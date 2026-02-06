@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_controller.dart';
 import 'package:tgpl_network/common/widgets/section_detail_card.dart';
@@ -41,7 +42,7 @@ class TrafficCountCard extends ConsumerWidget {
                 hintText: cars,
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             Expanded(
               child: CustomTextFieldWithTitle(
                 readOnly: true,
@@ -49,7 +50,7 @@ class TrafficCountCard extends ConsumerWidget {
                 hintText: bikes,
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             Expanded(
               child: CustomTextFieldWithTitle(
                 readOnly: true,

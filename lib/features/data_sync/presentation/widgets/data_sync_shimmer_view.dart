@@ -1,5 +1,6 @@
 // lib/features/data_sync/presentation/widgets/data_sync_shimmer.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
 import 'package:tgpl_network/common/widgets/shimmer_widget.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
@@ -21,27 +22,26 @@ class DataSyncShimmerView extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: ListView(
-              children: const [
+              children: [
                 // Connection Status Card Shimmer
                 ConnectionStatusCardShimmer(),
-                SizedBox(height: 20),
+                SizedBox(height: 20.h),
 
                 // Sync Stats Cards Row
                 Row(
                   children: [
                     Expanded(child: SyncStatsCardShimmer()),
-                    SizedBox(width: 16),
+                    SizedBox(width: 16.w),
                     Expanded(child: SyncStatsCardShimmer()),
                   ],
                 ),
-                SizedBox(height: 16),
-
+                SizedBox(height: 16.h),
                 // Pending Sync List Shimmer
                 SyncListShimmer(
                   sectionTitle: 'Pending Sync',
                   itemCount: 3,
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: 16.h),
 
                 // Synced List Shimmer
                 SyncListShimmer(
@@ -66,22 +66,22 @@ class ConnectionStatusCardShimmer extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: const Border(
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border(
           left: BorderSide(
             color: Colors.grey,
-            width: 4,
+            width: 4.w,
           ),
         ),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            blurRadius: 10.r,
+            offset: Offset(0, 2.h),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
       child: Row(
         children: [
           Expanded(
@@ -93,14 +93,14 @@ class ConnectionStatusCardShimmer extends StatelessWidget {
                   height: 12,
                   borderRadius: 4,
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Row(
                   children: [
                     ShimmerWidget.circular(
                       width: 10,
                       height: 10,
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     const ShimmerBox(
                       width: 80,
                       height: 20,
@@ -113,13 +113,13 @@ class ConnectionStatusCardShimmer extends StatelessWidget {
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: const [
+            children: [
               ShimmerBox(
                 width: 80,
                 height: 12,
                 borderRadius: 4,
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 8.h),
               ShimmerBox(
                 width: 100,
                 height: 16,
@@ -140,10 +140,10 @@ class SyncStatsCardShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
       decoration: BoxDecoration(
         color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -152,13 +152,13 @@ class SyncStatsCardShimmer extends StatelessWidget {
             width: 48,
             height: 48,
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           const ShimmerBox(
             width: 60,
             height: 32,
             borderRadius: 4,
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           const ShimmerBox(
             width: 100,
             height: 14,
@@ -188,7 +188,7 @@ class SyncListShimmer extends StatelessWidget {
       children: [
         // Section Header Shimmer
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: EdgeInsets.symmetric(vertical: 8.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -204,7 +204,7 @@ class SyncListShimmer extends StatelessWidget {
                     height: 14,
                     borderRadius: 4,
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   ShimmerWidget.circular(
                     width: 20,
                     height: 20,
@@ -234,11 +234,11 @@ class SyncItemCardShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
+      margin: EdgeInsets.only(bottom: 12.h),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         border: const Border(
           left: BorderSide(
             color: Colors.grey,
@@ -261,19 +261,19 @@ class SyncItemCardShimmer extends StatelessWidget {
             height: 40,
             borderRadius: 8,
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
 
           // Title and Subtitle Shimmer
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 ShimmerBox(
                   width: double.infinity,
                   height: 14,
                   borderRadius: 4,
                 ),
-                SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 ShimmerBox(
                   width: 120,
                   height: 12,
@@ -282,7 +282,7 @@ class SyncItemCardShimmer extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
 
           // Status Icon Shimmer
           ShimmerWidget.circular(

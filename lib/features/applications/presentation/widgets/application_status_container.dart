@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
@@ -28,9 +29,9 @@ class ApplicationStatusContainer extends ConsumerWidget {
     final appStatuses = ref.read(appStatusesProvider(index));
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
-      padding: EdgeInsets.all(12),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.4),
+        borderRadius: BorderRadius.circular(16.4.r),
         color: AppColors.white,
       ),
       child: Column(
@@ -47,9 +48,9 @@ class ApplicationStatusContainer extends ConsumerWidget {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                padding: EdgeInsets.symmetric(horizontal: 8.w),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
+                  borderRadius: BorderRadius.circular(25.r),
                   color: AppColors.getPriorityColor(
                     application.priority.toString(),
                   ).withOpacity(0.082),
@@ -65,7 +66,7 @@ class ApplicationStatusContainer extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               AnimatedRotation(
                 turns: isExpanded ? 0.5 : 0,
                 duration: const Duration(milliseconds: 500),
@@ -86,46 +87,46 @@ class ApplicationStatusContainer extends ConsumerWidget {
                 AppImages.locationIconSvg,
                 color: AppColors.subHeadingColor,
               ),
-              const SizedBox(width: 5),
+              SizedBox(width: 5.w),
               Text(
                 application.cityName.toString(),
                 style: AppTextstyles.googleInter400Grey14.copyWith(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10.w),
               SvgPicture.asset(
                 AppImages.calendarIconSvg,
                 color: AppColors.subHeadingColor,
               ),
-              const SizedBox(width: 5),
+              SizedBox(width: 5.w),
               Text(
                 application.addDate.toString().formatTodMMMyyyy(),
                 style: AppTextstyles.googleInter400Grey14.copyWith(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 5),
+          SizedBox(height: 5.h),
           Row(
             children: [
               for (int i = 0; i < appStatuses.length; i++)
                 Expanded(
                   child: Container(
-                    margin: const EdgeInsets.only(right: 5),
+                    margin: EdgeInsets.only(right: 5.w),
                     decoration: BoxDecoration(
                       color: appStatuses[i].status
                           ? AppColors.nextStep2Color
                           : AppColors.inactiveStatusColor,
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(30.r),
                     ),
                     height: 6,
                   ),
                 ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           AnimatedSize(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
@@ -134,21 +135,21 @@ class ApplicationStatusContainer extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Divider(color: AppColors.lightGrey),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2.h),
                       Text(
                         "Process Status",
                         style: AppTextstyles.googleInter600black18,
                       ),
                       for (int i = 0; i < appStatuses.length; i++)
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          padding: EdgeInsets.symmetric(vertical: 4.h),
                           child: Row(
                             children: [
                               Expanded(child: Text(appStatuses[i].title)),
                               Container(
-                                padding: EdgeInsets.symmetric(horizontal: 6),
+                                padding: EdgeInsets.symmetric(horizontal: 6.w),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25),
+                                  borderRadius: BorderRadius.circular(25.r),
                                   color: appStatuses[i].status
                                       ? AppColors.nextStep2Color.withOpacity(
                                           0.082,
@@ -161,7 +162,7 @@ class ApplicationStatusContainer extends ConsumerWidget {
                                   appStatuses[i].status ? "Yes" : "No",
                                   style: AppTextstyles.googleInter600black18
                                       .copyWith(
-                                        fontSize: 12,
+                                        fontSize: 12.sp,
                                         color: appStatuses[i].status
                                             ? AppColors.nextStep2Color
                                             : AppColors.emailUsIconColor,
@@ -171,9 +172,9 @@ class ApplicationStatusContainer extends ConsumerWidget {
                             ],
                           ),
                         ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2.h),
                       Divider(color: AppColors.lightGrey),
-                      const SizedBox(height: 5),
+                      SizedBox(height: 5.h),
                       Row(
                         children: [
                           Expanded(
@@ -198,7 +199,7 @@ class ApplicationStatusContainer extends ConsumerWidget {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: 12.w),
                           Expanded(
                             child: CustomButton(
                               onPressed: () {

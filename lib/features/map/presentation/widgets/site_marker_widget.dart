@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SiteMapMarker extends StatelessWidget {
   final Color color;
   final String label;
 
-  const SiteMapMarker({
-    super.key,
-    required this.color,
-    required this.label,
-  });
+  const SiteMapMarker({super.key, required this.color, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -56,27 +53,27 @@ class SiteMapMarker extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
         // Label below
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade300, width: 0.5),
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: Colors.grey.shade300, width: 0.5.w),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
-                blurRadius: 2,
-                offset: const Offset(0, 1),
+                blurRadius: 2.r,
+                offset: Offset(0, 1.h),
               ),
             ],
           ),
           child: Text(
             label,
             maxLines: 1,
-            style: const TextStyle(
-              fontSize: 11,
+            style: TextStyle(
+              fontSize: 14.sp,
               fontWeight: FontWeight.w600,
               color: Colors.black87,
             ),
@@ -99,35 +96,33 @@ class MarkerTailPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final path = Path();
-    
+
     // Create the curved tail shape
     path.moveTo(size.width / 2, 0);
-    
+
     // Left curve
-    path.quadraticBezierTo(
-      0, 0,
-      0, size.height * 0.5,
-    );
-    
+    path.quadraticBezierTo(0, 0, 0, size.height * 0.5);
+
     // Bottom point
     path.quadraticBezierTo(
-      size.width * 0.3, size.height * 0.8,
-      size.width / 2, size.height,
+      size.width * 0.3,
+      size.height * 0.8,
+      size.width / 2,
+      size.height,
     );
-    
+
     // Right curve
     path.quadraticBezierTo(
-      size.width * 0.7, size.height * 0.8,
-      size.width, size.height * 0.5,
+      size.width * 0.7,
+      size.height * 0.8,
+      size.width,
+      size.height * 0.5,
     );
-    
-    path.quadraticBezierTo(
-      size.width, 0,
-      size.width / 2, 0,
-    );
-    
+
+    path.quadraticBezierTo(size.width, 0, size.width / 2, 0);
+
     path.close();
-    
+
     canvas.drawPath(path, paint);
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/common/widgets/error_widget.dart';
@@ -45,7 +46,7 @@ class ApplicationDetailView extends ConsumerWidget {
           ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.all(20.0),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
               children: [
                 // TODO: Add fields of Application Info
                 // ApplicantInfoCard(
@@ -55,7 +56,7 @@ class ApplicationDetailView extends ConsumerWidget {
                 //   emergencyContactPerson: "Abu Bakar",
                 //   whatsappNumber: "03001234567",
                 // ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 SiteDetailCard(
                   entryCode: application.entryCode ?? "",
                   dateConducted:
@@ -74,7 +75,7 @@ class ApplicationDetailView extends ConsumerWidget {
                       application.distanceFromDetp?.toString() ?? "",
                   typeOfTrade: application.typeOfTradeArea ?? "",
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 ContactDealerTGPLCard(
                   npName: application.npPersonName ?? "",
                   source: application.source ?? "",
@@ -85,7 +86,7 @@ class ApplicationDetailView extends ConsumerWidget {
                   dealerContact: application.dealerContact ?? "",
                   referenceBy: application.referedBy ?? "",
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 DealerProfileCard(
                   isDealer: application.isThisDealerSite ?? "",
                   platform: application.platform ?? "",
@@ -100,7 +101,7 @@ class ApplicationDetailView extends ConsumerWidget {
                   isAgreedToFollowStandards:
                       application.isAgreeToTGPLStandard ?? "",
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 RecommendationCard(
                   tm: application.ssRecommendationTmName ?? "",
                   tmRecommend: application.ssTmRecommendation ?? "",
@@ -111,13 +112,13 @@ class ApplicationDetailView extends ConsumerWidget {
                 ),
                 // is traffic trade done?
                 if (application.trafficTradeDone == 1) ...[
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   TrafficCountCard(
                     cars: application.carCount?.toString() ?? "",
                     bikes: application.bikeCount?.toString() ?? "",
                     trucks: application.truckCount?.toString() ?? "",
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   VolumAndFinancialEstimationCard(
                     estimatedDailyDieselSales:
                         application.estimateDailyDieselSale?.toString() ?? "0",
@@ -132,7 +133,7 @@ class ApplicationDetailView extends ConsumerWidget {
                     salamMartPotential: application.salamMartPotential ?? "",
                     restaurantPotential: application.resturantPotential ?? "",
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   RecommendationCard(
                     tm: application.ttRecommendationTmName ?? "",
                     tmRecommend: application.ttTmRecommendation ?? "",
@@ -143,7 +144,7 @@ class ApplicationDetailView extends ConsumerWidget {
                   ),
                 ],
                 if (application.feasibilityDone == 1) ...[
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   FeasibilityCard(
                     isConversionPump: application.isThisConversionPump ?? "",
                     currentOMCName: application.currentOMCName ?? "",
@@ -174,7 +175,7 @@ class ApplicationDetailView extends ConsumerWidget {
                   ),
                 ],
                 // button for view on map
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 CustomButton(
                   text: "View on Map",
                   onPressed: () {

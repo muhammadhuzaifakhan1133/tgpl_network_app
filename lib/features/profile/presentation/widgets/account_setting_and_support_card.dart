@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
@@ -23,28 +24,28 @@ class AccountSettingAndSupportCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
         ),
         child: Row(
           children: [
             Container(
-              height: 40,
-              width: 40,
+              height: 40.h,
+              width: 40.w,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16.4),
+                borderRadius: BorderRadius.circular(16.4.r),
                 color: color.withOpacity(0.082),
               ),
               child: Center(child: SvgPicture.asset(icon, color: color)),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: Text(
                 title,
                 style: AppTextstyles.googleInter500LabelColor14.copyWith(
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   color: colorTitle ? color : AppColors.black2Color,
                 ),
               ),

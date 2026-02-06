@@ -17,7 +17,7 @@ Future<void> main() async {
 
   await DatabaseHelper.instance.database;
 
-  await DatabaseHelper.instance.clearAllTables(); // Uncomment to clear all tables during development
+  // await DatabaseHelper.instance.clearAllTables(); // Uncomment to clear all tables during development
 
   final prefs = await SharedPreferences.getInstance();
 

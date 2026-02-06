@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/providers/auto_validate_form.dart';
 import 'package:tgpl_network/common/widgets/application_fields_shimmer_widget.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
@@ -107,17 +108,17 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
           : AutovalidateMode.disabled,
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
           child: Column(
             children: [
               const ApplicantInfoFormCard(),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               const ContactAndDealerFormCard(),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               const DealerProfileFormCard(),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               const SurveyRecommendationFormCard(),
-              const SizedBox(height: 30),
+              SizedBox(height: 30.h),
               Consumer(
                 builder: (context, ref, child) {
                   final isLoading =
@@ -142,7 +143,7 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
                   );
                 },
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
             ],
           ),
         ),

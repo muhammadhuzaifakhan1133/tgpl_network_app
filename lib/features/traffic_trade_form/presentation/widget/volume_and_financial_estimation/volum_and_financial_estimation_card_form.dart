@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/features/master_data/providers/yes_no_na_values_provider.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
@@ -32,7 +33,7 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             controller.clearField('dailyDieselSales');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "Estimated Daily Super Sales",
           hintText: "Enter estimated daily super sales",
@@ -47,7 +48,7 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             controller.clearField('dailySuperSales');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "Estimated Daily HOBC Sales",
           hintText: "Enter estimated daily HOBC sales",
@@ -62,7 +63,7 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             controller.clearField('dailyHOBCSales');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "Estimated Daily Lubricant Sales",
           hintText: "Enter estimated daily lubricant sales",
@@ -77,7 +78,7 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             controller.clearField('dailyLubricantSales');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "Dealer expectation of Lease Rental / month?",
           hintText: "Enter dealer expectation of lease rental",
@@ -92,7 +93,7 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             controller.clearField('rentExpectation');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Consumer(
           builder: (context, ref, _) {
             final truckPortPotential =
@@ -118,7 +119,7 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             );
           }
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Consumer(
           builder: (context, ref, _) {
             final salamMartPotential =
@@ -144,7 +145,7 @@ class VolumAndFinancialEstimationCardForm extends ConsumerWidget {
             );
           }
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Consumer(
           builder: (context, ref, _) {
             final restaurantPotential =

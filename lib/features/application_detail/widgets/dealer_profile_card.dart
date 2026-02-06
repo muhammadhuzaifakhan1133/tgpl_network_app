@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_controller.dart';
 import 'package:tgpl_network/common/widgets/section_detail_card.dart';
@@ -46,13 +47,13 @@ class DealerProfileCard extends ConsumerWidget {
           title: "Is this Dealer",
           hintText: isDealer,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Platform",
           hintText: platform,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
 
@@ -60,14 +61,14 @@ class DealerProfileCard extends ConsumerWidget {
               "What other businesses does the dealer have, Mention # of business and types.",
           hintText: otherDealerBusinesses,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
 
           title: "How involved is the dealer in petrol pump business?",
           hintText: dealerInvolvementInBusiness,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
 
@@ -75,14 +76,14 @@ class DealerProfileCard extends ConsumerWidget {
               "Is the dealer ready to inject working capital on site and operate on cash?",
           hintText: isReadyToInjectCapital,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
 
           title: "Why does the dealer want to convert to Taj?",
           hintText: reasonForConversion,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
 
@@ -90,7 +91,7 @@ class DealerProfileCard extends ConsumerWidget {
               "In case it is an operational site, what is the current salary of attendant / month",
           hintText: currentAttendantSalary,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
 

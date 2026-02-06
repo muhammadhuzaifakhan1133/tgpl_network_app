@@ -100,6 +100,11 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
                 decoration: InputDecoration(
                   hintText: widget.hintText,
                   errorText: state.errorText,
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 10.h,
+                  ),
                   suffixIcon: widget.showClearButton && _hasValue
                       ? IconButton(
                           icon: const Icon(Icons.close),
@@ -154,6 +159,12 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
         decoration: InputDecoration(
           hintText: widget.hintText,
           fillColor: widget.backgroundColor,
+          isDense: true,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 12.w,
+            vertical: 10.h,
+          ),
+          maintainHintSize: false,
           filled: widget.backgroundColor != null,
           suffixIcon: widget.showClearButton && _hasValue
               ? IconButton(icon: const Icon(Icons.close), onPressed: _clear)
@@ -210,7 +221,7 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
                       },
                       child: const Text('Cancel'),
                     );
-                  }
+                  },
                 ),
                 Consumer(
                   builder: (context, ref, _) {
@@ -225,7 +236,7 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
                       },
                       child: const Text('OK'),
                     );
-                  }
+                  },
                 ),
               ],
             );

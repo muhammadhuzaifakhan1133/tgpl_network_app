@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/priorities_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/statuses_provider.dart';
@@ -35,11 +36,11 @@ class FilterScreen extends ConsumerWidget {
               subtitle: "Refine your search",
               showBackButton: true,
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16.w),
                   child: Column(
                     children: [
                       Row(
@@ -77,7 +78,7 @@ class FilterScreen extends ConsumerWidget {
                               },
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: 12.w),
                           Expanded(
                             child: Consumer(
                               builder: (context, ref, child) {
@@ -113,7 +114,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           Consumer(
@@ -144,7 +145,7 @@ class FilterScreen extends ConsumerWidget {
                               );
                             },
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           Consumer(
                             builder: (context, ref, child) {
                               final selectedPriority = ref.watch(
@@ -176,7 +177,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           Consumer(
@@ -219,7 +220,7 @@ class FilterScreen extends ConsumerWidget {
                               );
                             },
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           Expanded(
                             child: CustomTextFieldWithTitle(
                               showClearButton: true,
@@ -233,8 +234,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
-
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           Expanded(
@@ -247,7 +247,7 @@ class FilterScreen extends ConsumerWidget {
                               },
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           Expanded(
                             child: CustomTextFieldWithTitle(
                               showClearButton: true,
@@ -260,7 +260,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           Expanded(
@@ -274,7 +274,7 @@ class FilterScreen extends ConsumerWidget {
                               },
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           Expanded(
                             child: CustomTextFieldWithTitle(
                               showClearButton: true,
@@ -287,7 +287,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           Expanded(
@@ -300,7 +300,7 @@ class FilterScreen extends ConsumerWidget {
                               },
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           Expanded(
                             child: CustomTextFieldWithTitle(
                               showClearButton: true,
@@ -313,7 +313,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           Expanded(
@@ -349,7 +349,7 @@ class FilterScreen extends ConsumerWidget {
                               },
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: 12.w),
                           Expanded(
                             child: Consumer(
                               builder: (context, ref, child) {
@@ -388,7 +388,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           Expanded(
@@ -401,7 +401,7 @@ class FilterScreen extends ConsumerWidget {
                               },
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           Expanded(
                             child: CustomTextFieldWithTitle(
                               showClearButton: true,
@@ -414,7 +414,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           Expanded(
@@ -427,7 +427,7 @@ class FilterScreen extends ConsumerWidget {
                               },
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           Expanded(
                             child: CustomTextFieldWithTitle(
                               showClearButton: true,
@@ -440,9 +440,9 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 6),
+                      SizedBox(height: 6.h),
                       Divider(),
-                      const SizedBox(height: 7),
+                      SizedBox(height: 7.h),
                       Row(
                         children: [
                           YesNoDropDownField(
@@ -452,7 +452,7 @@ class FilterScreen extends ConsumerWidget {
                             onChangeValue: (v) =>
                                 controller.updateYesNo(surveyProfile: v),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           YesNoDropDownField(
                             title: "Traffic Trade",
                             fieldName: "trafficTrade",
@@ -462,7 +462,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           YesNoDropDownField(
@@ -472,7 +472,7 @@ class FilterScreen extends ConsumerWidget {
                             onChangeValue: (v) =>
                                 controller.updateYesNo(feasibility: v),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           YesNoDropDownField(
                             title: "Negotiation",
                             fieldName: "negotiation",
@@ -482,7 +482,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           YesNoDropDownField(
@@ -492,7 +492,7 @@ class FilterScreen extends ConsumerWidget {
                             onChangeValue: (v) =>
                                 controller.updateYesNo(mouSign: v),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           YesNoDropDownField(
                             title: "Joining Fee",
                             fieldName: "joiningFee",
@@ -502,7 +502,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           YesNoDropDownField(
@@ -512,7 +512,7 @@ class FilterScreen extends ConsumerWidget {
                             onChangeValue: (v) =>
                                 controller.updateYesNo(franchiseAgreement: v),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           YesNoDropDownField(
                             title: "Feasibility Finalization",
                             fieldName: "feasibilityFinalization",
@@ -523,7 +523,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           YesNoDropDownField(
@@ -533,7 +533,7 @@ class FilterScreen extends ConsumerWidget {
                             onChangeValue: (v) =>
                                 controller.updateYesNo(explosiveLayout: v),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           YesNoDropDownField(
                             title: "Drawing",
                             fieldName: "drawing",
@@ -543,7 +543,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           YesNoDropDownField(
@@ -553,7 +553,7 @@ class FilterScreen extends ConsumerWidget {
                             onChangeValue: (v) =>
                                 controller.updateYesNo(topography: v),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           YesNoDropDownField(
                             title: "Issuance of Drawing",
                             fieldName: "issuanceOfDrawing",
@@ -563,7 +563,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           YesNoDropDownField(
@@ -573,7 +573,7 @@ class FilterScreen extends ConsumerWidget {
                             onChangeValue: (v) =>
                                 controller.updateYesNo(appliedInExplosive: v),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           YesNoDropDownField(
                             title: "DC NOC",
                             fieldName: "dcNoc",
@@ -583,7 +583,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           YesNoDropDownField(
@@ -593,7 +593,7 @@ class FilterScreen extends ConsumerWidget {
                             onChangeValue: (v) =>
                                 controller.updateYesNo(capex: v),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           YesNoDropDownField(
                             title: "Lease Agreement",
                             fieldName: "leaseAgreement",
@@ -603,7 +603,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           YesNoDropDownField(
@@ -613,7 +613,7 @@ class FilterScreen extends ConsumerWidget {
                             onChangeValue: (v) =>
                                 controller.updateYesNo(hoto: v),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           YesNoDropDownField(
                             title: "Construction",
                             fieldName: "construction",
@@ -623,7 +623,7 @@ class FilterScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 13),
+                      SizedBox(height: 13.h),
                       Row(
                         children: [
                           YesNoDropDownField(
@@ -644,7 +644,7 @@ class FilterScreen extends ConsumerWidget {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         child: Row(
           children: [
             Expanded(
@@ -660,7 +660,7 @@ class FilterScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: CustomButton(
                 onPressed: () {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/common/providers/user_provider.dart';
 // import 'package:tgpl_network/common/models/application_model.dart';
@@ -28,10 +29,10 @@ class ModuleApplicationContainer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider).requireValue!;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 13, vertical: 8),
-      margin: EdgeInsets.only(bottom: 14),
+      padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 8.h),
+      margin: EdgeInsets.only(bottom: 14.h),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.4),
+        borderRadius: BorderRadius.circular(16.4.r),
         color: AppColors.white,
       ),
       child: Column(
@@ -45,9 +46,9 @@ class ModuleApplicationContainer extends ConsumerWidget {
                 style: AppTextstyles.googleInter400Grey14,
               ),
               Container(
-                padding: EdgeInsets.symmetric(vertical: 1.5, horizontal: 8),
+                padding: EdgeInsets.symmetric(vertical: 1.5.h, horizontal: 8.w),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
+                  borderRadius: BorderRadius.circular(25.r),
                   color: AppColors.getPriorityColor(
                     application.priority ?? '',
                   ).withOpacity(0.08),
@@ -55,7 +56,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
                 child: Text(
                   application.priority ?? '',
                   style: AppTextstyles.googleInter500LabelColor14.copyWith(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     color: AppColors.getPriorityColor(
                       application.priority ?? '',
                     ),
@@ -64,11 +65,11 @@ class ModuleApplicationContainer extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 5),
+          SizedBox(height: 5.h),
           Text(
             "${application.dealerName}${application.proposedSiteName1 == null ? '' : ' | ${application.proposedSiteName1}'}",
             style: AppTextstyles.googleInter700black28.copyWith(
-              fontSize: 20,
+              fontSize: 20.sp,
               color: AppColors.black2Color,
             ),
           ),
@@ -77,9 +78,9 @@ class ModuleApplicationContainer extends ConsumerWidget {
               application.sourceName ?? '',
               style: AppTextstyles.googleInter400Grey14,
             ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Divider(color: AppColors.lightGrey),
-          const SizedBox(height: 6.75),
+          SizedBox(height: 6.75.h),
           Row(
             children: [
               Expanded(
@@ -89,12 +90,12 @@ class ModuleApplicationContainer extends ConsumerWidget {
                       AppImages.phoneIconSvg,
                       color: AppColors.subHeadingColor,
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     Expanded(
                       child: Text(
                         application.dealerContact ?? '',
                         style: AppTextstyles.googleInter400Grey14.copyWith(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                         ),
                       ),
                     ),
@@ -108,12 +109,12 @@ class ModuleApplicationContainer extends ConsumerWidget {
                       AppImages.locationIconSvg,
                       color: AppColors.subHeadingColor,
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     Expanded(
                       child: Text(
                         application.cityName ?? '',
                         style: AppTextstyles.googleInter400Grey14.copyWith(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                         ),
                       ),
                     ),
@@ -122,9 +123,9 @@ class ModuleApplicationContainer extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 6.75),
+          SizedBox(height: 6.75.h),
           Divider(color: AppColors.lightGrey),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Row(
             children: [
               Expanded(
@@ -142,7 +143,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
                   );
                 },
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               actionContainer(
                 icon: AppImages.eyeIconSvg,
                 onTap: () {
@@ -158,7 +159,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
               ),
               if (submoduleName == "Survey & Dealer Profile" &&
                   user.hasSurveyFormAccess) ...[
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 actionContainer(
                   icon: AppImages.formIconSvg,
                   onTap: () {
@@ -174,7 +175,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
               ],
               if (submoduleName == "Traffic & Trade" &&
                   user.hasTrafficTradeFormAccess) ...[
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 actionContainer(
                   icon: AppImages.formIconSvg,
                   onTap: () {
@@ -188,7 +189,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
                   },
                 ),
               ],
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               actionContainer(
                 icon: AppImages.uploadIconSvg,
                 onTap: () {

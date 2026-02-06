@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/data/shared_prefs_data_source.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
@@ -17,7 +18,7 @@ Future<dynamic> logoutDialog(BuildContext context, WidgetRef ref) {
       return AlertDialog(
         title: Text(
           'Confirm Logout',
-          style: AppTextstyles.googleInter700black28.copyWith(fontSize: 20),
+          style: AppTextstyles.googleInter700black28.copyWith(fontSize: 20.sp),
         ),
         content: Text(
           'Are you sure you want to logout?',
@@ -32,7 +33,7 @@ Future<dynamic> logoutDialog(BuildContext context, WidgetRef ref) {
               'Cancel',
               style: AppTextstyles.googleInter500LabelColor14.copyWith(
                 color: AppColors.nextStep1Color,
-                fontSize: 16,
+                fontSize: 16.sp,
               ),
             ),
           ),
@@ -66,7 +67,7 @@ Future<dynamic> logoutDialog(BuildContext context, WidgetRef ref) {
               'Logout',
               style: AppTextstyles.googleInter500LabelColor14.copyWith(
                 color: AppColors.emailUsIconColor,
-                fontSize: 16,
+                fontSize: 16.sp,
               ),
             ),
           ),

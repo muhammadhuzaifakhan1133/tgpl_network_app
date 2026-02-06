@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
@@ -17,7 +18,7 @@ class ChangePasswordView extends ConsumerStatefulWidget {
 }
 
 class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,22 +30,22 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
           GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 50),
+              padding: EdgeInsets.symmetric(horizontal: 50.w),
               child: ListView(
                 children: [
                   SizedBox(height: context.screenHeight * 0.15),
                   // SvgPicture.asset(AppImages.tajLogoSvg, width: 50, height: 50),
-                  const SizedBox(height: 28),
+                  SizedBox(height: 28.h),
                   Text(
                     "Change Password",
                     style: AppTextstyles.googleInter700black28,
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   Text(
                     "Type your old and new password",
                     style: AppTextstyles.googleInter400black16,
                   ),
-                  const SizedBox(height: 28),
+                  SizedBox(height: 28.h),
                   Form(
                     key: _formKey,
                     child: Column(
@@ -57,7 +58,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                               ),
                             );
                             return CustomTextFieldWithTitle(
-                              title: "Old Passwrod",
+                              title: "Old Password",
                               hintText: "*******",
                               onChanged: (v) {
                                 controller.setOldPassword(v);
@@ -77,7 +78,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                             );
                           },
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
                         Consumer(
                           builder: (context, ref, child) {
                             final isPasswordObscure = ref.watch(
@@ -106,7 +107,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                             );
                           },
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
                         Consumer(
                           builder: (context, ref, child) {
                             final isPasswordObscure = ref.watch(
@@ -115,7 +116,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                               ),
                             );
                             return CustomTextFieldWithTitle(
-                              title: "Confirm Passwrod",
+                              title: "Confirm Password",
                               hintText: "*******",
                               onChanged: (v) {
                                 controller.setPasswordConfirmation(v);
@@ -132,7 +133,7 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                             );
                           },
                         ),
-                        const SizedBox(height: 28),
+                        SizedBox(height: 28.h),
                         Consumer(
                           builder: (context, ref, child) {
                             final changePasswordAsync = ref.watch(

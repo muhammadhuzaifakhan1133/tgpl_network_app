@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
@@ -29,10 +30,10 @@ class RefreshTokenLoginDialogContent extends ConsumerWidget {
       canPop: false,
       child: AlertDialog(
         backgroundColor: AppColors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
         title: Text(
           'Session Expired',
-          style: AppTextstyles.googleInter700black28.copyWith(fontSize: 20),
+          style: AppTextstyles.googleInter700black28.copyWith(fontSize: 20.sp),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -41,7 +42,7 @@ class RefreshTokenLoginDialogContent extends ConsumerWidget {
               'Please re-enter your credentials to continue.',
               style: AppTextstyles.googleInter400black16,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Form(
               key: formKey,
               child: Column(
@@ -55,7 +56,7 @@ class RefreshTokenLoginDialogContent extends ConsumerWidget {
                     keyboardType: TextInputType.emailAddress,
                     onChanged: loginStateCtr.setUsername,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Consumer(
                     builder: (context, ref, child) {
                       final isPasswordObscure = ref.watch(
@@ -108,7 +109,7 @@ class RefreshTokenLoginDialogContent extends ConsumerWidget {
                 child: Text(
                   loginAuth.isLoading ? 'Logging in...' : 'Login',
                   style: AppTextstyles.googleInter700black28.copyWith(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                   ),
                 ),
               );

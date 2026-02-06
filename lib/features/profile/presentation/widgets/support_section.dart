@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
@@ -15,14 +16,14 @@ class SupportSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("Support", style: AppTextstyles.neutra700black224),
-        const SizedBox(height: 14),
+        SizedBox(height: 14.h),
         AccountSettingAndSupportCard(
           title: "Help Center",
           icon: AppImages.lockIconSvg,
           color: AppColors.nextStep1Color,
           onTap: () {},
         ),
-        const SizedBox(height: 14),
+        SizedBox(height: 14.h),
         AccountSettingAndSupportCard(
           title: "Logout",
           icon: AppImages.logoutIconSvg,

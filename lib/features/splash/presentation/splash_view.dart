@@ -42,9 +42,9 @@ class _SplashViewState extends ConsumerState<SplashView> {
   Future<void> _handleStartup() async {
     final prefs = ref.read(sharedPreferencesProvider);
     final goRouter = ref.read(goRouterProvider);
-    final isOnboardingCompleted = false;
-        // prefs.getBool(SharedPrefsKeys.onboardingCompleted) ?? false;
-    await ref.read(sharedPrefsDataSourceProvider).clearAuthData(); // temp
+    final isOnboardingCompleted =
+        prefs.getBool(SharedPrefsKeys.onboardingCompleted) ?? false;
+    // await ref.read(sharedPrefsDataSourceProvider).clearAuthData(); // temp
     final isLoggedIn = ref.read(sharedPrefsDataSourceProvider).isLoggedIn();
 
     if (!isOnboardingCompleted) {

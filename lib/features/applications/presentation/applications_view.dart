@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
 import 'package:tgpl_network/common/widgets/empty_applications_view.dart';
 import 'package:tgpl_network/common/widgets/error_widget.dart';
@@ -65,7 +66,7 @@ class _ApplicationsViewState extends ConsumerState<ApplicationsView> {
               );
             },
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           state.when(
             skipLoadingOnRefresh: false,
             data: (data) {
@@ -110,7 +111,7 @@ class _ApplicationsListView extends ConsumerWidget {
       },
       child: ListView.separated(
         controller: scrollController,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
         itemCount: data.applications.length + (data.hasMoreData ? 1 : 0),
         itemBuilder: (context, index) {
           if (index == data.applications.length) {
@@ -139,7 +140,7 @@ class _ApplicationsListView extends ConsumerWidget {
           );
         },
         separatorBuilder: (context, index) {
-          return SizedBox(height: 20);
+          return SizedBox(height: 20.h);
         },
       ),
     );

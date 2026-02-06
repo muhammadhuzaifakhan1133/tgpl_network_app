@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/features/master_data/providers/depo_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/trade_area_names_provider.dart';
@@ -34,7 +35,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             controller.clearField('dealerName');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "Dealer Contact",
           hintText: "Enter dealer contact number",
@@ -50,7 +51,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             controller.clearField('dealerContact');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "Reference By",
           hintText: "Enter reference",
@@ -63,7 +64,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             controller.clearField('referenceBy');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "Location Address",
           hintText: "Enter location address",
@@ -78,7 +79,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             controller.clearField('locationAddress');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "Landmark",
           hintText: "Enter landmark",
@@ -93,7 +94,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             controller.clearField('landmark');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Consumer(
           builder: (context, ref, child) {
             ref.watch(contactAndDealerFormControllerProvider.select((s)=>s.plotFront));
@@ -110,7 +111,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             );
           }
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "Plot Front",
           hintText: "Enter plot front",
@@ -126,7 +127,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
           },
           validator: (v) => v.validateNumber(),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "Plot Depth",
           hintText: "Enter plot depth",
@@ -142,7 +143,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
           },
           validator: (v) => v.validateNumber(),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Consumer(
           builder: (context, ref, child) {
             final nearestDepo = ref.watch(
@@ -168,7 +169,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             );
           }
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "Distance from Depo",
           hintText: "Enter distance from depo",
@@ -184,7 +185,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             controller.clearField('distanceFromDepo');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Consumer(
           builder: (context, ref, child) {
             final typeOfTradeArea = ref.watch(
@@ -210,6 +211,7 @@ class ContactAndDealerFormCard extends ConsumerWidget {
             );
           }
         ),
+        SizedBox(height: 10.h),
       ],
     );
   }

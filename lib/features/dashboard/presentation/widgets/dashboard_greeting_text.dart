@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 
@@ -22,19 +23,23 @@ class DashboardGreetingText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Text(
-          "${getGreeting()} 👋",
-          style: AppTextstyles.neutra700black32.copyWith(
-            color: AppColors.black2Color,
-            fontSize: 28,
-          ),
-        ),
-        Text(
-          "Here's what's happening with your operations today",
-          style: AppTextstyles.neutra500grey12.copyWith(fontSize: 16),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "${getGreeting()} 👋",
+              style: AppTextstyles.neutra700black32.copyWith(
+                color: AppColors.black2Color,
+                fontSize: 28.sp,
+              ),
+            ),
+            Text(
+              "Here's what's happening with your operations today",
+              style: AppTextstyles.neutra500grey12.copyWith(fontSize: 16.sp),
+            ),
+          ],
         ),
       ],
     );

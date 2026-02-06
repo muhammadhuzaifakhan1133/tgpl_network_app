@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 
@@ -19,15 +20,15 @@ class SectionDetailCard extends StatelessWidget {
     final Widget title = Text(
       this.title,
       style: AppTextstyles.googleInter700black28.copyWith(
-        fontSize: 24,
+        fontSize: 24.sp,
         color: AppColors.black2Color,
       ),
     );
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+      padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 10.w),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +47,7 @@ class SectionDetailCard extends StatelessWidget {
               ],
             ),
           if (isExpanded == null) title,
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           if (isExpanded ?? true) ...[...children],
         ],
       ),

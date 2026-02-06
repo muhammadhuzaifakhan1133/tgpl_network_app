@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 // import 'package:tgpl_network/common/models/application_model.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
@@ -36,11 +37,11 @@ Future<dynamic> documentBottomSheet({
               );
 
               return Container(
-                padding: EdgeInsets.symmetric(horizontal: 19, vertical: 16),
+                padding: EdgeInsets.symmetric(horizontal: 19.w, vertical: 16.h),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
+                    topLeft: Radius.circular(16.r),
+                    topRight: Radius.circular(16.r),
                   ),
                   color: AppColors.white,
                 ),
@@ -52,7 +53,7 @@ Future<dynamic> documentBottomSheet({
                         Text(
                           "Documents",
                           style: AppTextstyles.googleInter700black28.copyWith(
-                            fontSize: 24,
+                            fontSize: 24.sp,
                             color: AppColors.black2Color,
                           ),
                         ),
@@ -64,9 +65,9 @@ Future<dynamic> documentBottomSheet({
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Divider(color: AppColors.lightGrey),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Expanded(
                       child: ListView(
                         padding: EdgeInsets.zero,
@@ -82,18 +83,18 @@ Future<dynamic> documentBottomSheet({
                                 backgroundColor: AppColors.nextStep1Color
                                     .withOpacity(0.1),
                               ),
-                              const SizedBox(width: 12),
+                              SizedBox(width: 12.w),
                               Text(
                                 "Upload New Document",
                                 style: AppTextstyles.googleInter700black28
                                     .copyWith(
-                                      fontSize: 20,
+                                      fontSize: 20.sp,
                                       color: AppColors.black2Color,
                                     ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
                           Consumer(
                             builder: (context, ref, child) {
                               final SubModuleModel? selectedType = ref.watch(
@@ -116,19 +117,19 @@ Future<dynamic> documentBottomSheet({
                               );
                             },
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           CustomTextField(
                             hintText: "Document Title",
                             showClearButton: true,
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           CustomTextField(
                             hintText: "Document Detail",
                             multiline: true,
                             maxLines: 3,
                             showClearButton: true,
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           Consumer(
                             builder: (context, ref, _) {
                               final state = ref.watch(
@@ -145,11 +146,11 @@ Future<dynamic> documentBottomSheet({
                               return GestureDetector(
                                 onTap: controller.pickFile,
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 14,
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 14.h,
                                   ),
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(12.r),
                                     border: Border.all(
                                       color: AppColors.lightGrey,
                                     ),
@@ -163,7 +164,7 @@ Future<dynamic> documentBottomSheet({
                                                 color: AppColors
                                                     .extraInformationColor,
                                               ),
-                                              const SizedBox(width: 8),
+                                              SizedBox(width: 8.w),
                                               Text(
                                                 "Tap to upload document (Max 15 MB)",
                                                 style: AppTextstyles
@@ -179,7 +180,7 @@ Future<dynamic> documentBottomSheet({
                                                 Icons.insert_drive_file,
                                                 color: AppColors.nextStep1Color,
                                               ),
-                                              const SizedBox(width: 8),
+                                              SizedBox(width: 8.w),
                                               Flexible(
                                                 child: Text(
                                                   state.fileName!,
@@ -197,7 +198,7 @@ Future<dynamic> documentBottomSheet({
                             },
                           ),
 
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           Text(
                             "Supported formats: PDF, DOC, DOCX, JPG, PNG",
                             style: AppTextstyles.googleInter400black16.copyWith(
@@ -205,7 +206,7 @@ Future<dynamic> documentBottomSheet({
                               fontSize: 12,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           Consumer(
                             builder: (context, ref, _) {
                               final controller = ref.read(
@@ -231,9 +232,9 @@ Future<dynamic> documentBottomSheet({
                             },
                           ),
 
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           Divider(color: AppColors.lightGrey),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           Row(
                             children: [
                               actionContainer(
@@ -244,18 +245,18 @@ Future<dynamic> documentBottomSheet({
                                 backgroundColor: AppColors.nextStep2Color
                                     .withOpacity(0.1),
                               ),
-                              const SizedBox(width: 12),
+                              SizedBox(width: 12.w),
                               Text(
                                 "Document List",
                                 style: AppTextstyles.googleInter700black28
                                     .copyWith(
-                                      fontSize: 20,
+                                      fontSize: 20.sp,
                                       color: AppColors.black2Color,
                                     ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           Consumer(
                             builder: (context, ref, child) {
                               final state = ref.watch(
@@ -267,13 +268,13 @@ Future<dynamic> documentBottomSheet({
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemCount: data.length,
                                   separatorBuilder: (context, index) =>
-                                      const SizedBox(height: 6),
+                                      SizedBox(height: 6.h),
                                   itemBuilder: (context, index) {
                                     final document = data[index];
                                     return ListTile(
                                       tileColor: AppColors.lightGrey,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
+                                        borderRadius: BorderRadius.circular(16.r),
                                       ),
                                       leading: actionContainer(
                                         icon: AppImages.applicationsInactiveSvg,

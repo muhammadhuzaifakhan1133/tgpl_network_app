@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/features/master_data/providers/tm_rm_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/yes_no_na_values_provider.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
@@ -44,7 +45,7 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
             );
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Consumer(
           builder: (context, ref, _) {
             final selectedTMRecommendation = ref.watch(
@@ -71,7 +72,7 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
             );
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "TM Remarks",
           hintText: "Enter TM remarks",
@@ -86,7 +87,7 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
             controller.clearField('tmRemarks');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Consumer(
           builder: (context, ref, _) {
             final selectedRM = ref.watch(
@@ -113,7 +114,7 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
             );
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Consumer(
           builder: (context, ref, _) {
             final selectedRMRecommendation = ref.watch(
@@ -140,7 +141,7 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
             );
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "RM Remarks",
           hintText: "Enter RM remarks",

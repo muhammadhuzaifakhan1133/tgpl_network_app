@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
@@ -15,14 +16,14 @@ class ContactInformationSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("Contact Information", style: AppTextstyles.neutra700black224),
-        const SizedBox(height: 14),
+        SizedBox(height: 14.h),
         _ContactInfoCard(
           color: AppColors.nextStep2Color,
           icon: AppImages.emailIconSvg,
           title: "Email",
           value: user.email,
         ),
-        const SizedBox(height: 14),
+        SizedBox(height: 14.h),
         _ContactInfoCard(
           color: AppColors.nextStep3Color,
           icon: AppImages.phoneIconSvg,
@@ -30,7 +31,7 @@ class ContactInformationSection extends StatelessWidget {
           value: user.contact,
         ),
         // TODO: add region info in user model
-        // const SizedBox(height: 14),
+        // SizedBox(height: 14.h),
         // _ContactInfoCard(
         //   color: AppColors.emailUsIconColor,
         //   icon: AppImages.locationIconSvg,
@@ -57,23 +58,23 @@ class _ContactInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Row(
         children: [
           Container(
-            height: 40,
-            width: 40,
+            height: 40.h,
+            width: 40.w,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.4),
+              borderRadius: BorderRadius.circular(16.4.r),
               color: color.withOpacity(0.082),
             ),
             child: Center(child: SvgPicture.asset(icon, color: color)),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,14 +82,14 @@ class _ContactInfoCard extends StatelessWidget {
               Text(
                 title,
                 style: AppTextstyles.googleInter500LabelColor14.copyWith(
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   color: AppColors.black2Color,
                 ),
               ),
               Text(
                 value,
                 style: AppTextstyles.googleInter400Grey14.copyWith(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                 ),
               ),
             ],

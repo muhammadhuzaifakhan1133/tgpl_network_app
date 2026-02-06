@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/features/master_data/providers/nfr_facilities_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/yes_no_na_values_provider.dart';
@@ -22,10 +23,10 @@ class NearbySitesFormSection extends ConsumerWidget {
     );
 
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
       ),
       child: Column(
         children: [
@@ -62,10 +63,10 @@ class NearbySitesFormSection extends ConsumerWidget {
                     : null,
               );
             },
-            separatorBuilder: (context, index) => const SizedBox(height: 20),
+            separatorBuilder: (context, index) => SizedBox(height: 20.h),
             itemCount: sitesLength,
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Align(
             alignment: Alignment.centerRight,
             child: CustomButton(
@@ -111,10 +112,10 @@ class _SiteFormCard extends ConsumerWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.grey),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,7 +127,7 @@ class _SiteFormCard extends ConsumerWidget {
                 child: Text(
                   "Site ${index + 1}",
                   style: AppTextstyles.googleInter700black28.copyWith(
-                    fontSize: 24,
+                    fontSize: 24.sp,
                     color: AppColors.black2Color,
                   ),
                 ),
@@ -143,7 +144,7 @@ class _SiteFormCard extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           CustomTextFieldWithTitle(
             key: ValueKey('site_name_${site.id}'),
             title: "Site Name",
@@ -159,7 +160,7 @@ class _SiteFormCard extends ConsumerWidget {
               controller.clearField('siteName', index: index);
             },
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           CustomTextFieldWithTitle(
             key: ValueKey('diesel_sale_${site.id}'),
             title: "Estimated Daily Diesel Sale",
@@ -179,7 +180,7 @@ class _SiteFormCard extends ConsumerWidget {
               controller.clearField('estimatedDailyDieselSale', index: index);
             },
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           CustomTextFieldWithTitle(
             key: ValueKey('super_sale_${site.id}'),
             title: "Estimated Daily Super Sale",
@@ -199,7 +200,7 @@ class _SiteFormCard extends ConsumerWidget {
               controller.clearField('estimatedDailySuperSale', index: index);
             },
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           CustomTextFieldWithTitle(
             key: ValueKey('lubricant_sale_${site.id}'),
             title: "Estimated Lubricant Sale",
@@ -222,7 +223,7 @@ class _SiteFormCard extends ConsumerWidget {
               );
             },
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           CustomTextFieldWithTitle(
             key: ValueKey('omc_name_${site.id}'),
             title: "OMC Name",
@@ -236,7 +237,7 @@ class _SiteFormCard extends ConsumerWidget {
               controller.clearField('omcName', index: index);
             },
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Consumer(
             builder: (context, ref, _) {
               final isNfrFacility = ref.watch(
@@ -267,7 +268,7 @@ class _SiteFormCard extends ConsumerWidget {
               );
             },
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Consumer(
             builder: (context, ref, _) {
               final nfrFacilities = ref.watch(

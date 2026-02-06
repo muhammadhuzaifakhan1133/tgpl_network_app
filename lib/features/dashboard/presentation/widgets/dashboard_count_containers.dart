@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:flutter_svg/svg.dart';
@@ -27,7 +28,7 @@ class DashboardCountContainers extends ConsumerWidget {
                 count: dashboardData.counts.inProcess,
               ),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16.w),
             Expanded(
               child: _DashboardCountContainer(
                 icon: AppImages.inauguratedIconSvg,
@@ -39,7 +40,7 @@ class DashboardCountContainers extends ConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
         Row(
           children: [
             Expanded(
@@ -51,7 +52,7 @@ class DashboardCountContainers extends ConsumerWidget {
                 count: dashboardData.counts.rejected,
               ),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16.w),
             Expanded(
               child: _DashboardCountContainer(
                 icon: AppImages.holdIconSvg,
@@ -85,10 +86,10 @@ class _DashboardCountContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 115.5,
-      padding: EdgeInsets.all(13),
+      height: 115.5.h,
+      padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 13.h),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(24.r),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -101,11 +102,11 @@ class _DashboardCountContainer extends StatelessWidget {
             top: 0,
             left: 0,
             child: Container(
-              width: 48,
-              height: 48,
+              width: 48.w,
+              height: 48.h,
               decoration: BoxDecoration(
                 color: AppColors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(16.r),
               ),
               child: Center(child: SvgPicture.asset(icon)),
             ),
@@ -120,14 +121,14 @@ class _DashboardCountContainer extends StatelessWidget {
                 Text(
                   count.toString(),
                   style: AppTextstyles.googleInter700black28.copyWith(
-                    fontSize: 32,
+                    fontSize: 32.sp,
                     color: AppColors.white,
                   ),
                 ),
                 Text(
                   title,
                   style: AppTextstyles.googleInter500LabelColor14.copyWith(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     color: AppColors.white,
                   ),
                 ),

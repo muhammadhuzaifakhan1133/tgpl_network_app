@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/common/widgets/section_detail_card.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/widget/traffic_count/traffic_count_form_controller.dart';
@@ -31,7 +32,7 @@ class TrafficCountCardForm extends ConsumerWidget {
                   },
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10.w),
               Expanded(
                 child: CustomTextFieldWithTitle(
                   title: "Car",
@@ -48,7 +49,7 @@ class TrafficCountCardForm extends ConsumerWidget {
                   },
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10.w),
               Expanded(
                 child: CustomTextFieldWithTitle(
                   title: "Bike",

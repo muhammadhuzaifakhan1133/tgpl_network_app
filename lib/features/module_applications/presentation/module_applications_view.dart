@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
 import 'package:tgpl_network/common/widgets/empty_applications_view.dart';
 import 'package:tgpl_network/common/widgets/error_widget.dart';
@@ -65,7 +66,7 @@ class _ModuleApplicationsViewState
                 );
               },
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: 15.h),
             Expanded(
               child: Consumer(
                 builder: (context, ref, child) {
@@ -103,7 +104,7 @@ class _ModuleApplicationsViewState
                           itemCount:
                               data.applications.length +
                               (data.hasMoreData ? 1 : 0),
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: EdgeInsets.symmetric(horizontal: 20.w),
                           itemBuilder: (context, index) {
                             if (index == data.applications.length) {
                               return const ModuleApplicationShimmerCard();
@@ -146,18 +147,18 @@ class _ModuleApplicationsViewState
               text: widget.subModule.moduleName,
               style: AppTextstyles.googleInter400Grey14.copyWith(
                 decoration: TextDecoration.underline,
-                fontSize: 13,
+                fontSize: 13.sp,
               ),
             ),
             TextSpan(
               text: ' / ',
-              style: AppTextstyles.googleInter400Grey14.copyWith(fontSize: 13),
+              style: AppTextstyles.googleInter400Grey14.copyWith(fontSize: 13.sp),
             ),
             TextSpan(
               text: widget.subModule.title,
               style: AppTextstyles.googleInter400Grey14.copyWith(
                 decoration: TextDecoration.underline,
-                fontSize: 13,
+                fontSize: 13.sp,
               ),
             ),
           ],

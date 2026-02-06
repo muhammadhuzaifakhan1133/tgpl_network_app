@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/providers/auto_validate_form.dart';
 import 'package:tgpl_network/common/widgets/application_fields_shimmer_widget.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
@@ -113,24 +114,24 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
                 child: Column(
-                  children: const [
+                  children: [
                     NearbySitesFormSection(),
-                    SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     TrafficCountCardForm(),
-                    SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     VolumAndFinancialEstimationCardForm(),
-                    SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     TrafficRecommendationCardForm(),
-                    SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                   ],
                 ),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
             child: Consumer(
               builder: (context, ref, child) {
                 final isLoading =
@@ -145,7 +146,7 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
                   text: "Submit",
                   child: isLoading
                       ? Center(
-                          child: const CircularProgressIndicator(
+                          child: CircularProgressIndicator(
                             color: AppColors.white,
                           ),
                         )

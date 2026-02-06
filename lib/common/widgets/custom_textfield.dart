@@ -80,8 +80,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget? _buildSuffixIcon() {
     if (widget.showClearButton && (_hasValue || widget.readOnly)) {
       return IconButton(
-        icon: const Icon(Icons.close, size: 18),
-        splashRadius: 18,
+        icon: Icon(Icons.close, size: 18.w),
+        splashRadius: 18.r,
         onPressed: () {
           widget.onClear?.call();
 
