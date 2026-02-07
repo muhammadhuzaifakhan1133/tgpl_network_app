@@ -18,7 +18,7 @@ class AppFormConfirmationView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       floatingActionButton: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
         child: CustomButton(
           onPressed: () {
             ref.read(goRouterProvider).pop();

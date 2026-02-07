@@ -22,10 +22,10 @@ class DashboardModulesSection extends ConsumerWidget {
           alignment: Alignment.centerLeft,
           child: Text(
             "All Modules",
-            style: AppTextstyles.neutra700black32.copyWith(fontSize: 24),
+            style: AppTextstyles.neutra700black32.copyWith(fontSize: 24.sp),
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         for (int i = 0; i < modules.length; i++)
           _DashboardModuleContainer(
             module: modules[i],

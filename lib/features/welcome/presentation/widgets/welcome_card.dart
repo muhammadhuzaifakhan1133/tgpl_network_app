@@ -23,13 +23,13 @@ class WelcomeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.4)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.4.r)),
       shadowColor: AppColors.black.withOpacity(0.6),
       color: AppColors.white,
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(8),
+          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
           child: Row(
             children: [
               Container(

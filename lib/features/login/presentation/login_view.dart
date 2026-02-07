@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:tgpl_network/common/providers/auto_validate_form.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
@@ -39,6 +40,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
   Widget build(BuildContext context) {
     final controller = ref.read(loginControllerProvider.notifier);
     ref.listen(loginAuthControllerProvider, _listenLoginAuth);
+    final autoValidate = ref.watch(autoValidateFormModeProvider);
     return Scaffold(
       backgroundColor: AppColors.white,
       body: Stack(
@@ -71,6 +73,9 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     SizedBox(height: 32.h),
                     Form(
                       key: _formKey,
+                      autovalidateMode: autoValidate
+                          ? AutovalidateMode.onUserInteraction
+                          : AutovalidateMode.disabled,
                       child: Column(
                         children: [
                           CustomTextFieldWithTitle(
@@ -103,7 +108,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                     isPasswordObscure
                                         ? Icons.visibility
                                         : Icons.visibility_off,
-                                    size: 16,
+                                    size: 18,
                                   ),
                                 ),
                                 validator: (v) => v.validate(),
@@ -124,7 +129,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                     ),
                                   );
                                   return Padding(
-                                    padding: const EdgeInsets.all(3.96),
+                                    padding: EdgeInsets.all(3.96.h),
                                     child: SizedBox(
                                       width: 11.8.w,
                                       height: 11.8.h,
@@ -159,6 +164,16 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                 onPressed: loginAuth.isLoading
                                     ? null
                                     : () async {
+                                        // Turn on auto-validation after first submit attempt
+                                        if (!autoValidate) {
+                                          ref
+                                                  .read(
+                                                    autoValidateFormModeProvider
+                                                        .notifier,
+                                                  )
+                                                  .state =
+                                              true;
+                                        }
                                         if (_formKey.currentState!.validate()) {
                                           final LoginResponseModel? response =
                                               await ref

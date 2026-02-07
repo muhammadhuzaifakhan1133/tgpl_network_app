@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
 import 'package:tgpl_network/common/widgets/shimmer_textfield.dart';
 import 'package:tgpl_network/common/widgets/shimmer_widget.dart';
@@ -20,18 +21,18 @@ class ApplicationFieldsShimmer extends StatelessWidget {
           ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.all(20.0),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
               children: [
                 _ShimmerCard(fieldCount: 5), // Applicant Info
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 _ShimmerCard(fieldCount: 5), // Site Detail
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 _ShimmerCard(fieldCount: 5), // Contact Dealer
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 _ShimmerCard(fieldCount: 5), // Dealer Profile
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 _ShimmerCard(fieldCount: 5), // Recommendation
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 // Shimmer button
                 const ShimmerBox(
                   width: double.infinity,
@@ -55,15 +56,15 @@ class _ShimmerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            blurRadius: 10.r,
+            offset: Offset(0, 2.h),
           ),
         ],
       ),
@@ -79,17 +80,17 @@ class _ShimmerCard extends StatelessWidget {
                 height: 18,
                 borderRadius: 4,
               ),
-              ShimmerWidget.circular(
+              ShimmerBox.circular(
                 width: 24,
                 height: 24,
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           // Fields
           for (int i = 0; i < fieldCount; i++) ...[
             const ShimmerTextField(),
-            if (i < fieldCount - 1) const SizedBox(height: 10),
+            if (i < fieldCount - 1) SizedBox(height: 10.h),
           ],
         ],
       ),

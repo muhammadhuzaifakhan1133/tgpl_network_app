@@ -79,7 +79,7 @@ class ApplicationStatusContainer extends ConsumerWidget {
           ),
           Text(
             application.dealerName.toString(),
-            style: AppTextstyles.googleInter700black28.copyWith(fontSize: 20),
+            style: AppTextstyles.googleInter700black28.copyWith(fontSize: 20.sp),
           ),
           Row(
             children: [

@@ -28,7 +28,7 @@ class MapView extends ConsumerWidget {
           child: Row(
             children: [
               buildCityDropDown(),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               buildStatusDropDown(),
             ],
           ),

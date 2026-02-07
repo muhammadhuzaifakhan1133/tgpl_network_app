@@ -64,6 +64,7 @@ class CustomTextField extends StatefulWidget {
 class _CustomTextFieldState extends State<CustomTextField> {
   late TextEditingController _internalController;
   late FocusNode _effectiveFocusNode;
+  String? _validationError;
 
   @override
   void initState() {
@@ -76,6 +77,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   }
 
   bool get _hasValue => _internalController.text.isNotEmpty;
+  bool get _hasError => _validationError != null || widget.errorText != null;
 
   Widget? _buildSuffixIcon() {
     if (widget.showClearButton && (_hasValue || widget.readOnly)) {
@@ -87,7 +89,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
           _internalController.clear();
           widget.onChanged?.call('');
-          setState(() {});
+          setState(() {
+            _validationError = null; // Clear validation error
+          });
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _effectiveFocusNode.requestFocus();
@@ -109,7 +113,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
     super.dispose();
   }
 
-  // If parent passes a controller and later replaces it
   @override
   void didUpdateWidget(covariant CustomTextField oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -135,17 +138,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: widget.width,
-      height: widget.height ?? 46.h,
+      height: widget.height ?? (_hasError ? 70.h : 46.h),
       child: TextFormField(
         controller: _internalController,
-        // initialValue: widget.controller == null ? widget.initialValue : null,
         autofocus: widget.autoFocus,
         readOnly: widget.readOnly,
         onTap: widget.onTap,
         obscureText: widget.obscureText,
         focusNode: _effectiveFocusNode,
         onChanged: (v) {
-          setState(() {});
           widget.onChanged?.call(v);
         },
         decoration: InputDecoration(
@@ -161,7 +162,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
           suffixIcon: _buildSuffixIcon(),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
         ),
-        validator: widget.validator,
+        validator: (value) {
+          final error = widget.validator?.call(value);
+          // Schedule setState for after the validation completes
+          if (_validationError != error) {
+            setState(() {
+              _validationError = error;
+            });
+          }
+          return error;
+        },
         keyboardType: widget.multiline
             ? TextInputType.multiline
             : widget.keyboardType,

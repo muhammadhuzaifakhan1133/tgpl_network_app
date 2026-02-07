@@ -169,8 +169,8 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
             ),
           ),
           Positioned(
-            left: 20,
-            top: 40,
+            left: 20.w,
+            top: 40.h,
             child: Consumer(
               builder: (context, ref, child) {
                 return InkWell(
@@ -178,13 +178,13 @@ class _ChangePasswordViewState extends ConsumerState<ChangePasswordView> {
                     ref.read(goRouterProvider).pop();
                   },
                   child: Container(
-                    width: 35,
-                    height: 35,
+                    width: 35.w,
+                    height: 35.h,
                     color: AppColors.actionContainerColor,
                     child: Center(
                       child: Icon(
                         Icons.arrow_back_ios_new,
-                        size: 16,
+                        size: 16.w,
                         color: AppColors.black,
                       ),
                     ),

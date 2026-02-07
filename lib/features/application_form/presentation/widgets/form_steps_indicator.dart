@@ -16,7 +16,7 @@ class FormStepsIndicator extends ConsumerWidget {
         for (int i = 0; i < totalSteps; i++)
           Expanded(
             child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
+              margin: EdgeInsets.symmetric(horizontal: 4.w),
               height: 6.h,
               decoration: BoxDecoration(
                 color: i <= currentStep

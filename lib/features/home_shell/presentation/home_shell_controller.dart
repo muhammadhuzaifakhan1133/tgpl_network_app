@@ -177,10 +177,9 @@ class HomeShellController extends AsyncNotifier<void> {
 
       // Refresh providers
       refreshAllDependentProviders();
-    } catch (e, stack) {
+    } catch (e, _) {
       ref.read(snackbarMessageProvider.notifier).state = 'Data sync failed: $e';
       ref.read(syncStatusProvider.notifier).state = SyncStatus.offline;
-      Error.throwWithStackTrace(e, stack);
     } finally {
       _isAutoSyncRunning = false;
     }

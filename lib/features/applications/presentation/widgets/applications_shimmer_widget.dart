@@ -65,7 +65,7 @@ class ApplicationStatusShimmerCard extends StatelessWidget {
           // Location and Date Row
           Row(
             children: [
-              ShimmerWidget.circular(
+              ShimmerBox.circular(
                 width: 14,
                 height: 14,
               ),

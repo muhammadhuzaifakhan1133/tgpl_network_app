@@ -156,6 +156,7 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
             suffixIcon: actionContainer(
               icon: AppImages.locationIconSvg,
               rightMargin: 5,
+              // TODO: correct icon size
               iconColor: AppColors.black,
               onTap: _pickLocation,
             ),

@@ -96,7 +96,7 @@ class ConnectionStatusCardShimmer extends StatelessWidget {
                 SizedBox(height: 8.h),
                 Row(
                   children: [
-                    ShimmerWidget.circular(
+                    ShimmerBox.circular(
                       width: 10,
                       height: 10,
                     ),
@@ -148,7 +148,7 @@ class SyncStatsCardShimmer extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ShimmerWidget.circular(
+          ShimmerBox.circular(
             width: 48,
             height: 48,
           ),
@@ -205,7 +205,7 @@ class SyncListShimmer extends StatelessWidget {
                     borderRadius: 4,
                   ),
                   SizedBox(width: 8.w),
-                  ShimmerWidget.circular(
+                  ShimmerBox.circular(
                     width: 20,
                     height: 20,
                   ),
@@ -285,7 +285,7 @@ class SyncItemCardShimmer extends StatelessWidget {
           SizedBox(width: 8.w),
 
           // Status Icon Shimmer
-          ShimmerWidget.circular(
+          const ShimmerBox.circular(
             width: 20,
             height: 20,
           ),

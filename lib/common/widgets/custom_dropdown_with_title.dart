@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown.dart';
 import 'package:tgpl_network/common/widgets/custom_searchable_dropdown.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
@@ -100,13 +101,13 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
                   text: ' *',
                   style: AppTextstyles.googleJakarta500Grey12.copyWith(
                     color: Colors.red,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                   ),
                 ),
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         asyncState.when(
           data: (data) {
             final asyncItems = itemsBuilder!(data);
@@ -247,13 +248,13 @@ class _CustomDropDownWithTitle<T extends Object> extends StatelessWidget {
                   text: ' *',
                   style: AppTextstyles.googleJakarta500Grey12.copyWith(
                     color: Colors.red,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                   ),
                 ),
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         if (enableSearch)
           CustomSearchableDropDown(
             items: items,

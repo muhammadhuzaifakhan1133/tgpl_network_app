@@ -1,5 +1,6 @@
 // lib/features/application_form/presentation/forms/step1/step1_form_shimmer.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/shimmer_textfield.dart';
 import 'package:tgpl_network/common/widgets/shimmer_widget.dart';
 
@@ -16,11 +17,11 @@ class ApplicationFormShimmer extends StatelessWidget {
             ListView(
               children: [
                 // Logo shimmer
-                const ShimmerWidget.circular(
+                const ShimmerBox.circular(
                   width: 50,
                   height: 50,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.h),
 
                 // Title shimmer
                 Center(
@@ -31,7 +32,7 @@ class ApplicationFormShimmer extends StatelessWidget {
                         height: 32,
                         borderRadius: 4,
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
                       const ShimmerBox(
                         width: 200,
                         height: 32,
@@ -40,7 +41,7 @@ class ApplicationFormShimmer extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.h),
 
                 // Description shimmer
                 Center(
@@ -51,7 +52,7 @@ class ApplicationFormShimmer extends StatelessWidget {
                         height: 14,
                         borderRadius: 4,
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       const ShimmerBox(
                         width: 350,
                         height: 14,
@@ -60,11 +61,11 @@ class ApplicationFormShimmer extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
 
                 // Steps indicator shimmer
                 const StepsIndicatorShimmer(),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
 
                 // Step title shimmer
                 const ShimmerBox(
@@ -72,7 +73,7 @@ class ApplicationFormShimmer extends StatelessWidget {
                   height: 16,
                   borderRadius: 4,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
 
                 // Form content shimmer (you can switch between different step shimmers)
                 const Step1FormShimmer(),
@@ -83,7 +84,7 @@ class ApplicationFormShimmer extends StatelessWidget {
             Positioned(
               left: 0,
               top: 0,
-              child: ShimmerWidget.circular(
+              child: const ShimmerBox.circular(
                 width: 40,
                 height: 40,
               ),
@@ -105,9 +106,8 @@ class StepsIndicatorShimmer extends StatelessWidget {
         for (int i = 0; i < 5; i++) // Assuming 5 steps
           Expanded(
             child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
+              margin: EdgeInsets.symmetric(horizontal: 4.w),
               child: const ShimmerBox(
-                width: double.infinity,
                 height: 8,
                 borderRadius: 16,
               ),
@@ -131,27 +131,27 @@ class Step1FormShimmer extends StatelessWidget {
           height: 28,
           borderRadius: 4,
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
 
         // Applicant Name
         const ShimmerTextField(),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         // Contact Person
         const ShimmerTextField(),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         // Currently Presence
         const ShimmerTextField(),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         // Contact Number
         const ShimmerTextField(),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         // WhatsApp Number
         const ShimmerTextField(),
-        const SizedBox(height: 20),
+        SizedBox(height: 20.h),
 
         // Button shimmer
         const ShimmerBox(
