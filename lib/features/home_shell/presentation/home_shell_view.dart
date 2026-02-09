@@ -30,6 +30,22 @@ class HomeShellView extends ConsumerWidget {
           ref.read(snackbarMessageProvider.notifier).state = null;
         });
       }
+      if (message?.startsWith("Data sync failed") ?? false) {
+        showDialog(context: context, 
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Data Sync Failed"),
+            content: SingleChildScrollView(child: Text(message!)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+        );
+      }
     });
     final state = ref.watch(homeShellControllerProvider);
     bool isLoading = state.isLoading;

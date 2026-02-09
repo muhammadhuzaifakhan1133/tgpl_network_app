@@ -2,28 +2,17 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:flutter_riverpod/misc.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:tgpl_network/common/data/shared_prefs_data_source.dart';
 import 'package:tgpl_network/common/models/sync_enum.dart';
 import 'package:tgpl_network/common/providers/last_sync_time_provider.dart';
 import 'package:tgpl_network/common/providers/sync_status_provider.dart';
-import 'package:tgpl_network/common/providers/user_provider.dart';
-import 'package:tgpl_network/features/application_detail/application_detail_controller.dart';
-import 'package:tgpl_network/features/applications/presentation/application_controller.dart';
-import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
-import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
 import 'package:tgpl_network/features/data_sync/presentation/data_sync_controller.dart';
-import 'package:tgpl_network/features/map/presentation/map_controller.dart';
 import 'package:tgpl_network/features/master_data/data/master_data_local_data_source.dart';
 import 'package:tgpl_network/features/master_data/data/master_data_remote_data_source.dart';
-import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
-import 'package:tgpl_network/features/master_data/providers/priorities_provider.dart';
-import 'package:tgpl_network/features/module_applications/presentation/module_applications_controller.dart';
 import 'package:tgpl_network/features/application_form/data/app_form_dropdowns_local_data_source.dart';
 import 'package:tgpl_network/features/application_form/data/app_form_dropdowns_remote_data_source.dart';
-import 'package:tgpl_network/features/survey_form/presentation/survey_form_controller.dart';
-import 'package:tgpl_network/features/traffic_trade_form/presentation/traffic_trade_form_controller.dart';
+import 'package:tgpl_network/main.dart';
 import 'package:tgpl_network/utils/internet_connectivity.dart';
 
 final homeShellControllerProvider =
@@ -38,22 +27,6 @@ final snackbarMessageProvider = StateProvider<String?>((ref) {
 class HomeShellController extends AsyncNotifier<void> {
   int autoSyncThresholdMinutes = 60 * 12; // 12 hours
 
-  List<ProviderOrFamily> get providersToRefresh => [
-    getLastSyncTimeProvider,
-    dashboardAsyncControllerProvider,
-    userProvider,
-    modulesProvider,
-    applicationControllerProvider,
-    appStatusesProvider,
-    cityNamesProvider,
-    prioritiesProvider,
-    mapMarkersProvider,
-    moduleApplicationsAsyncControllerProvider,
-    applicationDetailAsyncControllerProvider,
-    dataSyncControllerProvider,
-    surveyFormControllerProvider,
-    trafficTradeFormControllerProvider,
-  ];
   StreamSubscription<InternetStatus>? _connectivitySubscription;
 
   @override
@@ -176,9 +149,9 @@ class HomeShellController extends AsyncNotifier<void> {
       ref.read(syncStatusProvider.notifier).state = SyncStatus.synchronized;
 
       // Refresh providers
-      refreshAllDependentProviders();
-    } catch (e, _) {
-      ref.read(snackbarMessageProvider.notifier).state = 'Data sync failed: $e';
+      providerLogger.invalidateAll(ref);
+    } catch (e, s) {
+      ref.read(snackbarMessageProvider.notifier).state = 'Data sync failed: $e\n$s';
       ref.read(syncStatusProvider.notifier).state = SyncStatus.offline;
     } finally {
       _isAutoSyncRunning = false;
@@ -193,12 +166,6 @@ class HomeShellController extends AsyncNotifier<void> {
     } catch (e) {
       debugPrint('Error checking pending forms: $e');
       return false; // Assume no forms on error
-    }
-  }
-
-  void refreshAllDependentProviders() {
-    for (final provider in providersToRefresh) {
-      ref.invalidate(provider);
     }
   }
 

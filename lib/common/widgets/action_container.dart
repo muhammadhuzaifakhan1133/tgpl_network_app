@@ -10,13 +10,15 @@ Widget actionContainer({
   Color backgroundColor = AppColors.actionContainerColor,
   double leftMargin = 8,
   double rightMargin = 0,
+  double topMargin = 0,
+  double bottomMargin = 0,
   double padding = 8,
 }) {
   return GestureDetector(
     onTap: onTap,
     child: Container(
       padding: EdgeInsets.all(padding.w),
-      margin: EdgeInsets.only(left: leftMargin.w, right: rightMargin.w),
+      margin: EdgeInsets.only(left: leftMargin.w, right: rightMargin.w, top: topMargin.h, bottom: bottomMargin.h),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(10.r),

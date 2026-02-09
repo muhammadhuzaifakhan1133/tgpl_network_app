@@ -84,7 +84,8 @@ class ApplicantInfoFormCard extends ConsumerWidget {
           title: "Conducted By",
           hintText: "e.g. Asif",
           readOnly: true,
-          initialValue: state.conductedBy ?? ref.read(userProvider).value?.userName,
+          initialValue:
+              state.conductedBy ?? ref.read(userProvider).value?.userName,
         ),
         SizedBox(height: 10.h),
         Consumer(
@@ -106,6 +107,8 @@ class ApplicantInfoFormCard extends ConsumerWidget {
                 icon: AppImages.locationIconSvg,
                 iconColor: AppColors.black,
                 rightMargin: 5,
+                topMargin: 4,
+                bottomMargin: 4,
                 onTap: () async {
                   LocationData? selectedLocation = await ref
                       .read(goRouterProvider)

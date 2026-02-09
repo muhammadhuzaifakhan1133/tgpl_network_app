@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
 import 'package:tgpl_network/features/module_applications/data/module_applications_data_source.dart';
-import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 final moduleApplicationsAsyncControllerProvider =
     AsyncNotifierProvider.family<
@@ -32,12 +31,13 @@ class ModuleApplicationsState {
     int? page,
     bool? hasMoreData,
     String? searchQuery,
+    bool resetSearch = false,
   }) {
     return ModuleApplicationsState(
       applications: applications ?? this.applications,
       page: page ?? this.page,
       hasMoreData: hasMoreData ?? this.hasMoreData,
-      searchQuery: searchQuery ?? this.searchQuery,
+      searchQuery: resetSearch ? null : searchQuery ?? this.searchQuery,
     );
   }
 }
@@ -54,21 +54,24 @@ class ModuleApplicationsAyncController
       applications: applications,
       page: 1,
       hasMoreData: applications.length >= ApplicationModel.pageSize,
+      searchQuery: state.value?.searchQuery,
     );
   }
 
-  Future<List<ApplicationModel>> _getApplications({
-    required int page,
-  }) async {
-    final moduleApplicationDataSource = ref.read(moduleApplicationsDataSourceProvider);
-    return await moduleApplicationDataSource.getApplicationsForSubModule(dbSubModuleCondition: subModule.dbCondition, page: page, query: state.value?.searchQuery,);
+  Future<List<ApplicationModel>> _getApplications({required int page}) async {
+    final moduleApplicationDataSource = ref.read(
+      moduleApplicationsDataSourceProvider,
+    );
+    return await moduleApplicationDataSource.getApplicationsForSubModule(
+      dbSubModuleCondition: subModule.dbCondition,
+      page: page,
+      query: state.value?.searchQuery,
+    );
   }
 
   Future<void> fetchMoreApplications() async {
     final nextPage = state.requireValue.page + 1;
-    final newApplications = await _getApplications(
-      page: nextPage,
-    );
+    final newApplications = await _getApplications(page: nextPage);
     final applications = [
       ...state.requireValue.applications,
       ...newApplications,
@@ -89,20 +92,13 @@ class ModuleApplicationsAyncController
       if (query == state.value?.searchQuery || state.isLoading) {
         return;
       }
-      state = AsyncValue.data(state.requireValue.copyWith(
-        searchQuery: query,
-      ));
+      state = AsyncValue.data(state.requireValue.copyWith(searchQuery: query));
       ref.invalidateSelf();
     });
   }
 
   void clearSearch() {
-    if (state.value?.searchQuery.isNullOrEmpty ?? true) {
-      return;
-    }
-    state = AsyncValue.data(state.requireValue.copyWith(
-      searchQuery: null,
-    ));
+    state = AsyncValue.data(state.requireValue.copyWith(resetSearch: true));
     ref.invalidateSelf();
   }
 }

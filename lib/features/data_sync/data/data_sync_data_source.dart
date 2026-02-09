@@ -174,6 +174,6 @@ class DataSyncDataSourceImpl implements DataSyncDataSource {
   }
 }
 
-final dataSyncDataSourceProvider = Provider((ref) {
+final dataSyncDataSourceProvider = Provider<DataSyncDataSource>((ref) {
   return DataSyncDataSourceImpl(DatabaseHelper.instance);
 });

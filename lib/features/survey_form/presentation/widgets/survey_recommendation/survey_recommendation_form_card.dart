@@ -35,7 +35,8 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
               enableSearch: true,
               isRequired: true,
               selectedItem: selectedTM,
-              items: ref.read(tmNamesProvider),
+              asyncProvider: tmNamesProvider,
+              itemsBuilder: (data) => data.map((e) => e.name).toList(),
               onChanged: (value) {
                 if (value == null) return;
                 controller.onChangeTM(value.toString());
@@ -103,7 +104,8 @@ class SurveyRecommendationFormCard extends ConsumerWidget {
               hintText: "Select RM",
               enableSearch: true,
               selectedItem: selectedRM,
-              items: ref.read(rmNamesProvider),
+              asyncProvider: rmNamesProvider,
+              itemsBuilder: (data) => data.map((e) => e.name).toList(),
               onChanged: (value) {
                 if (value == null) return;
                 controller.onChangeRM(value.toString());

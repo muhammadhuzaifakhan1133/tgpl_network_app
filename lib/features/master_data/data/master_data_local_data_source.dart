@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tgpl_network/core/database/queries/select_queries.dart';
+import 'package:tgpl_network/features/master_data/models/tm_rm_model.dart';
 import 'package:tgpl_network/features/master_data/models/user_model.dart';
 import 'package:tgpl_network/core/database/app_database.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
@@ -32,6 +33,8 @@ abstract class MasterDataLocalDataSource {
   Future<List<String>> getYNNList();
   Future<List<String>> getNFRList();
   Future<List<CityModel>> getCities();
+  Future<List<TmRmModel> > getTmData();
+  Future<List<TmRmModel> > getRmData();
   Future<UserModel?> getUserInfo();
   // Future<void> clearAllData();
 }
@@ -75,6 +78,22 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
         txn,
         AppDatabase.trafficTradeTable,
         data.traficTradeSitesList.map((e) => e.toDatabaseMap()).toList(),
+        chunkSize,
+      );
+
+      // Insert tm in chunks
+      await _insertInChunks(
+        txn,
+        AppDatabase.tmTable,
+        data.tmList.map((e) => e.toDatabaseTmMap()).toList(),
+        chunkSize,
+      );
+
+      // Insert rm in chunks
+      await _insertInChunks(
+        txn,
+        AppDatabase.rmTable,
+        data.rmList.map((e) => e.toDatabaseRmMap()).toList(),
         chunkSize,
       );
 
@@ -172,6 +191,24 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
       AppDatabase.cityTable,
     );
     return maps.map((map) => CityModel.fromDatabaseMap(map)).toList();
+  }
+
+  @override
+   Future<List<TmRmModel> > getTmData() async {
+    final db = await _databaseHelper.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      AppDatabase.tmTable,
+    );
+    return maps.map((map) => TmRmModel.fromDatabaseTmMap(map)).toList();
+  }
+
+  @override
+   Future<List<TmRmModel> > getRmData() async {
+    final db = await _databaseHelper.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      AppDatabase.rmTable,
+    );
+    return maps.map((map) => TmRmModel.fromDatabaseRmMap(map)).toList();
   }
 
   Future<List<String>> _getMasterListByType(MasterListType type) async {

@@ -126,6 +126,7 @@ class AppFormConfirmationView extends ConsumerWidget {
                 title: "Email Us",
                 subtitle: "support@tajgasoline.com",
               ),
+              SizedBox(height: 30.h),
             ],
           ),
         ),

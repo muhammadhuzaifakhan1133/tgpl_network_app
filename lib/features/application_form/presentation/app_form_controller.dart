@@ -6,18 +6,19 @@ import 'package:tgpl_network/features/application_form/presentation/app_form_ass
 
 final appFormControllerProvider =
     NotifierProvider.autoDispose<AppFormController, AppFormState>(
-  AppFormController.new,
-);
+      AppFormController.new,
+    );
 
-final appFormSubmissionProvider = AsyncNotifierProvider<
-    AppFormSubmissionController, void>(
-  AppFormSubmissionController.new,
-);
+final appFormSubmissionProvider =
+    AsyncNotifierProvider<AppFormSubmissionController, void>(
+      AppFormSubmissionController.new,
+    );
 
-final formPrerequisiteValuesProvider = AsyncNotifierProvider<
-    FormPrerequisiteValuesController, AppFormDropdownsValuesModel>(
-  FormPrerequisiteValuesController.new,
-);
+final formPrerequisiteValuesProvider =
+    AsyncNotifierProvider<
+      FormPrerequisiteValuesController,
+      AppFormDropdownsValuesModel
+    >(FormPrerequisiteValuesController.new);
 
 class AppFormSubmissionController extends AsyncNotifier<void> {
   @override
@@ -27,8 +28,11 @@ class AppFormSubmissionController extends AsyncNotifier<void> {
     state = const AsyncValue.loading();
     try {
       final appFormData = AppFormAssembler.assemble(ref);
-      final response = await ref.read(applicationSubmissionDataSourceProvider).submitApplication(appFormData);
+      final response = await ref
+          .read(applicationSubmissionDataSourceProvider)
+          .submitApplication(appFormData);
       if (response.success) {
+        AppFormAssembler.clearForm(ref);
         state = const AsyncValue.data(null);
         return true;
       } else {
@@ -48,10 +52,7 @@ class AppFormSubmissionController extends AsyncNotifier<void> {
 class AppFormController extends Notifier<AppFormState> {
   @override
   AppFormState build() {
-    return const AppFormState(
-      currentStep: 0,
-      totalSteps: 3,
-    );
+    return const AppFormState(currentStep: 0, totalSteps: 3);
   }
 
   void goToStep(int step) {
@@ -76,23 +77,16 @@ class AppFormController extends Notifier<AppFormState> {
   bool canSubmit() => state.isLastStep;
 }
 
-
 class AppFormState {
   final int currentStep;
   final int totalSteps;
 
-  const AppFormState({
-    required this.currentStep,
-    required this.totalSteps,
-  });
+  const AppFormState({required this.currentStep, required this.totalSteps});
 
   bool get isFirstStep => currentStep == 0;
   bool get isLastStep => currentStep == totalSteps - 1;
 
-  AppFormState copyWith({
-    int? currentStep,
-    int? totalSteps,
-  }) {
+  AppFormState copyWith({int? currentStep, int? totalSteps}) {
     return AppFormState(
       currentStep: currentStep ?? this.currentStep,
       totalSteps: totalSteps ?? this.totalSteps,
@@ -100,8 +94,8 @@ class AppFormState {
   }
 }
 
-
-class FormPrerequisiteValuesController extends AsyncNotifier<AppFormDropdownsValuesModel> {
+class FormPrerequisiteValuesController
+    extends AsyncNotifier<AppFormDropdownsValuesModel> {
   @override
   Future<AppFormDropdownsValuesModel> build() async {
     final prerequisiteValues = await ref

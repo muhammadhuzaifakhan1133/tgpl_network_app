@@ -70,9 +70,8 @@ class ProfileHeader extends StatelessWidget {
                     color: AppColors.black2Color,
                   ),
                 ),
-                // TODO: add position field in user model
                 Text(
-                  user.fullName,
+                  user.positionName,
                   style: AppTextstyles.googleInter400Grey14.copyWith(
                     fontSize: 16.sp,
                     color: AppColors.black2Color,

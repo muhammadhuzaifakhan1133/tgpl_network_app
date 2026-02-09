@@ -53,10 +53,8 @@ class DashboardHeaderProfile extends ConsumerWidget {
                   color: AppColors.black2Color,
                 ),
               ),
-              // TODO: add position field in user model
               Text(
-                // user.position ?? "",
-                user.fullName,
+                user.positionName,
                 style: AppTextstyles.googleInter400Grey14.copyWith(
                   fontSize: 16.sp,
                   color: AppColors.black2Color,

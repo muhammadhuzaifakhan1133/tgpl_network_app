@@ -22,6 +22,7 @@ class ModuleApplicationsView extends ConsumerStatefulWidget {
 class _ModuleApplicationsViewState
     extends ConsumerState<ModuleApplicationsView> {
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -83,11 +84,13 @@ class _ModuleApplicationsViewState
                               ? EmptyApplicationsReason.noSearchResults
                               : EmptyApplicationsReason.noData,
                           onClearFilters: () {
-                            ref.invalidate(
+                            _searchController.clear();
+                            final controller = ref.read(
                               moduleApplicationsAsyncControllerProvider(
                                 widget.subModule,
-                              ),
+                              ).notifier,
                             );
+                            controller.clearSearch();
                           },
                         );
                       }
@@ -140,6 +143,7 @@ class _ModuleApplicationsViewState
       onSearchChanged: onSearch,
       onCrossSearch: onCrossSearch,
       onCancelSearchField: onCrossSearch,
+      controller: _searchController,
       subtitleWidget: Text.rich(
         TextSpan(
           children: [
@@ -152,7 +156,9 @@ class _ModuleApplicationsViewState
             ),
             TextSpan(
               text: ' / ',
-              style: AppTextstyles.googleInter400Grey14.copyWith(fontSize: 13.sp),
+              style: AppTextstyles.googleInter400Grey14.copyWith(
+                fontSize: 13.sp,
+              ),
             ),
             TextSpan(
               text: widget.subModule.title,

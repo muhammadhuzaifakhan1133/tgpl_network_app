@@ -27,4 +27,10 @@ class AppFormAssembler {
       address: step3Form.address,
     );
   }
+
+  static void clearForm(Ref ref) {
+    ref.read(step1FormControllerProvider.notifier).reset();
+    ref.read(step2FormControllerProvider.notifier).reset();
+    ref.read(step3FormControllerProvider.notifier).reset();
+  }
 }

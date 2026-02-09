@@ -16,11 +16,13 @@ import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
 import 'package:tgpl_network/features/module_applications/presentation/application_document_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 Future<dynamic> documentBottomSheet({
   required BuildContext context,
   required ApplicationModel application,
 }) {
+  final formKey = GlobalKey<FormState>();
   return showModalBottomSheet(
     isScrollControlled: true,
     context: context,
@@ -33,7 +35,9 @@ Future<dynamic> documentBottomSheet({
           return Consumer(
             builder: (context, ref, _) {
               final controller = ref.read(
-                applicationDocumentControllerProvider(application.applicationId?.toString() ?? "").notifier,
+                applicationDocumentControllerProvider(
+                  application.applicationId?.toString() ?? "",
+                ).notifier,
               );
 
               return Container(
@@ -73,163 +77,196 @@ Future<dynamic> documentBottomSheet({
                         padding: EdgeInsets.zero,
                         // controller: scrollController,
                         children: [
-                          Row(
-                            children: [
-                              actionContainer(
-                                leftMargin: 0,
-                                icon: AppImages.uploadIconSvg,
-                                onTap: () {},
-                                iconColor: AppColors.nextStep1Color,
-                                backgroundColor: AppColors.nextStep1Color
-                                    .withOpacity(0.1),
-                              ),
-                              SizedBox(width: 12.w),
-                              Text(
-                                "Upload New Document",
-                                style: AppTextstyles.googleInter700black28
-                                    .copyWith(
-                                      fontSize: 20.sp,
-                                      color: AppColors.black2Color,
+                          Form(
+                            key: formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  children: [
+                                    actionContainer(
+                                      leftMargin: 0,
+                                      icon: AppImages.uploadIconSvg,
+                                      onTap: () {},
+                                      iconColor: AppColors.nextStep1Color,
+                                      backgroundColor: AppColors.nextStep1Color
+                                          .withOpacity(0.1),
                                     ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 16.h),
-                          Consumer(
-                            builder: (context, ref, child) {
-                              final SubModuleModel? selectedType = ref.watch(
-                                applicationDocumentControllerProvider(
-                                  application.applicationId?.toString() ?? "",
-                                ).select((state) => state.selectedDocumentType),
-                              );
-                              return CustomDropDown<SubModuleModel>(
-                                hintText: "Select Document Type",
-                                items: getAllSubmodulesList(ref),
-                                displayString: (item) {
-                                  return item.title;
-                                },
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    controller.onDocumentTypeChange(value);
-                                  }
-                                },
-                                selectedItem: selectedType,
-                              );
-                            },
-                          ),
-                          SizedBox(height: 8.h),
-                          CustomTextField(
-                            hintText: "Document Title",
-                            showClearButton: true,
-                          ),
-                          SizedBox(height: 8.h),
-                          CustomTextField(
-                            hintText: "Document Detail",
-                            multiline: true,
-                            maxLines: 3,
-                            showClearButton: true,
-                          ),
-                          SizedBox(height: 8.h),
-                          Consumer(
-                            builder: (context, ref, _) {
-                              final state = ref.watch(
-                                applicationDocumentControllerProvider(
-                                  application.applicationId?.toString() ?? "",
-                                ),
-                              );
-                              final controller = ref.read(
-                                applicationDocumentControllerProvider(
-                                  application.applicationId?.toString() ?? "",
-                                ).notifier,
-                              );
-
-                              return GestureDetector(
-                                onTap: controller.pickFile,
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 14.h,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12.r),
-                                    border: Border.all(
-                                      color: AppColors.lightGrey,
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: state.fileName == null
-                                        ? Wrap(
-                                            children: [
-                                              SvgPicture.asset(
-                                                AppImages.uploadIconSvg,
-                                                color: AppColors
-                                                    .extraInformationColor,
-                                              ),
-                                              SizedBox(width: 8.w),
-                                              Text(
-                                                "Tap to upload document (Max 15 MB)",
-                                                style: AppTextstyles
-                                                    .googleInter500LabelColor14,
-                                              ),
-                                            ],
-                                          )
-                                        : Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              const Icon(
-                                                Icons.insert_drive_file,
-                                                color: AppColors.nextStep1Color,
-                                              ),
-                                              SizedBox(width: 8.w),
-                                              Flexible(
-                                                child: Text(
-                                                  state.fileName!,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: AppTextstyles
-                                                      .googleInter500LabelColor14,
-                                                ),
-                                              ),
-                                            ],
+                                    SizedBox(width: 12.w),
+                                    Text(
+                                      "Upload New Document",
+                                      style: AppTextstyles.googleInter700black28
+                                          .copyWith(
+                                            fontSize: 20.sp,
+                                            color: AppColors.black2Color,
                                           ),
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              );
-                            },
-                          ),
+                                SizedBox(height: 16.h),
+                                Consumer(
+                                  builder: (context, ref, child) {
+                                    final SubModuleModel? selectedType = ref
+                                        .watch(
+                                          applicationDocumentControllerProvider(
+                                            application.applicationId
+                                                    ?.toString() ??
+                                                "",
+                                          ).select(
+                                            (state) =>
+                                                state.selectedDocumentType,
+                                          ),
+                                        );
+                                    return CustomDropDown<SubModuleModel>(
+                                      hintText: "Select Document Type",
+                                      items: getAllSubmodulesList(ref),
+                                      displayString: (item) {
+                                        return item.title;
+                                      },
+                                      onChanged: (value) {
+                                        if (value != null) {
+                                          controller.onDocumentTypeChange(
+                                            value,
+                                          );
+                                        }
+                                      },
+                                      selectedItem: selectedType,
+                                    );
+                                  },
+                                ),
+                                SizedBox(height: 8.h),
+                                CustomTextField(
+                                  hintText: "Document Title",
+                                  showClearButton: true,
+                                  validator: (v) => v.validate(),
+                                ),
+                                SizedBox(height: 8.h),
+                                CustomTextField(
+                                  hintText: "Document Detail",
+                                  multiline: true,
+                                  maxLines: 3,
+                                  showClearButton: true,
+                                  validator: (v) => v.validate(),
+                                ),
+                                SizedBox(height: 8.h),
+                                Consumer(
+                                  builder: (context, ref, _) {
+                                    final state = ref.watch(
+                                      applicationDocumentControllerProvider(
+                                        application.applicationId?.toString() ??
+                                            "",
+                                      ),
+                                    );
+                                    final controller = ref.read(
+                                      applicationDocumentControllerProvider(
+                                        application.applicationId?.toString() ??
+                                            "",
+                                      ).notifier,
+                                    );
 
-                          SizedBox(height: 8.h),
-                          Text(
-                            "Supported formats: PDF, DOC, DOCX, JPG, PNG",
-                            style: AppTextstyles.googleInter400black16.copyWith(
-                              color: AppColors.subHeadingColor,
-                              fontSize: 12,
+                                    return GestureDetector(
+                                      onTap: controller.pickFile,
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 14.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            12.r,
+                                          ),
+                                          border: Border.all(
+                                            color: AppColors.lightGrey,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: state.fileName == null
+                                              ? Wrap(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      AppImages.uploadIconSvg,
+                                                      color: AppColors
+                                                          .extraInformationColor,
+                                                    ),
+                                                    SizedBox(width: 8.w),
+                                                    Text(
+                                                      "Tap to upload document (Max 15 MB)",
+                                                      style: AppTextstyles
+                                                          .googleInter500LabelColor14,
+                                                    ),
+                                                  ],
+                                                )
+                                              : Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    const Icon(
+                                                      Icons.insert_drive_file,
+                                                      color: AppColors
+                                                          .nextStep1Color,
+                                                    ),
+                                                    SizedBox(width: 8.w),
+                                                    Flexible(
+                                                      child: Text(
+                                                        state.fileName!,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: AppTextstyles
+                                                            .googleInter500LabelColor14,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+
+                                SizedBox(height: 8.h),
+                                Text(
+                                  "Supported formats: PDF, DOC, DOCX, JPG, PNG",
+                                  style: AppTextstyles.googleInter400black16
+                                      .copyWith(
+                                        color: AppColors.subHeadingColor,
+                                        fontSize: 12,
+                                      ),
+                                ),
+                                SizedBox(height: 8.h),
+                                Consumer(
+                                  builder: (context, ref, _) {
+                                    final controller = ref.read(
+                                      applicationDocumentControllerProvider(
+                                        application.applicationId?.toString() ??
+                                            "",
+                                      ).notifier,
+                                    );
+                                    final state = ref.watch(
+                                      applicationDocumentControllerProvider(
+                                        application.applicationId?.toString() ??
+                                            "",
+                                      ),
+                                    );
+
+                                    return Row(
+                                      children: [
+                                        Expanded(
+                                          child: CustomButton(
+                                            onPressed: state.pickedFile != null
+                                                ? controller.uploadDocument
+                                                : null,
+                                            text: "Upload Document",
+                                            backgroundColor:
+                                                state.pickedFile != null
+                                                ? AppColors.nextStep1Color
+                                                : AppColors.inactiveStatusColor,
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
-                          ),
-                          SizedBox(height: 8.h),
-                          Consumer(
-                            builder: (context, ref, _) {
-                              final controller = ref.read(
-                                applicationDocumentControllerProvider(
-                                  "APP-2025-001",
-                                ).notifier,
-                              );
-                              final hasFile = ref.watch(
-                                applicationDocumentControllerProvider(
-                                  "APP-2025-001",
-                                ).select((s) => s.pickedFile != null),
-                              );
-
-                              return CustomButton(
-                                onPressed: hasFile
-                                    ? controller.uploadDocument
-                                    : null,
-                                text: "Upload Document",
-                                backgroundColor: hasFile
-                                    ? AppColors.nextStep1Color
-                                    : AppColors.inactiveStatusColor,
-                              );
-                            },
                           ),
 
                           SizedBox(height: 8.h),
@@ -274,7 +311,9 @@ Future<dynamic> documentBottomSheet({
                                     return ListTile(
                                       tileColor: AppColors.lightGrey,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16.r),
+                                        borderRadius: BorderRadius.circular(
+                                          16.r,
+                                        ),
                                       ),
                                       leading: actionContainer(
                                         icon: AppImages.applicationsInactiveSvg,

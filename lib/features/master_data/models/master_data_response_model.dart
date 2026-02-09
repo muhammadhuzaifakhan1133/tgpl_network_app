@@ -1,6 +1,7 @@
 // lib/features/master_data/data/models/master_data_response_model.dart
 import 'dart:convert';
 
+import 'package:tgpl_network/features/master_data/models/tm_rm_model.dart';
 import 'package:tgpl_network/features/master_data/models/user_model.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
 import 'package:tgpl_network/features/master_data/models/city_model.dart';
@@ -30,6 +31,8 @@ class MasterDataResponseModel {
   final List<MasterDataYNAModel> ynList;
   final List<MasterDataYNAModel> ynnList;
   final List<NFRModel> nfrList;
+  final List<TmRmModel> tmList;
+  final List<TmRmModel> rmList;
   final UserModel? userInfo;
 
   MasterDataResponseModel({
@@ -46,6 +49,8 @@ class MasterDataResponseModel {
     required this.ynList,
     required this.ynnList,
     required this.nfrList,
+    required this.tmList,
+    required this.rmList,
     required this.userInfo,
   });
 
@@ -100,6 +105,12 @@ class MasterDataResponseModel {
       ),
       nfrList: List<NFRModel>.from(
         json['NFRList']?.map((x) => NFRModel(x)) ?? [],
+      ),
+      tmList: List<TmRmModel>.from(
+        json['TMList']?.map((x) => TmRmModel.fromApiMap(x)) ?? [],
+      ),
+      rmList: List<TmRmModel>.from(
+        json['RMList']?.map((x) => TmRmModel.fromApiMap(x)) ?? [],
       ),
       userInfo: json['UserInfo'] != null
           ? UserModel.fromAPIResponseMap(json['UserInfo'])

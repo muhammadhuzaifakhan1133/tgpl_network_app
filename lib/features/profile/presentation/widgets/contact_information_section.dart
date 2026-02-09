@@ -30,14 +30,13 @@ class ContactInformationSection extends StatelessWidget {
           title: "Phone",
           value: user.contact,
         ),
-        // TODO: add region info in user model
-        // SizedBox(height: 14.h),
-        // _ContactInfoCard(
-        //   color: AppColors.emailUsIconColor,
-        //   icon: AppImages.locationIconSvg,
-        //   title: "Region",
-        //   value: "Karachi Region",
-        // ),
+        SizedBox(height: 14.h),
+        _ContactInfoCard(
+          color: AppColors.emailUsIconColor,
+          icon: AppImages.locationIconSvg,
+          title: "Region",
+          value: user.region,
+        ),
       ],
     );
   }

@@ -144,7 +144,7 @@ class ApplicationModel {
   final int? leaseAgreementDone;
   final int? hotoDone;
   final int? inaugurationDone;
-  final int? numberOfOperationYear;
+  final double? numberOfOperationYear;
   final String? trucPortPotentail;
   final String? salamMartPotential;
   final String? resturantPotential;
@@ -391,6 +391,7 @@ class ApplicationModel {
       ttRmRemarks: json['TTRMRemarks'],
       truckKCount: json['TrucKCount']?.toString(),
       siteStatusId: json['SiteStatusId'],
+      siteStatusName: json['SiteStatus'],
       drawingLayout: json['DrawingLayout'],
       issuanceOfDrawings: json['IssuanceOfDrawings'],
       changeStatusRemarks: json['ChangeStatusRemarks'],
@@ -416,7 +417,9 @@ class ApplicationModel {
       leaseAgreementDone: json['LeaseAgreementDone'],
       hotoDone: json['HOTODone'],
       inaugurationDone: json['InaugurationDone'],
-      numberOfOperationYear: json['NumberOfOperationYear'],
+      numberOfOperationYear: double.tryParse(
+        json['NumberOfOperationYear'].toString(),
+      ),
       trucPortPotentail: json['TrucPortPotentail'],
       salamMartPotential: json['SalamMartPotential'],
       resturantPotential: json['ResturantPotential'],
@@ -447,9 +450,10 @@ class ApplicationModel {
     );
   }
 
-  factory ApplicationModel.fromDatabaseMap(Map<String, dynamic> map, {
-  List<TrafficTradesModel>? nearbyTrafficSites,
-}) {
+  factory ApplicationModel.fromDatabaseMap(
+    Map<String, dynamic> map, {
+    List<TrafficTradesModel>? nearbyTrafficSites,
+  }) {
     return ApplicationModel(
       id: map['id'],
       applicationId: map['applicationId'],
@@ -530,6 +534,7 @@ class ApplicationModel {
       ttRmRemarks: map['ttRmRemarks'],
       truckKCount: map['truckKCount'],
       siteStatusId: map['siteStatusId'],
+      siteStatusName: map['siteStatus'],
       drawingLayout: map['drawingLayout'],
       issuanceOfDrawings: map['issuanceOfDrawings'],
       changeStatusRemarks: map['changeStatusRemarks'],
@@ -555,7 +560,9 @@ class ApplicationModel {
       leaseAgreementDone: map['leaseAgreementDone'],
       hotoDone: map['hotoDone'],
       inaugurationDone: map['inaugurationDone'],
-      numberOfOperationYear: map['numberOfOperationYear'],
+      numberOfOperationYear: double.tryParse(
+        map['numberOfOperationYear'].toString(),
+      ),
       trucPortPotentail: map['trucPortPotentail'],
       salamMartPotential: map['salamMartPotential'],
       resturantPotential: map['resturantPotential'],
@@ -583,8 +590,7 @@ class ApplicationModel {
       message: map['message'],
       recordId: map['recordId'],
       accessLevel: map['accessLevel'],
-      siteStatusName: map['siteStatusName'],
-    nearbyTrafficSites: nearbyTrafficSites ?? [],
+      nearbyTrafficSites: nearbyTrafficSites ?? [],
     );
   }
 
@@ -669,6 +675,7 @@ class ApplicationModel {
       'ttRmRemarks': ttRmRemarks,
       'truckKCount': truckKCount,
       'siteStatusId': siteStatusId,
+      'siteStatus': siteStatusName,
       'drawingLayout': drawingLayout,
       'issuanceOfDrawings': issuanceOfDrawings,
       'changeStatusRemarks': changeStatusRemarks,
@@ -726,7 +733,8 @@ class ApplicationModel {
   }
 
   static (List<String>, List<dynamic>) getWhereClauseAndArgs(
-    FilterSelectionState filters) {
+    FilterSelectionState filters,
+  ) {
     final whereConditions = <String>[];
     final whereArgs = <dynamic>[];
 
@@ -744,21 +752,33 @@ class ApplicationModel {
       if (filters.selectedStatusId != null) {
         if (filters.selectedStatusId!.split(",").length > 1) {
           final statusIds = filters.selectedStatusId!
-              .split(",")
-              .map((e) => int.tryParse(e.trim()) ?? 0)
-              .toList();
-          final placeholders = List.filled(statusIds.length, '?').join(', ');
-          whereConditions.add('$alias.statusId IN ($placeholders)');
-          whereArgs.addAll(statusIds);
+              .split(",");
+          String whereCond = '$alias.statusId IN (';
+          for (var i = 0; i < statusIds.length; i++) {
+            int? statusId = int.tryParse(statusIds[i].trim());
+            if (statusId != null) {
+              whereCond += '?';
+              if (i < statusIds.length - 1) {
+                whereCond += ', ';
+              }
+              whereArgs.add(statusId);
+            }
+          }
+          whereCond += ')';
+          whereConditions.add(whereCond);
         } else {
-          whereConditions.add('$alias.statusId = ?');
-          whereArgs.add(int.tryParse(filters.selectedStatusId!) ?? 0);
+          int? statusId = int.tryParse(filters.selectedStatusId!);
+          if (statusId != null) {
+            whereConditions.add('$alias.statusId = ?');
+            whereArgs.add(statusId);
+          }
         }
       }
 
-      if (!filters.applicationId.isNullOrEmpty) {
+      if (!filters.applicationId.isNullOrEmpty &&
+          int.tryParse(filters.applicationId!) != null) {
         whereConditions.add('$alias.applicationId = ?');
-        whereArgs.add(int.tryParse(filters.applicationId!) ?? 0);
+        whereArgs.add(int.parse(filters.applicationId!));
       }
 
       if (!filters.entryCode.isNullOrEmpty) {

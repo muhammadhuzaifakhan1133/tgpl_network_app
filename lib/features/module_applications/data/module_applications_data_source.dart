@@ -24,23 +24,20 @@ class ModuleApplicationsDataSource {
 
     if (!query.isNullOrEmpty) {
       final filter = FilterSelectionState.fromSearchQuery(query!);
-      final whereData = ApplicationModel.getWhereClauseAndArgs(
-        filter,      );
+      final whereData = ApplicationModel.getWhereClauseAndArgs(filter);
       whereConditions = whereData.$1;
       whereArgs = whereData.$2;
     }
 
     final mainQuery = SelectDbQueries.buildApplicationQuery(
-      whereConditions: [
-        dbSubModuleCondition,
-        ...whereConditions,
-      ],
+      whereConditions: [dbSubModuleCondition, ...whereConditions],
       orderBy: ApplicationModel.orderBy,
       limit: pageSize,
       offset: (page - 1) * pageSize,
-      operator: LogicalOperator.or,
+      operator: {0: LogicalOperator.and, -1: LogicalOperator.or},
     );
 
+    // debugPrint("Executing Query: \n$mainQuery with args: $whereArgs");
     final List<Map<String, dynamic>> maps = await db.rawQuery(
       mainQuery,
       whereArgs.isNotEmpty ? whereArgs : null,

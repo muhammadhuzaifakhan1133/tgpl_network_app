@@ -4,7 +4,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-final locationServiceProvider = Provider((ref) => LocationService());
+final locationServiceProvider = Provider<LocationService>((ref) => LocationService());
 
 class LocationService {
   Future<LatLng?> getCurrentLocation() async {

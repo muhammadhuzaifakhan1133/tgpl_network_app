@@ -51,10 +51,10 @@ class DatabaseHelper {
 
     // Master Lists Table (storing as JSON)
     await db.execute(CreateDbQueries.createMasterListsTable);
-    
+
     // User Info Table
     await db.execute(CreateDbQueries.createUserInfoTable);
-    
+
     // Site Status Table
     await db.execute(CreateDbQueries.createSiteStatusTable);
 
@@ -66,6 +66,10 @@ class DatabaseHelper {
 
     // Traffic Trade Forms Table
     await db.execute(CreateDbQueries.createTrafficTradeFormsTable);
+
+    //  Tables for TM and RM data
+    await db.execute(CreateDbQueries.createTmTable);
+    await db.execute(CreateDbQueries.createRmTable);
   }
 
   Future<void> close() async {
@@ -74,12 +78,14 @@ class DatabaseHelper {
   }
 
   List<String> get masterDataTables => [
-        AppDatabase.applicationTable,
-        AppDatabase.cityTable,
-        AppDatabase.trafficTradeTable,
-        AppDatabase.masterListsTable,
-        AppDatabase.userInfoTable,
-      ];
+    AppDatabase.applicationTable,
+    AppDatabase.cityTable,
+    AppDatabase.trafficTradeTable,
+    AppDatabase.masterListsTable,
+    AppDatabase.rmTable,
+    AppDatabase.tmTable,
+    AppDatabase.userInfoTable,
+  ];
 
   Future<void> clearAllTables() async {
     final db = await instance.database;

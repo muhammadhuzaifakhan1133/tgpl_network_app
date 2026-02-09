@@ -108,7 +108,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                     isPasswordObscure
                                         ? Icons.visibility
                                         : Icons.visibility_off,
-                                    size: 18,
+                                    size: 20,
                                   ),
                                 ),
                                 validator: (v) => v.validate(),

@@ -31,7 +31,8 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
               hintText: "Select TM",
               enableSearch: true,
               selectedItem: selectedTM,
-              items: ref.read(tmNamesProvider),
+              asyncProvider: tmNamesProvider,
+              itemsBuilder: (data) => data.map((e) => e.name).toList(),
               onChanged: (value) {
                 if (value == null) return;
                 controller.onChangeTM(value.toString());
@@ -100,7 +101,8 @@ class TrafficRecommendationCardForm extends ConsumerWidget {
               hintText: "Select RM",
               enableSearch: true,
               selectedItem: selectedRM,
-              items: ref.read(rmNamesProvider),
+              asyncProvider: rmNamesProvider,
+              itemsBuilder: (data) => data.map((e) => e.name).toList(),
               onChanged: (value) {
                 if (value == null) return;
                 controller.onChangeRM(value.toString());

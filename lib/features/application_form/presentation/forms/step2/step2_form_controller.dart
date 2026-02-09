@@ -76,4 +76,8 @@ class Step2FormController extends Notifier<Step2FormState> {
   void clearField(String fieldName) {
     state = state.copyWith(fieldsToNull: [fieldName]);
   }
+
+  void reset() {
+    state = const Step2FormState();
+  }
 }

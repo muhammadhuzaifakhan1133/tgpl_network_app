@@ -138,7 +138,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: widget.width,
-      height: widget.height ?? (_hasError ? 70.h : 46.h),
+      height:
+          widget.height ??
+          (widget.multiline ? null : (_hasError ? 70.h : 46.h)),
       child: TextFormField(
         controller: _internalController,
         autofocus: widget.autoFocus,
@@ -180,7 +182,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
             : (widget.textInputAction ?? TextInputAction.next),
         minLines: widget.multiline ? (widget.minLines ?? 3) : 1,
         maxLines: widget.multiline ? (widget.maxLines ?? 5) : 1,
-        onFieldSubmitted: (_) => widget.onFieldSubmitted?.call(),
+        onFieldSubmitted: (_) {
+          FocusScope.of(context).nextFocus();
+          widget.onFieldSubmitted?.call();
+        },
       ),
     );
   }

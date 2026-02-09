@@ -14,6 +14,7 @@ import 'package:tgpl_network/common/models/sync_enum.dart';
 class CustomAppBar extends ConsumerStatefulWidget {
   final String title;
   final Widget? subtitleWidget;
+  final TextEditingController? controller;
   final String subtitle;
   final bool showBackButton;
   final bool showSearchIcon;
@@ -30,6 +31,7 @@ class CustomAppBar extends ConsumerStatefulWidget {
     super.key,
     required this.title,
     this.subtitleWidget,
+    this.controller,
     required this.subtitle,
     this.showBackButton = false,
     this.showSearchIcon = false,
@@ -55,6 +57,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
   @override
   void dispose() {
     _searchFocusNode.dispose();
+    widget.controller?.dispose();
     super.dispose();
   }
 
@@ -251,6 +254,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                       height: 50.h,
                       backgroundColor: AppColors.actionContainerColor,
                       focusNode: _searchFocusNode,
+                      controller: widget.controller,
                       showClearButton: true,
                       onChanged: widget.onSearchChanged,
                       onClear: widget.onCrossSearch,

@@ -89,6 +89,7 @@ class CreateDbQueries {
         ttRmRemarks $textType,
         truckKCount $textType,
         siteStatusId $intType,
+        siteStatus $textType,
         drawingLayout $textType,
         issuanceOfDrawings $textType,
         changeStatusRemarks $textType,
@@ -267,20 +268,21 @@ class CreateDbQueries {
   static String createUserInfoTable = '''
     CREATE TABLE ${AppDatabase.userInfoTable} (
       userId INTEGER PRIMARY KEY,
-      userName TEXT,
-      fullName TEXT,
-      companyId INTEGER,
-      companyDisplayName TEXT,
-      companyLogo TEXT,
-      positionId INTEGER,
-      email TEXT,
-      contact TEXT,
-      treePath TEXT,
-      isSuperAdmin INTEGER,
-      message TEXT,
-      success INTEGER,
-      hasSurveyFormAccess INTEGER,
-      hasTrafficTradeFormAccess INTEGER
+      userName $textType,
+      fullName $textType,
+      companyId $intType,
+      companyDisplayName $textType,
+      companyLogo $textType,
+      positionId $intType,
+      positionName $textType,
+      email $textType,
+      contact $textType,
+      treePath $textType,
+      isSuperAdmin $intType,
+      message $textType,
+      success $intType,
+      hasSurveyFormAccess $intType,
+      hasTrafficTradeFormAccess $intType
     )
   ''';
 
@@ -288,6 +290,22 @@ class CreateDbQueries {
     CREATE TABLE IF NOT EXISTS ${AppDatabase.siteStatusTable} (
       id $idType,
       siteStatusId $intType UNIQUE,
+      name $textType
+    )
+  ''';
+
+  static String createTmTable = '''
+    CREATE TABLE IF NOT EXISTS ${AppDatabase.tmTable} (
+      id $idType,
+      tmId $intType,
+      name $textType
+    )
+  ''';
+
+  static String createRmTable = '''
+    CREATE TABLE IF NOT EXISTS ${AppDatabase.rmTable} (
+      id $idType,
+      rmId $intType,
       name $textType
     )
   ''';

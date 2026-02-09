@@ -156,6 +156,8 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
             suffixIcon: actionContainer(
               icon: AppImages.locationIconSvg,
               rightMargin: 5,
+              topMargin: 4,
+              bottomMargin: 4,
               // TODO: correct icon size
               iconColor: AppColors.black,
               onTap: _pickLocation,
@@ -208,12 +210,15 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
               }
               if (_formKey.currentState != null &&
                   _formKey.currentState!.validate()) {
-                // await ref.read(appFormSubmissionProvider.notifier).submitAppForm();
-                ref
+                final result = await ref.read(appFormSubmissionProvider.notifier).submitAppForm();
+                if (result) {
+                  // Navigate to confirmation screen with a generated application ID (for demo, using a static ID)
+                  ref
                     .read(goRouterProvider)
                     .pushReplacement(
                       AppRoutes.stationFormConfirmation("App-ID-12345"),
                     );
+                }
               }
             },
           ),

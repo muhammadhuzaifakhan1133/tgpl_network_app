@@ -29,13 +29,12 @@ class _SiteLocationSelectionViewState
       ref.read(markersProvider.notifier).state = {};
       if (widget.initialPosition != null) {
         _onMapTapped(widget.initialPosition!);
-      } else {
-        _getCurrentLocation();
       }
+      _getCurrentLocation(shouldMoveCamera: widget.initialPosition == null);
     });
   }
 
-  Future<void> _getCurrentLocation() async {
+  Future<void> _getCurrentLocation({bool shouldMoveCamera = true}) async {
     ref.read(locationActionProvider.notifier).state = const AsyncLoading();
 
     final locationService = ref.read(locationServiceProvider);
@@ -45,26 +44,28 @@ class _SiteLocationSelectionViewState
       ref.read(currentLocationProvider.notifier).state = position;
 
       // Add current location marker
-      // final markers = ref.read(markersProvider);
-      // final updatedMarkers = markers
-      //     .where((m) => m.markerId.value != AppKeys.currentMarkerId)
-      //     .toSet();
-      // updatedMarkers.add(
-      //   Marker(
-      //     markerId: MarkerId(AppKeys.currentMarkerId),
-      //     position: position,
-      //     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-      //     infoWindow: const InfoWindow(title: 'Your Location'),
-      //   ),
-      // );
-      // ref.read(markersProvider.notifier).state = updatedMarkers;
-      // Move camera to current location
-      final mapController = ref.read(mapControllerProvider);
-      mapController?.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(target: position, zoom: 15),
+      final markers = ref.read(markersProvider);
+      final updatedMarkers = markers
+          .where((m) => m.markerId.value != AppKeys.currentMarkerId)
+          .toSet();
+      updatedMarkers.add(
+        Marker(
+          markerId: MarkerId(AppKeys.currentMarkerId),
+          position: position,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          infoWindow: const InfoWindow(title: 'Your Location'),
         ),
       );
+      // ref.read(markersProvider.notifier).state = updatedMarkers;
+      // Move camera to current location
+      if (shouldMoveCamera) {
+        final mapController = ref.read(mapControllerProvider);
+        mapController?.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(target: position, zoom: 15),
+          ),
+        );
+      }
     } else {
       if (context.mounted) {
         showSnackBar(
@@ -144,10 +145,19 @@ class _SiteLocationSelectionViewState
                     CameraPosition(target: widget.initialPosition!, zoom: 15),
                   ),
                 );
+              } else if (ref.read(currentLocationProvider) != null) {
+                controller.animateCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(
+                      target: ref.read(currentLocationProvider)!,
+                      zoom: 15,
+                    ),
+                  ),
+                );
               }
             },
             initialCameraPosition: CameraPosition(
-              target: currentPosition ?? const LatLng(24.8607, 67.0011),
+              target: currentPosition ?? const LatLng(24.824376, 67.0438589),
               zoom: 12,
             ),
             markers: markers,

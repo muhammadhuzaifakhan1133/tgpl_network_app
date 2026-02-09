@@ -8,7 +8,6 @@ import 'package:tgpl_network/features/traffic_trade_form/data/traffic_trade_form
 import 'package:tgpl_network/features/traffic_trade_form/data/traffic_trade_form_remote_data_source.dart';
 import 'package:tgpl_network/features/traffic_trade_form/models/traffic_trade_form_model.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/traffic_trade_form_assembler.dart';
-import 'package:tgpl_network/utils/internet_connectivity.dart';
 
 final trafficTradeFormControllerProvider = AsyncNotifierProvider.family
     .autoDispose<TrafficTradeFormController, TrafficTradeFormModel, String>((

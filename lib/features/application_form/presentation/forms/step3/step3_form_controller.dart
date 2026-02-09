@@ -70,4 +70,8 @@ class Step3FormController extends Notifier<Step3FormState> {
   void clearField(String fieldName) {
     state = state.copyWith(fieldsToNull: [fieldName]);
   }
+
+  void reset() {
+    state = const Step3FormState();
+  }
 }
