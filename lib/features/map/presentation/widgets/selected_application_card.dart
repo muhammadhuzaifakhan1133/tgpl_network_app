@@ -58,7 +58,7 @@ class SelectedApplicationCard extends ConsumerWidget {
           ),
           SizedBox(height: 6.h),
           Text(
-            application.dealerName ?? "N/A",
+            application.applicantName ?? "N/A",
             style: AppTextstyles.googleInter700black28.copyWith(
               fontSize: 20.sp,
               color: AppColors.black2Color,
@@ -70,7 +70,7 @@ class SelectedApplicationCard extends ConsumerWidget {
               SizedBox(width: 8.w),
               Expanded(
                 child: Text(
-                  application.locationAddress ?? "N/A",
+                  application.siteAddress ?? "N/A",
                   style: AppTextstyles.googleInter400Grey14,
                 ),
               ),

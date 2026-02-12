@@ -94,21 +94,17 @@ class ContactAndDealerFormState {
   }
 
   ContactAndDealerFormState.loadFromApplication(ApplicationModel app)
-    : dealerName = app.dealerName,
-      dealerContact = app.dealerContact,
+    : dealerName = app.applicantName,
+      dealerContact = app.whatsAppNumber,
       referenceBy = app.referedBy,
-      locationAddress = app.locationAddress,
+      locationAddress = app.siteAddress,
       landmark = app.landmark,
       nearestDepo = app.nearestDepo,
       typeOfTradeArea = app.typeOfTradeArea,
       plotFront = app.plotFront?.toString(),
       plotDepth = app.plotDepth?.toString(),
-      plotArea =
-          app.plotArea?.toString() ??
-          ((app.plotFront != null && app.plotDepth != null)
-              ? (app.plotFront! * app.plotDepth!).toStringAsFixed(2)
-              : null),
-      distanceFromDepo = app.distanceFromDetp?.toString();
+      plotArea = app.plotAreaValue.toString(),
+      distanceFromDepo = app.distanceFromDepo?.toString();
 
   ContactAndDealerFormState.loadFromSurveyFormModel(SurveyFormModel form)
     : dealerName = form.dealerName,

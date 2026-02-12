@@ -78,7 +78,7 @@ class ApplicationStatusContainer extends ConsumerWidget {
             ],
           ),
           Text(
-            application.dealerName.toString(),
+            application.applicantName.toString(),
             style: AppTextstyles.googleInter700black28.copyWith(fontSize: 20.sp),
           ),
           Row(
@@ -101,7 +101,7 @@ class ApplicationStatusContainer extends ConsumerWidget {
               ),
               SizedBox(width: 5.w),
               Text(
-                application.addDate.toString().formatTodMMMyyyy(),
+                application.applicationReceiveDate.toString().formatTodMMMyyyy(),
                 style: AppTextstyles.googleInter400Grey14.copyWith(
                   fontSize: 13.sp,
                 ),

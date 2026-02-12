@@ -8,149 +8,239 @@ String intType = DatabaseHelper.intType;
 String realType = DatabaseHelper.realType;
 
 class CreateDbQueries {
-  static String createApplicationTable = '''
-      CREATE TABLE IF NOT EXISTS ${AppDatabase.applicationTable} (
-        id $idType,
-        applicationId $intType UNIQUE,
-        dateConducted $textType,
-        preparedBy $textType,
-        googleLocation $textType,
-        cityId $intType,
-        cityName $textType,
-        district $textType,
-        dealerName $textType,
-        dealerContact $textType,
-        referedBy $textType,
-        locationAddress $textType,
-        landmark $textType,
-        plotArea $textType,
-        plotFront $realType,
-        plotDepth $realType,
-        nearestDepo $textType,
-        distanceFromDetp $realType,
-        typeOfTradeArea $textType,
-        isThisDealerSite $textType,
-        whatOtherBusiness $textType,
-        howInvolveDealerInPetrol $textType,
-        isDealerSole $textType,
-        isDealerReadyToCapitalInvestment $textType,
-        proposedSiteName1 $textType,
-        whyDoesTaj $textType,
-        managerCurrentSalary $realType,
-        isAgreeToTGPLStandard $textType,
-        addDate $textType,
-        editDate $textType,
-        addBy $textType,
-        editBy $textType,
-        entryCode $textType,
-        source $textType,
-        sourceName $textType,
-        priority $textType,
-        platform $textType,
-        statusId $intType,
-        siteNumber $intType,
-        estimateDailyDieselSale $intType,
-        estimateDailySuperSale $intType,
-        estimateDailyHOBCSale $intType,
-        estimateLubricantSale $intType,
-        expectedLeaseRentPerManth $intType,
-        nflFacilityAvailable $textType,
-        nflFacilityName $textType,
-        truckCount $intType,
-        carCount $intType,
-        bikeCount $intType,
-        busCount $intType,
-        npPersonName $textType,
-        joiningFees $textType,
-        topography $textType,
-        dcNoc $textType,
-        explosive $textType,
-        amendmentExplosive $textType,
-        appliedInExplosive $textType,
-        aeConstructionApproval $textType,
-        aeSafetyCompletion $textType,
-        aeKForm $textType,
-        aeAmendment $textType,
-        aeConstructionStart $textType,
-        aeConstructionUpdate $textType,
-        hoto $textType,
-        lastStep $textType,
-        ssRecommendationTmName $textType,
-        ssTmRecommendation $textType,
-        ssTmRemarks $textType,
-        ssRecommendationRmName $textType,
-        ssRmRecommendation $textType,
-        ssRmRemarks $textType,
-        ttRecommendationTmName $textType,
-        ttTmRecommendation $textType,
-        ttTmRemarks $textType,
-        ttRecommendationRmName $textType,
-        ttRmRecommendation $textType,
-        ttRmRemarks $textType,
-        truckKCount $textType,
-        siteStatusId $intType,
-        siteStatus $textType,
-        drawingLayout $textType,
-        issuanceOfDrawings $textType,
-        changeStatusRemarks $textType,
-        constructionStartDate $textType,
-        constructionEndDate $textType,
-        constructionStatusInPercent $intType,
-        constructionDone $intType,
-        surveyDealerProfileDone $intType,
-        trafficTradeDone $intType,
-        feasibilityDone $intType,
-        negotiationDone $intType,
-        mouSignOffDone $intType,
-        joiningFeeDone $intType,
-        franchiseAgreementDone $intType,
-        feasibilityFinalizationDone $intType,
-        explosiveLayoutDone $intType,
-        drawingsDone $intType,
-        topographyDone $intType,
-        issuanceOfDrawingsDone $intType,
-        appliedInExplosiveDone $intType,
-        dcNocDone $intType,
-        capexDone $intType,
-        leaseAgreementDone $intType,
-        hotoDone $intType,
-        inaugurationDone $intType,
-        numberOfOperationYear $intType,
-        trucPortPotentail $textType,
-        salamMartPotential $textType,
-        resturantPotential $textType,
-        isThisConversionPump $textType,
-        currentOMCName $textType,
-        isThisDealerInvestedSite $textType,
-        isCurrentlyOperational $textType,
-        currentLeaseExpried $textType,
-        dieselUGTSizeLiter $intType,
-        superUGTSizeLiter $intType,
-        numberOfDieselDispenser $intType,
-        numberOfSuperDispenser $intType,
-        currentlyCanopyCondition $textType,
-        conditionOfDispensors $textType,
-        conditionOfForecourt $textType,
-        recommendation $textType,
-        recommendationDetail $textType,
-        negotiationStatus $textType,
-        finalDecisionStatus $textType,
-        mouSignOff $textType,
-        leaseAgreement $textType,
-        franchiseAgreement $textType,
-        capex $textType,
-        success $intType,
-        message $textType,
-        recordId $intType,
-        accessLevel $intType
-      )
-    ''';
+  static String createApplicationTable =
+      '''
+    CREATE TABLE IF NOT EXISTS ${AppDatabase.applicationTable} (
+      -- Primary Key
+      id $idType,
 
-  static String createStatusIdIndexOnApplicationTable = '''
-    CREATE INDEX IF NOT EXISTS idx_application_status ON ${AppDatabase.applicationTable}(statusId);
+      -- Basic Application Info
+      applicationId $intType,
+      applicationReceiveDate $textType,
+      applicantName $textType,
+      contactPersonName $textType,
+      contactNumber $textType,
+      whatsAppNumber $textType,
+      currentlyPresence $textType,
+
+      -- Location Info
+      cityId $intType,
+      cityName $textType,
+      district $textType,
+      landmark $textType,
+      siteStatusId $intType,
+      siteStatusName $textType,
+
+      -- Plot Details
+      plotFront $realType,
+      plotDepth $realType,
+      siteAddress $textType,
+      googleLocation $textType,
+
+      -- Contact Details
+      emailAddress $textType,
+
+      -- Survey Dates
+      siteSurveyDealerProfileDueDate $textType,
+      siteSurveyDealerProfileDoneDate $textType,
+
+      -- Reference & Location
+      referedBy $textType,
+      nearestDepo $textType,
+      distanceFromDepo $realType,
+      typeOfTradeArea $textType,
+
+      -- Dealer Information
+      isThisDealerSite $textType,
+      whatOtherBusiness $textType,
+      howInvolveDealerInPetrol $textType,
+      isDealerSole $textType,
+      isDealerReadyToCapitalInvestment $textType,
+      whyDoesTaj $textType,
+      managerCurrentSalary $realType,
+      isAgreeToTGPLStandard $textType,
+
+      -- Site Names
+      proposedSiteName1 $textType,
+      proposedSiteName2 $textType,
+      proposedSiteName3 $textType,
+
+      -- Sales Estimates
+      estimateDailyDieselSale $realType,
+      estimateDailySuperSale $realType,
+      estimateLubricantSale $realType,
+      estimatedDailyHOBCSale $realType,
+      expectedLeaseRentPerManth $realType,
+
+      -- Potential Features
+      truckPortPotential $textType,
+      salamMartPotential $textType,
+      resturantPotential $textType,
+
+      -- Conversion Details
+      isThisConversionPump $textType,
+      currentOMCName $textType,
+      isThisDealerInvestedSite $textType,
+      numberOfOperationYear $realType,
+      isCurrentlyOperational $textType,
+      currentLeaseExpried $textType,
+
+      -- Tank & Dispenser Info
+      dieselUGTSizeLiter $realType,
+      superUGTSizeLiter $realType,
+      numberOfDieselDispenser $intType,
+      numberOfSuperDispenser $intType,
+
+      -- Site Conditions
+      currentlyCanopyCondition $textType,
+      conditionOfDispensors $textType,
+      conditionOfForecourt $textType,
+
+      -- Recommendations & Status
+      recommendation $textType,
+      recommendationDetail $textType,
+      negotiationStatus $textType,
+      finalDecisionStatus $textType,
+
+      -- Agreements & Documents
+      moUSignOff $textType,
+      leaseAgreement $textType,
+      franchiseAgreement $textType,
+      capex $textType,
+
+      -- Entry Details
+      entryCode $textType,
+      source $textType,
+      sourceName $textType,
+      priority $textType,
+      platForm $textType,
+      npPersonName $textType,
+
+      -- Fees & Documentation
+      joiningFees $textType,
+      topography $textType,
+      dcnoc $textType,
+      explosive $textType,
+      amendmentExplosive $textType,
+      appliedInexplosive $textType,
+
+      -- AE (Approval/Engineering) Fields
+      aeConstructionApproval $textType,
+      aeSaftyCompletion $textType,
+      aeKForm $textType,
+      aeAmendment $textType,
+      aeConstructionStart $textType,
+      aeConstructionUpdate $textType,
+
+      -- HOTO & Steps
+      hoto $textType,
+      lastStepDoneBefore $textType,
+
+      -- Survey Recommendations (TM)
+      ssRecommendationTMName $textType,
+      sstmRecommendation $textType,
+      sstmRemarks $textType,
+
+      -- Survey Recommendations (RM)
+      ssRecommendationRMName $textType,
+      ssrmRecommendation $textType,
+      ssrmRemarks $textType,
+
+      -- Traffic Trade Recommendations (TM)
+      ttRecommendationTMName $textType,
+      tttmRecommendation $textType,
+      tttmRemarks $textType,
+
+      -- Traffic Trade Recommendations (RM)
+      ttRecommendationRMName $textType,
+      ttrmRecommendation $textType,
+      ttrmRemarks $textType,
+
+      -- Drawings & Construction
+      drawingLayout $textType,
+      issuanceOfDrawings $textType,
+      changeStatusRemarks $textType,
+      constructionStartDate $textType,
+      constructionEndDate $textType,
+      constructionStatusInPercent $intType,
+
+      -- Process Completion Flags (0 = Not Done, 1 = Done)
+      surveynDealerProfileDone $intType DEFAULT 0,
+      trafficTradeDone $intType DEFAULT 0,
+      feasibilityDone $intType DEFAULT 0,
+      negotiationDone $intType DEFAULT 0,
+      mouSignOFFDone $intType DEFAULT 0,
+      joiningFeeDone $intType DEFAULT 0,
+      franchiseAgreementDone $intType DEFAULT 0,
+      feasibilityfinalizationDone $intType DEFAULT 0,
+      explosiveLayoutDone $intType DEFAULT 0,
+      drawingsDone $intType DEFAULT 0,
+      topographyDone $intType DEFAULT 0,
+      issuanceofDrawingsDone $intType DEFAULT 0,
+      appliedInExplosiveDone $intType DEFAULT 0,
+      dcnocDone $intType DEFAULT 0,
+      capexDone $intType DEFAULT 0,
+      leaseAgreementDone $intType DEFAULT 0,
+      hotoDone $intType DEFAULT 0,
+      inaugurationDone $intType DEFAULT 0,
+      constructionDone $intType DEFAULT 0,
+
+      -- Current Status
+      statusId $intType,
+
+      -- Due Dates
+      trafficTradeDueDate $textType,
+      trafficTradeDoneDate $textType,
+      feasibilityDueDate $textType,
+      feasibilityDoneDate $textType,
+      negotiationDueDate $textType,
+      negotiationDoneDate $textType,
+      feasibilityfinalizationDueDate $textType,
+      feasibilityfinalizationDoneDate $textType,
+      mouSignOFFDueDate $textType,
+      mouSignOFFDoneDate $textType,
+      joiningFeeDueDate $textType,
+      joiningFeeDoneDate $textType,
+      franchiseAgreementDueDate $textType,
+      franchiseAgreementDoneDate $textType,
+      explosiveLayoutDueDate $textType,
+      explosiveLayoutDoneDate $textType,
+      issuanceofDrawingsDueDate $textType,
+      issuanceofDrawingsDoneDate $textType,
+      topographyDueDate $textType,
+      topographyDoneDate $textType,
+      drawingsDueDate $textType,
+      drawingsDoneDate $textType,
+      capaxDueDate $textType,
+      capaxDoneDate $textType,
+      appliedInExplosiveDueDate $textType,
+      appliedInExplosiveDoneDate $textType,
+      dcnocDueDate $textType,
+      dcnocDoneDate $textType,
+      leaseAgreementDueDate $textType,
+      leaseAgreementDoneDate $textType,
+      constructionDueDate $textType,
+      constructionDoneDate $textType,
+      hotoDueDate $textType,
+      hotoDoneDate $textType,
+      inaugurationDueDate $textType,
+      inaugurationDoneDate $textType
+    );
   ''';
 
-  static String createCityTable = '''
+  static String createIndexesOnApplicationTable =
+      '''
+    CREATE INDEX IF NOT EXISTS idx_applications_applicationId ON ${AppDatabase.applicationTable}(applicationId);
+    CREATE INDEX IF NOT EXISTS idx_applications_statusId ON ${AppDatabase.applicationTable}(statusId);
+    CREATE INDEX IF NOT EXISTS idx_applications_cityName ON ${AppDatabase.applicationTable}(cityName);
+    CREATE INDEX IF NOT EXISTS idx_applications_priority ON ${AppDatabase.applicationTable}(priority);
+    CREATE INDEX IF NOT EXISTS idx_applications_entryCode ON ${AppDatabase.applicationTable}(entryCode);
+    CREATE INDEX IF NOT EXISTS idx_applications_siteStatusId ON ${AppDatabase.applicationTable}(siteStatusId);
+    CREATE INDEX IF NOT EXISTS idx_applications_applicationReceiveDate ON ${AppDatabase.applicationTable}(applicationReceiveDate);
+  ''';
+
+  static String createCityTable =
+      '''
     CREATE TABLE IF NOT EXISTS ${AppDatabase.cityTable} (
       id $idType,
       cityId $intType UNIQUE,
@@ -158,23 +248,25 @@ class CreateDbQueries {
     )
   ''';
 
-  static String createTrafficTradeTable = '''
+  static String createTrafficTradeTable =
+      '''
     CREATE TABLE IF NOT EXISTS ${AppDatabase.trafficTradeTable} (
       id $idType,
       trafficTradeId $intType UNIQUE,
       applicationId $intType,
       proposedSiteName $textType,
-      estimateDailyDieselSale $intType,
-      estimateDailySuperSale $intType,
-      estimateLubricantSale $intType,
-      expectedLeaseRentPerManth $intType,
+      estimateDailyDieselSale $realType,
+      estimateDailySuperSale $realType,
+      estimateLubricantSale $realType,
+      expectedLeaseRentPerManth $realType,
       nfrFacility $textType,
       nfrName $textType,
       nflFacilityAvailable $textType
     )
   ''';
 
-  static String createMasterListsTable = '''
+  static String createMasterListsTable =
+      '''
       CREATE TABLE ${AppDatabase.masterListsTable} (
         id $idType,
         ${MasterListTypeTable.databaseColName} $textType UNIQUE,
@@ -182,14 +274,16 @@ class CreateDbQueries {
       )
     ''';
 
-  static String syncMetadataTable = '''
+  static String syncMetadataTable =
+      '''
       CREATE TABLE ${AppDatabase.syncMetadataTable} (
         id $idType,
         lastSyncTime $textType
       )
     ''';
 
-  static String createSurveyFormsTable = '''
+  static String createSurveyFormsTable =
+      '''
   CREATE TABLE ${AppDatabase.surveyFormsTable} (
     id $idType,
     applicationId $textType UNIQUE,
@@ -236,7 +330,8 @@ class CreateDbQueries {
   )
 ''';
 
-  static String createTrafficTradeFormsTable = '''
+  static String createTrafficTradeFormsTable =
+      '''
   CREATE TABLE ${AppDatabase.trafficTradeFormsTable} (
     id $idType,
     applicationId $textType UNIQUE,
@@ -265,9 +360,10 @@ class CreateDbQueries {
   )
 ''';
 
-  static String createUserInfoTable = '''
+  static String createUserInfoTable =
+      '''
     CREATE TABLE ${AppDatabase.userInfoTable} (
-      userId INTEGER PRIMARY KEY,
+      userId $intType PRIMARY KEY,
       userName $textType,
       fullName $textType,
       companyId $intType,
@@ -286,7 +382,8 @@ class CreateDbQueries {
     )
   ''';
 
-  static String createSiteStatusTable = '''
+  static String createSiteStatusTable =
+      '''
     CREATE TABLE IF NOT EXISTS ${AppDatabase.siteStatusTable} (
       id $idType,
       siteStatusId $intType UNIQUE,
@@ -294,7 +391,8 @@ class CreateDbQueries {
     )
   ''';
 
-  static String createTmTable = '''
+  static String createTmTable =
+      '''
     CREATE TABLE IF NOT EXISTS ${AppDatabase.tmTable} (
       id $idType,
       tmId $intType,
@@ -302,7 +400,8 @@ class CreateDbQueries {
     )
   ''';
 
-  static String createRmTable = '''
+  static String createRmTable =
+      '''
     CREATE TABLE IF NOT EXISTS ${AppDatabase.rmTable} (
       id $idType,
       rmId $intType,

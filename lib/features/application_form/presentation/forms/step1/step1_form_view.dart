@@ -19,6 +19,7 @@ class _Step1FormViewState extends ConsumerState<Step1FormView> {
   final _formKey = GlobalKey<FormState>();
 
   late final TextEditingController _applicantNameController;
+  late final TextEditingController _emailController;
   late final TextEditingController _contactPersonController;
   late final TextEditingController _currentlyPresenceController;
   late final TextEditingController _contactNumberController;
@@ -30,6 +31,7 @@ class _Step1FormViewState extends ConsumerState<Step1FormView> {
     final state = ref.read(step1FormControllerProvider);
 
     _applicantNameController = TextEditingController(text: state.applicantName);
+    _emailController = TextEditingController(text: state.email);
     _contactPersonController = TextEditingController(text: state.contactPerson);
     _currentlyPresenceController = TextEditingController(
       text: state.currentlyPresence,
@@ -43,6 +45,7 @@ class _Step1FormViewState extends ConsumerState<Step1FormView> {
   @override
   void dispose() {
     _applicantNameController.dispose();
+    _emailController.dispose();
     _contactPersonController.dispose();
     _currentlyPresenceController.dispose();
     _contactNumberController.dispose();
@@ -84,6 +87,19 @@ class _Step1FormViewState extends ConsumerState<Step1FormView> {
             showClearButton: true,
             isRequired: true,
             onClear: () => step1Controller.clearField('applicantName'),
+          ),
+
+          SizedBox(height: 16.h),
+
+          CustomTextFieldWithTitle(
+            title: "Email*",
+            controller: _emailController,
+            hintText: "Enter email",
+            validator: (v) => v.validate(),
+            onChanged: step1Controller.updateEmail,
+            showClearButton: true,
+            isRequired: true,
+            onClear: () => step1Controller.clearField('email'),
           ),
 
           SizedBox(height: 16.h),

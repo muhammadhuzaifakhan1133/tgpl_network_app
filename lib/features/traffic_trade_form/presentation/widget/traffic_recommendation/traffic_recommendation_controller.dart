@@ -50,12 +50,12 @@ class RecommendationState {
   }
 
   RecommendationState.loadFromApplication(ApplicationModel app)
-      : selectedTM = app.ttRecommendationTmName,
-        selectedRM = app.ttRecommendationRmName,
-        selectedTMRecommendation = app.ttTmRecommendation,
-        selectedRMRecommendation = app.ttRmRecommendation,
-        tmRemarks = app.ttTmRemarks,
-        rmRemarks = app.ttRmRemarks;
+      : selectedTM = app.ttRecommendationTMName,
+        selectedRM = app.ttRecommendationRMName,
+        selectedTMRecommendation = app.tttmRecommendation,
+        selectedRMRecommendation = app.ttrmRecommendation,
+        tmRemarks = app.tttmRemarks,
+        rmRemarks = app.ttrmRemarks;
 
   RecommendationState.loadFromTrafficTradeFormModel(TrafficTradeFormModel form)
       : selectedTM = form.selectedTM,

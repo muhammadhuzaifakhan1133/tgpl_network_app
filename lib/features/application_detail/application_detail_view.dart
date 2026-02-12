@@ -6,15 +6,14 @@ import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/common/widgets/error_widget.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_controller.dart';
 import 'package:tgpl_network/common/widgets/application_fields_shimmer_widget.dart';
+import 'package:tgpl_network/features/application_detail/widgets/applicant_info_card.dart';
 import 'package:tgpl_network/features/application_detail/widgets/contact_dealer_tgpl_card.dart';
 import 'package:tgpl_network/features/application_detail/widgets/dealer_profile_card.dart';
 import 'package:tgpl_network/features/application_detail/widgets/feasibility_card.dart';
 import 'package:tgpl_network/features/application_detail/widgets/site_detail_card.dart';
 import 'package:tgpl_network/features/application_detail/widgets/recommendation_card.dart';
-import 'package:tgpl_network/features/application_detail/widgets/traffic_count_card.dart';
 import 'package:tgpl_network/features/application_detail/widgets/volum_and_financial_estimation_card.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
-import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
 import 'package:tgpl_network/utils/map_utils.dart';
 
 class ApplicationDetailView extends ConsumerWidget {
@@ -28,9 +27,7 @@ class ApplicationDetailView extends ConsumerWidget {
     );
     return state.when(
       data: (application) => _buildDetailView(application),
-      loading: () => ApplicationFieldsShimmer(
-        title: "Application Details",
-      ),
+      loading: () => ApplicationFieldsShimmer(title: "Application Details"),
       error: (error, stack) => Scaffold(body: errorWidget(error.toString())),
     );
   }
@@ -48,31 +45,30 @@ class ApplicationDetailView extends ConsumerWidget {
             child: ListView(
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
               children: [
-                // TODO: Add fields of Application Info
-                // ApplicantInfoCard(
-                //   applicantName: "Huzaifa",
-                //   contactPerson: "Basit",
-                //   currentPresence: "Karachi",
-                //   emergencyContactPerson: "Abu Bakar",
-                //   whatsappNumber: "03001234567",
-                // ),
+                ApplicantInfoCard(
+                  applicantName: application.applicantName ?? "",
+                  contactPerson: application.contactPersonName ?? "",
+                  currentPresence: application.currentlyPresence ?? "",
+                  contactNumber: application.contactNumber ?? "",
+                  whatsappNumber: application.whatsAppNumber ?? "",
+                ),
                 SizedBox(height: 20.h),
                 SiteDetailCard(
                   entryCode: application.entryCode ?? "",
-                  dateConducted:
-                      application.dateConducted?.formatTodMMMyyyy() ?? "",
+                  // dateConducted:
+                  //     application.dateConducted?.formatTodMMMyyyy() ?? "",
                   googleLocation: application.googleLocation ?? "",
                   city: application.cityName ?? "",
                   district: application.district ?? "",
                   priority: application.priority ?? "",
-                  locationAddress: application.locationAddress ?? "",
+                  locationAddress: application.siteAddress ?? "",
                   landmark: application.landmark ?? "",
-                  plotArea: application.plotArea ?? "",
+                  plotArea: application.plotAreaValue.toString(),
                   plotFront: application.plotFront?.toString() ?? "",
                   plotDepth: application.plotDepth?.toString() ?? "",
                   nearestDepo: application.nearestDepo ?? "",
                   distanceFromDepo:
-                      application.distanceFromDetp?.toString() ?? "",
+                      application.distanceFromDepo?.toString() ?? "",
                   typeOfTrade: application.typeOfTradeArea ?? "",
                 ),
                 SizedBox(height: 20.h),
@@ -82,14 +78,14 @@ class ApplicationDetailView extends ConsumerWidget {
                   sourceName: application.sourceName ?? "",
                   // TODO: Add this field in Applicaiton Model
                   conductedBy: "",
-                  dealerName: application.dealerName ?? "",
-                  dealerContact: application.dealerContact ?? "",
+                  dealerName: "",
+                  dealerContact: "",
                   referenceBy: application.referedBy ?? "",
                 ),
                 SizedBox(height: 20.h),
                 DealerProfileCard(
                   isDealer: application.isThisDealerSite ?? "",
-                  platform: application.platform ?? "",
+                  platform: application.platForm ?? "",
                   otherDealerBusinesses: application.whatOtherBusiness ?? "",
                   dealerInvolvementInBusiness:
                       application.howInvolveDealerInPetrol ?? "",
@@ -103,21 +99,22 @@ class ApplicationDetailView extends ConsumerWidget {
                 ),
                 SizedBox(height: 20.h),
                 RecommendationCard(
-                  tm: application.ssRecommendationTmName ?? "",
-                  tmRecommend: application.ssTmRecommendation ?? "",
-                  tmRemarks: application.ssTmRemarks ?? "",
-                  rm: application.ssRecommendationRmName ?? "",
-                  rmRecommend: application.ssRmRecommendation ?? "",
-                  rmRemarks: application.ssRmRemarks ?? "",
+                  tm: application.ssRecommendationTMName ?? "",
+                  tmRecommend: application.sstmRecommendation ?? "",
+                  tmRemarks: application.sstmRemarks ?? "",
+                  rm: application.ssRecommendationRMName ?? "",
+                  rmRecommend: application.ssrmRecommendation ?? "",
+                  rmRemarks: application.ssrmRemarks ?? "",
                 ),
                 // is traffic trade done?
                 if (application.trafficTradeDone == 1) ...[
                   SizedBox(height: 20.h),
-                  TrafficCountCard(
-                    cars: application.carCount?.toString() ?? "",
-                    bikes: application.bikeCount?.toString() ?? "",
-                    trucks: application.truckCount?.toString() ?? "",
-                  ),
+                  // TODO: Add traffic count card
+                  // TrafficCountCard(
+                  //   cars: application.carCount?.toString() ?? "",
+                  //   bikes: application.bikeCount?.toString() ?? "",
+                  //   trucks: application.truckCount?.toString() ?? "",
+                  // ),
                   SizedBox(height: 20.h),
                   VolumAndFinancialEstimationCard(
                     estimatedDailyDieselSales:
@@ -129,18 +126,18 @@ class ApplicationDetailView extends ConsumerWidget {
                     dealerExpectationOfLeaseRentalPerMonth:
                         application.expectedLeaseRentPerManth?.toString() ??
                         "0",
-                    truckPortPotential: application.trucPortPotentail ?? "",
+                    truckPortPotential: application.truckPortPotential ?? "",
                     salamMartPotential: application.salamMartPotential ?? "",
                     restaurantPotential: application.resturantPotential ?? "",
                   ),
                   SizedBox(height: 20.h),
                   RecommendationCard(
-                    tm: application.ttRecommendationTmName ?? "",
-                    tmRecommend: application.ttTmRecommendation ?? "",
-                    tmRemarks: application.ttTmRemarks ?? "",
-                    rm: application.ttRecommendationRmName ?? "",
-                    rmRecommend: application.ttRmRecommendation ?? "",
-                    rmRemarks: application.ttRmRemarks ?? "",
+                    tm: application.ttRecommendationTMName ?? "",
+                    tmRecommend: application.tttmRecommendation ?? "",
+                    tmRemarks: application.tttmRemarks ?? "",
+                    rm: application.ttRecommendationRMName ?? "",
+                    rmRecommend: application.ttrmRecommendation ?? "",
+                    rmRemarks: application.ttrmRemarks ?? "",
                   ),
                 ],
                 if (application.feasibilityDone == 1) ...[

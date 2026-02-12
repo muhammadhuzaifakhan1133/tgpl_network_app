@@ -12,6 +12,7 @@ class AppFormAssembler {
 
     return ApplicationFormModel(
       applicantName: step1Form.applicantName,
+      emailAddress: step1Form.email,
       contactPerson: step1Form.contactPerson,
       currentlyPresence: step1Form.currentlyPresence,
       contactNumber: step1Form.contactNumber,

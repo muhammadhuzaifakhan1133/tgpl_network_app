@@ -27,7 +27,10 @@ class ModuleApplicationContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userProvider).requireValue!;
+    final user = ref.watch(userProvider).value;
+    if (user == null) {
+      return SizedBox.shrink();
+    }
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 8.h),
       margin: EdgeInsets.only(bottom: 14.h),
@@ -67,7 +70,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
           ),
           SizedBox(height: 5.h),
           Text(
-            "${application.dealerName}${application.proposedSiteName1 == null ? '' : ' | ${application.proposedSiteName1}'}",
+            "${application.applicantName}${application.proposedSiteName1 == null ? '' : ' | ${application.proposedSiteName1}'}",
             style: AppTextstyles.googleInter700black28.copyWith(
               fontSize: 20.sp,
               color: AppColors.black2Color,
@@ -93,7 +96,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
                     SizedBox(width: 8.w),
                     Expanded(
                       child: Text(
-                        application.dealerContact ?? '',
+                        application.whatsAppNumber ?? '',
                         style: AppTextstyles.googleInter400Grey14.copyWith(
                           fontSize: 13.sp,
                         ),
@@ -130,7 +133,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
             children: [
               Expanded(
                 child: Text(
-                  "Received: ${application.addDate?.formatTodMMMyyyy() ?? 'N/A'}",
+                  "Received: ${application.applicationReceiveDate?.formatTodMMMyyyy() ?? 'N/A'}",
                   style: AppTextstyles.googleInter400LightGrey12,
                 ),
               ),

@@ -74,13 +74,13 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
                 hintText: "Select city",
                 enableSearch: true,
                 selectedItem: selectedCity,
-                items: dropDownsData.cities.map((city) => city.name).toList(),
+                items: dropDownsData.cities.map((city) => city).toList(),
                 onChanged: (value) {
                   if (value != null) {
-                    step2Controller.updateCity(value.toString());
+                    step2Controller.updateCity(value);
                   }
                 },
-                validator: (v) => v.validate(),
+                validator: (v) => (v?.name ?? "").validate(),
                 isRequired: true,
                 showClearButton: true,
                 onClear: () {
@@ -102,14 +102,14 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
                 hintText: "Select site status",
                 selectedItem: selectedSiteStatus,
                 items: dropDownsData.siteStatuses
-                    .map((status) => status.name)
+                    .map((status) => status)
                     .toList(),
                 onChanged: (value) {
                   if (value != null) {
-                    step2Controller.updateSiteStatus(value.toString());
+                    step2Controller.updateSiteStatus(value);
                   }
                 },
-                validator: (v) => v.validate(),
+                validator: (v) => (v?.name ?? "").validate(),
                 isRequired: true,
                 showClearButton: true,
                 onClear: () {

@@ -9,6 +9,7 @@ import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/features/home_shell/presentation/home_shell_controller.dart';
 import 'package:tgpl_network/features/login/models/login_response_model.dart';
 import 'package:tgpl_network/features/login/presentation/login_controller.dart';
 import 'package:tgpl_network/routes/app_router.dart';
@@ -183,6 +184,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                                   )
                                                   .login();
                                           if (response != null) {
+                                            ref.refresh(homeShellControllerProvider);
                                             ref
                                                 .read(goRouterProvider)
                                                 .go(AppRoutes.dashboard);

@@ -10,8 +10,8 @@ class ApplicationFormSubmissionResponseModel {
   factory ApplicationFormSubmissionResponseModel.fromJson(
       Map<String, dynamic> json) {
     return ApplicationFormSubmissionResponseModel(
-      message: json['message'] as String,
-      success: json['success'] as bool,
+      message: (json['Message'] ?? "") as String,
+      success: (json['Success'] ?? false) as bool,
     );
   }
 }

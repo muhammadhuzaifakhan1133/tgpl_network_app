@@ -41,7 +41,7 @@ class DatabaseHelper {
     await db.execute(CreateDbQueries.createApplicationTable);
 
     // Create index on statusId column
-    await db.execute(CreateDbQueries.createStatusIdIndexOnApplicationTable);
+    await db.execute(CreateDbQueries.createIndexesOnApplicationTable);
 
     // Cities Table
     await db.execute(CreateDbQueries.createCityTable);

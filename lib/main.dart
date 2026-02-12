@@ -9,7 +9,6 @@ import 'package:tgpl_network/common/providers/shared_prefs_provider.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 
-final providerLogger = ProviderLogger();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +25,6 @@ Future<void> main() async {
 
   runApp(
     ProviderScope(
-      observers: [providerLogger],
       overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
       child: const MyApp(),
     ),
@@ -62,28 +60,5 @@ class MyApp extends ConsumerWidget {
         }
       },
     );
-  }
-}
-
-
-final class ProviderLogger extends ProviderObserver {
-  final List<ProviderBase> _providers = [];
-
-  @override
-  void didAddProvider(ProviderObserverContext context, Object? value) {
-    _providers.add(context.provider);
-    super.didAddProvider(context, value);
-  }
-
-  void invalidateAll([Ref? ref1, WidgetRef? ref2]) {
-    for (final provider in _providers) {
-      if (ref1 != null) {
-        ref1.invalidate(provider);
-      }
-      if (ref2 != null) {
-        ref2.invalidate(provider);
-      }
-    }
-    _providers.clear();
   }
 }

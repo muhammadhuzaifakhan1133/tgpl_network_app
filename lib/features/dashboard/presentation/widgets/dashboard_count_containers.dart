@@ -14,7 +14,10 @@ class DashboardCountContainers extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboardData = ref
         .watch(dashboardAsyncControllerProvider)
-        .requireValue;
+        .value;
+    if (dashboardData == null) {
+      return SizedBox.shrink();
+    }
     return Column(
       children: [
         Row(

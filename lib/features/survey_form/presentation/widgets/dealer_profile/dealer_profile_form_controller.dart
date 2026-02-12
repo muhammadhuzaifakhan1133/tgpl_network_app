@@ -79,7 +79,7 @@ class DealerProfileFormState {
 
   DealerProfileFormState.loadFromApplication(ApplicationModel app)
       : isThisDealer = app.isThisDealerSite,
-        dealerPlatform = app.platform,
+        dealerPlatform = app.platForm,
         dealerBusinesses = app.whatOtherBusiness,
         selectedDealerInvolvement = app.howInvolveDealerInPetrol,
         isDealerReadyToInvest = app.isDealerReadyToCapitalInvestment,

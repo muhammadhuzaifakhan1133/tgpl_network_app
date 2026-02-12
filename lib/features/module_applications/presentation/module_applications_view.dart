@@ -56,7 +56,7 @@ class _ModuleApplicationsViewState
           children: [
             Builder(
               builder: (context) {
-                final controller = ref.read(
+                final controller = ref.watch(
                   moduleApplicationsAsyncControllerProvider(
                     widget.subModule,
                   ).notifier,

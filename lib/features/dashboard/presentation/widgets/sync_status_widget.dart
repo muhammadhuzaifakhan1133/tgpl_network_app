@@ -27,7 +27,66 @@ class SyncStatusCard extends StatelessWidget {
         return _buildSynchronizedCard();
       case SyncStatus.loading:
         return SyncStatusCardShimmer();
+      case SyncStatus.error:
+        return _buildErrorCard();
     }
+  }
+
+  Widget _buildErrorCard() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFEF4444), Color(0xFFF87171)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20.r),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(12.w),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Icon(Icons.error, color: Colors.white, size: 28.w),
+          ),
+          SizedBox(width: 16.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Failed to sync data',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  'Last sync attempt was ${getFormattedTimeDuration(lastSyncTime)} ago',
+                  style: TextStyle(color: Colors.white, fontSize: 14.sp),
+                ),
+              ],
+            ),
+          ),
+          if (onPressActionButton != null)
+            IconButton(
+              onPressed: onPressActionButton,
+              icon: Icon(Icons.refresh, size: 24.w),
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.white.withOpacity(0.2),
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.all(12.w),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
   Widget _buildOfflineCard() {
@@ -161,11 +220,7 @@ class SyncStatusCard extends StatelessWidget {
               color: Colors.white.withOpacity(0.2),
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: Icon(
-              Icons.check_circle,
-              color: Colors.white,
-              size: 28.w,
-            ),
+            child: Icon(Icons.check_circle, color: Colors.white, size: 28.w),
           ),
           SizedBox(width: 16.w),
           Expanded(

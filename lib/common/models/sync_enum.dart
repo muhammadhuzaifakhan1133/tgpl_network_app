@@ -3,4 +3,5 @@ enum SyncStatus {
   syncing,
   synchronized,
   loading,
+  error,
 }

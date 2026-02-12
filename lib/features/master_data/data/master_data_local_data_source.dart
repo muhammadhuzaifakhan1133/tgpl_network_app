@@ -33,8 +33,8 @@ abstract class MasterDataLocalDataSource {
   Future<List<String>> getYNNList();
   Future<List<String>> getNFRList();
   Future<List<CityModel>> getCities();
-  Future<List<TmRmModel> > getTmData();
-  Future<List<TmRmModel> > getRmData();
+  Future<List<TmRmModel>> getTmData();
+  Future<List<TmRmModel>> getRmData();
   Future<UserModel?> getUserInfo();
   // Future<void> clearAllData();
 }
@@ -141,9 +141,11 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
 
       final batch = txn.batch();
       for (var item in chunk) {
+        if (i == 0) debugPrint("Inserting into $table: $item");
         batch.insert(table, item);
       }
-      await batch.commit(noResult: true);
+      final result = await batch.commit(noResult: true);
+      if (i == 0) debugPrint("Result of inserting chunk into $table: $result");
     }
   }
 
@@ -194,20 +196,16 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
   }
 
   @override
-   Future<List<TmRmModel> > getTmData() async {
+  Future<List<TmRmModel>> getTmData() async {
     final db = await _databaseHelper.database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      AppDatabase.tmTable,
-    );
+    final List<Map<String, dynamic>> maps = await db.query(AppDatabase.tmTable);
     return maps.map((map) => TmRmModel.fromDatabaseTmMap(map)).toList();
   }
 
   @override
-   Future<List<TmRmModel> > getRmData() async {
+  Future<List<TmRmModel>> getRmData() async {
     final db = await _databaseHelper.database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      AppDatabase.rmTable,
-    );
+    final List<Map<String, dynamic>> maps = await db.query(AppDatabase.rmTable);
     return maps.map((map) => TmRmModel.fromDatabaseRmMap(map)).toList();
   }
 

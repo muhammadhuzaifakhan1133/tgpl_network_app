@@ -7,7 +7,7 @@ import 'package:tgpl_network/common/widgets/section_detail_card.dart';
 
 class SiteDetailCard extends ConsumerWidget {
   final String entryCode;
-  final String dateConducted;
+  // final String dateConducted;
   final String googleLocation;
   final String city;
   final String district;
@@ -24,7 +24,7 @@ class SiteDetailCard extends ConsumerWidget {
   const SiteDetailCard({
     super.key,
     required this.entryCode,
-    required this.dateConducted,
+    // required this.dateConducted,
     required this.googleLocation,
     required this.city,
     required this.district,
@@ -60,12 +60,12 @@ class SiteDetailCard extends ConsumerWidget {
           title: "Entry Code",
           hintText: entryCode,
         ),
-        SizedBox(height: 10.h),
-        CustomTextFieldWithTitle(
-          readOnly: true,
-          title: "Date Conducted",
-          hintText: dateConducted,
-        ),
+        // SizedBox(height: 10.h),
+        // CustomTextFieldWithTitle(
+        //   readOnly: true,
+        //   title: "Date Conducted",
+        //   hintText: dateConducted,
+        // ),
         SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,

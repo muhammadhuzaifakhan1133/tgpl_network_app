@@ -15,7 +15,7 @@ final appFormSubmissionProvider =
     );
 
 final formPrerequisiteValuesProvider =
-    AsyncNotifierProvider<
+    AsyncNotifierProvider.autoDispose<
       FormPrerequisiteValuesController,
       AppFormDropdownsValuesModel
     >(FormPrerequisiteValuesController.new);

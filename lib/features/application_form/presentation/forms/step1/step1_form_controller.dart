@@ -8,6 +8,7 @@ final step1FormControllerProvider =
 
 class Step1FormState {
   final String? applicantName;
+  final String? email;
   final String? contactPerson;
   final String? currentlyPresence;
   final String? contactNumber;
@@ -16,6 +17,7 @@ class Step1FormState {
 
   const Step1FormState({
     this.applicantName = '',
+    this.email = '',
     this.contactPerson = '',
     this.currentlyPresence = '',
     this.contactNumber = '',
@@ -25,6 +27,7 @@ class Step1FormState {
 
   Step1FormState copyWith({
     String? applicantName,
+    String? email,
     String? contactPerson,
     String? currentlyPresence,
     String? contactNumber,
@@ -34,6 +37,7 @@ class Step1FormState {
   }) {
     return Step1FormState(
       applicantName: fieldsToNull.apply('applicantName', applicantName, this.applicantName),
+      email: fieldsToNull.apply('email', email, this.email),
       contactPerson: fieldsToNull.apply('contactPerson', contactPerson, this.contactPerson),
       currentlyPresence: fieldsToNull.apply('currentlyPresence', currentlyPresence, this.currentlyPresence),
       contactNumber: fieldsToNull.apply('contactNumber', contactNumber, this.contactNumber),
@@ -51,6 +55,10 @@ class Step1FormController extends Notifier<Step1FormState> {
 
   void updateApplicantName(String value) {
     state = state.copyWith(applicantName: value);
+  }
+
+  void updateEmail(String value) {
+    state = state.copyWith(email: value);
   }
 
   void updateContactPerson(String value) {

@@ -85,7 +85,7 @@ class ApplicantInfoFormCard extends ConsumerWidget {
           hintText: "e.g. Asif",
           readOnly: true,
           initialValue:
-              state.conductedBy ?? ref.read(userProvider).value?.userName,
+              state.conductedBy ?? ref.watch(userProvider).value?.userName,
         ),
         SizedBox(height: 10.h),
         Consumer(

@@ -179,7 +179,7 @@ class MapView extends ConsumerWidget {
     return Expanded(
       child: Consumer(
         builder: (context, ref, _) {
-          final citiesAsync = ref.read(cityNamesProvider);
+          final citiesAsync = ref.watch(cityNamesProvider);
           final selectedCity = ref.watch(selectedCityForMapProvider);
           return CustomDropDown(
             items: citiesAsync.when(

@@ -9,13 +9,13 @@ import 'package:tgpl_network/features/master_data/models/application_model.dart'
 final appStatusesProvider = Provider.family
     .autoDispose<List<ApplicationStatus>, int>((ref, index) {
       final app = ref
-          .read(applicationControllerProvider)
+          .watch(applicationControllerProvider)
           .requireValue
           .applications[index];
       return [
         ApplicationStatus(
           title: "Survey Profile",
-          status: app.surveyDealerProfileDone != 0,
+          status: app.surveynDealerProfileDone != 0,
         ),
         ApplicationStatus(
           title: "Traffic Trade",
@@ -31,9 +31,9 @@ final appStatusesProvider = Provider.family
         ),
         ApplicationStatus(
           title: "Feasibility Finalization",
-          status: app.feasibilityFinalizationDone != 0,
+          status: app.feasibilityfinalizationDone != 0,
         ),
-        ApplicationStatus(title: "MOU Sign", status: app.mouSignOffDone != 0),
+        ApplicationStatus(title: "MOU Sign", status: app.mouSignOFFDone != 0),
         ApplicationStatus(
           title: "Joining Fee",
           status: app.joiningFeeDone != 0,
@@ -50,13 +50,13 @@ final appStatusesProvider = Provider.family
         ApplicationStatus(title: "Topography", status: app.topographyDone != 0),
         ApplicationStatus(
           title: "Issuance of Drawing",
-          status: app.issuanceOfDrawingsDone != 0,
+          status: app.issuanceofDrawingsDone != 0,
         ),
         ApplicationStatus(
           title: "Applied in Explosive",
           status: app.appliedInExplosiveDone != 0,
         ),
-        ApplicationStatus(title: "DC NOC", status: app.dcNocDone != 0),
+        ApplicationStatus(title: "DC NOC", status: app.dcnocDone != 0),
         ApplicationStatus(title: "Capex", status: app.capexDone != 0),
         ApplicationStatus(
           title: "Lease Agreement",

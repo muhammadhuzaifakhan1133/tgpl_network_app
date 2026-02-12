@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/application_form/models/site_status_model.dart';
+import 'package:tgpl_network/features/master_data/models/city_model.dart';
 import 'package:tgpl_network/utils/extensions/nullable_fields_helper.dart';
 
 final step2FormControllerProvider =
@@ -7,8 +9,8 @@ final step2FormControllerProvider =
 );
 
 class Step2FormState {
-  final String? selectedCity;
-  final String? selectedSiteStatus;
+  final CityModel? selectedCity;
+  final SiteStatusModel? selectedSiteStatus;
   final String? selectedPriority;
   final String? source;
   final String? sourceName;
@@ -24,8 +26,8 @@ class Step2FormState {
   });
 
   Step2FormState copyWith({
-    String? selectedCity,
-    String? selectedSiteStatus,
+    CityModel? selectedCity,
+    SiteStatusModel? selectedSiteStatus,
     String? selectedPriority,
     String? source,
     String? sourceName,
@@ -49,11 +51,11 @@ class Step2FormController extends Notifier<Step2FormState> {
     return const Step2FormState();
   }
 
-  void updateCity(String value) {
+  void updateCity(CityModel value) {
     state = state.copyWith(selectedCity: value);
   }
 
-  void updateSiteStatus(String value) {
+  void updateSiteStatus(SiteStatusModel value) {
     state = state.copyWith(selectedSiteStatus: value);
   }
 

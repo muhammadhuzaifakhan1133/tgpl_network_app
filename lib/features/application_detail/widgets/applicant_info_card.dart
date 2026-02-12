@@ -10,7 +10,7 @@ class ApplicantInfoCard extends ConsumerWidget {
   final String applicantName;
   final String contactPerson;
   final String currentPresence;
-  final String emergencyContactPerson;
+  final String contactNumber;
   final String whatsappNumber;
 
   const ApplicantInfoCard({
@@ -18,7 +18,7 @@ class ApplicantInfoCard extends ConsumerWidget {
     required this.applicantName,
     required this.contactPerson,
     required this.currentPresence,
-    required this.emergencyContactPerson,
+    required this.contactNumber,
     required this.whatsappNumber,
   });
 
@@ -58,8 +58,8 @@ class ApplicantInfoCard extends ConsumerWidget {
         SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
-          title: "Contact Person",
-          hintText: emergencyContactPerson,
+          title: "Contact Number",
+          hintText: contactNumber,
         ),
         SizedBox(height: 10.h),
         CustomTextFieldWithTitle(

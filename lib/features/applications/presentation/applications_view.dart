@@ -121,9 +121,12 @@ class _ApplicationsListView extends ConsumerWidget {
             builder: (context, ref, child) {
               final isExpanded = ref.watch(
                 applicationControllerProvider.select(
-                  (state) => state.requireValue.isApplicationsExpanded[index],
+                  (state) => state.value?.isApplicationsExpanded[index],
                 ),
               );
+              if (isExpanded == null) {
+                return SizedBox.shrink();
+              }
               return GestureDetector(
                 onTap: () {
                   ref

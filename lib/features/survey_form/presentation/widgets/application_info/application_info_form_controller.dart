@@ -112,7 +112,10 @@ class ApplicationInfoFormState {
       selectedPriority = app.priority,
       applicantId = app.applicationId?.toString(),
       entryCode = app.entryCode,
-      dateConducted = app.dateConducted,
+      // TODO: Add dateConducted and conductedBy to ApplicationModel and uncomment this
+      // dateConducted = app.dateConducted,
+      // conductedBy = app.conductedBy,
+      dateConducted = null,
       conductedBy = null,
       googleLocation = app.googleLocation,
       district = app.district,

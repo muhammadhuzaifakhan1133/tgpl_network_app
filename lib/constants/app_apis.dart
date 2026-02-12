@@ -1,6 +1,6 @@
 class AppApis {
-  // static const String baseUrl = "http://192.168.0.61:8087"; // Local Test Server
-  static const String baseUrl = "http://202.141.227.196:8086"; // Live Production Server
+  static const String baseUrl = "http://192.168.0.61:8087"; // Local Test Server
+  // static const String baseUrl = "http://202.141.227.196:8086"; // Live Production Server
   static const int connectionTimeout = 30000;
   static const int receiveTimeout = 30000;
   static const String loginEndpoint = "/token";
@@ -14,5 +14,5 @@ class AppApis {
   static const String submitTrafficTradeFormEndpoint =
       "/api/TrafficTradeForm/SubmitTrafficTradeForm";
   static const String submitApplicationFormEndpoint =
-      "/api/ApplicationForm/SubmitApplicationForm";
+      "/api/DataForApp/SaveNewApplication";
 }

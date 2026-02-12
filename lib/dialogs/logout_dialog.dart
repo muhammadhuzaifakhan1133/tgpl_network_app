@@ -56,10 +56,13 @@ Future<dynamic> logoutDialog(BuildContext context, WidgetRef ref) {
                 return;
               }
               // logout
-              providerLogger.invalidateAll(null, ref);
-              ref.read(goRouterProvider).go(AppRoutes.welcome);
+              ref
+                  .read(homeShellControllerProvider.notifier)
+                  .refreshAllDependentProviders();
+              ref.invalidate(homeShellControllerProvider);
               ref.read(sharedPrefsDataSourceProvider).clearAuthData();
               DatabaseHelper.instance.clearAllTables();
+              ref.read(goRouterProvider).go(AppRoutes.welcome);
             },
             child: Text(
               'Logout',

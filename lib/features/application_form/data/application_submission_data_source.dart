@@ -11,17 +11,17 @@ class ApplicationSubmissionDataSource {
   Future<ApplicationFormSubmissionResponseModel> submitApplication(
     ApplicationFormModel data,
   ) async {
-    // Simulating network delay
-    await Future.delayed(const Duration(seconds: 2));
-    return ApplicationFormSubmissionResponseModel(
-      success: true,
-      message: 'Application submitted successfully',
-    );
-    // final response = await _dioClient.post(
-    //   AppApis.submitApplicationFormEndpoint,
-    //   data: data.toApiMap(),
+    // // Simulating network delay
+    // await Future.delayed(const Duration(seconds: 2));
+    // return ApplicationFormSubmissionResponseModel(
+    //   success: true,
+    //   message: 'Application submitted successfully',
     // );
-    // return ApplicationFormSubmissionResponseModel.fromJson(response.data);
+    final response = await _dioClient.post(
+      AppApis.submitApplicationFormEndpoint,
+      data: data.toApiMap(),
+    );
+    return ApplicationFormSubmissionResponseModel.fromJson(response.data);
   }
 }
 
