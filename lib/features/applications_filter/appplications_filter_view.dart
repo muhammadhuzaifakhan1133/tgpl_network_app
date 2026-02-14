@@ -242,6 +242,7 @@ class FilterScreen extends ConsumerWidget {
                               showClearButton: true,
                               title: "Dealer Name",
                               hintText: "Dealer Name",
+                              initialValue: state.dealerName,
                               onChanged: (v) {
                                 controller.updateTextFields(dealerName: v);
                               },
@@ -253,6 +254,7 @@ class FilterScreen extends ConsumerWidget {
                               showClearButton: true,
                               title: "Dealer Contact",
                               hintText: "Dealer Contact",
+                              initialValue: state.dealerContact,
                               onChanged: (v) {
                                 controller.updateTextFields(dealerContact: v);
                               },
@@ -280,6 +282,7 @@ class FilterScreen extends ConsumerWidget {
                               showClearButton: true,
                               title: "Entry Code",
                               hintText: "Entry Code",
+                              initialValue: state.entryCode,
                               onChanged: (v) {
                                 controller.updateTextFields(entryCode: v);
                               },
@@ -295,6 +298,7 @@ class FilterScreen extends ConsumerWidget {
                               showClearButton: true,
                               title: "Prepared By",
                               hintText: "Prepared By",
+                              initialValue: state.preparedBy,
                               onChanged: (v) {
                                 controller.updateTextFields(preparedBy: v);
                               },
@@ -306,83 +310,9 @@ class FilterScreen extends ConsumerWidget {
                               showClearButton: true,
                               title: "District",
                               hintText: "District",
+                              initialValue: state.district,
                               onChanged: (v) {
                                 controller.updateTextFields(district: v);
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 13.h),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Consumer(
-                              builder: (context, ref, child) {
-                                final selectedReceiveDate = ref.watch(
-                                  filterSelectionProvider.select(
-                                    (s) => s.receiveDate,
-                                  ),
-                                );
-                                return CustomTextFieldWithTitle(
-                                  onTap: () {
-                                    customDatePicker(
-                                      context: context,
-                                      onUserSelectedDate: (date) {
-                                        controller.updateDates(
-                                          receiveDate: date.formatToDDMMYYY(),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  title: "Recev. Date",
-                                  hintText: selectedReceiveDate.orDefault(
-                                    "dd/mm/yyyy",
-                                  ),
-                                  readOnly: true,
-                                  onClear: () {
-                                    controller.clearFields(["receiveDate"]);
-                                  },
-                                  showClearButton:
-                                      !selectedReceiveDate.isNullOrEmpty,
-                                );
-                              },
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
-                          Expanded(
-                            child: Consumer(
-                              builder: (context, ref, child) {
-                                final selectedCondDate = ref.watch(
-                                  filterSelectionProvider.select(
-                                    (s) => s.condDate,
-                                  ),
-                                );
-                                return CustomTextFieldWithTitle(
-                                  onTap: () {
-                                    customDatePicker(
-                                      context: context,
-                                      onUserSelectedDate: (date) {
-                                        controller.updateDates(
-                                          condDate: date.formatToDDMMYYY(),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  title: "Cond. Date",
-                                  hintText: selectedCondDate.orDefault(
-                                    "dd/mm/yyyy",
-                                  ),
-                                  controller: TextEditingController(
-                                    text: selectedCondDate ?? "",
-                                  ),
-                                  readOnly: true,
-                                  onClear: () {
-                                    controller.clearFields(["condDate"]);
-                                  },
-                                  showClearButton:
-                                      !selectedCondDate.isNullOrEmpty,
-                                );
                               },
                             ),
                           ),
@@ -396,6 +326,7 @@ class FilterScreen extends ConsumerWidget {
                               showClearButton: true,
                               title: "Address",
                               hintText: "Address",
+                              initialValue: state.address,
                               onChanged: (v) {
                                 controller.updateTextFields(address: v);
                               },
@@ -407,6 +338,7 @@ class FilterScreen extends ConsumerWidget {
                               showClearButton: true,
                               title: "Referred By",
                               hintText: "Referred By",
+                              initialValue: state.referredBy,
                               onChanged: (v) {
                                 controller.updateTextFields(referredBy: v);
                               },
@@ -422,6 +354,7 @@ class FilterScreen extends ConsumerWidget {
                               showClearButton: true,
                               title: "Source",
                               hintText: "Source",
+                              initialValue: state.source,
                               onChanged: (v) {
                                 controller.updateTextFields(source: v);
                               },
@@ -433,6 +366,7 @@ class FilterScreen extends ConsumerWidget {
                               showClearButton: true,
                               title: "Source Name",
                               hintText: "Source Name",
+                              initialValue: state.sourceName,
                               onChanged: (v) {
                                 controller.updateTextFields(sourceName: v);
                               },

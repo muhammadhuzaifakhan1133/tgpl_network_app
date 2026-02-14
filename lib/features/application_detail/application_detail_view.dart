@@ -76,10 +76,9 @@ class ApplicationDetailView extends ConsumerWidget {
                   npName: application.npPersonName ?? "",
                   source: application.source ?? "",
                   sourceName: application.sourceName ?? "",
-                  // TODO: Add this field in Applicaiton Model
-                  conductedBy: "",
-                  dealerName: "",
-                  dealerContact: "",
+                  conductedBy: application.preparedBy ?? "",
+                  dealerName: application.applicantName ?? "",
+                  dealerContact: application.contactNumber ?? "",
                   referenceBy: application.referedBy ?? "",
                 ),
                 SizedBox(height: 20.h),

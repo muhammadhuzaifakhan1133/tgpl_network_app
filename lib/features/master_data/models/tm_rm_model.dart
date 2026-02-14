@@ -1,4 +1,6 @@
-class TmRmModel {
+import 'package:equatable/equatable.dart';
+
+class TmRmModel extends Equatable {
   final String id;
   final String name;
 
@@ -41,4 +43,7 @@ class TmRmModel {
       name: map['name'] as String,
     );
   }
-}
+
+  @override
+  List<Object?> get props => [id, name];
+} 

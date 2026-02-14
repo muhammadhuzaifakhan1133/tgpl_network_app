@@ -1,9 +1,14 @@
-class CityModel {
+import 'package:equatable/equatable.dart';
+
+class CityModel extends Equatable {
   final int? id;
   final int cityId;
   final String name;
 
   CityModel({this.id, required this.cityId, required this.name});
+
+  @override
+  List<Object?> get props => [id, cityId, name];
 
   factory CityModel.fromAPIResponseMap(Map<String, dynamic> map) {
     return CityModel(cityId: map['Id'], name: map['Name']);

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:tgpl_network/common/models/sort_order_direction_enum.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_state.dart';
 import 'package:tgpl_network/common/models/yes_no_enum_with_extension.dart';
@@ -16,7 +17,7 @@ class ApplicationModel {
     "$alias.id",
     "$alias.applicationId",
     "$alias.entryCode",
-    "$alias.dealerName",
+    "$alias.applicantName",
     "$alias.googleLocation",
     "$alias.siteAddress",
     "$alias.statusId",
@@ -49,6 +50,7 @@ class ApplicationModel {
   final String? contactNumber;
   final String? whatsAppNumber;
   final String? currentlyPresence;
+  final String? preparedBy;
   final int? cityId;
   final String? cityName;
   final String? district;
@@ -95,6 +97,9 @@ class ApplicationModel {
   final double? superUGTSizeLiter;
   final int? numberOfDieselDispenser;
   final int? numberOfSuperDispenser;
+  final int? carCount;
+  final int? bikeCount;
+  final int? busCount;
   final String? currentlyCanopyCondition;
   final String? conditionOfDispensors;
   final String? conditionOfForecourt;
@@ -210,6 +215,7 @@ class ApplicationModel {
     this.contactNumber,
     this.whatsAppNumber,
     this.currentlyPresence,
+    this.preparedBy,
     this.cityId,
     this.cityName,
     this.district,
@@ -256,6 +262,9 @@ class ApplicationModel {
     this.superUGTSizeLiter,
     this.numberOfDieselDispenser,
     this.numberOfSuperDispenser,
+    this.carCount,
+    this.bikeCount,
+    this.busCount,
     this.currentlyCanopyCondition,
     this.conditionOfDispensors,
     this.conditionOfForecourt,
@@ -373,6 +382,7 @@ class ApplicationModel {
       contactNumber: json['ContactNumber'],
       whatsAppNumber: json['WhatsAppNumber'],
       currentlyPresence: json['CurrentlyPresence'],
+      preparedBy: json['PreparedBy'],
       cityId: int.tryParse(json['CityId'].toString()),
       cityName: json['CityName'],
       district: json['District'],
@@ -394,31 +404,55 @@ class ApplicationModel {
       whatOtherBusiness: json['WhatOtherBusiness'],
       howInvolveDealerInPetrol: json['HowInvolveDealerInPetrol'],
       isDealerSole: json['IsDealerSole'],
-      isDealerReadyToCapitalInvestment: json['IsDealerReadyToCapitalInvestment'],
+      isDealerReadyToCapitalInvestment:
+          json['IsDealerReadyToCapitalInvestment'],
       whyDoesTaj: json['WhyDoesTaj'],
-      managerCurrentSalary: double.tryParse(json['ManagerCurrentSalary'].toString()),
+      managerCurrentSalary: double.tryParse(
+        json['ManagerCurrentSalary'].toString(),
+      ),
       isAgreeToTGPLStandard: json['IsAgreeToTGPLStandard'],
       proposedSiteName1: json['ProposedSiteName1'],
       proposedSiteName2: json['ProposedSiteName2'],
       proposedSiteName3: json['ProposedSiteName3'],
-      estimateDailyDieselSale: double.tryParse(json['EstimateDailyDieselSale'].toString()),
-      estimateDailySuperSale: double.tryParse(json['EstimateDailySuperSale'].toString()),
-      estimateLubricantSale: double.tryParse(json['EstimateLubricantSale'].toString()),
-      estimatedDailyHOBCSale: double.tryParse(json['EstimatedDailyHOBCSale'].toString()),
-      expectedLeaseRentPerManth: double.tryParse(json['ExpectedLeaseRentPerManth'].toString()),
+      estimateDailyDieselSale: double.tryParse(
+        json['EstimateDailyDieselSale'].toString(),
+      ),
+      estimateDailySuperSale: double.tryParse(
+        json['EstimateDailySuperSale'].toString(),
+      ),
+      estimateLubricantSale: double.tryParse(
+        json['EstimateLubricantSale'].toString(),
+      ),
+      estimatedDailyHOBCSale: double.tryParse(
+        json['EstimatedDailyHOBCSale'].toString(),
+      ),
+      expectedLeaseRentPerManth: double.tryParse(
+        json['ExpectedLeaseRentPerManth'].toString(),
+      ),
       truckPortPotential: json['TruckPortPotential'],
       salamMartPotential: json['SalamMartPotential'],
       resturantPotential: json['ResturantPotential'],
       isThisConversionPump: json['IsThisConversionPump'],
       currentOMCName: json['CurrentOMCName'],
       isThisDealerInvestedSite: json['IsThisDealerInvestedSite'],
-      numberOfOperationYear: double.tryParse(json['NumberOfOperationYear'].toString()),
+      numberOfOperationYear: double.tryParse(
+        json['NumberOfOperationYear'].toString(),
+      ),
       isCurrentlyOperational: json['IsCurrentlyOperational'],
       currentLeaseExpried: json['CurrentLeaseExpried'],
-      dieselUGTSizeLiter: double.tryParse(json['DieselUGTSizeLiter'].toString()),
+      dieselUGTSizeLiter: double.tryParse(
+        json['DieselUGTSizeLiter'].toString(),
+      ),
       superUGTSizeLiter: double.tryParse(json['SuperUGTSizeLiter'].toString()),
-      numberOfDieselDispenser: int.tryParse(json['NumberOfDieselDispenser'].toString()),
-      numberOfSuperDispenser: int.tryParse(json['NumberOfSuperDispenser'].toString()),
+      numberOfDieselDispenser: int.tryParse(
+        json['NumberOfDieselDispenser'].toString(),
+      ),
+      numberOfSuperDispenser: int.tryParse(
+        json['NumberOfSuperDispenser'].toString(),
+      ),
+      carCount: int.tryParse(json['CarCount'].toString()),
+      bikeCount: int.tryParse(json['BikeCount'].toString()),
+      busCount: int.tryParse(json['BusCount'].toString()),
       currentlyCanopyCondition: json['CurrentlyCanopyCondition'],
       conditionOfDispensors: json['ConditionOfDispensors'],
       conditionOfForecourt: json['ConditionOfForecourt'],
@@ -467,20 +501,32 @@ class ApplicationModel {
       changeStatusRemarks: json['ChangeStatusRemarks'],
       constructionStartDate: json['ConstructionStartDate'],
       constructionEndDate: json['ConstructionEndDate'],
-      constructionStatusInPercent: int.tryParse(json['ConstructionStatusInPercent'].toString()),
-      surveynDealerProfileDone: int.tryParse(json['SurveynDealerProfileDone'].toString()),
+      constructionStatusInPercent: int.tryParse(
+        json['ConstructionStatusInPercent'].toString(),
+      ),
+      surveynDealerProfileDone: int.tryParse(
+        json['SurveynDealerProfileDone'].toString(),
+      ),
       trafficTradeDone: int.tryParse(json['TrafficTradeDone'].toString()),
       feasibilityDone: int.tryParse(json['FeasibilityDone'].toString()),
       negotiationDone: int.tryParse(json['NegotiationDone'].toString()),
       mouSignOFFDone: int.tryParse(json['MOUSignOFFDone'].toString()),
       joiningFeeDone: int.tryParse(json['JoiningFeeDone'].toString()),
-      franchiseAgreementDone: int.tryParse(json['FranchiseAgreementDone'].toString()),
-      feasibilityfinalizationDone: int.tryParse(json['FeasibilityfinalizationDone'].toString()),
+      franchiseAgreementDone: int.tryParse(
+        json['FranchiseAgreementDone'].toString(),
+      ),
+      feasibilityfinalizationDone: int.tryParse(
+        json['FeasibilityfinalizationDone'].toString(),
+      ),
       explosiveLayoutDone: int.tryParse(json['ExplosiveLayoutDone'].toString()),
       drawingsDone: int.tryParse(json['DrawingsDone'].toString()),
       topographyDone: int.tryParse(json['TopographyDone'].toString()),
-      issuanceofDrawingsDone: int.tryParse(json['IssuanceofDrawingsDone'].toString()),
-      appliedInExplosiveDone: int.tryParse(json['AppliedInExplosiveDone'].toString()),
+      issuanceofDrawingsDone: int.tryParse(
+        json['IssuanceofDrawingsDone'].toString(),
+      ),
+      appliedInExplosiveDone: int.tryParse(
+        json['AppliedInExplosiveDone'].toString(),
+      ),
       dcnocDone: int.tryParse(json['DCNOCDone'].toString()),
       capexDone: int.tryParse(json['CapexDone'].toString()),
       leaseAgreementDone: int.tryParse(json['LeaseAgreementDone'].toString()),
@@ -540,6 +586,7 @@ class ApplicationModel {
       contactNumber: map['contactNumber'],
       whatsAppNumber: map['whatsAppNumber'],
       currentlyPresence: map['currentlyPresence'],
+      preparedBy: map['preparedBy'],
       cityId: map['cityId'],
       cityName: map['cityName'],
       district: map['district'],
@@ -586,6 +633,9 @@ class ApplicationModel {
       superUGTSizeLiter: map['superUGTSizeLiter'],
       numberOfDieselDispenser: map['numberOfDieselDispenser'],
       numberOfSuperDispenser: map['numberOfSuperDispenser'],
+      carCount: map['carCount'],
+      bikeCount: map['bikeCount'],
+      busCount: map['busCount'],
       currentlyCanopyCondition: map['currentlyCanopyCondition'],
       conditionOfDispensors: map['conditionOfDispensors'],
       conditionOfForecourt: map['conditionOfForecourt'],
@@ -705,6 +755,7 @@ class ApplicationModel {
       'contactNumber': contactNumber,
       'whatsAppNumber': whatsAppNumber,
       'currentlyPresence': currentlyPresence,
+      'preparedBy': preparedBy,
       'cityId': cityId,
       'cityName': cityName,
       'district': district,
@@ -751,6 +802,9 @@ class ApplicationModel {
       'superUGTSizeLiter': superUGTSizeLiter,
       'numberOfDieselDispenser': numberOfDieselDispenser,
       'numberOfSuperDispenser': numberOfSuperDispenser,
+      'carCount': carCount,
+      'bikeCount': bikeCount,
+      'busCount': busCount,
       'currentlyCanopyCondition': currentlyCanopyCondition,
       'conditionOfDispensors': conditionOfDispensors,
       'conditionOfForecourt': conditionOfForecourt,
@@ -901,6 +955,21 @@ class ApplicationModel {
         }
       }
 
+      if (!filters.siteName.isNullOrEmpty) {
+        whereConditions.add('$alias.proposedSiteName1 LIKE ?');
+        whereArgs.add('%${filters.siteName}%');
+      }
+
+      if (!filters.dealerName.isNullOrEmpty) {
+        whereConditions.add('$alias.applicantName LIKE ?');
+        whereArgs.add('%${filters.dealerName}%');
+      }
+
+      if (!filters.dealerContact.isNullOrEmpty) {
+        whereConditions.add('$alias.contactNumber LIKE ?');
+        whereArgs.add('%${filters.dealerContact}%');
+      }
+
       if (!filters.applicationId.isNullOrEmpty &&
           int.tryParse(filters.applicationId!) != null) {
         whereConditions.add('$alias.applicationId = ?');
@@ -912,10 +981,15 @@ class ApplicationModel {
         whereArgs.add('%${filters.entryCode}%');
       }
 
+      if (!filters.preparedBy.isNullOrEmpty) {
+        whereConditions.add('$alias.preparedBy LIKE ?');
+        whereArgs.add('%${filters.preparedBy}%');
+      }
+
       if (!filters.district.isNullOrEmpty) {
         whereConditions.add('$alias.district LIKE ?');
         whereArgs.add('%${filters.district}%');
-      }
+      }      
 
       if (!filters.address.isNullOrEmpty) {
         whereConditions.add('$alias.siteAddress LIKE ?');
@@ -935,11 +1009,6 @@ class ApplicationModel {
       if (!filters.sourceName.isNullOrEmpty) {
         whereConditions.add('$alias.sourceName LIKE ?');
         whereArgs.add('%${filters.sourceName}%');
-      }
-
-      if (!filters.siteName.isNullOrEmpty) {
-        whereConditions.add('$alias.proposedSiteName1 LIKE ?');
-        whereArgs.add('%${filters.siteName}%');
       }
 
       // Yes/No filters (stored as 0 or 1 in database)
@@ -1051,7 +1120,8 @@ class ApplicationModel {
         whereArgs.add(filters.toDate?.formatFromDDMMYYYToIsoDate());
       }
     }
-
+    debugPrint('Where Conditions: $whereConditions');
+    debugPrint('Where Args: $whereArgs');
     return (whereConditions, whereArgs);
   }
 }

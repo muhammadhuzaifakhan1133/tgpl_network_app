@@ -22,6 +22,7 @@ class CreateDbQueries {
       contactNumber $textType,
       whatsAppNumber $textType,
       currentlyPresence $textType,
+      preparedBy $textType,
 
       -- Location Info
       cityId $intType,
@@ -90,6 +91,9 @@ class CreateDbQueries {
       superUGTSizeLiter $realType,
       numberOfDieselDispenser $intType,
       numberOfSuperDispenser $intType,
+      carCount $intType,
+      bikeCount $intType,
+      busCount $intType,
 
       -- Site Conditions
       currentlyCanopyCondition $textType,

@@ -148,11 +148,11 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                         ),
                       if (widget.showFilterIcon) ...[
                         SizedBox(width: 8.w),
-                        Stack(
-                          children: [
-                            GestureDetector(
-                              onTap: widget.onTapFilterIcon,
-                              child: Container(
+                        GestureDetector(
+                          onTap: widget.onTapFilterIcon,
+                          child: Stack(
+                            children: [
+                              Container(
                                 height: 48.h,
                                 width: 48.w,
                                 decoration: BoxDecoration(
@@ -166,32 +166,32 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                                   ),
                                 ),
                               ),
-                            ),
-                            if (widget.countofActiveFilters > 0)
-                              Positioned(
-                                right: 4.w,
-                                top: 4.h,
-                                child: Container(
-                                  padding: EdgeInsets.all(6.w),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.emailUsIconColor,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: AppColors.white,
-                                      width: 1.5.w,
+                              if (widget.countofActiveFilters > 0)
+                                Positioned(
+                                  right: 4.w,
+                                  top: 4.h,
+                                  child: Container(
+                                    padding: EdgeInsets.all(6.w),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.emailUsIconColor,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: AppColors.white,
+                                        width: 1.5.w,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      widget.countofActiveFilters.toString(),
+                                      style: AppTextstyles.googleInter700black28
+                                          .copyWith(
+                                            fontSize: 10.sp,
+                                            color: AppColors.white,
+                                          ),
                                     ),
                                   ),
-                                  child: Text(
-                                    widget.countofActiveFilters.toString(),
-                                    style: AppTextstyles.googleInter700black28
-                                        .copyWith(
-                                          fontSize: 10.sp,
-                                          color: AppColors.white,
-                                        ),
-                                  ),
                                 ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                       if (widget.showResyncButton) ...[
