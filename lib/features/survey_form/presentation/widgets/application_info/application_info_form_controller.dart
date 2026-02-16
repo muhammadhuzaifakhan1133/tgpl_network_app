@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/features/master_data/models/city_model.dart';
 import 'package:tgpl_network/features/survey_form/models/survey_form_model.dart';
 import 'package:tgpl_network/utils/extensions/nullable_fields_helper.dart';
 
@@ -9,7 +10,7 @@ final applicationInfoFormControllerProvider =
     );
 
 class ApplicationInfoFormState {
-  final String? selectedCity;
+  final CityModel? selectedCity;
   final String? siteStatus;
   final String? selectedPriority;
   final String? applicantId;
@@ -21,6 +22,8 @@ class ApplicationInfoFormState {
   final String? npName;
   final String? source;
   final String? sourceName;
+  final String? dateConducted;
+  final String? conductedBy;
 
   double? get latitude {
     if (googleLocation == null) return null;
@@ -49,10 +52,12 @@ class ApplicationInfoFormState {
     this.npName,
     this.source,
     this.sourceName,
+    this.dateConducted,
+    this.conductedBy,
   });
 
   ApplicationInfoFormState copyWith({
-    String? selectedCity,
+    CityModel? selectedCity,
     String? siteStatus,
     String? selectedPriority,
     String? applicantId,
@@ -107,7 +112,10 @@ class ApplicationInfoFormState {
   }
 
   ApplicationInfoFormState.loadFromApplication(ApplicationModel app)
-    : selectedCity = app.cityName,
+    : selectedCity = CityModel(
+        cityId: app.cityId ?? 0,
+        name: app.cityName ?? "",
+      ),
       siteStatus = app.siteStatusName,
       selectedPriority = app.priority,
       applicantId = app.applicationId?.toString(),
@@ -150,7 +158,7 @@ class ApplicationInfoFormController extends Notifier<ApplicationInfoFormState> {
   }
 
   void updateLocation({
-    String? city,
+    CityModel? city,
     String? district,
     String? googleLocation,
   }) {

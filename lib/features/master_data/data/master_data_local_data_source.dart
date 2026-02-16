@@ -126,7 +126,6 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
         'lastSyncTime': DateTime.now().toIso8601String(),
       });
     });
-    debugPrint("Result of saving master data: $result");
   }
 
   Future<void> _insertInChunks(
@@ -141,11 +140,9 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
 
       final batch = txn.batch();
       for (var item in chunk) {
-        if (i == 0) debugPrint("Inserting into $table: $item");
         batch.insert(table, item);
       }
       final result = await batch.commit(noResult: true);
-      if (i == 0) debugPrint("Result of inserting chunk into $table: $result");
     }
   }
 
@@ -216,7 +213,6 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
       where: '${MasterListTypeTable.databaseColName} = ?',
       whereArgs: [type.key],
     );
-    debugPrint('Master list for ${type.key}: $result');
     if (result.isEmpty) return [];
     return List<String>.from(jsonDecode(result.first['listValues'] as String));
   }

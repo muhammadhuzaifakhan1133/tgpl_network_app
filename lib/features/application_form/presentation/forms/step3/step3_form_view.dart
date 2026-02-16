@@ -95,6 +95,7 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
     final autoValidate = ref.watch(
       step3FormControllerProvider.select((s) => s.autoValidateFrom),
     );
+    print("Step 3 form rebuild, autoValidate: $autoValidate");
     return Form(
       key: _formKey,
       autovalidateMode: autoValidate
@@ -210,13 +211,13 @@ class _Step3FormViewState extends ConsumerState<Step3FormView> {
               }
               if (_formKey.currentState != null &&
                   _formKey.currentState!.validate()) {
-                final result = await ref.read(appFormSubmissionProvider.notifier).submitAppForm();
-                if (result) {
+                final appId = await ref.read(appFormSubmissionProvider.notifier).submitAppForm();
+                if (appId != null) {
                   // Navigate to confirmation screen with a generated application ID (for demo, using a static ID)
                   ref
                     .read(goRouterProvider)
                     .pushReplacement(
-                      AppRoutes.stationFormConfirmation("App-ID-12345"),
+                      AppRoutes.stationFormConfirmation("App-ID-$appId"),
                     );
                 }
               }

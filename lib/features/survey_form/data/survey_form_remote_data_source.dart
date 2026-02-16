@@ -11,17 +11,11 @@ class SurveyFormRemoteDataSource {
   Future<SurveyFormSubmissionResponseModel> submitSurveyForm(
     SurveyFormModel surveyForm,
   ) async {
-    // simulate
-    await Future.delayed(const Duration(seconds: 3));
-    return SurveyFormSubmissionResponseModel(
-      success: true,
-      message: 'Survey form submitted successfully.',
+    final response = await _dioClient.post(
+      AppApis.submitSurveyFormEndpoint,
+      data: surveyForm.toApiMap(),
     );
-    // final response = await _dioClient.post(
-      // AppApis.submitSurveyFormEndpoint,
-    //   data: surveyForm.toApiMap(),
-    // );
-    // return SurveyFormSubmissionResponseModel.fromJson(response.data);
+    return SurveyFormSubmissionResponseModel.fromJson(response.data);
   }
 }
 

@@ -2,12 +2,14 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:tgpl_network/common/providers/user_provider.dart';
 import 'package:tgpl_network/features/application_detail/data/application_detail_data_source.dart';
 import 'package:tgpl_network/features/data_sync/presentation/data_sync_controller.dart';
 import 'package:tgpl_network/features/survey_form/data/survey_form_local_data_source.dart';
 import 'package:tgpl_network/features/survey_form/data/survey_form_remote_data_source.dart';
 import 'package:tgpl_network/features/survey_form/models/survey_form_model.dart';
 import 'package:tgpl_network/features/survey_form/presentation/survey_form_assembler.dart';
+import 'package:tgpl_network/utils/internet_connectivity.dart';
 
 final surveyFormControllerProvider = AsyncNotifierProvider.family
     .autoDispose<SurveyFormController, SurveyFormModel, String>((
@@ -32,6 +34,9 @@ class SurveyFormController extends AsyncNotifier<SurveyFormModel> {
     final application = await ref
         .read(applicationDetailDataSourceProvider)
         .getApplicationDetail(applicationId);
+      
+    final positionId = ref.read(userProvider).value?.positionId ?? 'Unknown Position';
+    final username = ref.read(userProvider).value?.userName ?? 'Unknown User';
 
     // statusId should be less than 2 for survey form
     if ((application.statusId ?? 0) >= 2) {
@@ -107,8 +112,7 @@ class SurveyFormController extends AsyncNotifier<SurveyFormModel> {
       state = AsyncValue.data(
         state.requireValue.copyWith(isSubmitting: true, errorMessage: null),
       );
-      if (false) {
-        // if (await InternetConnectivity.hasInternet()) {
+        if (await InternetConnectivity.hasInternet()) {
         final response = await ref
             .read(surveyFormRemoteDataSourceProvider)
             .submitSurveyForm(surveyFormData);

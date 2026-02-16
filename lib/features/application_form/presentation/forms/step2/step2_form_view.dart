@@ -75,7 +75,9 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
                 enableSearch: true,
                 selectedItem: selectedCity,
                 items: dropDownsData.cities.map((city) => city).toList(),
+                displayString: (city) => city.name,
                 onChanged: (value) {
+                  debugPrint("Selected city: ${value?.name}");
                   if (value != null) {
                     step2Controller.updateCity(value);
                   }
@@ -104,6 +106,7 @@ class _Step2FormViewState extends ConsumerState<Step2FormView> {
                 items: dropDownsData.siteStatuses
                     .map((status) => status)
                     .toList(),
+                displayString: (status) => status.name,
                 onChanged: (value) {
                   if (value != null) {
                     step2Controller.updateSiteStatus(value);

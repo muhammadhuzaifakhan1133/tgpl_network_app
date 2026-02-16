@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tgpl_network/core/database/app_database.dart';
@@ -29,7 +28,6 @@ class AppFormDropdownsLocalDataSourceImpl
         );
       }
     });
-    debugPrint("Result of saving site statuses: $result");
   }
 
   @override

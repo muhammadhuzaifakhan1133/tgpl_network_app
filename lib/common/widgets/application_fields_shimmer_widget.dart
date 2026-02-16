@@ -20,30 +20,43 @@ class ApplicationFieldsShimmer extends StatelessWidget {
             showBackButton: true,
           ),
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-              children: [
-                _ShimmerCard(fieldCount: 5), // Applicant Info
-                SizedBox(height: 20.h),
-                _ShimmerCard(fieldCount: 5), // Site Detail
-                SizedBox(height: 20.h),
-                _ShimmerCard(fieldCount: 5), // Contact Dealer
-                SizedBox(height: 20.h),
-                _ShimmerCard(fieldCount: 5), // Dealer Profile
-                SizedBox(height: 20.h),
-                _ShimmerCard(fieldCount: 5), // Recommendation
-                SizedBox(height: 20.h),
-                // Shimmer button
-                const ShimmerBox(
-                  width: double.infinity,
-                  height: 48,
-                  borderRadius: 8,
-                ),
-              ],
-            ),
+            child: ApplicationFieldContainersShimmer(),
           ),
         ],
       ),
+    );
+  }
+}
+
+class ApplicationFieldContainersShimmer extends StatelessWidget {
+  const ApplicationFieldContainersShimmer({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Remove Expanded from here since it's used in TabBarView
+    // TabBarView already provides constraints for its children
+    return ListView(
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+      children: [
+        _ShimmerCard(fieldCount: 5), // Applicant Info
+        SizedBox(height: 20.h),
+        _ShimmerCard(fieldCount: 5), // Site Detail
+        SizedBox(height: 20.h),
+        _ShimmerCard(fieldCount: 5), // Contact Dealer
+        SizedBox(height: 20.h),
+        _ShimmerCard(fieldCount: 5), // Dealer Profile
+        SizedBox(height: 20.h),
+        _ShimmerCard(fieldCount: 5), // Recommendation
+        SizedBox(height: 20.h),
+        // Shimmer button
+        const ShimmerBox(
+          width: double.infinity,
+          height: 48,
+          borderRadius: 8,
+        ),
+      ],
     );
   }
 }

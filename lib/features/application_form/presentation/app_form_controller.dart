@@ -24,7 +24,7 @@ class AppFormSubmissionController extends AsyncNotifier<void> {
   @override
   Future<void> build() async {}
 
-  Future<bool> submitAppForm() async {
+  Future<int?> submitAppForm() async {
     state = const AsyncValue.loading();
     try {
       final appFormData = AppFormAssembler.assemble(ref);
@@ -34,17 +34,17 @@ class AppFormSubmissionController extends AsyncNotifier<void> {
       if (response.success) {
         AppFormAssembler.clearForm(ref);
         state = const AsyncValue.data(null);
-        return true;
+        return response.applicationId;
       } else {
         state = AsyncValue.error(
           Exception('Submission failed: ${response.message}'),
           StackTrace.current,
         );
-        return false;
+        return null;
       }
     } catch (e, st) {
       state = AsyncValue.error(e, st);
-      return false;
+      return null;
     }
   }
 }

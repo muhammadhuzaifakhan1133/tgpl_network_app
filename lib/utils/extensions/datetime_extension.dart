@@ -13,7 +13,6 @@ extension DatetimeExtension on DateTime {
 extension StrDateTimeExtension2 on String? {
   // 01/02/2026
   bool isValidDate() {
-    debugPrint('Checking if "$this" is a valid date string');
     if (isNullOrEmpty) return false;
     try {
       // DateTime.parse(this!);

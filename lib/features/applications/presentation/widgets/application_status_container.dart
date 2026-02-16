@@ -26,7 +26,7 @@ class ApplicationStatusContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appStatuses = ref.read(appStatusesProvider(index));
+    final appStatuses = ref.read(appStatusesProvider(application));
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),

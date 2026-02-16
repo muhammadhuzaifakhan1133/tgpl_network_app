@@ -10,9 +10,11 @@ class AppApis {
       "/api/DataForApp/newapplicationlists";
   // TODO: Update form endpoints with actual endpoints
   static const String submitSurveyFormEndpoint =
-      "/api/SurveyForm/SubmitSurveyForm";
+      "api/DataForApp/SaveAndPostSurvey";
   static const String submitTrafficTradeFormEndpoint =
       "/api/TrafficTradeForm/SubmitTrafficTradeForm";
   static const String submitApplicationFormEndpoint =
       "/api/DataForApp/SaveNewApplication";
+  static String getApplicationDetailEndpoint(String applicationId) =>
+      "/api/DataForApp/SurveyById/$applicationId";
 }

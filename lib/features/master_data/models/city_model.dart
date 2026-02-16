@@ -8,7 +8,7 @@ class CityModel extends Equatable {
   CityModel({this.id, required this.cityId, required this.name});
 
   @override
-  List<Object?> get props => [id, cityId, name];
+  List<Object?> get props => [cityId, name];
 
   factory CityModel.fromAPIResponseMap(Map<String, dynamic> map) {
     return CityModel(cityId: map['Id'], name: map['Name']);

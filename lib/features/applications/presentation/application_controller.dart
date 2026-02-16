@@ -7,69 +7,122 @@ import 'package:tgpl_network/features/master_data/models/application_model.dart'
 // import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
 
 final appStatusesProvider = Provider.family
-    .autoDispose<List<ApplicationStatus>, int>((ref, index) {
-      final app = ref
-          .watch(applicationControllerProvider)
-          .requireValue
-          .applications[index];
+    .autoDispose<List<ApplicationStatus>, ApplicationModel>((ref, application) {
+      final app = application;
       return [
         ApplicationStatus(
           title: "Survey Profile",
           status: app.surveynDealerProfileDone != 0,
+          dueDate: app.siteSurveyDealerProfileDueDate ?? '',
+          completedDate: app.siteSurveyDealerProfileDoneDate ?? '',
         ),
         ApplicationStatus(
           title: "Traffic Trade",
           status: app.trafficTradeDone != 0,
+          dueDate: app.trafficTradeDueDate ?? '',
+          completedDate: app.trafficTradeDoneDate ?? '',
         ),
         ApplicationStatus(
           title: "Feasibility",
           status: app.feasibilityDone != 0,
+          dueDate: app.feasibilityDueDate ?? '',
+          completedDate: app.feasibilityDoneDate ?? '',
         ),
         ApplicationStatus(
           title: "Negotiation",
           status: app.negotiationDone != 0,
+          dueDate: app.negotiationDueDate ?? '',
+          completedDate: app.negotiationDoneDate ?? '',
         ),
         ApplicationStatus(
           title: "Feasibility Finalization",
           status: app.feasibilityfinalizationDone != 0,
+          dueDate: app.feasibilityfinalizationDueDate ?? '',
+          completedDate: app.feasibilityfinalizationDoneDate ?? '',
         ),
-        ApplicationStatus(title: "MOU Sign", status: app.mouSignOFFDone != 0),
+        ApplicationStatus(
+          title: "MOU Sign",
+          status: app.mouSignOFFDone != 0,
+          dueDate: app.mouSignOFFDueDate ?? '',
+          completedDate: app.mouSignOFFDoneDate ?? '',
+        ),
         ApplicationStatus(
           title: "Joining Fee",
           status: app.joiningFeeDone != 0,
+          dueDate: app.joiningFeeDueDate ?? '',
+          completedDate: app.joiningFeeDoneDate ?? '',
         ),
         ApplicationStatus(
           title: "Franchise Agreement",
           status: app.franchiseAgreementDone != 0,
+          dueDate: app.franchiseAgreementDueDate ?? '',
+          completedDate: app.franchiseAgreementDoneDate ?? '',
         ),
         ApplicationStatus(
           title: "Layout",
           status: app.explosiveLayoutDone != 0,
+          dueDate: app.explosiveLayoutDueDate ?? '',
+          completedDate: app.explosiveLayoutDoneDate ?? '',
         ),
-        ApplicationStatus(title: "Drawing", status: app.drawingsDone != 0),
-        ApplicationStatus(title: "Topography", status: app.topographyDone != 0),
+        ApplicationStatus(
+          title: "Drawing",
+          status: app.drawingsDone != 0,
+          dueDate: app.drawingsDueDate ?? '',
+          completedDate: app.drawingsDoneDate ?? '',
+        ),
+        ApplicationStatus(
+          title: "Topography",
+          status: app.topographyDone != 0,
+          dueDate: app.topographyDueDate ?? '',
+          completedDate: app.topographyDoneDate ?? '',
+        ),
         ApplicationStatus(
           title: "Issuance of Drawing",
           status: app.issuanceofDrawingsDone != 0,
+          dueDate: app.issuanceofDrawingsDueDate ?? '',
+          completedDate: app.issuanceofDrawingsDoneDate ?? '',
         ),
         ApplicationStatus(
           title: "Applied in Explosive",
           status: app.appliedInExplosiveDone != 0,
+          dueDate: app.appliedInExplosiveDueDate ?? '',
+          completedDate: app.appliedInExplosiveDoneDate ?? '',
         ),
-        ApplicationStatus(title: "DC NOC", status: app.dcnocDone != 0),
-        ApplicationStatus(title: "Capex", status: app.capexDone != 0),
+        ApplicationStatus(
+          title: "DC NOC",
+          status: app.dcnocDone != 0,
+          dueDate: app.dcnocDueDate ?? '',
+          completedDate: app.dcnocDoneDate ?? '',
+        ),
+        ApplicationStatus(
+          title: "Capex",
+          status: app.capexDone != 0,
+          dueDate: app.capaxDueDate ?? '',
+          completedDate: app.capaxDoneDate ?? '',
+        ),
         ApplicationStatus(
           title: "Lease Agreement",
           status: app.leaseAgreementDone != 0,
+          dueDate: app.leaseAgreementDueDate ?? '',
+          completedDate: app.leaseAgreementDoneDate ?? '',
         ),
-        ApplicationStatus(title: "HOTO", status: app.hotoDone != 0),
+        ApplicationStatus(
+          title: "HOTO",
+          status: app.hotoDone != 0,
+          dueDate: app.hotoDueDate ?? '',
+          completedDate: app.hotoDoneDate ?? '',
+        ),
         ApplicationStatus(
           title: "Construction",
           status: app.constructionDone != 0,
+          dueDate: app.constructionDueDate ?? '',
+          completedDate: app.constructionDoneDate ?? '',
         ),
         ApplicationStatus(
           title: "Inauguration",
           status: app.inaugurationDone != 0,
+          dueDate: app.inaugurationDueDate ?? '',
+          completedDate: app.inaugurationDoneDate ?? '',
         ),
       ];
     });

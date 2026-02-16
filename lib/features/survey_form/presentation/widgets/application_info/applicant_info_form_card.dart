@@ -145,12 +145,13 @@ class ApplicantInfoFormCard extends ConsumerWidget {
               selectedItem: selectedCity,
               asyncProvider: cityNamesProvider,
               itemsBuilder: (cities) =>
-                  cities.map((city) => city.name).toList(),
+                  cities.map((city) => city).toList(),
+              displayString: (city) => city.name,
               onChanged: (value) {
                 if (value == null) return;
-                controller.updateLocation(city: value.toString());
+                controller.updateLocation(city: value);
               },
-              validator: (v) => v.validate(),
+              validator: (v) => v?.name.validate(),
               showClearButton: true,
               onClear: () {
                 controller.clearField('selectedCity');
