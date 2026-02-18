@@ -42,13 +42,22 @@ class ApplicationDetailDataSource {
     final application = ApplicationModel.fromAPIResponseMap(response.data);
     
     final db = await _databaseHelper.database;
-    
-    await db.insert(
-      AppDatabase.applicationTable,
-      application.toDatabaseMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-   
+    await db.transaction((txn) async {
+
+      // Delete existing application data
+      await txn.delete(
+        AppDatabase.applicationTable,
+        where: 'applicationId = ?',
+        whereArgs: [applicationId],
+      );
+
+      // Insert updated application data
+      await txn.insert(
+        AppDatabase.applicationTable,
+        application.toDatabaseMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    });   
     // Return the updated application
     return await getApplicationDetail(applicationId);
   }

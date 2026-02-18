@@ -48,6 +48,7 @@ class CustomDropDown<T> extends StatefulWidget {
 class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
   List<T> _selectedItems = [];
   final TextEditingController _textController = TextEditingController();
+  String? _validationError;
 
   bool get _hasValue => widget.isMultiSelect
       ? _selectedItems.isNotEmpty
@@ -80,20 +81,32 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
     setState(() {
       _selectedItems.clear();
       _textController.clear();
+      _validationError = null;
     });
     widget.onChanged?.call(null);
     widget.onMultiChanged?.call([]);
     widget.onClear?.call();
   }
 
+  bool get _hasError => _validationError != null;
+
   @override
   Widget build(BuildContext context) {
     if (widget.isMultiSelect) {
       return FormField<List<T>>(
-        validator: (_) => widget.multiValidator?.call(_selectedItems),
+        validator: (value) {
+          final error = widget.multiValidator?.call(_selectedItems);
+          // Schedule setState for after the validation completes
+          if (_validationError != error) {
+            setState(() {
+              _validationError = error;
+            });
+          }
+          return error;
+        },
         builder: (state) {
           return SizedBox(
-            height: 46.h,
+            height: _hasError ? 70.h : 46.h,
             child: InkWell(
               onTap: showMultiSelectDialog,
               child: InputDecorator(
@@ -130,7 +143,7 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
     }
 
     return SizedBox(
-      height: 46.h,
+      height: _hasError ? 70.h : 46.h,
       child: DropdownButtonFormField<T>(
         isExpanded: true,
         value: widget.selectedItem,
@@ -152,7 +165,16 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
             )
             .toList(),
         onChanged: widget.onChanged,
-        validator: widget.validator,
+        validator: (value) {
+          final error = widget.validator?.call(value);
+          // Schedule setState for after the validation completes
+          if (_validationError != error) {
+            setState(() {
+              _validationError = error;
+            });
+          }
+          return error;
+        },
         style: widget.selectedItem != null && widget.itemTextStyle != null
             ? widget.itemTextStyle!(widget.selectedItem!)
             : widget.textStyle,

@@ -1,6 +1,7 @@
 // lib/features/master_data/data/models/master_data_response_model.dart
 import 'dart:convert';
 
+import 'package:tgpl_network/features/master_data/models/attachment_category_model.dart';
 import 'package:tgpl_network/features/master_data/models/tm_rm_model.dart';
 import 'package:tgpl_network/features/master_data/models/user_model.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
@@ -34,6 +35,7 @@ class MasterDataResponseModel {
   final List<TmRmModel> tmList;
   final List<TmRmModel> rmList;
   final UserModel? userInfo;
+  final List<AttachmentCategoryModel> attachmentCategories;
 
   MasterDataResponseModel({
     required this.applicationAndSurveyList,
@@ -52,6 +54,7 @@ class MasterDataResponseModel {
     required this.tmList,
     required this.rmList,
     required this.userInfo,
+    required this.attachmentCategories,
   });
 
   factory MasterDataResponseModel.fromAPIResponseMap(
@@ -115,6 +118,9 @@ class MasterDataResponseModel {
       userInfo: json['UserInfo'] != null
           ? UserModel.fromAPIResponseMap(json['UserInfo'])
           : null,
+      attachmentCategories: List<AttachmentCategoryModel>.from(
+        json['AttacmentCategoryList']?.map((x) => AttachmentCategoryModel.fromApiMap(x)) ?? [],
+      ),
     );
   }
 

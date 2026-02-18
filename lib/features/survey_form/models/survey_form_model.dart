@@ -145,6 +145,7 @@ class SurveyFormModel {
       "applicationId": applicationId,
       "entryCode": entryCode,
       "dateConducted": dateConducted,
+      "conductedBy": conductedBy,
       "googleLocation": googleLocation,
       "cityId": city?.cityId,
       "district": district,
@@ -158,8 +159,8 @@ class SurveyFormModel {
       "referenceBy": referenceBy,
       "locationAddress": locationAddress,
       "landmark": landmark,
-      "plotFront": plotFront,
-      "plotDepth": plotDepth,
+      "plotFront": plotFront?.split(".").first,
+      "plotDepth": plotDepth?.split(".").first,
       "nearestDepo": nearestDepo,
       "distanceFromDepo": distanceFromDepo,
       "typeOfTradeArea": typeOfTradeArea,
@@ -172,12 +173,13 @@ class SurveyFormModel {
       "monthlySalary": monthlySalary,
       "isDealerAgreedToFollowTgplStandards":
           isDealerAgreedToFollowTgplStandards,
-      "selectedTM": selectedTM,
-      "tmRecommendation": tmRecommendation,
-      "tmRemarks": tmRemarks,
-      "selectedRM": selectedRM,
-      "rmRecommendation": rmRecommendation,
-      "rmRemarks": rmRemarks,
+      // API only needs TM/RM recommendation & remarks, selectedTM/RM is the one who logged in
+      // "selectedTM": selectedTM,
+      "tmRecommendation": tmRecommendation ?? rmRecommendation,
+      "tmRemarks": tmRemarks ?? rmRemarks,
+      // "selectedRM": selectedRM,
+      "rmRecommendation": rmRecommendation ?? tmRecommendation,
+      "rmRemarks": rmRemarks ?? tmRemarks,
     };
   }
 

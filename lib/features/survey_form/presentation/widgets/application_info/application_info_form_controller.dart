@@ -22,8 +22,6 @@ class ApplicationInfoFormState {
   final String? npName;
   final String? source;
   final String? sourceName;
-  final String? dateConducted;
-  final String? conductedBy;
 
   double? get latitude {
     if (googleLocation == null) return null;
@@ -52,8 +50,6 @@ class ApplicationInfoFormState {
     this.npName,
     this.source,
     this.sourceName,
-    this.dateConducted,
-    this.conductedBy,
   });
 
   ApplicationInfoFormState copyWith({
@@ -111,7 +107,7 @@ class ApplicationInfoFormState {
     );
   }
 
-  ApplicationInfoFormState.loadFromApplication(ApplicationModel app)
+  ApplicationInfoFormState.loadFromApplication(ApplicationModel app, this.conductedBy)
     : selectedCity = CityModel(
         cityId: app.cityId ?? 0,
         name: app.cityName ?? "",
@@ -120,11 +116,7 @@ class ApplicationInfoFormState {
       selectedPriority = app.priority,
       applicantId = app.applicationId?.toString(),
       entryCode = app.entryCode,
-      // TODO: Add dateConducted and conductedBy to ApplicationModel and uncomment this
-      // dateConducted = app.dateConducted,
-      // conductedBy = app.conductedBy,
-      dateConducted = null,
-      conductedBy = null,
+      dateConducted = DateTime.now().toIso8601String(),
       googleLocation = app.googleLocation,
       district = app.district,
       npName = app.npPersonName,
@@ -192,8 +184,8 @@ class ApplicationInfoFormController extends Notifier<ApplicationInfoFormState> {
     state = state.copyWith(fieldsToNull: [fieldName]);
   }
 
-  void loadFromApplication(ApplicationModel app) {
-    state = ApplicationInfoFormState.loadFromApplication(app);
+  void loadFromApplication(ApplicationModel app, String? conductedBy) {
+    state = ApplicationInfoFormState.loadFromApplication(app, conductedBy);
   }
 
   void loadFromSurveyFormModel(SurveyFormModel form) {

@@ -413,4 +413,13 @@ class CreateDbQueries {
       name $textType
     )
   ''';
+
+  static String attachmentCategoryTable =
+      '''
+    CREATE TABLE IF NOT EXISTS ${AppDatabase.attachmentCategoryTable} (
+      id $idType,
+      categoryId $intType UNIQUE,
+      name $textType
+    )
+  ''';
 }

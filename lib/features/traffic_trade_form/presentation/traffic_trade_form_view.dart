@@ -164,7 +164,7 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
     // Unfocus any active text field
     FocusScope.of(context).unfocus();
 
-    bool? success;
+    int? success;
 
     // Turn on auto-validation after first submit attempt
     if (!ref.read(autoValidateFormModeProvider)) {
@@ -184,13 +184,22 @@ class _TrafficTradeFormViewState extends ConsumerState<TrafficTradeFormView> {
 
     if (!mounted) return;
 
-    if (success == true) {
+    if (success == 1) {
       showSnackBar(
         context,
         "Form submitted successfully!",
         bgColor: AppColors.onlineStatusColor,
       );
       // Navigate back or to success screen
+      ref.read(goRouterProvider).pop(true);
+    }
+
+    if (success == 2) {
+      showSnackBar(
+        context,
+        "No internet connection. Form saved locally and will be submitted when you're back online.",
+        bgColor: AppColors.offlineStatusColor,
+      );
       ref.read(goRouterProvider).pop(true);
     }
   }

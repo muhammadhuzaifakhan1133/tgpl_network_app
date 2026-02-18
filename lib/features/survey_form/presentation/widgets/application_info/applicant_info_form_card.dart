@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:tgpl_network/common/providers/user_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/priorities_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/site_statuses_provider.dart';
@@ -85,7 +84,7 @@ class ApplicantInfoFormCard extends ConsumerWidget {
           hintText: "e.g. Asif",
           readOnly: true,
           initialValue:
-              state.conductedBy ?? ref.watch(userProvider).value?.userName,
+              state.conductedBy,
         ),
         SizedBox(height: 10.h),
         Consumer(

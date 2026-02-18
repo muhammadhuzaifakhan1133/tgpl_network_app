@@ -15,6 +15,7 @@ class ModuleApplicationsDataSource {
     String? query,
     int page = 1,
     int? pageSize,
+    int? userPositionId,
   }) async {
     pageSize ??= ApplicationModel.pageSize;
     final db = await _databaseHelper.database;
@@ -29,12 +30,19 @@ class ModuleApplicationsDataSource {
       whereArgs = whereData.$2;
     }
 
+    Map<int, LogicalOperator> operators = {0: LogicalOperator.and, -1: LogicalOperator.or};
+
+    if (userPositionId != null && userPositionId == 6) {
+      whereConditions.add("sstmRecommendation IS NULL");
+      operators[1] = LogicalOperator.and;
+    }
+
     final mainQuery = SelectDbQueries.buildApplicationQuery(
       whereConditions: [dbSubModuleCondition, ...whereConditions],
       orderBy: ApplicationModel.orderBy,
       limit: pageSize,
       offset: (page - 1) * pageSize,
-      operator: {0: LogicalOperator.and, -1: LogicalOperator.or},
+      operator: operators,
     );
 
     // debugPrint("Executing Query: \n$mainQuery with args: $whereArgs");

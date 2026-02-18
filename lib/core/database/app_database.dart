@@ -11,4 +11,5 @@ class AppDatabase {
   static const String siteStatusTable = 'site_status';
   static const String tmTable = 'tm_table';
   static const String rmTable = 'rm_table';
+  static const String attachmentCategoryTable = 'attachment_category';
 }

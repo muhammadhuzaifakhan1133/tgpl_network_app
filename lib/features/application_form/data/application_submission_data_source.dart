@@ -12,7 +12,7 @@ class ApplicationSubmissionDataSource {
     ApplicationFormModel data,
   ) async {
     final response = await _dioClient.post(
-      AppApis.submitApplicationFormEndpoint,
+      AppApis.submitApplicationFormsEndpoint,
       data: data.toApiMap(),
     );
     return ApplicationFormSubmissionResponseModel.fromJson(response.data);

@@ -35,9 +35,7 @@ class SurveyFormController extends AsyncNotifier<SurveyFormModel> {
         .read(applicationDetailDataSourceProvider)
         .getApplicationDetail(applicationId);
       
-    final positionId = ref.read(userProvider).value?.positionId ?? 'Unknown Position';
-    final username = ref.read(userProvider).value?.userName ?? 'Unknown User';
-
+    
     // statusId should be less than 2 for survey form
     if ((application.statusId ?? 0) >= 2) {
       // Mark status as changed so UI can navigate back
@@ -85,7 +83,8 @@ class SurveyFormController extends AsyncNotifier<SurveyFormModel> {
     }
   }
 
-  Future<bool> submitSurveyForm() async {
+  Future<int> submitSurveyForm() async {
+    clearError();
     try {
       if (!await isStatusValid()) {
         state = AsyncValue.data(
@@ -97,7 +96,7 @@ class SurveyFormController extends AsyncNotifier<SurveyFormModel> {
                 .read(surveyFormStatusChangedProvider(applicationId).notifier)
                 .state =
             true;
-        return false;
+        return 0;
       }
       // Gather all form data
       final surveyFormData = SurveyFormAssembler.assemble(ref, applicationId);
@@ -107,7 +106,7 @@ class SurveyFormController extends AsyncNotifier<SurveyFormModel> {
         state = AsyncValue.data(
           state.requireValue.copyWith(errorMessage: validateMessage),
         );
-        return false;
+        return 0;
       }
       state = AsyncValue.data(
         state.requireValue.copyWith(isSubmitting: true, errorMessage: null),
@@ -115,20 +114,20 @@ class SurveyFormController extends AsyncNotifier<SurveyFormModel> {
         if (await InternetConnectivity.hasInternet()) {
         final response = await ref
             .read(surveyFormRemoteDataSourceProvider)
-            .submitSurveyForm(surveyFormData);
-        if (response.success) {
+            .submitSurveyForms(surveyForms: [surveyFormData], userPositionId: ref.read(userProvider).value?.positionId);
+        if (response.first.success) {
           ref
               .read(dataSyncControllerProvider.notifier)
               .deletePendingFormIfAny(applicationId);
-          return true;
+          return 1;
         } else {
           state = AsyncValue.data(
             state.requireValue.copyWith(
-              errorMessage: 'Submission failed: ${response.message}',
+              errorMessage: 'Submission failed: ${response.first.message}',
               isSubmitting: false,
             ),
           );
-          return false;
+          return 0;
         }
       } else {
         // Save locally if no internet
@@ -138,7 +137,7 @@ class SurveyFormController extends AsyncNotifier<SurveyFormModel> {
         // ignore: unused_result
         ref.refresh(dataSyncControllerProvider);
       }
-      return true;
+      return 2;
     } catch (e, _) {
       state = AsyncValue.data(
         state.requireValue.copyWith(
@@ -146,7 +145,15 @@ class SurveyFormController extends AsyncNotifier<SurveyFormModel> {
           errorMessage: 'An error occurred: $e',
         ),
       );
-      return false;
+      return 0;
+    }
+  }
+
+  void clearError() {
+    if (state.value?.errorMessage != null) {
+      state = AsyncValue.data(
+        state.requireValue.copyWith(errorMessage: null),
+      );
     }
   }
 }

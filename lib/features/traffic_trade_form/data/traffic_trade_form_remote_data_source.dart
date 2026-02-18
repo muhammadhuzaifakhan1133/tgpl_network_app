@@ -8,20 +8,26 @@ class TrafficTradeFormRemoteDataSource {
   final DioClient _dioClient;
   TrafficTradeFormRemoteDataSource(this._dioClient);
 
-  Future<TrafficTradeFormSubmissionResponseModel> submitTrafficTradeForm(
-    TrafficTradeFormModel trafficTradeForm,
-  ) async {
-    // Simulate network call with a delay
-    await Future.delayed(const Duration(seconds: 3));
-    return TrafficTradeFormSubmissionResponseModel(
-      success: true,
-      message: 'Traffic Trade Form submitted successfully',
+  Future<List<TrafficTradeFormSubmissionResponseModel>>
+  submitTrafficTradeForms({
+    required List<TrafficTradeFormModel> trafficTradeForms,
+    required int? userPositionId,
+    required String? userName,
+  }) async {
+    final data = trafficTradeForms.map((form) => form.toApiMap()).toList();
+    for (var item in data) {
+      item["userpositionId"] = userPositionId.toString();
+      item["UserName"] = userName;
+    }
+    final response = await _dioClient.post(
+      AppApis.submitTrafficTradeFormsEndpoint,
+      data: data,
     );
-    // final response = await _dioClient.post(
-    //   AppApis.submitTrafficTradeFormEndpoint,
-    //   data: trafficTradeForm.toApiMap(),
-    // );
-    // return TrafficTradeFormSubmissionResponseModel.fromJson(response.data);
+    List<TrafficTradeFormSubmissionResponseModel> responses = [];
+    for (var item in response.data) {
+      responses.add(TrafficTradeFormSubmissionResponseModel.fromJson(item));
+    }
+    return responses;
   }
 }
 

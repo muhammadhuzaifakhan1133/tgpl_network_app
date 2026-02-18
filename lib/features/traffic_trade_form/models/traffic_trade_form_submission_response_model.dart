@@ -1,8 +1,10 @@
 class TrafficTradeFormSubmissionResponseModel {
+  final String applicationId;
   final String message;
   final bool success;
 
   TrafficTradeFormSubmissionResponseModel({
+    required this.applicationId,
     required this.message,
     required this.success,
   });
@@ -10,8 +12,9 @@ class TrafficTradeFormSubmissionResponseModel {
   factory TrafficTradeFormSubmissionResponseModel.fromJson(
       Map<String, dynamic> json) {
     return TrafficTradeFormSubmissionResponseModel(
-      message: json['message'] as String,
-      success: json['success'] as bool,
+      applicationId: json['ApplicationId'].toString(),
+      message: json['Message'] as String,
+      success: json['Success'] as bool,
     );
   }
 }

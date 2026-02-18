@@ -67,9 +67,10 @@ class DatabaseHelper {
     // Traffic Trade Forms Table
     await db.execute(CreateDbQueries.createTrafficTradeFormsTable);
 
-    //  Tables for TM and RM data
+    //  Tables for TM and RM data & attachement categories
     await db.execute(CreateDbQueries.createTmTable);
     await db.execute(CreateDbQueries.createRmTable);
+    await db.execute(CreateDbQueries.attachmentCategoryTable);
   }
 
   Future<void> close() async {
@@ -85,6 +86,7 @@ class DatabaseHelper {
     AppDatabase.rmTable,
     AppDatabase.tmTable,
     AppDatabase.userInfoTable,
+    AppDatabase.attachmentCategoryTable,
   ];
 
   Future<void> clearAllTables() async {
@@ -95,7 +97,6 @@ class DatabaseHelper {
     await db.delete(AppDatabase.surveyFormsTable);
     await db.delete(AppDatabase.trafficTradeFormsTable);
     await db.delete(AppDatabase.syncMetadataTable);
-    await db.delete(AppDatabase.userInfoTable);
     await db.delete(AppDatabase.siteStatusTable);
   }
 }

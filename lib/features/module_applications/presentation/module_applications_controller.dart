@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/common/providers/user_provider.dart';
+import 'package:tgpl_network/features/application_detail/data/application_detail_data_source.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
 import 'package:tgpl_network/features/module_applications/data/module_applications_data_source.dart';
@@ -62,10 +64,12 @@ class ModuleApplicationsAyncController
     final moduleApplicationDataSource = ref.read(
       moduleApplicationsDataSourceProvider,
     );
+    final user = ref.read(userProvider).value;
     return await moduleApplicationDataSource.getApplicationsForSubModule(
       dbSubModuleCondition: subModule.dbCondition,
       page: page,
       query: state.value?.searchQuery,
+      userPositionId: user?.positionId,
     );
   }
 
@@ -99,6 +103,14 @@ class ModuleApplicationsAyncController
 
   void clearSearch() {
     state = AsyncValue.data(state.requireValue.copyWith(resetSearch: true));
+    ref.invalidateSelf();
+  }
+
+  Future<void> syncApplication(String applicationId) async {
+    final applicationDetailDataSource = ref.read(
+      applicationDetailDataSourceProvider,
+    );
+    await applicationDetailDataSource.syncApplicationFromServer(applicationId);
     ref.invalidateSelf();
   }
 }

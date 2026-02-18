@@ -1,8 +1,10 @@
 class SurveyFormSubmissionResponseModel {
+  final String applicationId;
   final String message;
   final bool success;
 
   SurveyFormSubmissionResponseModel({
+    required this.applicationId,
     required this.message,
     required this.success,
   });
@@ -10,8 +12,9 @@ class SurveyFormSubmissionResponseModel {
   factory SurveyFormSubmissionResponseModel.fromJson(
       Map<String, dynamic> json) {
     return SurveyFormSubmissionResponseModel(
-      message: json['message'] as String,
-      success: json['success'] as bool,
+      applicationId: json['ApplicationId'].toString(),
+      message: json['Message'] as String,
+      success: json['Success'] as bool,
     );
   }
 }

@@ -115,6 +115,15 @@ class _ModuleApplicationsViewState
                             return ModuleApplicationContainer(
                               application: data.applications[index],
                               submoduleName: widget.subModule.title,
+                              onSyncApplication: (String applicationId) {
+                                ref
+                                    .read(
+                                      moduleApplicationsAsyncControllerProvider(
+                                        widget.subModule,
+                                      ).notifier,
+                                    )
+                                    .syncApplication(applicationId);
+                              },
                             );
                           },
                         ),

@@ -2,12 +2,14 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:tgpl_network/common/providers/user_provider.dart';
 import 'package:tgpl_network/features/application_detail/data/application_detail_data_source.dart';
 import 'package:tgpl_network/features/data_sync/presentation/data_sync_controller.dart';
 import 'package:tgpl_network/features/traffic_trade_form/data/traffic_trade_form_local_data_source.dart';
 import 'package:tgpl_network/features/traffic_trade_form/data/traffic_trade_form_remote_data_source.dart';
 import 'package:tgpl_network/features/traffic_trade_form/models/traffic_trade_form_model.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/traffic_trade_form_assembler.dart';
+import 'package:tgpl_network/utils/internet_connectivity.dart';
 
 final trafficTradeFormControllerProvider = AsyncNotifierProvider.family
     .autoDispose<TrafficTradeFormController, TrafficTradeFormModel, String>((
@@ -85,7 +87,8 @@ class TrafficTradeFormController extends AsyncNotifier<TrafficTradeFormModel> {
     }
   }
 
-  Future<bool> submitTrafficTradeForm() async {
+  Future<int> submitTrafficTradeForm() async {
+    clearError();
     try {
       if (!await isStatusValid()) {
         state = AsyncValue.data(
@@ -99,7 +102,7 @@ class TrafficTradeFormController extends AsyncNotifier<TrafficTradeFormModel> {
                 )
                 .state =
             true;
-        return false;
+        return 0;
       }
       // Gather all form data
       final trafficTradeFormData = TrafficTradeFormAssembler.assemble(
@@ -114,26 +117,26 @@ class TrafficTradeFormController extends AsyncNotifier<TrafficTradeFormModel> {
         state = AsyncValue.data(
           state.requireValue.copyWith(errorMessage: validateMessage),
         );
-        return false;
+        return 0;
       }
       state = AsyncValue.data(
         state.requireValue.copyWith(isSubmitting: true, errorMessage: null),
       );
-      if (false) {
-        // if (await InternetConnectivity.hasInternet()) {
+        if (await InternetConnectivity.hasInternet()) {
+          final user = ref.read(userProvider).value;
         final response = await ref
             .read(trafficTradeFormRemoteDataSourceProvider)
-            .submitTrafficTradeForm(trafficTradeFormData);
-        if (response.success) {
-          return true;
+            .submitTrafficTradeForms(trafficTradeForms: [trafficTradeFormData], userPositionId: user?.positionId, userName: user?.userName);
+        if (response.first.success) {
+          return 1;
         } else {
           state = AsyncValue.data(
             state.requireValue.copyWith(
-              errorMessage: 'Submission failed: ${response.message}',
+              errorMessage: 'Submission failed: ${response.first.message}',
               isSubmitting: false,
             ),
           );
-          return false;
+          return 0;
         }
       } else {
         // Save locally if no internet
@@ -143,7 +146,7 @@ class TrafficTradeFormController extends AsyncNotifier<TrafficTradeFormModel> {
         // ignore: unused_result
         ref.refresh(dataSyncControllerProvider);
       }
-      return true;
+      return 2;
     } catch (e, _) {
       state = AsyncValue.data(
         state.requireValue.copyWith(
@@ -151,7 +154,15 @@ class TrafficTradeFormController extends AsyncNotifier<TrafficTradeFormModel> {
           errorMessage: 'An error occurred: $e',
         ),
       );
-      return false;
+      return 0;
+    }
+  }
+
+  void clearError() {
+    if (state.value?.errorMessage != null) {
+      state = AsyncValue.data(
+        state.requireValue.copyWith(errorMessage: null),
+      );
     }
   }
 }

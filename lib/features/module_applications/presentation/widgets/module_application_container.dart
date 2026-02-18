@@ -19,10 +19,12 @@ import 'package:tgpl_network/utils/map_utils.dart';
 class ModuleApplicationContainer extends ConsumerWidget {
   final ApplicationModel application;
   final String submoduleName;
+  final void Function(String applicationId)? onSyncApplication;
   const ModuleApplicationContainer({
     super.key,
     required this.application,
     required this.submoduleName,
+    this.onSyncApplication,
   });
 
   @override
@@ -45,7 +47,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                application.entryCode ?? '',
+                application.entryCode ?? application.applicationId.toString(),
                 style: AppTextstyles.googleInter400Grey14,
               ),
               Container(
@@ -161,34 +163,41 @@ class ModuleApplicationContainer extends ConsumerWidget {
                 },
               ),
               if (submoduleName == "Survey & Dealer Profile" &&
-                  user.hasSurveyFormAccess) ...[
+                                                   // TM (6) & RM (5) can only access survey form if they have survey form access in their permissions
+                  user.hasSurveyFormAccess && [5, 6].contains(user.positionId)) ...[
                 SizedBox(width: 8.w),
                 actionContainer(
                   icon: AppImages.formIconSvg,
-                  onTap: () {
-                    ref
+                  onTap: () async {
+                    final isSubmit = await ref
                         .read(goRouterProvider)
                         .push(
                           AppRoutes.surveyForm(
                             application.applicationId?.toString() ?? '',
                           ),
                         );
+                    if (isSubmit == true) {
+                      onSyncApplication?.call(application.applicationId.toString());
+                    }
                   },
                 ),
               ],
               if (submoduleName == "Traffic & Trade" &&
-                  user.hasTrafficTradeFormAccess) ...[
+                  user.hasTrafficTradeFormAccess && [5, 6].contains(user.positionId)) ...[
                 SizedBox(width: 8.w),
                 actionContainer(
                   icon: AppImages.formIconSvg,
-                  onTap: () {
-                    ref
+                  onTap: () async {
+                    final isSubmit = await ref
                         .read(goRouterProvider)
                         .push(
                           AppRoutes.trafficTradeForm(
                             application.applicationId?.toString() ?? '',
                           ),
                         );
+                    if (isSubmit == true) {
+                      onSyncApplication?.call(application.applicationId.toString());
+                    }
                   },
                 ),
               ],

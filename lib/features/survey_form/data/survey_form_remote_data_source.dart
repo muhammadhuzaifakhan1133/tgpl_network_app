@@ -8,14 +8,22 @@ class SurveyFormRemoteDataSource {
   final DioClient _dioClient;
   SurveyFormRemoteDataSource(this._dioClient);
 
-  Future<SurveyFormSubmissionResponseModel> submitSurveyForm(
-    SurveyFormModel surveyForm,
+  Future<List<SurveyFormSubmissionResponseModel>> submitSurveyForms(
+    {required List<SurveyFormModel> surveyForms, int? userPositionId}
   ) async {
+    final data = surveyForms.map((form) => form.toApiMap()).toList();
+    for (var item in data) {
+      item["userpositionId"] = userPositionId.toString();
+    }
     final response = await _dioClient.post(
       AppApis.submitSurveyFormEndpoint,
-      data: surveyForm.toApiMap(),
+      data: data,
     );
-    return SurveyFormSubmissionResponseModel.fromJson(response.data);
+    List<SurveyFormSubmissionResponseModel> responses = [];
+    for (var item in response.data) {
+      responses.add(SurveyFormSubmissionResponseModel.fromJson(item));
+    }
+    return responses;
   }
 }
 

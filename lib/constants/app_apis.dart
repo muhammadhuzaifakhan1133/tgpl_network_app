@@ -8,12 +8,11 @@ class AppApis {
       "/api/DataForApp/GetMasterData/$userName";
   static const String appFormDropdownValuesEndpoint =
       "/api/DataForApp/newapplicationlists";
-  // TODO: Update form endpoints with actual endpoints
   static const String submitSurveyFormEndpoint =
-      "api/DataForApp/SaveAndPostSurvey";
-  static const String submitTrafficTradeFormEndpoint =
-      "/api/TrafficTradeForm/SubmitTrafficTradeForm";
-  static const String submitApplicationFormEndpoint =
+      "/api/DataForApp/SaveAndPostSurvey";
+  static const String submitTrafficTradeFormsEndpoint =
+      "/api/DataForApp/SaveAndPostTrafficTrade";
+  static const String submitApplicationFormsEndpoint =
       "/api/DataForApp/SaveNewApplication";
   static String getApplicationDetailEndpoint(String applicationId) =>
       "/api/DataForApp/SurveyById/$applicationId";

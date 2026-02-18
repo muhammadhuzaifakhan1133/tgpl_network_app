@@ -41,7 +41,7 @@ class ApplicationStatusContainer extends ConsumerWidget {
             children: [
               Expanded(
                 child: Text(
-                  application.entryCode.toString(),
+                  application.entryCode ?? application.applicationId.toString(),
                   style: AppTextstyles.googleInter400LightGrey12.copyWith(
                     color: AppColors.subHeadingColor,
                   ),

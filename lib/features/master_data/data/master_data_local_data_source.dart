@@ -1,9 +1,7 @@
-// lib/features/master_data/data/datasources/master_data_local_data_source.dart
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tgpl_network/core/database/queries/select_queries.dart';
+import 'package:tgpl_network/features/master_data/models/attachment_category_model.dart';
 import 'package:tgpl_network/features/master_data/models/tm_rm_model.dart';
 import 'package:tgpl_network/features/master_data/models/user_model.dart';
 import 'package:tgpl_network/core/database/app_database.dart';
@@ -35,6 +33,7 @@ abstract class MasterDataLocalDataSource {
   Future<List<CityModel>> getCities();
   Future<List<TmRmModel>> getTmData();
   Future<List<TmRmModel>> getRmData();
+  Future<List<AttachmentCategoryModel>> getAttachmentCategories();
   Future<UserModel?> getUserInfo();
   // Future<void> clearAllData();
 }
@@ -94,6 +93,16 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
         txn,
         AppDatabase.rmTable,
         data.rmList.map((e) => e.toDatabaseRmMap()).toList(),
+        chunkSize,
+      );
+
+      // Insert attachment categories in chunks
+      await _insertInChunks(
+        txn,
+        AppDatabase.attachmentCategoryTable,
+        data.attachmentCategories
+            .map((e) => e.toDatabaseMap())
+            .toList(),
         chunkSize,
       );
 
@@ -268,6 +277,16 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
     final userInfoMap = userInfoResult.first;
 
     return UserModel.fromDatabaseMap(userInfoMap);
+  }
+
+  @override
+  Future<List<AttachmentCategoryModel>> getAttachmentCategories() async {
+    final db = await _databaseHelper.database;
+    final List<Map<String, dynamic>> maps =
+        await db.query(AppDatabase.attachmentCategoryTable);
+    return maps
+        .map((map) => AttachmentCategoryModel.fromDatabaseMap(map))
+        .toList();
   }
 }
 
