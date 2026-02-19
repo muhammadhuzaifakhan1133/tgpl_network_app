@@ -11,7 +11,6 @@ import 'package:tgpl_network/common/providers/sync_status_provider.dart';
 import 'package:tgpl_network/common/providers/user_provider.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_controller.dart';
 import 'package:tgpl_network/features/applications/presentation/application_controller.dart';
-import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
 import 'package:tgpl_network/features/data_sync/presentation/data_sync_controller.dart';
 import 'package:tgpl_network/features/map/presentation/map_controller.dart';

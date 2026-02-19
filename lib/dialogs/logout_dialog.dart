@@ -7,7 +7,6 @@ import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/dialogs/loader_dialog.dart';
 import 'package:tgpl_network/features/home_shell/presentation/home_shell_controller.dart';
-import 'package:tgpl_network/main.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 import 'package:tgpl_network/utils/show_snackbar.dart';

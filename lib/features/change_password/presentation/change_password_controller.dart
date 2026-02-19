@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/routes/app_router.dart';
+import 'package:tgpl_network/common/providers/user_provider.dart';
+import 'package:tgpl_network/features/change_password/data/change_password_data_source.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 final changePasswordControllerProvider =
     NotifierProvider.autoDispose<ChangePasswordController, ChangePasswordState>(
@@ -15,6 +17,7 @@ class ChangePasswordState {
   String? password;
   String? newPassword;
   String? passwordConfirmation;
+  bool autoValidate;
 
   ChangePasswordState({
     required this.isPasswordObscure,
@@ -22,6 +25,7 @@ class ChangePasswordState {
     this.password,
     this.newPassword,
     this.passwordConfirmation,
+    this.autoValidate = false,
   });
 
   ChangePasswordState copyWith({
@@ -30,6 +34,7 @@ class ChangePasswordState {
     String? password,
     String? newPassword,
     String? passwordConfirmation,
+    bool? autoValidate,
   }) {
     return ChangePasswordState(
       isPasswordObscure: isPasswordObscure ?? this.isPasswordObscure,
@@ -37,6 +42,7 @@ class ChangePasswordState {
       password: password ?? this.password,
       newPassword: newPassword ?? this.newPassword,
       passwordConfirmation: passwordConfirmation ?? this.passwordConfirmation,
+      autoValidate: autoValidate ?? this.autoValidate,
     );
   }
 }
@@ -70,6 +76,10 @@ class ChangePasswordController extends Notifier<ChangePasswordState> {
   void setPasswordConfirmation(String passwordConfirmation) {
     state = state.copyWith(passwordConfirmation: passwordConfirmation);
   }
+
+  void setAutoValidate(bool autoValidate) {
+    state = state.copyWith(autoValidate: autoValidate);
+  }
 }
 
 final changePasswordAsyncControllerProvider =
@@ -81,12 +91,34 @@ class ChangePasswordAsyncController extends AsyncNotifier<void> {
   @override
   FutureOr<void> build() async {}
 
-  Future<void> changePassword() async {
+  Future<bool> changePassword() async {
+    final fieldsState = ref.read(changePasswordControllerProvider);
+    if (fieldsState.password.isNullOrEmpty ||
+        fieldsState.newPassword.isNullOrEmpty ||
+        fieldsState.passwordConfirmation.isNullOrEmpty) {
+      state = AsyncError("All fields are required", StackTrace.current);
+      return false;
+    }
+    final changePwdDataSource = ref.read(changePasswordDataSourceProvider);
     state = AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      // await ref.read(changePasswordRepository).changePassword();
-      await Future.delayed(Duration(seconds: 2));
-      ref.read(goRouterProvider).pop();
-    });
+    try {
+      final userId = ref.read(userProvider).value?.userId;
+      final response = await changePwdDataSource.changePassword(
+        userId: userId.toString(),
+        currentPassword: fieldsState.password!,
+        newPassword: fieldsState.newPassword!,
+        confirmPassword: fieldsState.passwordConfirmation!,
+      );
+      if (response.success) {
+        state = AsyncData(null);
+        return true;
+      } else {
+        state = AsyncError(response.message, StackTrace.current);
+        return false;
+      }
+    } catch (e, s) {
+      state = AsyncError(e, s);
+      return false;
+    }
   }
 }

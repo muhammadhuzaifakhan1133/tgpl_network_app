@@ -1124,4 +1124,89 @@ class ApplicationModel {
     debugPrint('Where Args: $whereArgs');
     return (whereConditions, whereArgs);
   }
+
+  static (String?, String?) getDueDateAndDoneDate(String submoduleName, ApplicationModel application) {
+    String? dueDate;
+    String? doneDate;
+
+    switch (submoduleName) {
+      case 'Survey & Dealer Profile':
+        dueDate = application.siteSurveyDealerProfileDueDate;
+        doneDate = application.siteSurveyDealerProfileDoneDate;
+        break;
+      case 'Traffic & Trade':
+        dueDate = application.trafficTradeDueDate;
+        doneDate = application.trafficTradeDoneDate;
+        break;
+      case 'Feasibility':
+        dueDate = application.feasibilityDueDate;
+        doneDate = application.feasibilityDoneDate;
+        break;
+      case 'Negotiations':
+        dueDate = application.negotiationDueDate;
+        doneDate = application.negotiationDoneDate;
+        break;
+      case 'Feasibility Finalizations':
+        dueDate = application.feasibilityfinalizationDueDate;
+        doneDate = application.feasibilityfinalizationDoneDate;
+        break;
+      case 'MOU Sign Off':
+        dueDate = application.mouSignOFFDueDate;
+        doneDate = application.mouSignOFFDoneDate;
+        break;
+      case 'Joining Fee':
+        dueDate = application.joiningFeeDueDate;
+        doneDate = application.joiningFeeDoneDate;
+        break;
+      case 'Franchise Agreement':
+        dueDate = application.franchiseAgreementDueDate;
+        doneDate = application.franchiseAgreementDoneDate;
+        break;
+      case 'Government Layout':
+        dueDate = application.explosiveLayoutDueDate;
+        doneDate = application.explosiveLayoutDoneDate;
+        break;
+      case 'Issuance of Drawings':
+        dueDate = application.issuanceofDrawingsDueDate;
+        doneDate = application.issuanceofDrawingsDoneDate;
+        break;
+      case 'Topography':
+        dueDate = application.topographyDueDate;
+        doneDate = application.topographyDoneDate;
+        break;
+      case 'Drawings':
+        dueDate = application.drawingsDueDate;
+        doneDate = application.drawingsDoneDate;
+        break;
+      case 'Capex':
+        dueDate = application.capaxDueDate;
+        doneDate = application.capaxDoneDate;
+        break;
+      case 'Applied In Explosive':
+        dueDate = application.appliedInExplosiveDueDate;
+        doneDate = application.appliedInExplosiveDoneDate;
+        break;
+      case 'DC NOC':
+        dueDate = application.dcnocDueDate;
+        doneDate = application.dcnocDoneDate;
+        break;
+      case 'Lease Agreement':
+        dueDate = application.leaseAgreementDueDate;
+        doneDate = application.leaseAgreementDoneDate;
+        break;
+      case 'Construction Activity':
+        dueDate = application.constructionDueDate;
+        doneDate = application.constructionDoneDate;
+        break;
+      case 'HOTO':
+        dueDate = application.hotoDueDate;
+        doneDate = application.hotoDoneDate;
+        break;
+      case 'Inauguration':
+        dueDate = application.inaugurationDueDate;
+        doneDate = application.inaugurationDoneDate;
+        break;
+    }
+    return (dueDate, doneDate);
+  } 
 }

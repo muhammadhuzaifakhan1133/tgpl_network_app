@@ -18,6 +18,7 @@ import 'package:tgpl_network/features/application_detail/widgets/recommendation_
 import 'package:tgpl_network/features/application_detail/widgets/traffic_count_card.dart';
 import 'package:tgpl_network/features/application_detail/widgets/volum_and_financial_estimation_card.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/utils/internet_connectivity.dart';
 import 'package:tgpl_network/utils/map_utils.dart';
 import 'package:tgpl_network/utils/show_snackbar.dart';
 
@@ -167,9 +168,20 @@ class _ApplicationDetailViewState extends ConsumerState<ApplicationDetailView>
     WidgetRef ref,
     String applicationId,
   ) async {
-    // Show loading indicator
-    showSnackBar(context, 'Syncing application data...');
+    if (!await InternetConnectivity.hasInternet()) {
+      if (context.mounted) {
+        showSnackBar(
+          context,
+          'No internet connection. Please connect to the internet and try again.',
+        );
+      }
+      return;
+    }
 
+    if (context.mounted) {
+      showSnackBar(context, 'Syncing application data...');
+    }
+    
     // Trigger sync
     await ref
         .read(applicationDetailAsyncControllerProvider(applicationId).notifier)

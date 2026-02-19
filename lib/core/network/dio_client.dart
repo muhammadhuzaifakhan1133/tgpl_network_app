@@ -44,10 +44,12 @@ class DioClient {
     String path, {
     Map<String, dynamic>? queryParameters,
     Options? options,
+    ProgressCallback? onReceiveProgress,
   }) async {
     try {
       final response = await _dio.get(
         path,
+        onReceiveProgress: onReceiveProgress,
         queryParameters: queryParameters,
         options: options,
       );
@@ -63,11 +65,13 @@ class DioClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
+    ProgressCallback? onSendProgress,
   }) async {
     try {
       final response = await _dio.post(
         path,
         data: data,
+        onSendProgress: onSendProgress,
         queryParameters: queryParameters,
         options: options,
       );

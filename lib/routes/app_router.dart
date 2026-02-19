@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:tgpl_network/features/change_password/presentation/change_password_view.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/home_shell/presentation/home_shell_view.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_view.dart';
 import 'package:tgpl_network/features/applications_filter/appplications_filter_view.dart';
 import 'package:tgpl_network/features/applications/presentation/applications_view.dart';
-import 'package:tgpl_network/features/change_password/change_password_view.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_search/dashboard_search_view.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_view.dart';
 import 'package:tgpl_network/features/data_sync/presentation/data_sync_view.dart';

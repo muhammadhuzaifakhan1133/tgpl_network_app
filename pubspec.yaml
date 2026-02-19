@@ -55,6 +55,7 @@ dependencies:
   riverpod: ^3.2.0
   flutter_screenutil: ^5.9.3
   equatable: ^2.0.8
+  open_file: ^3.5.11
 
 dev_dependencies:
   flutter_test:

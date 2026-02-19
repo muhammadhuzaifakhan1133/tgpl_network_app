@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/providers/user_provider.dart';
-import 'package:tgpl_network/features/master_data/providers/tm_rm_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/yes_no_na_values_provider.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';

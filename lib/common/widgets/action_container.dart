@@ -6,6 +6,7 @@ import 'package:tgpl_network/constants/app_colors.dart';
 Widget actionContainer({
   required String icon,
   required void Function()? onTap,
+  IconData? iconData,
   Color iconColor = AppColors.subHeadingColor,
   Color backgroundColor = AppColors.actionContainerColor,
   double leftMargin = 8,
@@ -23,7 +24,12 @@ Widget actionContainer({
         color: backgroundColor,
         borderRadius: BorderRadius.circular(10.r),
       ),
-      child: SvgPicture.asset(icon, color: iconColor),
+      child: iconData != null
+          ? Icon(iconData, color: iconColor)
+          : SvgPicture.asset(
+              icon,
+              color: iconColor,
+          )
     ),
   );
 }

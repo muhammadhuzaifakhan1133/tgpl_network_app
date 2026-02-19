@@ -113,32 +113,32 @@ class DataSyncController extends AsyncNotifier<DataSyncState> {
     for (var item in updatedItems) {
       if (item.status != SyncItemStatus.syncing) continue;
       // try {
-        if (item.surveyForm != null) {
-          // final response = await surveyRemoteDataSource.submitSurveyForm(
-          //   item.surveyForm!,
-          // );
-          // if (response.success) {
-          //   await surveyLocalDataSource.markSurveyFormAsSynced(item.id);
-          // } else {
-          //   await surveyLocalDataSource.updateSurveyFormErrorMessage(
-          //     item.id,
-          //     response.message,
-          //   );
-          // }
-          surveyForms.add(item.surveyForm!);
-        } else if (item.trafficTradeForm != null) {
-          // final response = await trafficTradeRemoteDataSource
-          //     .submitTrafficTradeForm(item.trafficTradeForm!);
-          // if (response.success) {
-          //   await trafficTradeLocalDataSource.markTrafficTradeFormAsSynced(
-          //     item.id,
-          //   );
-          // } else {
-          //   await trafficTradeLocalDataSource
-          //       .updateTrafficTradeFormErrorMessage(item.id, response.message);
-          // }
-          trafficTradeForms.add(item.trafficTradeForm!);
-        }
+      if (item.surveyForm != null) {
+        // final response = await surveyRemoteDataSource.submitSurveyForm(
+        //   item.surveyForm!,
+        // );
+        // if (response.success) {
+        //   await surveyLocalDataSource.markSurveyFormAsSynced(item.id);
+        // } else {
+        //   await surveyLocalDataSource.updateSurveyFormErrorMessage(
+        //     item.id,
+        //     response.message,
+        //   );
+        // }
+        surveyForms.add(item.surveyForm!);
+      } else if (item.trafficTradeForm != null) {
+        // final response = await trafficTradeRemoteDataSource
+        //     .submitTrafficTradeForm(item.trafficTradeForm!);
+        // if (response.success) {
+        //   await trafficTradeLocalDataSource.markTrafficTradeFormAsSynced(
+        //     item.id,
+        //   );
+        // } else {
+        //   await trafficTradeLocalDataSource
+        //       .updateTrafficTradeFormErrorMessage(item.id, response.message);
+        // }
+        trafficTradeForms.add(item.trafficTradeForm!);
+      }
       // } catch (e) {
       //   if (item.surveyForm != null) {
       //     await surveyLocalDataSource.updateSurveyFormErrorMessage(
@@ -159,22 +159,28 @@ class DataSyncController extends AsyncNotifier<DataSyncState> {
           surveyForms: surveyForms,
           userPositionId: ref.read(userProvider).value?.positionId,
         );
-          for (var response in responses) {
-            if (response.success) {
-              await surveyLocalDataSource.markSurveyFormAsSynced(response.applicationId);
-            } else {
-              await surveyLocalDataSource.updateSurveyFormErrorMessage(
-                response.applicationId,
-                response.message,
-              );
-            }
+        for (var response in responses) {
+          if (response.success) {
+            await surveyLocalDataSource.markSurveyFormAsSynced(
+              response.applicationId,
+            );
+          } else {
+            await surveyLocalDataSource.updateSurveyFormErrorMessage(
+              response.applicationId,
+              response.message,
+            );
           }
+        }
       }
       final user = ref.read(userProvider).value;
       if (trafficTradeForms.isNotEmpty) {
         for (var form in trafficTradeForms) {
           final responses = await trafficTradeRemoteDataSource
-              .submitTrafficTradeForms(trafficTradeForms: [form], userPositionId: user?.positionId, userName: user?.userName);
+              .submitTrafficTradeForms(
+                trafficTradeForms: [form],
+                userPositionId: user?.positionId,
+                userName: user?.userName,
+              );
           for (var response in responses) {
             if (response.success) {
               await trafficTradeLocalDataSource.markTrafficTradeFormAsSynced(
@@ -183,14 +189,16 @@ class DataSyncController extends AsyncNotifier<DataSyncState> {
             } else {
               await trafficTradeLocalDataSource
                   .updateTrafficTradeFormErrorMessage(
-                    response.applicationId, response.message);
+                    response.applicationId,
+                    response.message,
+                  );
             }
           }
         }
       }
-    } catch (e) {
-      
+      ref.invalidateSelf();
+    } catch (e, s) {
+      state = AsyncError(e, s);
     }
-    ref.invalidateSelf();
   }
 }

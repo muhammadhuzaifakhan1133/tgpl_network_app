@@ -117,7 +117,7 @@ class MapMarkersController extends AsyncNotifier<List<Marker>> {
         } else {
           icon = await SiteMapMarker(
             color: color,
-            label: app.entryCode.toString(),
+            label: app.proposedSiteName1 ?? app.entryCode ?? app.applicationId.toString(),
           ).toBitmapDescriptor();
           _markerCache[key] = icon;
         }

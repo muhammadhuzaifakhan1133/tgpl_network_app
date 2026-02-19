@@ -9,6 +9,7 @@ import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/module_applications/presentation/module_applications_controller.dart';
 import 'package:tgpl_network/features/module_applications/presentation/widgets/module_application_container.dart';
 import 'package:tgpl_network/features/module_applications/presentation/widgets/module_applications_shimmer.dart';
+import 'package:tgpl_network/utils/internet_connectivity.dart';
 
 class ModuleApplicationsView extends ConsumerStatefulWidget {
   final SubModuleModel subModule;
@@ -115,14 +116,16 @@ class _ModuleApplicationsViewState
                             return ModuleApplicationContainer(
                               application: data.applications[index],
                               submoduleName: widget.subModule.title,
-                              onSyncApplication: (String applicationId) {
-                                ref
-                                    .read(
-                                      moduleApplicationsAsyncControllerProvider(
-                                        widget.subModule,
-                                      ).notifier,
-                                    )
-                                    .syncApplication(applicationId);
+                              onSyncApplication: (String applicationId) async {
+                                if (await InternetConnectivity.hasInternet()) {
+                                  ref
+                                      .read(
+                                        moduleApplicationsAsyncControllerProvider(
+                                          widget.subModule,
+                                        ).notifier,
+                                      )
+                                      .syncApplication(applicationId);
+                                }
                               },
                             );
                           },

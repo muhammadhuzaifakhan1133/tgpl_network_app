@@ -28,7 +28,7 @@ class SelectedApplicationCard extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "${application.entryCode} ${application.proposedSiteName1 != null ? '(${application.proposedSiteName1})' : ''}",
+                "${application.entryCode ?? application.applicationId} ${application.proposedSiteName1 != null ? '(${application.proposedSiteName1})' : ''}",
                 style: AppTextstyles.googleInter400Grey14.copyWith(
                   fontSize: 12.sp,
                 ),

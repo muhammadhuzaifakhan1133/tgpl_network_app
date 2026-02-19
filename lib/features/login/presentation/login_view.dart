@@ -184,6 +184,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                                   )
                                                   .login();
                                           if (response != null) {
+                                            // ignore: unused_result
                                             ref.refresh(homeShellControllerProvider);
                                             ref
                                                 .read(goRouterProvider)

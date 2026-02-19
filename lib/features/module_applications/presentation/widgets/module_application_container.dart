@@ -9,12 +9,15 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/features/master_data/models/user_model.dart';
 import 'package:tgpl_network/features/module_applications/presentation/widgets/document_bottom_sheet.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
+import 'package:tgpl_network/utils/internet_connectivity.dart';
 import 'package:tgpl_network/utils/map_utils.dart';
+import 'package:tgpl_network/utils/show_snackbar.dart';
 
 class ModuleApplicationContainer extends ConsumerWidget {
   final ApplicationModel application;
@@ -86,135 +89,194 @@ class ModuleApplicationContainer extends ConsumerWidget {
           SizedBox(height: 8.h),
           Divider(color: AppColors.lightGrey),
           SizedBox(height: 6.75.h),
-          Row(
-            children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      AppImages.phoneIconSvg,
-                      color: AppColors.subHeadingColor,
-                    ),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: Text(
-                        application.whatsAppNumber ?? '',
-                        style: AppTextstyles.googleInter400Grey14.copyWith(
-                          fontSize: 13.sp,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      AppImages.locationIconSvg,
-                      color: AppColors.subHeadingColor,
-                    ),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: Text(
-                        application.cityName ?? '',
-                        style: AppTextstyles.googleInter400Grey14.copyWith(
-                          fontSize: 13.sp,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+          phoneAndLocationInfo(),
+          dueDateAndDoneDate(),
           SizedBox(height: 6.75.h),
           Divider(color: AppColors.lightGrey),
           SizedBox(height: 8.h),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  "Received: ${application.applicationReceiveDate?.formatTodMMMyyyy() ?? 'N/A'}",
-                  style: AppTextstyles.googleInter400LightGrey12,
-                ),
-              ),
-              actionContainer(
-                icon: AppImages.locationIconSvg,
-                onTap: () {
-                  MapUtils.openGoogleMap(
-                    application.latitude,
-                    application.longitude,
-                  );
-                },
-              ),
-              SizedBox(width: 8.w),
-              actionContainer(
-                icon: AppImages.eyeIconSvg,
-                onTap: () {
-                  // send section to the detail view
-                  ref
-                      .read(goRouterProvider)
-                      .push(
-                        AppRoutes.applicationDetail(
-                          application.applicationId?.toString() ?? '',
-                        ),
-                      );
-                },
-              ),
-              if (submoduleName == "Survey & Dealer Profile" &&
-                                                   // TM (6) & RM (5) can only access survey form if they have survey form access in their permissions
-                  user.hasSurveyFormAccess && [5, 6].contains(user.positionId)) ...[
-                SizedBox(width: 8.w),
-                actionContainer(
-                  icon: AppImages.formIconSvg,
-                  onTap: () async {
-                    final isSubmit = await ref
-                        .read(goRouterProvider)
-                        .push(
-                          AppRoutes.surveyForm(
-                            application.applicationId?.toString() ?? '',
-                          ),
-                        );
-                    if (isSubmit == true) {
-                      onSyncApplication?.call(application.applicationId.toString());
-                    }
-                  },
-                ),
-              ],
-              if (submoduleName == "Traffic & Trade" &&
-                  user.hasTrafficTradeFormAccess && [5, 6].contains(user.positionId)) ...[
-                SizedBox(width: 8.w),
-                actionContainer(
-                  icon: AppImages.formIconSvg,
-                  onTap: () async {
-                    final isSubmit = await ref
-                        .read(goRouterProvider)
-                        .push(
-                          AppRoutes.trafficTradeForm(
-                            application.applicationId?.toString() ?? '',
-                          ),
-                        );
-                    if (isSubmit == true) {
-                      onSyncApplication?.call(application.applicationId.toString());
-                    }
-                  },
-                ),
-              ],
-              SizedBox(width: 8.w),
-              actionContainer(
-                icon: AppImages.uploadIconSvg,
-                onTap: () {
-                  documentBottomSheet(
-                    context: context,
-                    application: application,
-                  );
-                },
-              ),
-            ],
-          ),
+          containerActions(ref, user, context),
         ],
       ),
     );
+  }
+
+  Widget dueDateAndDoneDate() {
+    var (dueDate, doneDate) = ApplicationModel.getDueDateAndDoneDate(submoduleName, application); 
+    if (dueDate == null) {
+      return SizedBox.shrink();
+    }
+    return Column(
+      children: [
+        SizedBox(height: 6.75.h),
+        Divider(color: AppColors.lightGrey),
+        SizedBox(height: 8.h),
+        Row(
+              children: [
+                Expanded(
+                    child: Text(
+                      "Due: ${dueDate.formatTodMMMyyyy()}",
+                      style: AppTextstyles.googleInter400Grey14,
+                    ),
+                  ),
+                // if done date is null and due date is passed then show overdue with no of days passed and if due date is not passed then show Done: pending
+                if (doneDate != null)
+                  Text(
+                    "Done: ${doneDate.formatTodMMMyyyy()}",
+                    style: AppTextstyles.googleInter400Grey14,
+                  )
+                else if ((DateTime.tryParse(dueDate)?.isBefore(DateTime.now()) ?? false))
+                  Text(
+                    "Overdue: ${DateTime.now().difference(DateTime.tryParse(dueDate)!).inDays} days",
+                    style: AppTextstyles.googleInter400Grey14.copyWith(
+                      color: AppColors.emailUsIconColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                else if ((DateTime.tryParse(dueDate)?.isAfter(DateTime.now()) ?? false))
+                  Text(
+                    "Done: Pending",
+                    style: AppTextstyles.googleInter400Grey14,
+                  )
+        
+              ],
+            ),
+      ],
+    );
+  }
+
+  Row phoneAndLocationInfo() {
+    return Row(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  SvgPicture.asset(
+                    AppImages.phoneIconSvg,
+                    color: AppColors.subHeadingColor,
+                  ),
+                  SizedBox(width: 8.w),
+                  Expanded(
+                    child: Text(
+                      application.whatsAppNumber ?? '',
+                      style: AppTextstyles.googleInter400Grey14.copyWith(
+                        fontSize: 13.sp,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Row(
+                children: [
+                  SvgPicture.asset(
+                    AppImages.locationIconSvg,
+                    color: AppColors.subHeadingColor,
+                  ),
+                  SizedBox(width: 8.w),
+                  Expanded(
+                    child: Text(
+                      application.cityName ?? '',
+                      style: AppTextstyles.googleInter400Grey14.copyWith(
+                        fontSize: 13.sp,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+  }
+
+  Row containerActions(WidgetRef ref, UserModel user, BuildContext context) {
+    return Row(
+          children: [
+            Expanded(
+              child: Text(
+                "Received: ${application.applicationReceiveDate?.formatTodMMMyyyy() ?? 'N/A'}",
+                style: AppTextstyles.googleInter400LightGrey12,
+              ),
+            ),
+            actionContainer(
+              icon: AppImages.locationIconSvg,
+              onTap: () {
+                MapUtils.openGoogleMap(
+                  application.latitude,
+                  application.longitude,
+                );
+              },
+            ),
+            SizedBox(width: 8.w),
+            actionContainer(
+              icon: AppImages.eyeIconSvg,
+              onTap: () {
+                // send section to the detail view
+                ref
+                    .read(goRouterProvider)
+                    .push(
+                      AppRoutes.applicationDetail(
+                        application.applicationId?.toString() ?? '',
+                      ),
+                    );
+              },
+            ),
+            if (submoduleName == "Survey & Dealer Profile" &&
+                                                 // TM (6) & RM (5) can only access survey form if they have survey form access in their permissions
+                user.hasSurveyFormAccess && [5, 6].contains(user.positionId)) ...[
+              SizedBox(width: 8.w),
+              actionContainer(
+                icon: AppImages.formIconSvg,
+                onTap: () async {
+                  final isSubmit = await ref
+                      .read(goRouterProvider)
+                      .push(
+                        AppRoutes.surveyForm(
+                          application.applicationId?.toString() ?? '',
+                        ),
+                      );
+                  if (isSubmit == true) {
+                    onSyncApplication?.call(application.applicationId.toString());
+                  }
+                },
+              ),
+            ],
+            if (submoduleName == "Traffic & Trade" &&
+                user.hasTrafficTradeFormAccess && [5, 6].contains(user.positionId)) ...[
+              SizedBox(width: 8.w),
+              actionContainer(
+                icon: AppImages.formIconSvg,
+                onTap: () async {
+                  final isSubmit = await ref
+                      .read(goRouterProvider)
+                      .push(
+                        AppRoutes.trafficTradeForm(
+                          application.applicationId?.toString() ?? '',
+                        ),
+                      );
+                  if (isSubmit == true) {
+                    onSyncApplication?.call(application.applicationId.toString());
+                  }
+                },
+              ),
+            ],
+            SizedBox(width: 8.w),
+            actionContainer(
+              icon: AppImages.uploadIconSvg,
+              onTap: () async {
+                if (await InternetConnectivity.hasInternet() && context.mounted) {
+                  documentBottomSheet(
+                  context: context,
+                  application: application,
+                );
+                } else {
+                  if (context.mounted) {
+                    showSnackBar(context, "Internet connection is required to view or upload documents");
+                  }
+                }
+              },
+            ),
+          ],
+        );
   }
 }

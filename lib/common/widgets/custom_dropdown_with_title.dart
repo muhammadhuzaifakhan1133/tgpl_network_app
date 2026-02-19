@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown.dart';
 import 'package:tgpl_network/common/widgets/custom_searchable_dropdown.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 /// 🔥 Alternative: Generic async dropdown that accepts either static list or provider
 class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
@@ -91,6 +92,8 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (title.isNotNullOrEmpty) ... [
+
         RichText(
           text: TextSpan(
             text: title,
@@ -108,6 +111,7 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
           ),
         ),
         SizedBox(height: 8.h),
+        ],
         asyncState.when(
           skipLoadingOnRefresh: false,
           data: (data) {

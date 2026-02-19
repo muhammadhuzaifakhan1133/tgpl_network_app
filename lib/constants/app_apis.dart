@@ -16,4 +16,9 @@ class AppApis {
       "/api/DataForApp/SaveNewApplication";
   static String getApplicationDetailEndpoint(String applicationId) =>
       "/api/DataForApp/SurveyById/$applicationId";
+  static String getApplicationDocumentsEndpoint(String applicationId) =>
+      "/api/DataForApp/SurveyAttachmentList/$applicationId";
+  static const String uploadDocumentEndpoint =
+      "/api/DataForApp/UploadActivityImage";
+  static const String changePasswordEndpoint = "/api/DataForApp/ChangePassword";
 }

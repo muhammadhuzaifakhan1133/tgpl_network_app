@@ -19,7 +19,7 @@ class AppFormDropdownsLocalDataSourceImpl
   Future<void> saveSiteStatuses(List<SiteStatusModel> siteStatuses) async {
     final db = await _databaseHelper.database;
 
-    final result = await db.transaction((txn) async {
+    await db.transaction((txn) async {
       for (final siteStatus in siteStatuses) {
         await txn.insert(
           AppDatabase.siteStatusTable,

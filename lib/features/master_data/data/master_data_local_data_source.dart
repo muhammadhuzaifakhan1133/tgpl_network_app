@@ -47,7 +47,7 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
   Future<void> saveMasterData(MasterDataResponseModel data) async {
     final db = await _databaseHelper.database;
 
-    final result = await db.transaction((txn) async {
+    await db.transaction((txn) async {
       // Clear existing data
       for (final table in _databaseHelper.masterDataTables) {
         await txn.delete(table);
@@ -151,7 +151,7 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
       for (var item in chunk) {
         batch.insert(table, item);
       }
-      final result = await batch.commit(noResult: true);
+      await batch.commit(noResult: true);
     }
   }
 
