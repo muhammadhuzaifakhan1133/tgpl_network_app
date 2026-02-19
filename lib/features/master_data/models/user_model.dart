@@ -5,9 +5,10 @@ class UserModel {
   final int companyId;
   final String companyDisplayName;
   final int positionId;
+  final String positionName;
   final String email;
   final String contact;
-  final String treePath;
+  final String region;
   final bool isSuperAdmin;
   final bool hasSurveyFormAccess;
   final bool hasTrafficTradeFormAccess;
@@ -20,9 +21,10 @@ class UserModel {
     required this.companyId,
     required this.companyDisplayName,
     required this.positionId,
+    required this.positionName,
     required this.email,
     required this.contact,
-    required this.treePath,
+    required this.region,
     required this.isSuperAdmin,
     required this.hasSurveyFormAccess,
     required this.hasTrafficTradeFormAccess,
@@ -36,9 +38,10 @@ class UserModel {
       companyId: json['CompanyId'] ?? 0,
       companyDisplayName: json['CompanyDisplayName'] ?? '',
       positionId: json['PositionId'] ?? 0,
+      positionName: json['PositionName'] ?? '',
       email: json['Email'] ?? '',
       contact: json['Contact'] ?? '',
-      treePath: json['TreePath'] ?? '',
+      region: json['TreePath'] ?? '',
       isSuperAdmin: json['IsSuperAdmin'] ?? false,
       hasSurveyFormAccess: _hasSurveyFormAccess(List<Map<String, dynamic>>.from(json['UserMenu'] ?? [])),
       hasTrafficTradeFormAccess: _hasTrafficTradeFormAccess(List<Map<String, dynamic>>.from(json['UserMenu'] ?? [])),
@@ -73,9 +76,10 @@ class UserModel {
       'companyId': companyId,
       'companyDisplayName': companyDisplayName,
       'positionId': positionId,
+      'positionName': positionName,
       'email': email,
       'contact': contact,
-      'treePath': treePath,
+      'treePath': region,
       'isSuperAdmin': isSuperAdmin ? 1 : 0,
       'hasSurveyFormAccess': hasSurveyFormAccess ? 1 : 0,
       'hasTrafficTradeFormAccess': hasTrafficTradeFormAccess ? 1 : 0,
@@ -90,9 +94,10 @@ class UserModel {
       companyId: map['companyId'] ?? 0,
       companyDisplayName: map['companyDisplayName'] ?? '',
       positionId: map['positionId'] ?? 0,
+      positionName: map['positionName'] ?? '',
       email: map['email'] ?? '',
       contact: map['contact'] ?? '',
-      treePath: map['treePath'] ?? '',
+      region: map['treePath'] ?? '',
       isSuperAdmin: (map['isSuperAdmin'] ?? 0) == 1,
       hasSurveyFormAccess: (map['hasSurveyFormAccess'] ?? 0) == 1,
       hasTrafficTradeFormAccess: (map['hasTrafficTradeFormAccess'] ?? 0) == 1,

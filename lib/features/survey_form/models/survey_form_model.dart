@@ -1,3 +1,5 @@
+import 'package:tgpl_network/features/master_data/models/city_model.dart';
+
 class SurveyFormModel {
   // Application Info
   final String? applicationId;
@@ -5,7 +7,7 @@ class SurveyFormModel {
   final String? dateConducted;
   final String? conductedBy;
   final String? googleLocation;
-  final String? city;
+  final CityModel? city;
   final String? district;
   final String? siteStatus;
   final String? npName;
@@ -101,7 +103,8 @@ class SurveyFormModel {
       'dateConducted': dateConducted,
       'conductedBy': conductedBy,
       'googleLocation': googleLocation,
-      'city': city,
+      'cityId': city?.cityId,
+      'cityName': city?.name,
       'district': district,
       'siteStatus': siteStatus,
       'npName': npName,
@@ -142,8 +145,9 @@ class SurveyFormModel {
       "applicationId": applicationId,
       "entryCode": entryCode,
       "dateConducted": dateConducted,
+      "conductedBy": conductedBy,
       "googleLocation": googleLocation,
-      "cityName": city,
+      "cityId": city?.cityId,
       "district": district,
       "siteStatus": siteStatus,
       "npName": npName,
@@ -155,8 +159,8 @@ class SurveyFormModel {
       "referenceBy": referenceBy,
       "locationAddress": locationAddress,
       "landmark": landmark,
-      "plotFront": plotFront,
-      "plotDepth": plotDepth,
+      "plotFront": plotFront?.split(".").first,
+      "plotDepth": plotDepth?.split(".").first,
       "nearestDepo": nearestDepo,
       "distanceFromDepo": distanceFromDepo,
       "typeOfTradeArea": typeOfTradeArea,
@@ -169,12 +173,13 @@ class SurveyFormModel {
       "monthlySalary": monthlySalary,
       "isDealerAgreedToFollowTgplStandards":
           isDealerAgreedToFollowTgplStandards,
-      "selectedTM": selectedTM,
-      "tmRecommendation": tmRecommendation,
-      "tmRemarks": tmRemarks,
-      "selectedRM": selectedRM,
-      "rmRecommendation": rmRecommendation,
-      "rmRemarks": rmRemarks,
+      // API only needs TM/RM recommendation & remarks, selectedTM/RM is the one who logged in
+      // "selectedTM": selectedTM,
+      "tmRecommendation": tmRecommendation ?? rmRecommendation,
+      "tmRemarks": tmRemarks ?? rmRemarks,
+      // "selectedRM": selectedRM,
+      "rmRecommendation": rmRecommendation ?? tmRecommendation,
+      "rmRemarks": rmRemarks ?? tmRemarks,
     };
   }
 
@@ -185,7 +190,7 @@ class SurveyFormModel {
       dateConducted: json['dateConducted'] as String?,
       conductedBy: json['conductedBy'] as String?,
       googleLocation: json['googleLocation'] as String?,
-      city: json['city'] as String?,
+      city: CityModel(cityId: json['cityId'], name: json['cityName']),
       district: json['district'] as String?,
       siteStatus: json['siteStatus'] as String?,
       npName: json['npName'] as String?,
@@ -230,7 +235,7 @@ class SurveyFormModel {
     String? dateConducted,
     String? conductedBy,
     String? googleLocation,
-    String? city,
+    CityModel? city,
     String? district,
     String? siteStatus,
     String? npName,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/utils/extensions/screen_size_extension.dart';
@@ -26,7 +27,8 @@ class CustomButton extends StatelessWidget {
     this.bottomPadding = 10,
     this.rightPadding = 50,
     this.leftPadding = 50,
-    this.backgroundColor = AppColors.primary, this.textStyle,
+    this.backgroundColor = AppColors.primary,
+    this.textStyle,
   });
 
   @override
@@ -36,15 +38,15 @@ class CustomButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: backgroundColor,
         padding: EdgeInsets.only(
-          top: topPadding,
-          bottom: bottomPadding,
-          right: rightPadding,
-          left: leftPadding,
+          top: topPadding.h,
+          bottom: bottomPadding.h,
+          right: rightPadding.w,
+          left: leftPadding.w,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(12.r),
         ),
-        fixedSize: Size(width ?? context.screenWidth * 0.75, height),
+        fixedSize: Size(width?.w ?? context.screenWidth * 0.75, height.h),
       ),
       child:
           child ??

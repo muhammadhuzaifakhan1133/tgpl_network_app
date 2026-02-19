@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/models/sync_enum.dart';
 import 'package:tgpl_network/common/providers/last_sync_time_provider.dart';
 import 'package:tgpl_network/common/providers/sync_status_provider.dart';
@@ -52,28 +53,28 @@ class _DashboardView extends ConsumerWidget {
       child: ListView(
         children: [
           Container(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(50),
-                bottomRight: Radius.circular(50),
+                bottomLeft: Radius.circular(50.r),
+                bottomRight: Radius.circular(50.r),
               ),
             ),
             child: Column(
               children: [
-                const SizedBox(height: 10),
+                SizedBox(height: 10.h),
                 DashboardHeaderProfile(),
-                const SizedBox(height: 30),
+                SizedBox(height: 30.h),
                 DashboardGreetingText(),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.h),
                 DashboardCountContainers(),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.h),
               ],
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
             child: Column(
               children: [
                 // RegionalManagersSection(),
@@ -110,7 +111,7 @@ class _DashboardView extends ConsumerWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 DashboardModulesSection(),
               ],
             ),

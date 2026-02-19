@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/data_sync/models/sync_item.dart';
@@ -17,7 +18,7 @@ Future<dynamic> deleteFormDialog(
       return AlertDialog(
         title: Text(
           'Confirm Deletion',
-          style: AppTextstyles.googleInter700black28.copyWith(fontSize: 20),
+          style: AppTextstyles.googleInter700black28.copyWith(fontSize: 20.sp),
         ),
         content: Text(
           'Are you sure you want to delete this pending form? This action cannot be undone.',
@@ -32,7 +33,7 @@ Future<dynamic> deleteFormDialog(
               'Cancel',
               style: AppTextstyles.googleInter500LabelColor14.copyWith(
                 color: AppColors.nextStep1Color,
-                fontSize: 16,
+                fontSize: 16.sp,
               ),
             ),
           ),
@@ -47,7 +48,7 @@ Future<dynamic> deleteFormDialog(
               'Delete',
               style: AppTextstyles.googleInter500LabelColor14.copyWith(
                 color: AppColors.rejectedCountDarkColor,
-                fontSize: 16,
+                fontSize: 16.sp,
               ),
             ),
           ),

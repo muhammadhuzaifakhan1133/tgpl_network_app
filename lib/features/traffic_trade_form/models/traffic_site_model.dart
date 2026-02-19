@@ -104,7 +104,6 @@ class TrafficSiteModel {
 
   Map<String, dynamic> toApiMap() {
     return {
-      "id": id,
       "siteName": siteName,
       "estimatedDailyDieselSale": estimatedDailyDieselSale,
       "estimatedDailySuperSale": estimatedDailySuperSale,

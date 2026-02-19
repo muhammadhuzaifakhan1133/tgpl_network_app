@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_controller.dart';
 import 'package:tgpl_network/common/widgets/section_detail_card.dart';
 
 class SiteDetailCard extends ConsumerWidget {
   final String entryCode;
-  final String dateConducted;
+  // final String dateConducted;
   final String googleLocation;
   final String city;
   final String district;
@@ -23,7 +24,7 @@ class SiteDetailCard extends ConsumerWidget {
   const SiteDetailCard({
     super.key,
     required this.entryCode,
-    required this.dateConducted,
+    // required this.dateConducted,
     required this.googleLocation,
     required this.city,
     required this.district,
@@ -59,54 +60,54 @@ class SiteDetailCard extends ConsumerWidget {
           title: "Entry Code",
           hintText: entryCode,
         ),
-        const SizedBox(height: 10),
-        CustomTextFieldWithTitle(
-          readOnly: true,
-          title: "Date Conducted",
-          hintText: dateConducted,
-        ),
-        const SizedBox(height: 10),
+        // SizedBox(height: 10.h),
+        // CustomTextFieldWithTitle(
+        //   readOnly: true,
+        //   title: "Date Conducted",
+        //   hintText: dateConducted,
+        // ),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
 
           title: "Google Location",
           hintText: googleLocation,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(readOnly: true, title: "City", hintText: city),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "District",
           hintText: district,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Priority",
           hintText: priority,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
 
           title: "Location Address",
           hintText: locationAddress,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
 
           title: "Landmark",
           hintText: landmark,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Plot Area",
           hintText: plotArea,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Row(
           children: [
             Expanded(
@@ -117,7 +118,7 @@ class SiteDetailCard extends ConsumerWidget {
                 hintText: plotFront,
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             Expanded(
               child: CustomTextFieldWithTitle(
                 readOnly: true,
@@ -128,20 +129,20 @@ class SiteDetailCard extends ConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Nearest Depo",
           hintText: nearestDepo,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
 
           title: "Distance From Depo (Km)",
           hintText: distanceFromDepo,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
 

@@ -60,10 +60,10 @@ class VolumeFinancialState {
   VolumeFinancialState.loadFromApplication(ApplicationModel app)
       : dailyDieselSales = app.estimateDailyDieselSale?.toString(),
         dailySuperSales = app.estimateDailySuperSale?.toString(),
-        dailyHOBCSales = app.estimateDailyHOBCSale?.toString(),
+        dailyHOBCSales = app.estimatedDailyHOBCSale?.toString(),
         dailyLubricantSales = app.estimateLubricantSale?.toString(),
         rentExpectation = app.expectedLeaseRentPerManth?.toString(),
-        truckPortPotential = app.trucPortPotentail?.toString(),
+        truckPortPotential = app.truckPortPotential?.toString(),
         salamMartPotential = app.salamMartPotential?.toString(),
         restaurantPotential = app.resturantPotential?.toString();
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/shimmer_widget.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 
@@ -25,10 +26,10 @@ class ModuleApplicationShimmerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
-      margin: const EdgeInsets.only(bottom: 14),
+      padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 8.h),
+      margin: EdgeInsets.only(bottom: 14.h),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.4),
+        borderRadius: BorderRadius.circular(16.4.r),
         color: AppColors.white,
       ),
       child: Column(
@@ -50,7 +51,7 @@ class ModuleApplicationShimmerCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
 
           // Dealer name and site name
           const ShimmerBox(
@@ -58,7 +59,7 @@ class ModuleApplicationShimmerCard extends StatelessWidget {
             height: 20,
             borderRadius: 4,
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
 
           // Source name
           const ShimmerBox(
@@ -66,7 +67,7 @@ class ModuleApplicationShimmerCard extends StatelessWidget {
             height: 14,
             borderRadius: 4,
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
 
           // Divider
           const ShimmerBox(
@@ -74,20 +75,20 @@ class ModuleApplicationShimmerCard extends StatelessWidget {
             height: 1,
             borderRadius: 0,
           ),
-          const SizedBox(height: 6.75),
+          SizedBox(height: 6.75.h),
 
           // Phone and location row
           Row(
             children: [
               Expanded(
                 child: Row(
-                  children: const [
+                  children: [
                     ShimmerBox(
                       width: 16,
                       height: 16,
                       borderRadius: 4,
                     ),
-                    SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     Expanded(
                       child: ShimmerBox(
                         height: 13,
@@ -97,16 +98,16 @@ class ModuleApplicationShimmerCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16.w),
               Expanded(
                 child: Row(
-                  children: const [
+                  children: [
                     ShimmerBox(
                       width: 16,
                       height: 16,
                       borderRadius: 4,
                     ),
-                    SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     Expanded(
                       child: ShimmerBox(
                         height: 13,
@@ -118,7 +119,7 @@ class ModuleApplicationShimmerCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 6.75),
+          SizedBox(height: 6.75.h),
 
           // Divider
           const ShimmerBox(
@@ -126,11 +127,11 @@ class ModuleApplicationShimmerCard extends StatelessWidget {
             height: 1,
             borderRadius: 0,
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
 
           // Bottom row - date and action buttons
           Row(
-            children: const [
+            children: [
               ShimmerBox(
                 width: 100,
                 height: 12,
@@ -142,13 +143,13 @@ class ModuleApplicationShimmerCard extends StatelessWidget {
                 height: 40,
                 borderRadius: 8,
               ),
-              SizedBox(width: 8),
+              SizedBox(width: 8.w),
               ShimmerBox(
                 width: 40,
                 height: 40,
                 borderRadius: 8,
               ),
-              SizedBox(width: 8),
+              SizedBox(width: 8.w),
               ShimmerBox(
                 width: 40,
                 height: 40,

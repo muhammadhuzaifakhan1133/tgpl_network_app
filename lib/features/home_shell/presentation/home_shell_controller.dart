@@ -11,14 +11,19 @@ import 'package:tgpl_network/common/providers/sync_status_provider.dart';
 import 'package:tgpl_network/common/providers/user_provider.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_controller.dart';
 import 'package:tgpl_network/features/applications/presentation/application_controller.dart';
-import 'package:tgpl_network/features/dashboard/data/module_provider.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
 import 'package:tgpl_network/features/data_sync/presentation/data_sync_controller.dart';
 import 'package:tgpl_network/features/map/presentation/map_controller.dart';
 import 'package:tgpl_network/features/master_data/data/master_data_local_data_source.dart';
 import 'package:tgpl_network/features/master_data/data/master_data_remote_data_source.dart';
 import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/dealer_involvement_names_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/depo_names_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/nfr_facilities_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/priorities_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/tm_rm_names_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/trade_area_names_provider.dart';
+import 'package:tgpl_network/features/master_data/providers/yes_no_na_values_provider.dart';
 import 'package:tgpl_network/features/module_applications/presentation/module_applications_controller.dart';
 import 'package:tgpl_network/features/application_form/data/app_form_dropdowns_local_data_source.dart';
 import 'package:tgpl_network/features/application_form/data/app_form_dropdowns_remote_data_source.dart';
@@ -39,20 +44,36 @@ class HomeShellController extends AsyncNotifier<void> {
   int autoSyncThresholdMinutes = 60 * 12; // 12 hours
 
   List<ProviderOrFamily> get providersToRefresh => [
+    // Providers of master data
+    userProvider,
+    applicationControllerProvider,
+    cityNamesProvider,
+    dealerInvolvementNamesProvider,
+    depoNamesProvider,
+    nfrFacilitiesProvider,
+    prioritiesProvider,
+    tmNamesProvider,
+    rmNamesProvider,
+    tradeAreaNamesProvider,
+    yesNoNaValuesProvider,
+    yesNoValuesProvider,
+    // Providers of Dashboard data source
     getLastSyncTimeProvider,
     dashboardAsyncControllerProvider,
-    userProvider,
-    modulesProvider,
-    applicationControllerProvider,
-    appStatusesProvider,
-    cityNamesProvider,
-    prioritiesProvider,
-    mapMarkersProvider,
-    moduleApplicationsAsyncControllerProvider,
-    applicationDetailAsyncControllerProvider,
+    // Provider of Data Sync Screen
     dataSyncControllerProvider,
+    // Provider for Map
+    mapMarkersProvider,
+    // Providers for Application Detail Screen
+    applicationDetailAsyncControllerProvider,
+    // Providers for Survey Form Screen
     surveyFormControllerProvider,
+    surveyFormStatusChangedProvider,
+    // Providers for Traffic Trade Form Screen
     trafficTradeFormControllerProvider,
+    trafficTradeFormStatusChangedProvider,
+    // Provider for application for specific module
+    moduleApplicationsAsyncControllerProvider,
   ];
   StreamSubscription<InternetStatus>? _connectivitySubscription;
 
@@ -156,10 +177,13 @@ class HomeShellController extends AsyncNotifier<void> {
     final shouldSyncMasterData = await shouldAutoSync(ref) || forcefulSync;
 
     try {
-      ref.read(syncStatusProvider.notifier).state = SyncStatus.syncing;
 
       // Sync pending forms first
       final isPendingFormsExist = await hasPendingForms();
+      if (isPendingFormsExist || shouldSyncMasterData) {
+        ref.read(syncStatusProvider.notifier).state = SyncStatus.syncing;
+      }
+      
       if (isPendingFormsExist) {
         await _syncPendingForms();
       }
@@ -177,10 +201,9 @@ class HomeShellController extends AsyncNotifier<void> {
 
       // Refresh providers
       refreshAllDependentProviders();
-    } catch (e, stack) {
+    } catch (e, _) {
       ref.read(snackbarMessageProvider.notifier).state = 'Data sync failed: $e';
-      ref.read(syncStatusProvider.notifier).state = SyncStatus.offline;
-      Error.throwWithStackTrace(e, stack);
+      ref.read(syncStatusProvider.notifier).state = SyncStatus.error;
     } finally {
       _isAutoSyncRunning = false;
     }

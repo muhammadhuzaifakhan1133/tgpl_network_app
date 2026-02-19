@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
@@ -65,13 +66,13 @@ class CustomTextFieldWithTitle extends StatelessWidget {
                   text: ' *',
                   style: AppTextstyles.googleJakarta500Grey12.copyWith(
                     color: Colors.red,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                   ),
                 ),
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         CustomTextField(
           controller: controller,
           hintText: hintText,
@@ -95,7 +96,7 @@ class CustomTextFieldWithTitle extends StatelessWidget {
               : null,
         ),
         if (extraInformation != null) ...[
-          const SizedBox(height: 2),
+          SizedBox(height: 2.h),
           Text(
             extraInformation!,
             style: AppTextstyles.googleInter400LightGrey12,

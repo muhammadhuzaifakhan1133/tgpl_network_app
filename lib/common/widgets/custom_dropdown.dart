@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 
 class CustomDropDown<T> extends StatefulWidget {
@@ -47,6 +48,7 @@ class CustomDropDown<T> extends StatefulWidget {
 class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
   List<T> _selectedItems = [];
   final TextEditingController _textController = TextEditingController();
+  String? _validationError;
 
   bool get _hasValue => widget.isMultiSelect
       ? _selectedItems.isNotEmpty
@@ -79,40 +81,60 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
     setState(() {
       _selectedItems.clear();
       _textController.clear();
+      _validationError = null;
     });
     widget.onChanged?.call(null);
     widget.onMultiChanged?.call([]);
     widget.onClear?.call();
   }
 
+  bool get _hasError => _validationError != null;
+
   @override
   Widget build(BuildContext context) {
     if (widget.isMultiSelect) {
       return FormField<List<T>>(
-        validator: (_) => widget.multiValidator?.call(_selectedItems),
+        validator: (value) {
+          final error = widget.multiValidator?.call(_selectedItems);
+          // Schedule setState for after the validation completes
+          if (_validationError != error) {
+            setState(() {
+              _validationError = error;
+            });
+          }
+          return error;
+        },
         builder: (state) {
-          return InkWell(
-            onTap: showMultiSelectDialog,
-            child: InputDecorator(
-              decoration: InputDecoration(
-                hintText: widget.hintText,
-                errorText: state.errorText,
-                suffixIcon: widget.showClearButton && _hasValue
-                    ? IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: _clear,
-                      )
-                    : const Icon(Icons.arrow_drop_down),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+          return SizedBox(
+            height: _hasError ? 70.h : 46.h,
+            child: InkWell(
+              onTap: showMultiSelectDialog,
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  hintText: widget.hintText,
+                  errorText: state.errorText,
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 10.h,
+                  ),
+                  suffixIcon: widget.showClearButton && _hasValue
+                      ? IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: _clear,
+                        )
+                      : const Icon(Icons.arrow_drop_down),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
                 ),
-              ),
-              child: Text(
-                _selectedItems.isEmpty
-                    ? widget.hintText ?? ''
-                    : _textController.text,
-                overflow: TextOverflow.ellipsis,
-                style: widget.textStyle,
+                child: Text(
+                  _selectedItems.isEmpty
+                      ? widget.hintText ?? ''
+                      : _textController.text,
+                  overflow: TextOverflow.ellipsis,
+                  style: widget.textStyle,
+                ),
               ),
             ),
           );
@@ -120,39 +142,57 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
       );
     }
 
-    return DropdownButtonFormField<T>(
-      isExpanded: true,
-      value: widget.selectedItem,
-      items: widget.items
-          .map(
-            (item) => DropdownMenuItem<T>(
-              value: item,
-              child: Text(
-                widget.displayString != null
-                    ? widget.displayString!(item)
-                    : item.toString(),
-                style: widget.itemTextStyle != null
-                    ? widget.itemTextStyle!(item)
-                    : widget.textStyle,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+    return SizedBox(
+      height: _hasError ? 70.h : 46.h,
+      child: DropdownButtonFormField<T>(
+        isExpanded: true,
+        value: widget.selectedItem,
+        items: widget.items
+            .map(
+              (item) => DropdownMenuItem<T>(
+                value: item,
+                child: Text(
+                  widget.displayString != null
+                      ? widget.displayString!(item)
+                      : item.toString(),
+                  style: widget.itemTextStyle != null
+                      ? widget.itemTextStyle!(item)
+                      : widget.textStyle,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
               ),
-            ),
-          )
-          .toList(),
-      onChanged: widget.onChanged,
-      validator: widget.validator,
-      style: widget.selectedItem != null && widget.itemTextStyle != null
-          ? widget.itemTextStyle!(widget.selectedItem!)
-          : widget.textStyle,
-      decoration: InputDecoration(
-        hintText: widget.hintText,
-        fillColor: widget.backgroundColor,
-        filled: widget.backgroundColor != null,
-        suffixIcon: widget.showClearButton && _hasValue
-            ? IconButton(icon: const Icon(Icons.close), onPressed: _clear)
-            : null,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+            )
+            .toList(),
+        onChanged: widget.onChanged,
+        validator: (value) {
+          final error = widget.validator?.call(value);
+          // Schedule setState for after the validation completes
+          if (_validationError != error) {
+            setState(() {
+              _validationError = error;
+            });
+          }
+          return error;
+        },
+        style: widget.selectedItem != null && widget.itemTextStyle != null
+            ? widget.itemTextStyle!(widget.selectedItem!)
+            : widget.textStyle,
+        decoration: InputDecoration(
+          hintText: widget.hintText,
+          fillColor: widget.backgroundColor,
+          isDense: true,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 12.w,
+            vertical: 10.h,
+          ),
+          maintainHintSize: false,
+          filled: widget.backgroundColor != null,
+          suffixIcon: widget.showClearButton && _hasValue
+              ? IconButton(icon: const Icon(Icons.close), onPressed: _clear)
+              : null,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
+        ),
       ),
     );
   }
@@ -203,7 +243,7 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
                       },
                       child: const Text('Cancel'),
                     );
-                  }
+                  },
                 ),
                 Consumer(
                   builder: (context, ref, _) {
@@ -218,7 +258,7 @@ class _CustomDropDownState<T> extends State<CustomDropDown<T>> {
                       },
                       child: const Text('OK'),
                     );
-                  }
+                  },
                 ),
               ],
             );

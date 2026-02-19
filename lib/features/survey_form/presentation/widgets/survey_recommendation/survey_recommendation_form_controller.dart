@@ -57,12 +57,12 @@ class SurveyRecommendationFormState {
   }
 
   SurveyRecommendationFormState.loadFromApplication(ApplicationModel app)
-      : selectedTM = app.ssRecommendationTmName,
-        selectedRM = app.ssRecommendationRmName,
-        selectedTMRecommendation = app.ssTmRecommendation,
-        selectedRMRecommendation = app.ssRmRecommendation,
-        tmRemarks = app.ssTmRemarks,
-        rmRemarks = app.ssRmRemarks;
+      : selectedTM = app.ssRecommendationTMName,
+        selectedRM = app.ssRecommendationRMName,
+        selectedTMRecommendation = app.sstmRecommendation,
+        selectedRMRecommendation = app.ssrmRecommendation,
+        tmRemarks = app.sstmRemarks,
+        rmRemarks = app.ssrmRemarks;
 
   SurveyRecommendationFormState.loadFromSurveyFormModel(SurveyFormModel form)
       : selectedTM = form.selectedTM,

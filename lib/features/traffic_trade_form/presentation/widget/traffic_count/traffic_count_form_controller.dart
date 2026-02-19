@@ -37,10 +37,11 @@ class TrafficCountState {
     return 'TrafficCountState(trafficCountTruck: $trafficCountTruck, trafficCountCar: $trafficCountCar, trafficCountBike: $trafficCountBike)';
   }
 
-  TrafficCountState.loadFromApplication(ApplicationModel app)
-      : trafficCountTruck = app.truckCount?.toString(),
-        trafficCountCar = app.carCount?.toString(),
-        trafficCountBike = app.bikeCount?.toString();
+  // TODO: Add fields to ApplicationModel and uncomment this
+  // TrafficCountState.loadFromApplication(ApplicationModel app)
+  //     : trafficCountTruck = app.truckCount?.toString(),
+  //       trafficCountCar = app.carCount?.toString(),
+  //       trafficCountBike = app.bikeCount?.toString();
 
   TrafficCountState.loadFromTrafficTradeFormModel(TrafficTradeFormModel form)
       : trafficCountTruck = form.trafficCountTruck,
@@ -83,7 +84,8 @@ class TrafficCountController extends Notifier<TrafficCountState> {
 // }
 
   void loadFromApplication(ApplicationModel app) {
-    state = TrafficCountState.loadFromApplication(app);
+    // TODO: Add fields to ApplicationModel and uncomment this
+    // state = TrafficCountState.loadFromApplication(app);
   }
 
   void loadFromTrafficTradeFormModel(TrafficTradeFormModel form) {

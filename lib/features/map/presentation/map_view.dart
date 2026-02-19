@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
@@ -27,7 +28,7 @@ class MapView extends ConsumerWidget {
           child: Row(
             children: [
               buildCityDropDown(),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               buildStatusDropDown(),
             ],
           ),
@@ -101,31 +102,31 @@ class MapView extends ConsumerWidget {
                   )
                 : AppColors.labelColor;
             return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
               decoration: BoxDecoration(
                 color: AppColors.white,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20.r),
                 border: Border.all(
                   color: statusColor.withOpacity(0.3),
-                  width: 1.5,
+                  width: 1.5.w,
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
+                    blurRadius: 4.r,
+                    offset: Offset(0, 2.h),
                   ),
                 ],
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.location_on, size: 16, color: statusColor),
-                  const SizedBox(width: 4),
+                  Icon(Icons.location_on, size: 16.w, color: statusColor),
+                  SizedBox(width: 4.w),
                   Text(
                     '$markerCount Site${markerCount == 1 ? '' : 's'}',
                     style: AppTextstyles.googleInter500LabelColor14.copyWith(
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       color: statusColor,
                     ),
                   ),
@@ -178,7 +179,7 @@ class MapView extends ConsumerWidget {
     return Expanded(
       child: Consumer(
         builder: (context, ref, _) {
-          final citiesAsync = ref.read(cityNamesProvider);
+          final citiesAsync = ref.watch(cityNamesProvider);
           final selectedCity = ref.watch(selectedCityForMapProvider);
           return CustomDropDown(
             items: citiesAsync.when(
@@ -211,7 +212,7 @@ class MapView extends ConsumerWidget {
       zoomControlsEnabled: false,
       mapToolbarEnabled: false,
       onMapCreated: (controller) async {
-        await Future.delayed(const Duration(milliseconds: 300));
+        // await Future.delayed(const Duration(milliseconds: 300));
         // ref.read(isMapLoadedProvider.notifier).state = true;
       },
       markers: markersAsync.when(

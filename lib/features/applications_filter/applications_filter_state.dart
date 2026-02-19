@@ -29,8 +29,6 @@ class FilterSelectionState {
 
   final String? fromDate;
   final String? toDate;
-  final String? receiveDate;
-  final String? condDate;
 
   final String? applicationId;
   final String? entryCode;
@@ -69,8 +67,6 @@ class FilterSelectionState {
     this.inauguration,
     this.fromDate,
     this.toDate,
-    this.receiveDate,
-    this.condDate,
     this.applicationId,
     this.entryCode,
     this.preparedBy,
@@ -209,12 +205,6 @@ class FilterSelectionState {
       ),
       fromDate: fieldsToNull.apply('fromDate', fromDate, this.fromDate),
       toDate: fieldsToNull.apply('toDate', toDate, this.toDate),
-      receiveDate: fieldsToNull.apply(
-        'receiveDate',
-        receiveDate,
-        this.receiveDate,
-      ),
-      condDate: fieldsToNull.apply('condDate', condDate, this.condDate),
       applicationId: fieldsToNull.apply(
         'applicationId',
         applicationId,
@@ -263,8 +253,6 @@ class FilterSelectionState {
     if (inauguration != null) count++;
     if (fromDate != null) count++;
     if (toDate != null) count++;
-    if (receiveDate != null) count++;
-    if (condDate != null) count++;
     if (!applicationId.isNullOrEmpty) count++;
     if (!entryCode.isNullOrEmpty) count++;
     if (!preparedBy.isNullOrEmpty) count++;
@@ -282,7 +270,8 @@ class FilterSelectionState {
   static FilterSelectionState fromSearchQuery(String query) {
     return FilterSelectionState(
       selectedPriority: query,
-      receiveDate: query,
+      fromDate: query,
+      toDate: query,
       applicationId: query,
       entryCode: query,
       dealerName: query,

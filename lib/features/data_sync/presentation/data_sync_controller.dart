@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:tgpl_network/common/providers/user_provider.dart';
 import 'package:tgpl_network/features/data_sync/data/data_sync_data_source.dart';
 import 'package:tgpl_network/features/data_sync/models/sync_item.dart';
 import 'package:tgpl_network/features/data_sync/presentation/widgets/sync_list_section.dart';
 import 'package:tgpl_network/features/home_shell/presentation/home_shell_controller.dart';
 import 'package:tgpl_network/features/survey_form/data/survey_form_local_data_source.dart';
 import 'package:tgpl_network/features/survey_form/data/survey_form_remote_data_source.dart';
+import 'package:tgpl_network/features/survey_form/models/survey_form_model.dart';
 import 'package:tgpl_network/features/traffic_trade_form/data/traffic_trade_form_local_data_source.dart';
 import 'package:tgpl_network/features/traffic_trade_form/data/traffic_trade_form_remote_data_source.dart';
+import 'package:tgpl_network/features/traffic_trade_form/models/traffic_trade_form_model.dart';
 import 'data_sync_state.dart';
 
 final dataSyncControllerProvider =
@@ -105,48 +108,97 @@ class DataSyncController extends AsyncNotifier<DataSyncState> {
     final trafficTradeLocalDataSource = ref.read(
       trafficTradeFormLocalDataSourceProvider,
     );
-
+    List<SurveyFormModel> surveyForms = [];
+    List<TrafficTradeFormModel> trafficTradeForms = [];
     for (var item in updatedItems) {
       if (item.status != SyncItemStatus.syncing) continue;
-      try {
-        if (item.surveyForm != null) {
-          final response = await surveyRemoteDataSource.submitSurveyForm(
-            item.surveyForm!,
-          );
+      // try {
+      if (item.surveyForm != null) {
+        // final response = await surveyRemoteDataSource.submitSurveyForm(
+        //   item.surveyForm!,
+        // );
+        // if (response.success) {
+        //   await surveyLocalDataSource.markSurveyFormAsSynced(item.id);
+        // } else {
+        //   await surveyLocalDataSource.updateSurveyFormErrorMessage(
+        //     item.id,
+        //     response.message,
+        //   );
+        // }
+        surveyForms.add(item.surveyForm!);
+      } else if (item.trafficTradeForm != null) {
+        // final response = await trafficTradeRemoteDataSource
+        //     .submitTrafficTradeForm(item.trafficTradeForm!);
+        // if (response.success) {
+        //   await trafficTradeLocalDataSource.markTrafficTradeFormAsSynced(
+        //     item.id,
+        //   );
+        // } else {
+        //   await trafficTradeLocalDataSource
+        //       .updateTrafficTradeFormErrorMessage(item.id, response.message);
+        // }
+        trafficTradeForms.add(item.trafficTradeForm!);
+      }
+      // } catch (e) {
+      //   if (item.surveyForm != null) {
+      //     await surveyLocalDataSource.updateSurveyFormErrorMessage(
+      //       item.id,
+      //       e.toString(),
+      //     );
+      //   } else if (item.trafficTradeForm != null) {
+      //     await trafficTradeLocalDataSource.updateTrafficTradeFormErrorMessage(
+      //       item.id,
+      //       e.toString(),
+      //     );
+      //   }
+      // }
+    }
+    try {
+      if (surveyForms.isNotEmpty) {
+        final responses = await surveyRemoteDataSource.submitSurveyForms(
+          surveyForms: surveyForms,
+          userPositionId: ref.read(userProvider).value?.positionId,
+        );
+        for (var response in responses) {
           if (response.success) {
-            await surveyLocalDataSource.markSurveyFormAsSynced(item.id);
+            await surveyLocalDataSource.markSurveyFormAsSynced(
+              response.applicationId,
+            );
           } else {
             await surveyLocalDataSource.updateSurveyFormErrorMessage(
-              item.id,
+              response.applicationId,
               response.message,
             );
           }
-        } else if (item.trafficTradeForm != null) {
-          final response = await trafficTradeRemoteDataSource
-              .submitTrafficTradeForm(item.trafficTradeForm!);
-          if (response.success) {
-            await trafficTradeLocalDataSource.markTrafficTradeFormAsSynced(
-              item.id,
-            );
-          } else {
-            await trafficTradeLocalDataSource
-                .updateTrafficTradeFormErrorMessage(item.id, response.message);
-          }
-        }
-      } catch (e) {
-        if (item.surveyForm != null) {
-          await surveyLocalDataSource.updateSurveyFormErrorMessage(
-            item.id,
-            e.toString(),
-          );
-        } else if (item.trafficTradeForm != null) {
-          await trafficTradeLocalDataSource.updateTrafficTradeFormErrorMessage(
-            item.id,
-            e.toString(),
-          );
         }
       }
+      final user = ref.read(userProvider).value;
+      if (trafficTradeForms.isNotEmpty) {
+        for (var form in trafficTradeForms) {
+          final responses = await trafficTradeRemoteDataSource
+              .submitTrafficTradeForms(
+                trafficTradeForms: [form],
+                userPositionId: user?.positionId,
+                userName: user?.userName,
+              );
+          for (var response in responses) {
+            if (response.success) {
+              await trafficTradeLocalDataSource.markTrafficTradeFormAsSynced(
+                response.applicationId,
+              );
+            } else {
+              await trafficTradeLocalDataSource
+                  .updateTrafficTradeFormErrorMessage(
+                    response.applicationId,
+                    response.message,
+                  );
+            }
+          }
+        }
+      }
+      ref.invalidateSelf();
+    } catch (e, s) {
+      state = AsyncError(e, s);
     }
-    ref.invalidateSelf();
   }
 }

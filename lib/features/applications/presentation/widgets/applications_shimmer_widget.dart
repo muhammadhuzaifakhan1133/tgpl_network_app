@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/shimmer_widget.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 
@@ -13,13 +14,13 @@ class ApplicationsListShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
       itemCount: itemCount,
       itemBuilder: (context, index) {
         return const ApplicationStatusShimmerCard();
       },
       separatorBuilder: (context, index) {
-        return const SizedBox(height: 20);
+        return SizedBox(height: 20.h);
       },
     );
   }
@@ -31,16 +32,16 @@ class ApplicationStatusShimmerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.4),
+        borderRadius: BorderRadius.circular(16.4.r),
         color: AppColors.white,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header Row (ID)
-          const Row(
+          Row(
             children: [
               Expanded(
                 child: ShimmerBox(
@@ -51,7 +52,7 @@ class ApplicationStatusShimmerCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           
           // Applicant Name
           const ShimmerBox(
@@ -59,16 +60,16 @@ class ApplicationStatusShimmerCard extends StatelessWidget {
             height: 20,
             borderRadius: 4,
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           
           // Location and Date Row
           Row(
             children: [
-              ShimmerWidget.circular(
+              ShimmerBox.circular(
                 width: 14,
                 height: 14,
               ),
-              const SizedBox(width: 5),
+              SizedBox(width: 5.w),
               const ShimmerBox(
                 width: 80,
                 height: 13,
@@ -76,16 +77,16 @@ class ApplicationStatusShimmerCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           
           // Progress Bars
           Row(
             children: [
               for (int i = 0; i < 15; i++)
-                const Expanded(
+                Expanded(
                   child: Padding(
-                    padding: EdgeInsets.only(right: 5),
-                    child: ShimmerBox(
+                    padding: EdgeInsets.only(right: 5.w),
+                    child: const ShimmerBox(
                       width: double.infinity,
                       height: 6,
                       borderRadius: 30,

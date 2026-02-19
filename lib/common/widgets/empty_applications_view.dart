@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 
@@ -18,40 +19,40 @@ class ApplicationsEmptyState extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: EdgeInsets.symmetric(horizontal: 24.w),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
               decoration: BoxDecoration(
                 color: config.color.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 config.icon,
-                size: 64,
+                size: 64.w,
                 color: config.color,
               ),
             ),
 
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
 
             Text(
               config.title,
-              style: AppTextstyles.googleInter700black28.copyWith(fontSize: 20),
+              style: AppTextstyles.googleInter700black28.copyWith(fontSize: 20.sp),
               textAlign: TextAlign.center,
             ),
 
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
 
             Text(
               config.subtitle,
-              style: AppTextstyles.neutra500grey12.copyWith(fontSize: 14),
+              style: AppTextstyles.neutra500grey12.copyWith(fontSize: 14.sp),
               textAlign: TextAlign.center,
             ),
 
-            const SizedBox(height: 28),
+            SizedBox(height: 28.h),
 
             _buildActions(config),
           ],
@@ -62,8 +63,8 @@ class ApplicationsEmptyState extends StatelessWidget {
 
   Widget _buildActions(_EmptyStateConfig config) {
     return Wrap(
-      spacing: 12,
-      runSpacing: 12,
+      spacing: 12.w,
+      runSpacing: 12.h,
       alignment: WrapAlignment.center,
       children: config.actions,
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_controller.dart';
 import 'package:tgpl_network/common/widgets/section_detail_card.dart';
@@ -60,91 +61,91 @@ class FeasibilityCard extends ConsumerWidget {
           title: "Is this Conversion Pump",
           hintText: isConversionPump,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Current OMC Name",
           hintText: currentOMCName,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Is this Dealer Invested Site",
           hintText: isDealerInvestedSite,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Number of Operation Year",
           hintText: numberOfOperationYear,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Is Currently Operational",
           hintText: isCurrentlyOperational,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Current Lease Expired",
           hintText: currentLeaseExpired,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Diesel UGT Size Litre",
           hintText: dieselUGTSizeLitre,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Super UGT SIze Litre",
           hintText: superUGTSizeLitre,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Number of Diesel Dispenser",
           hintText: numberOfDieselDispenser,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Number of Super Dispenser",
           hintText: numberOfSuperDispenser,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Currently Canopy Condition",
           hintText: currentlyCanopyCondition,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Condition of Dispensors",
           hintText: conditionOfDispensors,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Condition of Forecourt",
           hintText: conditionOfForecourt,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Recommendation",
           hintText: recommendation,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Recommendation Detail",
           hintText: recommendationDetail,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
       ],
     );
   }

@@ -12,15 +12,15 @@ class ApplicationSubmissionDataSource {
     ApplicationFormModel data,
   ) async {
     final response = await _dioClient.post(
-      AppApis.submitApplicationFormEndpoint,
+      AppApis.submitApplicationFormsEndpoint,
       data: data.toApiMap(),
     );
     return ApplicationFormSubmissionResponseModel.fromJson(response.data);
   }
 }
 
-final applicationSubmissionDataSourceProvider = 
+final applicationSubmissionDataSourceProvider =
     Provider.autoDispose<ApplicationSubmissionDataSource>((ref) {
-  final dioClient = ref.read(dioClientProvider);
-  return ApplicationSubmissionDataSource(dioClient);
-});
+      final dioClient = ref.read(dioClientProvider);
+      return ApplicationSubmissionDataSource(dioClient);
+    });

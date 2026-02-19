@@ -177,7 +177,7 @@ class TrafficTradeFormModel {
   Map<String, dynamic> toApiMap() {
     return {
       "applicationId": applicationId,
-      "nearbyTrafficSites": nearbyTrafficSites
+      "NearbyTrafficSites": nearbyTrafficSites
           .map((site) => site.toApiMap())
           .toList(),
       "trafficCountTruck": trafficCountTruck,
@@ -191,12 +191,14 @@ class TrafficTradeFormModel {
       "truckPortPotential": truckPortPotential,
       "salamMartPotential": salamMartPotential,
       "restaurantPotential": restaurantPotential,
-      "selectedTM": selectedTM,
-      "selectedRM": selectedRM,
-      "selectedTMRecommendation": selectedTMRecommendation,
-      "selectedRMRecommendation": selectedRMRecommendation,
-      "tmRemarks": tmRemarks,
-      "rmRemarks": rmRemarks,
+      // "selectedTM": selectedTM,
+      // "selectedRM": selectedRM,
+      "selectedTMRecommendation":
+          selectedTMRecommendation ?? selectedRMRecommendation,
+      "selectedRMRecommendation":
+          selectedRMRecommendation ?? selectedTMRecommendation,
+      "tmRemarks": tmRemarks ?? rmRemarks,
+      "rmRemarks": rmRemarks ?? tmRemarks,
     };
   }
 

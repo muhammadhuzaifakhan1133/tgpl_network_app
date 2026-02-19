@@ -1,5 +1,6 @@
 // lib/common/widgets/shimmer_textfield.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/shimmer_widget.dart';
 
 class ShimmerTextField extends StatelessWidget {
@@ -21,10 +22,9 @@ class ShimmerTextField extends StatelessWidget {
             height: 16,
             borderRadius: 4,
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
         ],
         const ShimmerBox(
-          width: double.infinity,
           height: 56,
           borderRadius: 8,
         ),

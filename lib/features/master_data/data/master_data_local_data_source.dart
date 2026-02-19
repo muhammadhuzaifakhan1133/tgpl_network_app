@@ -1,9 +1,8 @@
-// lib/features/master_data/data/datasources/master_data_local_data_source.dart
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tgpl_network/core/database/queries/select_queries.dart';
+import 'package:tgpl_network/features/master_data/models/attachment_category_model.dart';
+import 'package:tgpl_network/features/master_data/models/tm_rm_model.dart';
 import 'package:tgpl_network/features/master_data/models/user_model.dart';
 import 'package:tgpl_network/core/database/app_database.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
@@ -32,6 +31,9 @@ abstract class MasterDataLocalDataSource {
   Future<List<String>> getYNNList();
   Future<List<String>> getNFRList();
   Future<List<CityModel>> getCities();
+  Future<List<TmRmModel>> getTmData();
+  Future<List<TmRmModel>> getRmData();
+  Future<List<AttachmentCategoryModel>> getAttachmentCategories();
   Future<UserModel?> getUserInfo();
   // Future<void> clearAllData();
 }
@@ -45,7 +47,7 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
   Future<void> saveMasterData(MasterDataResponseModel data) async {
     final db = await _databaseHelper.database;
 
-    final result = await db.transaction((txn) async {
+    await db.transaction((txn) async {
       // Clear existing data
       for (final table in _databaseHelper.masterDataTables) {
         await txn.delete(table);
@@ -78,6 +80,32 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
         chunkSize,
       );
 
+      // Insert tm in chunks
+      await _insertInChunks(
+        txn,
+        AppDatabase.tmTable,
+        data.tmList.map((e) => e.toDatabaseTmMap()).toList(),
+        chunkSize,
+      );
+
+      // Insert rm in chunks
+      await _insertInChunks(
+        txn,
+        AppDatabase.rmTable,
+        data.rmList.map((e) => e.toDatabaseRmMap()).toList(),
+        chunkSize,
+      );
+
+      // Insert attachment categories in chunks
+      await _insertInChunks(
+        txn,
+        AppDatabase.attachmentCategoryTable,
+        data.attachmentCategories
+            .map((e) => e.toDatabaseMap())
+            .toList(),
+        chunkSize,
+      );
+
       final masterListTypes = [
         MasterListType.nearestDepo,
         MasterListType.tradeAreaType,
@@ -107,7 +135,6 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
         'lastSyncTime': DateTime.now().toIso8601String(),
       });
     });
-    debugPrint("Result of saving master data: $result");
   }
 
   Future<void> _insertInChunks(
@@ -174,6 +201,20 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
     return maps.map((map) => CityModel.fromDatabaseMap(map)).toList();
   }
 
+  @override
+  Future<List<TmRmModel>> getTmData() async {
+    final db = await _databaseHelper.database;
+    final List<Map<String, dynamic>> maps = await db.query(AppDatabase.tmTable);
+    return maps.map((map) => TmRmModel.fromDatabaseTmMap(map)).toList();
+  }
+
+  @override
+  Future<List<TmRmModel>> getRmData() async {
+    final db = await _databaseHelper.database;
+    final List<Map<String, dynamic>> maps = await db.query(AppDatabase.rmTable);
+    return maps.map((map) => TmRmModel.fromDatabaseRmMap(map)).toList();
+  }
+
   Future<List<String>> _getMasterListByType(MasterListType type) async {
     final db = await _databaseHelper.database;
     final result = await db.query(
@@ -181,7 +222,6 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
       where: '${MasterListTypeTable.databaseColName} = ?',
       whereArgs: [type.key],
     );
-    debugPrint('Master list for ${type.key}: $result');
     if (result.isEmpty) return [];
     return List<String>.from(jsonDecode(result.first['listValues'] as String));
   }
@@ -237,6 +277,16 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
     final userInfoMap = userInfoResult.first;
 
     return UserModel.fromDatabaseMap(userInfoMap);
+  }
+
+  @override
+  Future<List<AttachmentCategoryModel>> getAttachmentCategories() async {
+    final db = await _databaseHelper.database;
+    final List<Map<String, dynamic>> maps =
+        await db.query(AppDatabase.attachmentCategoryTable);
+    return maps
+        .map((map) => AttachmentCategoryModel.fromDatabaseMap(map))
+        .toList();
   }
 }
 

@@ -13,15 +13,15 @@
 
 class TrafficTradesModel {
   final int? id;
-  final int trafficTradeId;
-  final int applicationId;
-  final String proposedSiteName;
-  final int estimateDailyDieselSale;
-  final int estimateDailySuperSale;
-  final int estimateLubricantSale;
-  final int? expectedLeaseRentPerManth;
-  final String nfrFacility;
-  final String nfrName;
+  final int? trafficTradeId;
+  final int? applicationId;
+  final String? proposedSiteName;
+  final double? estimateDailyDieselSale;
+  final double? estimateDailySuperSale;
+  final double? estimateLubricantSale;
+  final double? expectedLeaseRentPerManth;
+  final String? nfrFacility;
+  final String? nfrName;
   final String nflFacilityAvailable;
 
   TrafficTradesModel({
@@ -40,13 +40,13 @@ class TrafficTradesModel {
 
   factory TrafficTradesModel.fromAPIResponseMap(Map<String, dynamic> map) {
     return TrafficTradesModel(
-      trafficTradeId: map['Id'],
-      applicationId: map['ApplicationId'],
+      trafficTradeId: int.tryParse(map['Id'].toString()),
+      applicationId: int.tryParse(map['ApplicationId'].toString()),
       proposedSiteName: map['ProposedSiteName'],
-      estimateDailyDieselSale: map['EstimateDailyDieselSale'],
-      estimateDailySuperSale: map['EstimateDailySuperSale'],
-      estimateLubricantSale: map['EstimateLubricantSale'],
-      expectedLeaseRentPerManth: map['ExpectedLeaseRentPerManth'],
+      estimateDailyDieselSale: double.tryParse(map['EstimateDailyDieselSale'].toString()),
+      estimateDailySuperSale: double.tryParse(map['EstimateDailySuperSale'].toString()),
+      estimateLubricantSale: double.tryParse(map['EstimateLubricantSale'].toString()),
+      expectedLeaseRentPerManth: double.tryParse(map['ExpectedLeaseRentPerManth'].toString()),
       nfrFacility: map['NFRFacility'],
       nfrName: map['NFRName'],
       nflFacilityAvailable: map['NFLFacilityAvailable'],

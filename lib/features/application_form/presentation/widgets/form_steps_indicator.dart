@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/features/application_form/presentation/app_form_controller.dart';
 
@@ -15,13 +16,13 @@ class FormStepsIndicator extends ConsumerWidget {
         for (int i = 0; i < totalSteps; i++)
           Expanded(
             child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              height: 8,
+              margin: EdgeInsets.symmetric(horizontal: 4.w),
+              height: 6.h,
               decoration: BoxDecoration(
                 color: i <= currentStep
                     ? AppColors.primary
                     : AppColors.inactiveColor,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(16.r),
               ),
             ),
           ),

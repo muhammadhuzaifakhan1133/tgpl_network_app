@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/master_data/models/user_model.dart';
@@ -21,22 +22,22 @@ class ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+      padding: EdgeInsets.symmetric(vertical: 30.h, horizontal: 20.w),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(50),
-          bottomRight: Radius.circular(50),
+          bottomLeft: Radius.circular(50.r),
+          bottomRight: Radius.circular(50.r),
         ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Container(
-            height: 80,
-            width: 80,
+            height: 80.h,
+            width: 80.w,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -50,13 +51,13 @@ class ProfileHeader extends StatelessWidget {
               child: Text(
                 _getInitials(user.userName),
                 style: AppTextstyles.googleInter700black28.copyWith(
-                  fontSize: 24,
+                  fontSize: 24.sp,
                   color: AppColors.white,
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -65,22 +66,21 @@ class ProfileHeader extends StatelessWidget {
                 Text(
                   user.userName,
                   style: AppTextstyles.googleInter700black28.copyWith(
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     color: AppColors.black2Color,
                   ),
                 ),
-                // TODO: add position field in user model
                 Text(
-                  user.fullName,
+                  user.positionName,
                   style: AppTextstyles.googleInter400Grey14.copyWith(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     color: AppColors.black2Color,
                   ),
                 ),
                 Text(
                   "Emp ID: ${user.userId}",
                   style: AppTextstyles.googleInter400Grey14.copyWith(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     color: AppColors.extraInformationColor,
                   ),
                 ),
@@ -91,9 +91,9 @@ class ProfileHeader extends StatelessWidget {
           //   crossAxisAlignment: CrossAxisAlignment.end,
           //   children: [
           //     Container(
-          //       padding: EdgeInsets.symmetric(horizontal: 11),
+          //       padding: EdgeInsets.symmetric(horizontal: 11.w),
           //       decoration: BoxDecoration(
-          //         borderRadius: BorderRadius.circular(25),
+          //         borderRadius: BorderRadius.circular(25.r),
           //         gradient: LinearGradient(
           //           begin: Alignment.topCenter,
           //           end: Alignment.bottomCenter,
@@ -106,7 +106,7 @@ class ProfileHeader extends StatelessWidget {
           //       child: Text(
           //         '228',
           //         style: AppTextstyles.googleInter700black28.copyWith(
-          //           fontSize: 13,
+          //           fontSize: 13.sp,
           //           color: AppColors.white,
           //         ),
           //       ),
@@ -114,7 +114,7 @@ class ProfileHeader extends StatelessWidget {
           //     Text(
           //       "Completed",
           //       style: AppTextstyles.googleInter500LabelColor14.copyWith(
-          //         fontSize: 13,
+          //         fontSize: 13.sp,
           //         color: AppColors.black2Color,
           //       ),
           //     ),

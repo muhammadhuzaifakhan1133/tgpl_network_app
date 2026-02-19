@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:tgpl_network/common/models/sort_order_direction_enum.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_state.dart';
 import 'package:tgpl_network/common/models/yes_no_enum_with_extension.dart';
@@ -16,147 +17,89 @@ class ApplicationModel {
     "$alias.id",
     "$alias.applicationId",
     "$alias.entryCode",
-    "$alias.dealerName",
+    "$alias.applicantName",
     "$alias.googleLocation",
-    "$alias.locationAddress",
+    "$alias.siteAddress",
     "$alias.statusId",
     "$alias.priority",
     "$alias.proposedSiteName1",
   ];
 
+  // Computed properties
   double get latitude =>
       double.tryParse(googleLocation?.split(',').first ?? '') ?? 0.0;
   double get longitude =>
       double.tryParse(googleLocation?.split(',').last ?? '') ?? 0.0;
 
-  double get plotAreaValue => plotArea.isNullOrEmpty
-      ? _plotArea
-      : double.tryParse(plotArea!) ?? _plotArea;
+  double get plotAreaValue {
+    if (plotFront != null && plotDepth != null) {
+      return plotFront! * plotDepth!;
+    }
+    return 0.0;
+  }
 
-  double get _plotArea => (plotFront ?? 0) * (plotDepth ?? 0);
-
-  // fields get by join table
-  final String? siteStatusName;
+  // Fields from JOIN (not stored in main table)
   final List<TrafficTradesModel> nearbyTrafficSites;
 
-  // fields
-  final int? id;
+  // Primary Fields
+  final int? id; // Local database ID
   final int? applicationId;
-  final String? dateConducted;
+  final String? applicationReceiveDate;
+  final String? applicantName;
+  final String? contactPersonName;
+  final String? contactNumber;
+  final String? whatsAppNumber;
+  final String? currentlyPresence;
   final String? preparedBy;
-  final String? googleLocation;
   final int? cityId;
   final String? cityName;
   final String? district;
-  final String? dealerName;
-  final String? dealerContact;
-  final String? referedBy;
-  final String? locationAddress;
   final String? landmark;
-  final String? plotArea;
+  final int? siteStatusId;
+  final String? siteStatusName;
   final double? plotFront;
   final double? plotDepth;
+  final String? siteAddress;
+  final String? googleLocation;
+  final String? emailAddress;
+  final String? siteSurveyDealerProfileDueDate;
+  final String? siteSurveyDealerProfileDoneDate;
+  final String? referedBy;
   final String? nearestDepo;
-  final double? distanceFromDetp;
+  final double? distanceFromDepo;
   final String? typeOfTradeArea;
   final String? isThisDealerSite;
   final String? whatOtherBusiness;
   final String? howInvolveDealerInPetrol;
   final String? isDealerSole;
   final String? isDealerReadyToCapitalInvestment;
-  final String? proposedSiteName1;
   final String? whyDoesTaj;
   final double? managerCurrentSalary;
   final String? isAgreeToTGPLStandard;
-  final String? addDate;
-  final String? editDate;
-  final String? addBy;
-  final String? editBy;
-  final String? entryCode;
-  final String? source;
-  final String? sourceName;
-  final String? priority;
-  final String? platform;
-  final int? statusId;
-  final int? siteNumber;
-  final int? estimateDailyDieselSale;
-  final int? estimateDailySuperSale;
-  final int? estimateDailyHOBCSale;
-  final int? estimateLubricantSale;
-  final int? expectedLeaseRentPerManth;
-  final String? nflFacilityAvailable;
-  final String? nflFacilityName;
-  final int? truckCount;
-  final int? carCount;
-  final int? bikeCount;
-  final int? busCount;
-  final String? npPersonName;
-  final String? joiningFees;
-  final String? topography;
-  final String? dcNoc;
-  final String? explosive;
-  final String? amendmentExplosive;
-  final String? appliedInExplosive;
-  final String? aeConstructionApproval;
-  final String? aeSafetyCompletion;
-  final String? aeKForm;
-  final String? aeAmendment;
-  final String? aeConstructionStart;
-  final String? aeConstructionUpdate;
-  final String? hoto;
-  final String? lastStep;
-  final String? ssRecommendationTmName;
-  final String? ssTmRecommendation;
-  final String? ssTmRemarks;
-  final String? ssRecommendationRmName;
-  final String? ssRmRecommendation;
-  final String? ssRmRemarks;
-  final String? ttRecommendationTmName;
-  final String? ttTmRecommendation;
-  final String? ttTmRemarks;
-  final String? ttRecommendationRmName;
-  final String? ttRmRecommendation;
-  final String? ttRmRemarks;
-  final String? truckKCount;
-  final int? siteStatusId;
-  final String? drawingLayout;
-  final String? issuanceOfDrawings;
-  final String? changeStatusRemarks;
-  final String? constructionStartDate;
-  final String? constructionEndDate;
-  final int? constructionStatusInPercent;
-  final int? constructionDone;
-  final int? surveyDealerProfileDone;
-  final int? trafficTradeDone;
-  final int? feasibilityDone;
-  final int? negotiationDone;
-  final int? mouSignOffDone;
-  final int? joiningFeeDone;
-  final int? franchiseAgreementDone;
-  final int? feasibilityFinalizationDone;
-  final int? explosiveLayoutDone;
-  final int? drawingsDone;
-  final int? topographyDone;
-  final int? issuanceOfDrawingsDone;
-  final int? appliedInExplosiveDone;
-  final int? dcNocDone;
-  final int? capexDone;
-  final int? leaseAgreementDone;
-  final int? hotoDone;
-  final int? inaugurationDone;
-  final int? numberOfOperationYear;
-  final String? trucPortPotentail;
+  final String? proposedSiteName1;
+  final String? proposedSiteName2;
+  final String? proposedSiteName3;
+  final double? estimateDailyDieselSale;
+  final double? estimateDailySuperSale;
+  final double? estimateLubricantSale;
+  final double? estimatedDailyHOBCSale;
+  final double? expectedLeaseRentPerManth;
+  final String? truckPortPotential;
   final String? salamMartPotential;
   final String? resturantPotential;
   final String? isThisConversionPump;
   final String? currentOMCName;
   final String? isThisDealerInvestedSite;
+  final double? numberOfOperationYear;
   final String? isCurrentlyOperational;
   final String? currentLeaseExpried;
-  final int? dieselUGTSizeLiter;
-  final int? superUGTSizeLiter;
+  final double? dieselUGTSizeLiter;
+  final double? superUGTSizeLiter;
   final int? numberOfDieselDispenser;
   final int? numberOfSuperDispenser;
+  final int? carCount;
+  final int? bikeCount;
+  final int? busCount;
   final String? currentlyCanopyCondition;
   final String? conditionOfDispensors;
   final String? conditionOfForecourt;
@@ -164,133 +107,164 @@ class ApplicationModel {
   final String? recommendationDetail;
   final String? negotiationStatus;
   final String? finalDecisionStatus;
-  final String? mouSignOff;
+  final String? moUSignOff;
   final String? leaseAgreement;
   final String? franchiseAgreement;
   final String? capex;
-  final bool? success;
-  final String? message;
-  final int? recordId;
-  final int? accessLevel;
+  final String? entryCode;
+  final String? source;
+  final String? sourceName;
+  final String? priority;
+  final String? platForm;
+  final String? npPersonName;
+  final String? joiningFees;
+  final String? topography;
+  final String? dcnoc;
+  final String? explosive;
+  final String? amendmentExplosive;
+  final String? appliedInexplosive;
+  final String? aeConstructionApproval;
+  final String? aeSaftyCompletion;
+  final String? aeKForm;
+  final String? aeAmendment;
+  final String? aeConstructionStart;
+  final String? aeConstructionUpdate;
+  final String? hoto;
+  final String? lastStepDoneBefore;
+  final String? ssRecommendationTMName;
+  final String? sstmRecommendation;
+  final String? sstmRemarks;
+  final String? ssRecommendationRMName;
+  final String? ssrmRecommendation;
+  final String? ssrmRemarks;
+  final String? ttRecommendationTMName;
+  final String? tttmRecommendation;
+  final String? tttmRemarks;
+  final String? ttRecommendationRMName;
+  final String? ttrmRecommendation;
+  final String? ttrmRemarks;
+  final String? drawingLayout;
+  final String? issuanceOfDrawings;
+  final String? changeStatusRemarks;
+  final String? constructionStartDate;
+  final String? constructionEndDate;
+  final int? constructionStatusInPercent;
+  final int? surveynDealerProfileDone;
+  final int? trafficTradeDone;
+  final int? feasibilityDone;
+  final int? negotiationDone;
+  final int? mouSignOFFDone;
+  final int? joiningFeeDone;
+  final int? franchiseAgreementDone;
+  final int? feasibilityfinalizationDone;
+  final int? explosiveLayoutDone;
+  final int? drawingsDone;
+  final int? topographyDone;
+  final int? issuanceofDrawingsDone;
+  final int? appliedInExplosiveDone;
+  final int? dcnocDone;
+  final int? capexDone;
+  final int? leaseAgreementDone;
+  final int? hotoDone;
+  final int? inaugurationDone;
+  final int? constructionDone;
+  final int? statusId;
+  final String? trafficTradeDueDate;
+  final String? trafficTradeDoneDate;
+  final String? feasibilityDueDate;
+  final String? feasibilityDoneDate;
+  final String? negotiationDueDate;
+  final String? negotiationDoneDate;
+  final String? feasibilityfinalizationDueDate;
+  final String? feasibilityfinalizationDoneDate;
+  final String? mouSignOFFDueDate;
+  final String? mouSignOFFDoneDate;
+  final String? joiningFeeDueDate;
+  final String? joiningFeeDoneDate;
+  final String? franchiseAgreementDueDate;
+  final String? franchiseAgreementDoneDate;
+  final String? explosiveLayoutDueDate;
+  final String? explosiveLayoutDoneDate;
+  final String? issuanceofDrawingsDueDate;
+  final String? issuanceofDrawingsDoneDate;
+  final String? topographyDueDate;
+  final String? topographyDoneDate;
+  final String? drawingsDueDate;
+  final String? drawingsDoneDate;
+  final String? capaxDueDate;
+  final String? capaxDoneDate;
+  final String? appliedInExplosiveDueDate;
+  final String? appliedInExplosiveDoneDate;
+  final String? dcnocDueDate;
+  final String? dcnocDoneDate;
+  final String? leaseAgreementDueDate;
+  final String? leaseAgreementDoneDate;
+  final String? constructionDueDate;
+  final String? constructionDoneDate;
+  final String? hotoDueDate;
+  final String? hotoDoneDate;
+  final String? inaugurationDueDate;
+  final String? inaugurationDoneDate;
 
   ApplicationModel({
     this.id,
     this.applicationId,
-    this.dateConducted,
+    this.applicationReceiveDate,
+    this.applicantName,
+    this.contactPersonName,
+    this.contactNumber,
+    this.whatsAppNumber,
+    this.currentlyPresence,
     this.preparedBy,
-    this.googleLocation,
     this.cityId,
     this.cityName,
     this.district,
-    this.dealerName,
-    this.dealerContact,
-    this.referedBy,
-    this.locationAddress,
     this.landmark,
-    this.plotArea,
+    this.siteStatusId,
+    this.siteStatusName,
     this.plotFront,
     this.plotDepth,
+    this.siteAddress,
+    this.googleLocation,
+    this.emailAddress,
+    this.siteSurveyDealerProfileDueDate,
+    this.siteSurveyDealerProfileDoneDate,
+    this.referedBy,
     this.nearestDepo,
-    this.distanceFromDetp,
+    this.distanceFromDepo,
     this.typeOfTradeArea,
     this.isThisDealerSite,
     this.whatOtherBusiness,
     this.howInvolveDealerInPetrol,
     this.isDealerSole,
     this.isDealerReadyToCapitalInvestment,
-    this.proposedSiteName1,
     this.whyDoesTaj,
     this.managerCurrentSalary,
     this.isAgreeToTGPLStandard,
-    this.addDate,
-    this.editDate,
-    this.addBy,
-    this.editBy,
-    this.entryCode,
-    this.source,
-    this.sourceName,
-    this.priority,
-    this.platform,
-    this.statusId,
-    this.siteNumber,
+    this.proposedSiteName1,
+    this.proposedSiteName2,
+    this.proposedSiteName3,
     this.estimateDailyDieselSale,
     this.estimateDailySuperSale,
-    this.estimateDailyHOBCSale,
     this.estimateLubricantSale,
+    this.estimatedDailyHOBCSale,
     this.expectedLeaseRentPerManth,
-    this.nflFacilityAvailable,
-    this.nflFacilityName,
-    this.truckCount,
-    this.carCount,
-    this.bikeCount,
-    this.busCount,
-    this.npPersonName,
-    this.joiningFees,
-    this.topography,
-    this.dcNoc,
-    this.explosive,
-    this.amendmentExplosive,
-    this.appliedInExplosive,
-    this.aeConstructionApproval,
-    this.aeSafetyCompletion,
-    this.aeKForm,
-    this.aeAmendment,
-    this.aeConstructionStart,
-    this.aeConstructionUpdate,
-    this.hoto,
-    this.lastStep,
-    this.ssRecommendationTmName,
-    this.ssTmRecommendation,
-    this.ssTmRemarks,
-    this.ssRecommendationRmName,
-    this.ssRmRecommendation,
-    this.ssRmRemarks,
-    this.ttRecommendationTmName,
-    this.ttTmRecommendation,
-    this.ttTmRemarks,
-    this.ttRecommendationRmName,
-    this.ttRmRecommendation,
-    this.ttRmRemarks,
-    this.truckKCount,
-    this.siteStatusId,
-    this.drawingLayout,
-    this.issuanceOfDrawings,
-    this.changeStatusRemarks,
-    this.constructionStartDate,
-    this.constructionEndDate,
-    this.constructionStatusInPercent,
-    this.constructionDone,
-    this.surveyDealerProfileDone,
-    this.trafficTradeDone,
-    this.feasibilityDone,
-    this.negotiationDone,
-    this.mouSignOffDone,
-    this.joiningFeeDone,
-    this.franchiseAgreementDone,
-    this.feasibilityFinalizationDone,
-    this.explosiveLayoutDone,
-    this.drawingsDone,
-    this.topographyDone,
-    this.issuanceOfDrawingsDone,
-    this.appliedInExplosiveDone,
-    this.dcNocDone,
-    this.capexDone,
-    this.leaseAgreementDone,
-    this.hotoDone,
-    this.inaugurationDone,
-    this.numberOfOperationYear,
-    this.trucPortPotentail,
+    this.truckPortPotential,
     this.salamMartPotential,
     this.resturantPotential,
     this.isThisConversionPump,
     this.currentOMCName,
     this.isThisDealerInvestedSite,
+    this.numberOfOperationYear,
     this.isCurrentlyOperational,
     this.currentLeaseExpried,
     this.dieselUGTSizeLiter,
     this.superUGTSizeLiter,
     this.numberOfDieselDispenser,
     this.numberOfSuperDispenser,
+    this.carCount,
+    this.bikeCount,
+    this.busCount,
     this.currentlyCanopyCondition,
     this.conditionOfDispensors,
     this.conditionOfForecourt,
@@ -298,37 +272,133 @@ class ApplicationModel {
     this.recommendationDetail,
     this.negotiationStatus,
     this.finalDecisionStatus,
-    this.mouSignOff,
+    this.moUSignOff,
     this.leaseAgreement,
     this.franchiseAgreement,
     this.capex,
-    this.success,
-    this.message,
-    this.recordId,
-    this.accessLevel,
-    this.siteStatusName,
+    this.entryCode,
+    this.source,
+    this.sourceName,
+    this.priority,
+    this.platForm,
+    this.npPersonName,
+    this.joiningFees,
+    this.topography,
+    this.dcnoc,
+    this.explosive,
+    this.amendmentExplosive,
+    this.appliedInexplosive,
+    this.aeConstructionApproval,
+    this.aeSaftyCompletion,
+    this.aeKForm,
+    this.aeAmendment,
+    this.aeConstructionStart,
+    this.aeConstructionUpdate,
+    this.hoto,
+    this.lastStepDoneBefore,
+    this.ssRecommendationTMName,
+    this.sstmRecommendation,
+    this.sstmRemarks,
+    this.ssRecommendationRMName,
+    this.ssrmRecommendation,
+    this.ssrmRemarks,
+    this.ttRecommendationTMName,
+    this.tttmRecommendation,
+    this.tttmRemarks,
+    this.ttRecommendationRMName,
+    this.ttrmRecommendation,
+    this.ttrmRemarks,
+    this.drawingLayout,
+    this.issuanceOfDrawings,
+    this.changeStatusRemarks,
+    this.constructionStartDate,
+    this.constructionEndDate,
+    this.constructionStatusInPercent,
+    this.surveynDealerProfileDone,
+    this.trafficTradeDone,
+    this.feasibilityDone,
+    this.negotiationDone,
+    this.mouSignOFFDone,
+    this.joiningFeeDone,
+    this.franchiseAgreementDone,
+    this.feasibilityfinalizationDone,
+    this.explosiveLayoutDone,
+    this.drawingsDone,
+    this.topographyDone,
+    this.issuanceofDrawingsDone,
+    this.appliedInExplosiveDone,
+    this.dcnocDone,
+    this.capexDone,
+    this.leaseAgreementDone,
+    this.hotoDone,
+    this.inaugurationDone,
+    this.constructionDone,
+    this.statusId,
+    this.trafficTradeDueDate,
+    this.trafficTradeDoneDate,
+    this.feasibilityDueDate,
+    this.feasibilityDoneDate,
+    this.negotiationDueDate,
+    this.negotiationDoneDate,
+    this.feasibilityfinalizationDueDate,
+    this.feasibilityfinalizationDoneDate,
+    this.mouSignOFFDueDate,
+    this.mouSignOFFDoneDate,
+    this.joiningFeeDueDate,
+    this.joiningFeeDoneDate,
+    this.franchiseAgreementDueDate,
+    this.franchiseAgreementDoneDate,
+    this.explosiveLayoutDueDate,
+    this.explosiveLayoutDoneDate,
+    this.issuanceofDrawingsDueDate,
+    this.issuanceofDrawingsDoneDate,
+    this.topographyDueDate,
+    this.topographyDoneDate,
+    this.drawingsDueDate,
+    this.drawingsDoneDate,
+    this.capaxDueDate,
+    this.capaxDoneDate,
+    this.appliedInExplosiveDueDate,
+    this.appliedInExplosiveDoneDate,
+    this.dcnocDueDate,
+    this.dcnocDoneDate,
+    this.leaseAgreementDueDate,
+    this.leaseAgreementDoneDate,
+    this.constructionDueDate,
+    this.constructionDoneDate,
+    this.hotoDueDate,
+    this.hotoDoneDate,
+    this.inaugurationDueDate,
+    this.inaugurationDoneDate,
     this.nearbyTrafficSites = const [],
   });
 
   factory ApplicationModel.fromAPIResponseMap(Map<String, dynamic> json) {
     return ApplicationModel(
-      applicationId: json['ApplicationId'],
-      dateConducted: json['DateConducted'],
+      applicationId: int.tryParse(json['ApplicationId'].toString()),
+      applicationReceiveDate: json['ApplicationReceiveDate'],
+      applicantName: json['ApplicantName'],
+      contactPersonName: json['ContactPersonName'],
+      contactNumber: json['ContactNumber'],
+      whatsAppNumber: json['WhatsAppNumber'],
+      currentlyPresence: json['CurrentlyPresence'],
       preparedBy: json['PreparedBy'],
-      googleLocation: json['GoogleLocation'],
-      cityId: json['CityId'],
+      cityId: int.tryParse(json['CityId'].toString()),
       cityName: json['CityName'],
       district: json['District'],
-      dealerName: json['DealerName'],
-      dealerContact: json['DealerContact'],
-      referedBy: json['ReferedBy'],
-      locationAddress: json['LocationAddress'],
       landmark: json['Landmark'],
-      plotArea: json['PlotArea'],
-      plotFront: json['PlotFront']?.toDouble(),
-      plotDepth: json['PlotDepth']?.toDouble(),
+      siteStatusId: int.tryParse(json['SiteStatusId'].toString()),
+      siteStatusName: json['SiteStatus'],
+      plotFront: double.tryParse(json['PlotFront'].toString()),
+      plotDepth: double.tryParse(json['PlotDepth'].toString()),
+      siteAddress: json['SiteAddress'],
+      googleLocation: json['GoogleLocation'],
+      emailAddress: json['EmailAddress'],
+      siteSurveyDealerProfileDueDate: json['SiteSurveyDealerProfileDueDate'],
+      siteSurveyDealerProfileDoneDate: json['SiteSurveyDealerProfileDoneDate'],
+      referedBy: json['ReferedBy'],
       nearestDepo: json['NearestDepo'],
-      distanceFromDetp: json['DistanceFromDetp']?.toDouble(),
+      distanceFromDepo: double.tryParse(json['DistanceFromDepo'].toString()),
       typeOfTradeArea: json['TypeOfTradeArea'],
       isThisDealerSite: json['IsThisDealerSite'],
       whatOtherBusiness: json['WhatOtherBusiness'],
@@ -336,99 +406,53 @@ class ApplicationModel {
       isDealerSole: json['IsDealerSole'],
       isDealerReadyToCapitalInvestment:
           json['IsDealerReadyToCapitalInvestment'],
-      proposedSiteName1: json['ProposedSiteName1'],
       whyDoesTaj: json['WhyDoesTaj'],
-      managerCurrentSalary: json['ManagerCurrentSalary']?.toDouble(),
+      managerCurrentSalary: double.tryParse(
+        json['ManagerCurrentSalary'].toString(),
+      ),
       isAgreeToTGPLStandard: json['IsAgreeToTGPLStandard'],
-      addDate: json['AddDate'],
-      editDate: json['EditDate'],
-      addBy: json['AddBy'],
-      editBy: json['EditBy'],
-      entryCode: json['EntryCode'],
-      source: json['Source'],
-      sourceName: json['SourceName'],
-      priority: json['Priority'],
-      platform: json['PlatForm'],
-      statusId: json['StatusId'],
-      siteNumber: json['sitenumber'],
-      estimateDailyDieselSale: json['EstimateDailyDieselSale'],
-      estimateDailySuperSale: json['EstimateDailySuperSale'],
-      estimateDailyHOBCSale: json['EstimatedDailyHOBCSale'],
-      estimateLubricantSale: json['EstimateLubricantSale'],
-      expectedLeaseRentPerManth: json['ExpectedLeaseRentPerManth'],
-      nflFacilityAvailable: json['NFLFacilityAvailable'],
-      nflFacilityName: json['NFLFacilityName'],
-      truckCount: json['TruckCount'],
-      carCount: json['CarCount'],
-      bikeCount: json['BikeCount'],
-      busCount: json['BusCount'],
-      npPersonName: json['NPPersonName'],
-      joiningFees: json['JoiningFees'],
-      topography: json['Topography'],
-      dcNoc: json['DCNOC'],
-      explosive: json['Explosive'],
-      amendmentExplosive: json['AmendmentExplosive'],
-      appliedInExplosive: json['AppliedInexplosive'],
-      aeConstructionApproval: json['AE_ConstructionApproval'],
-      aeSafetyCompletion: json['AE_SaftyCompletion'],
-      aeKForm: json['AE_KForm'],
-      aeAmendment: json['AE_Amendment'],
-      aeConstructionStart: json['AE_ConstructionStart'],
-      aeConstructionUpdate: json['AE_ConstructionUpdate'],
-      hoto: json['HOTO'],
-      lastStep: json['LastStep'],
-      ssRecommendationTmName: json['SSRecommendationTMName'],
-      ssTmRecommendation: json['SSTMRecommendation'],
-      ssTmRemarks: json['SSTMRemarks'],
-      ssRecommendationRmName: json['SSRecommendationRMName'],
-      ssRmRecommendation: json['SSRMRecommendation'],
-      ssRmRemarks: json['SSRMRemarks'],
-      ttRecommendationTmName: json['TTRecommendationTMName'],
-      ttTmRecommendation: json['TTTMRecommendation'],
-      ttTmRemarks: json['TTTMRemarks'],
-      ttRecommendationRmName: json['TTRecommendationRMName'],
-      ttRmRecommendation: json['TTRMRecommendation'],
-      ttRmRemarks: json['TTRMRemarks'],
-      truckKCount: json['TrucKCount']?.toString(),
-      siteStatusId: json['SiteStatusId'],
-      drawingLayout: json['DrawingLayout'],
-      issuanceOfDrawings: json['IssuanceOfDrawings'],
-      changeStatusRemarks: json['ChangeStatusRemarks'],
-      constructionStartDate: json['ConstructionStartDate'],
-      constructionEndDate: json['ConstructionEndDate'],
-      constructionStatusInPercent: json['ConstructionStatusInPercent'],
-      constructionDone: json['ConstructionDone'],
-      surveyDealerProfileDone: json['SurveynDealerProfileDone'],
-      trafficTradeDone: json['TrafficTradeDone'],
-      feasibilityDone: json['FeasibilityDone'],
-      negotiationDone: json['NegotiationDone'],
-      mouSignOffDone: json['MOUSignOFFDone'],
-      joiningFeeDone: json['JoiningFeeDone'],
-      franchiseAgreementDone: json['FranchiseAgreementDone'],
-      feasibilityFinalizationDone: json['FeasibilityfinalizationDone'],
-      explosiveLayoutDone: json['ExplosiveLayoutDone'],
-      drawingsDone: json['DrawingsDone'],
-      topographyDone: json['TopographyDone'],
-      issuanceOfDrawingsDone: json['IssuanceofDrawingsDone'],
-      appliedInExplosiveDone: json['AppliedInExplosiveDone'],
-      dcNocDone: json['DCNOCDone'],
-      capexDone: json['CapexDone'],
-      leaseAgreementDone: json['LeaseAgreementDone'],
-      hotoDone: json['HOTODone'],
-      inaugurationDone: json['InaugurationDone'],
-      numberOfOperationYear: json['NumberOfOperationYear'],
-      trucPortPotentail: json['TrucPortPotentail'],
+      proposedSiteName1: json['ProposedSiteName1'],
+      proposedSiteName2: json['ProposedSiteName2'],
+      proposedSiteName3: json['ProposedSiteName3'],
+      estimateDailyDieselSale: double.tryParse(
+        json['EstimateDailyDieselSale'].toString(),
+      ),
+      estimateDailySuperSale: double.tryParse(
+        json['EstimateDailySuperSale'].toString(),
+      ),
+      estimateLubricantSale: double.tryParse(
+        json['EstimateLubricantSale'].toString(),
+      ),
+      estimatedDailyHOBCSale: double.tryParse(
+        json['EstimatedDailyHOBCSale'].toString(),
+      ),
+      expectedLeaseRentPerManth: double.tryParse(
+        json['ExpectedLeaseRentPerManth'].toString(),
+      ),
+      truckPortPotential: json['TruckPortPotential'],
       salamMartPotential: json['SalamMartPotential'],
       resturantPotential: json['ResturantPotential'],
       isThisConversionPump: json['IsThisConversionPump'],
       currentOMCName: json['CurrentOMCName'],
       isThisDealerInvestedSite: json['IsThisDealerInvestedSite'],
+      numberOfOperationYear: double.tryParse(
+        json['NumberOfOperationYear'].toString(),
+      ),
       isCurrentlyOperational: json['IsCurrentlyOperational'],
       currentLeaseExpried: json['CurrentLeaseExpried'],
-      dieselUGTSizeLiter: json['DieselUGTSizeLiter'],
-      superUGTSizeLiter: json['SuperUGTSizeLiter'],
-      numberOfDieselDispenser: json['NumberOfDieselDispenser'],
-      numberOfSuperDispenser: json['NumberOfSuperDispenser'],
+      dieselUGTSizeLiter: double.tryParse(
+        json['DieselUGTSizeLiter'].toString(),
+      ),
+      superUGTSizeLiter: double.tryParse(json['SuperUGTSizeLiter'].toString()),
+      numberOfDieselDispenser: int.tryParse(
+        json['NumberOfDieselDispenser'].toString(),
+      ),
+      numberOfSuperDispenser: int.tryParse(
+        json['NumberOfSuperDispenser'].toString(),
+      ),
+      carCount: int.tryParse(json['CarCount'].toString()),
+      bikeCount: int.tryParse(json['BikeCount'].toString()),
+      busCount: int.tryParse(json['BusCount'].toString()),
       currentlyCanopyCondition: json['CurrentlyCanopyCondition'],
       conditionOfDispensors: json['ConditionOfDispensors'],
       conditionOfForecourt: json['ConditionOfForecourt'],
@@ -436,138 +460,182 @@ class ApplicationModel {
       recommendationDetail: json['RecommendationDetail'],
       negotiationStatus: json['NegotiationStatus'],
       finalDecisionStatus: json['FinalDecisionStatus'],
-      mouSignOff: json['MoUSignOff'],
+      moUSignOff: json['MoUSignOff'],
       leaseAgreement: json['LeaseAgreement'],
       franchiseAgreement: json['FranchiseAgreement'],
       capex: json['Capex'],
-      success: json['Success'],
-      message: json['Message'],
-      recordId: json['RecordId'],
-      accessLevel: json['AccessLevel'],
+      entryCode: json['EntryCode'],
+      source: json['Source'],
+      sourceName: json['SourceName'],
+      priority: json['Priority'],
+      platForm: json['PlatForm'],
+      npPersonName: json['NPPersonName'],
+      joiningFees: json['JoiningFees'],
+      topography: json['Topography'],
+      dcnoc: json['DCNOC'],
+      explosive: json['Explosive'],
+      amendmentExplosive: json['AmendmentExplosive'],
+      appliedInexplosive: json['AppliedInexplosive'],
+      aeConstructionApproval: json['AE_ConstructionApproval'],
+      aeSaftyCompletion: json['AE_SaftyCompletion'],
+      aeKForm: json['AE_KForm'],
+      aeAmendment: json['AE_Amendment'],
+      aeConstructionStart: json['AE_ConstructionStart'],
+      aeConstructionUpdate: json['AE_ConstructionUpdate'],
+      hoto: json['HOTO'],
+      lastStepDoneBefore: json['LastStepDoneBefore'],
+      ssRecommendationTMName: json['SSRecommendationTMName'],
+      sstmRecommendation: json['SSTMRecommendation'],
+      sstmRemarks: json['SSTMRemarks'],
+      ssRecommendationRMName: json['SSRecommendationRMName'],
+      ssrmRecommendation: json['SSRMRecommendation'],
+      ssrmRemarks: json['SSRMRemarks'],
+      ttRecommendationTMName: json['TTRecommendationTMName'],
+      tttmRecommendation: json['TTTMRecommendation'],
+      tttmRemarks: json['TTTMRemarks'],
+      ttRecommendationRMName: json['TTRecommendationRMName'],
+      ttrmRecommendation: json['TTRMRecommendation'],
+      ttrmRemarks: json['TTRMRemarks'],
+      drawingLayout: json['DrawingLayout'],
+      issuanceOfDrawings: json['IssuanceOfDrawings'],
+      changeStatusRemarks: json['ChangeStatusRemarks'],
+      constructionStartDate: json['ConstructionStartDate'],
+      constructionEndDate: json['ConstructionEndDate'],
+      constructionStatusInPercent: int.tryParse(
+        json['ConstructionStatusInPercent'].toString(),
+      ),
+      surveynDealerProfileDone: int.tryParse(
+        json['SurveynDealerProfileDone'].toString(),
+      ),
+      trafficTradeDone: int.tryParse(json['TrafficTradeDone'].toString()),
+      feasibilityDone: int.tryParse(json['FeasibilityDone'].toString()),
+      negotiationDone: int.tryParse(json['NegotiationDone'].toString()),
+      mouSignOFFDone: int.tryParse(json['MOUSignOFFDone'].toString()),
+      joiningFeeDone: int.tryParse(json['JoiningFeeDone'].toString()),
+      franchiseAgreementDone: int.tryParse(
+        json['FranchiseAgreementDone'].toString(),
+      ),
+      feasibilityfinalizationDone: int.tryParse(
+        json['FeasibilityfinalizationDone'].toString(),
+      ),
+      explosiveLayoutDone: int.tryParse(json['ExplosiveLayoutDone'].toString()),
+      drawingsDone: int.tryParse(json['DrawingsDone'].toString()),
+      topographyDone: int.tryParse(json['TopographyDone'].toString()),
+      issuanceofDrawingsDone: int.tryParse(
+        json['IssuanceofDrawingsDone'].toString(),
+      ),
+      appliedInExplosiveDone: int.tryParse(
+        json['AppliedInExplosiveDone'].toString(),
+      ),
+      dcnocDone: int.tryParse(json['DCNOCDone'].toString()),
+      capexDone: int.tryParse(json['CapexDone'].toString()),
+      leaseAgreementDone: int.tryParse(json['LeaseAgreementDone'].toString()),
+      hotoDone: int.tryParse(json['HOTODone'].toString()),
+      inaugurationDone: int.tryParse(json['InaugurationDone'].toString()),
+      constructionDone: int.tryParse(json['ConstructionDone'].toString()),
+      statusId: int.tryParse(json['StatusId'].toString()),
+      trafficTradeDueDate: json['TrafficTradeDueDate'],
+      trafficTradeDoneDate: json['TrafficTradeDoneDate'],
+      feasibilityDueDate: json['FeasibilityDueDate'],
+      feasibilityDoneDate: json['FeasibilityDoneDate'],
+      negotiationDueDate: json['NegotiationDueDate'],
+      negotiationDoneDate: json['NegotiationDoneDate'],
+      feasibilityfinalizationDueDate: json['FeasibilityfinalizationDueDate'],
+      feasibilityfinalizationDoneDate: json['FeasibilityfinalizationDoneDate'],
+      mouSignOFFDueDate: json['MOUSignOFFDueDate'],
+      mouSignOFFDoneDate: json['MOUSignOFFDoneDate'],
+      joiningFeeDueDate: json['JoiningFeeDueDate'],
+      joiningFeeDoneDate: json['JoiningFeeDoneDate'],
+      franchiseAgreementDueDate: json['FranchiseAgreementDueDate'],
+      franchiseAgreementDoneDate: json['FranchiseAgreementDoneDate'],
+      explosiveLayoutDueDate: json['ExplosiveLayoutDueDate'],
+      explosiveLayoutDoneDate: json['ExplosiveLayoutDoneDate'],
+      issuanceofDrawingsDueDate: json['IssuanceofDrawingsDueDate'],
+      issuanceofDrawingsDoneDate: json['IssuanceofDrawingsDoneDate'],
+      topographyDueDate: json['TopographyDueDate'],
+      topographyDoneDate: json['TopographyDoneDate'],
+      drawingsDueDate: json['DrawingsDueDate'],
+      drawingsDoneDate: json['DrawingsDoneDate'],
+      capaxDueDate: json['CapaxDueDate'],
+      capaxDoneDate: json['CapaxDoneDate'],
+      appliedInExplosiveDueDate: json['AppliedInExplosiveDueDate'],
+      appliedInExplosiveDoneDate: json['AppliedInExplosiveDoneDate'],
+      dcnocDueDate: json['DCNOCDueDate'],
+      dcnocDoneDate: json['DCNOCDoneDate'],
+      leaseAgreementDueDate: json['LeaseAgreementDueDate'],
+      leaseAgreementDoneDate: json['LeaseAgreementDoneDate'],
+      constructionDueDate: json['ConstructionDueDate'],
+      constructionDoneDate: json['ConstructionDoneDate'],
+      hotoDueDate: json['HOTODueDate'],
+      hotoDoneDate: json['HOTODoneDate'],
+      inaugurationDueDate: json['InaugurationDueDate'],
+      inaugurationDoneDate: json['InaugurationDoneDate'],
     );
   }
 
-  factory ApplicationModel.fromDatabaseMap(Map<String, dynamic> map, {
-  List<TrafficTradesModel>? nearbyTrafficSites,
-}) {
+  factory ApplicationModel.fromDatabaseMap(
+    Map<String, dynamic> map, {
+    List<TrafficTradesModel>? nearbyTrafficSites,
+  }) {
     return ApplicationModel(
       id: map['id'],
       applicationId: map['applicationId'],
-      dateConducted: map['dateConducted'],
+      applicationReceiveDate: map['applicationReceiveDate'],
+      applicantName: map['applicantName'],
+      contactPersonName: map['contactPersonName'],
+      contactNumber: map['contactNumber'],
+      whatsAppNumber: map['whatsAppNumber'],
+      currentlyPresence: map['currentlyPresence'],
       preparedBy: map['preparedBy'],
-      googleLocation: map['googleLocation'],
       cityId: map['cityId'],
       cityName: map['cityName'],
       district: map['district'],
-      dealerName: map['dealerName'],
-      dealerContact: map['dealerContact'],
-      referedBy: map['referedBy'],
-      locationAddress: map['locationAddress'],
       landmark: map['landmark'],
-      plotArea: map['plotArea'],
+      siteStatusId: map['siteStatusId'],
+      siteStatusName: map['siteStatusName'],
       plotFront: map['plotFront'],
       plotDepth: map['plotDepth'],
+      siteAddress: map['siteAddress'],
+      googleLocation: map['googleLocation'],
+      emailAddress: map['emailAddress'],
+      siteSurveyDealerProfileDueDate: map['siteSurveyDealerProfileDueDate'],
+      siteSurveyDealerProfileDoneDate: map['siteSurveyDealerProfileDoneDate'],
+      referedBy: map['referedBy'],
       nearestDepo: map['nearestDepo'],
-      distanceFromDetp: map['distanceFromDetp'],
+      distanceFromDepo: map['distanceFromDepo'],
       typeOfTradeArea: map['typeOfTradeArea'],
       isThisDealerSite: map['isThisDealerSite'],
       whatOtherBusiness: map['whatOtherBusiness'],
       howInvolveDealerInPetrol: map['howInvolveDealerInPetrol'],
       isDealerSole: map['isDealerSole'],
       isDealerReadyToCapitalInvestment: map['isDealerReadyToCapitalInvestment'],
-      proposedSiteName1: map['proposedSiteName1'],
       whyDoesTaj: map['whyDoesTaj'],
       managerCurrentSalary: map['managerCurrentSalary'],
       isAgreeToTGPLStandard: map['isAgreeToTGPLStandard'],
-      addDate: map['addDate'],
-      editDate: map['editDate'],
-      addBy: map['addBy'],
-      editBy: map['editBy'],
-      entryCode: map['entryCode'],
-      source: map['source'],
-      sourceName: map['sourceName'],
-      priority: map['priority'],
-      platform: map['platform'],
-      statusId: map['statusId'],
-      siteNumber: map['siteNumber'],
+      proposedSiteName1: map['proposedSiteName1'],
+      proposedSiteName2: map['proposedSiteName2'],
+      proposedSiteName3: map['proposedSiteName3'],
       estimateDailyDieselSale: map['estimateDailyDieselSale'],
       estimateDailySuperSale: map['estimateDailySuperSale'],
-      estimateDailyHOBCSale: map['estimateDailyHOBCSale'],
       estimateLubricantSale: map['estimateLubricantSale'],
+      estimatedDailyHOBCSale: map['estimatedDailyHOBCSale'],
       expectedLeaseRentPerManth: map['expectedLeaseRentPerManth'],
-      nflFacilityAvailable: map['nflFacilityAvailable'],
-      nflFacilityName: map['nflFacilityName'],
-      truckCount: map['truckCount'],
-      carCount: map['carCount'],
-      bikeCount: map['bikeCount'],
-      busCount: map['busCount'],
-      npPersonName: map['npPersonName'],
-      joiningFees: map['joiningFees'],
-      topography: map['topography'],
-      dcNoc: map['dcNoc'],
-      explosive: map['explosive'],
-      amendmentExplosive: map['amendmentExplosive'],
-      appliedInExplosive: map['appliedInExplosive'],
-      aeConstructionApproval: map['aeConstructionApproval'],
-      aeSafetyCompletion: map['aeSafetyCompletion'],
-      aeKForm: map['aeKForm'],
-      aeAmendment: map['aeAmendment'],
-      aeConstructionStart: map['aeConstructionStart'],
-      aeConstructionUpdate: map['aeConstructionUpdate'],
-      hoto: map['hoto'],
-      lastStep: map['lastStep'],
-      ssRecommendationTmName: map['ssRecommendationTmName'],
-      ssTmRecommendation: map['ssTmRecommendation'],
-      ssTmRemarks: map['ssTmRemarks'],
-      ssRecommendationRmName: map['ssRecommendationRmName'],
-      ssRmRecommendation: map['ssRmRecommendation'],
-      ssRmRemarks: map['ssRmRemarks'],
-      ttRecommendationTmName: map['ttRecommendationTmName'],
-      ttTmRecommendation: map['ttTmRecommendation'],
-      ttTmRemarks: map['ttTmRemarks'],
-      ttRecommendationRmName: map['ttRecommendationRmName'],
-      ttRmRecommendation: map['ttRmRecommendation'],
-      ttRmRemarks: map['ttRmRemarks'],
-      truckKCount: map['truckKCount'],
-      siteStatusId: map['siteStatusId'],
-      drawingLayout: map['drawingLayout'],
-      issuanceOfDrawings: map['issuanceOfDrawings'],
-      changeStatusRemarks: map['changeStatusRemarks'],
-      constructionStartDate: map['constructionStartDate'],
-      constructionEndDate: map['constructionEndDate'],
-      constructionStatusInPercent: map['constructionStatusInPercent'],
-      constructionDone: map['constructionDone'],
-      surveyDealerProfileDone: map['surveyDealerProfileDone'],
-      trafficTradeDone: map['trafficTradeDone'],
-      feasibilityDone: map['feasibilityDone'],
-      negotiationDone: map['negotiationDone'],
-      mouSignOffDone: map['mouSignOffDone'],
-      joiningFeeDone: map['joiningFeeDone'],
-      franchiseAgreementDone: map['franchiseAgreementDone'],
-      feasibilityFinalizationDone: map['feasibilityFinalizationDone'],
-      explosiveLayoutDone: map['explosiveLayoutDone'],
-      drawingsDone: map['drawingsDone'],
-      topographyDone: map['topographyDone'],
-      issuanceOfDrawingsDone: map['issuanceOfDrawingsDone'],
-      appliedInExplosiveDone: map['appliedInExplosiveDone'],
-      dcNocDone: map['dcNocDone'],
-      capexDone: map['capexDone'],
-      leaseAgreementDone: map['leaseAgreementDone'],
-      hotoDone: map['hotoDone'],
-      inaugurationDone: map['inaugurationDone'],
-      numberOfOperationYear: map['numberOfOperationYear'],
-      trucPortPotentail: map['trucPortPotentail'],
+      truckPortPotential: map['truckPortPotential'],
       salamMartPotential: map['salamMartPotential'],
       resturantPotential: map['resturantPotential'],
       isThisConversionPump: map['isThisConversionPump'],
       currentOMCName: map['currentOMCName'],
       isThisDealerInvestedSite: map['isThisDealerInvestedSite'],
+      numberOfOperationYear: map['numberOfOperationYear'],
       isCurrentlyOperational: map['isCurrentlyOperational'],
       currentLeaseExpried: map['currentLeaseExpried'],
       dieselUGTSizeLiter: map['dieselUGTSizeLiter'],
       superUGTSizeLiter: map['superUGTSizeLiter'],
       numberOfDieselDispenser: map['numberOfDieselDispenser'],
       numberOfSuperDispenser: map['numberOfSuperDispenser'],
+      carCount: map['carCount'],
+      bikeCount: map['bikeCount'],
+      busCount: map['busCount'],
       currentlyCanopyCondition: map['currentlyCanopyCondition'],
       conditionOfDispensors: map['conditionOfDispensors'],
       conditionOfForecourt: map['conditionOfForecourt'],
@@ -575,16 +643,105 @@ class ApplicationModel {
       recommendationDetail: map['recommendationDetail'],
       negotiationStatus: map['negotiationStatus'],
       finalDecisionStatus: map['finalDecisionStatus'],
-      mouSignOff: map['mouSignOff'],
+      moUSignOff: map['moUSignOff'],
       leaseAgreement: map['leaseAgreement'],
       franchiseAgreement: map['franchiseAgreement'],
       capex: map['capex'],
-      success: map['success'] == 1,
-      message: map['message'],
-      recordId: map['recordId'],
-      accessLevel: map['accessLevel'],
-      siteStatusName: map['siteStatusName'],
-    nearbyTrafficSites: nearbyTrafficSites ?? [],
+      entryCode: map['entryCode'],
+      source: map['source'],
+      sourceName: map['sourceName'],
+      priority: map['priority'],
+      platForm: map['platForm'],
+      npPersonName: map['npPersonName'],
+      joiningFees: map['joiningFees'],
+      topography: map['topography'],
+      dcnoc: map['dcnoc'],
+      explosive: map['explosive'],
+      amendmentExplosive: map['amendmentExplosive'],
+      appliedInexplosive: map['appliedInexplosive'],
+      aeConstructionApproval: map['aeConstructionApproval'],
+      aeSaftyCompletion: map['aeSaftyCompletion'],
+      aeKForm: map['aeKForm'],
+      aeAmendment: map['aeAmendment'],
+      aeConstructionStart: map['aeConstructionStart'],
+      aeConstructionUpdate: map['aeConstructionUpdate'],
+      hoto: map['hoto'],
+      lastStepDoneBefore: map['lastStepDoneBefore'],
+      ssRecommendationTMName: map['ssRecommendationTMName'],
+      sstmRecommendation: map['sstmRecommendation'],
+      sstmRemarks: map['sstmRemarks'],
+      ssRecommendationRMName: map['ssRecommendationRMName'],
+      ssrmRecommendation: map['ssrmRecommendation'],
+      ssrmRemarks: map['ssrmRemarks'],
+      ttRecommendationTMName: map['ttRecommendationTMName'],
+      tttmRecommendation: map['tttmRecommendation'],
+      tttmRemarks: map['tttmRemarks'],
+      ttRecommendationRMName: map['ttRecommendationRMName'],
+      ttrmRecommendation: map['ttrmRecommendation'],
+      ttrmRemarks: map['ttrmRemarks'],
+      drawingLayout: map['drawingLayout'],
+      issuanceOfDrawings: map['issuanceOfDrawings'],
+      changeStatusRemarks: map['changeStatusRemarks'],
+      constructionStartDate: map['constructionStartDate'],
+      constructionEndDate: map['constructionEndDate'],
+      constructionStatusInPercent: map['constructionStatusInPercent'],
+      surveynDealerProfileDone: map['surveynDealerProfileDone'],
+      trafficTradeDone: map['trafficTradeDone'],
+      feasibilityDone: map['feasibilityDone'],
+      negotiationDone: map['negotiationDone'],
+      mouSignOFFDone: map['mouSignOFFDone'],
+      joiningFeeDone: map['joiningFeeDone'],
+      franchiseAgreementDone: map['franchiseAgreementDone'],
+      feasibilityfinalizationDone: map['feasibilityfinalizationDone'],
+      explosiveLayoutDone: map['explosiveLayoutDone'],
+      drawingsDone: map['drawingsDone'],
+      topographyDone: map['topographyDone'],
+      issuanceofDrawingsDone: map['issuanceofDrawingsDone'],
+      appliedInExplosiveDone: map['appliedInExplosiveDone'],
+      dcnocDone: map['dcnocDone'],
+      capexDone: map['capexDone'],
+      leaseAgreementDone: map['leaseAgreementDone'],
+      hotoDone: map['hotoDone'],
+      inaugurationDone: map['inaugurationDone'],
+      constructionDone: map['constructionDone'],
+      statusId: map['statusId'],
+      trafficTradeDueDate: map['trafficTradeDueDate'],
+      trafficTradeDoneDate: map['trafficTradeDoneDate'],
+      feasibilityDueDate: map['feasibilityDueDate'],
+      feasibilityDoneDate: map['feasibilityDoneDate'],
+      negotiationDueDate: map['negotiationDueDate'],
+      negotiationDoneDate: map['negotiationDoneDate'],
+      feasibilityfinalizationDueDate: map['feasibilityfinalizationDueDate'],
+      feasibilityfinalizationDoneDate: map['feasibilityfinalizationDoneDate'],
+      mouSignOFFDueDate: map['mouSignOFFDueDate'],
+      mouSignOFFDoneDate: map['mouSignOFFDoneDate'],
+      joiningFeeDueDate: map['joiningFeeDueDate'],
+      joiningFeeDoneDate: map['joiningFeeDoneDate'],
+      franchiseAgreementDueDate: map['franchiseAgreementDueDate'],
+      franchiseAgreementDoneDate: map['franchiseAgreementDoneDate'],
+      explosiveLayoutDueDate: map['explosiveLayoutDueDate'],
+      explosiveLayoutDoneDate: map['explosiveLayoutDoneDate'],
+      issuanceofDrawingsDueDate: map['issuanceofDrawingsDueDate'],
+      issuanceofDrawingsDoneDate: map['issuanceofDrawingsDoneDate'],
+      topographyDueDate: map['topographyDueDate'],
+      topographyDoneDate: map['topographyDoneDate'],
+      drawingsDueDate: map['drawingsDueDate'],
+      drawingsDoneDate: map['drawingsDoneDate'],
+      capaxDueDate: map['capaxDueDate'],
+      capaxDoneDate: map['capaxDoneDate'],
+      appliedInExplosiveDueDate: map['appliedInExplosiveDueDate'],
+      appliedInExplosiveDoneDate: map['appliedInExplosiveDoneDate'],
+      dcnocDueDate: map['dcnocDueDate'],
+      dcnocDoneDate: map['dcnocDoneDate'],
+      leaseAgreementDueDate: map['leaseAgreementDueDate'],
+      leaseAgreementDoneDate: map['leaseAgreementDoneDate'],
+      constructionDueDate: map['constructionDueDate'],
+      constructionDoneDate: map['constructionDoneDate'],
+      hotoDueDate: map['hotoDueDate'],
+      hotoDoneDate: map['hotoDoneDate'],
+      inaugurationDueDate: map['inaugurationDueDate'],
+      inaugurationDoneDate: map['inaugurationDoneDate'],
+      nearbyTrafficSites: nearbyTrafficSites ?? [],
     );
   }
 
@@ -592,121 +749,62 @@ class ApplicationModel {
     return {
       'id': id,
       'applicationId': applicationId,
-      'dateConducted': dateConducted,
+      'applicationReceiveDate': applicationReceiveDate,
+      'applicantName': applicantName,
+      'contactPersonName': contactPersonName,
+      'contactNumber': contactNumber,
+      'whatsAppNumber': whatsAppNumber,
+      'currentlyPresence': currentlyPresence,
       'preparedBy': preparedBy,
-      'googleLocation': googleLocation,
       'cityId': cityId,
       'cityName': cityName,
       'district': district,
-      'dealerName': dealerName,
-      'dealerContact': dealerContact,
-      'referedBy': referedBy,
-      'locationAddress': locationAddress,
       'landmark': landmark,
-      'plotArea': plotArea,
+      'siteStatusId': siteStatusId,
+      'siteStatusName': siteStatusName,
       'plotFront': plotFront,
       'plotDepth': plotDepth,
+      'siteAddress': siteAddress,
+      'googleLocation': googleLocation,
+      'emailAddress': emailAddress,
+      'siteSurveyDealerProfileDueDate': siteSurveyDealerProfileDueDate,
+      'siteSurveyDealerProfileDoneDate': siteSurveyDealerProfileDoneDate,
+      'referedBy': referedBy,
       'nearestDepo': nearestDepo,
-      'distanceFromDetp': distanceFromDetp,
+      'distanceFromDepo': distanceFromDepo,
       'typeOfTradeArea': typeOfTradeArea,
       'isThisDealerSite': isThisDealerSite,
       'whatOtherBusiness': whatOtherBusiness,
       'howInvolveDealerInPetrol': howInvolveDealerInPetrol,
       'isDealerSole': isDealerSole,
       'isDealerReadyToCapitalInvestment': isDealerReadyToCapitalInvestment,
-      'proposedSiteName1': proposedSiteName1,
       'whyDoesTaj': whyDoesTaj,
       'managerCurrentSalary': managerCurrentSalary,
       'isAgreeToTGPLStandard': isAgreeToTGPLStandard,
-      'addDate': addDate,
-      'editDate': editDate,
-      'addBy': addBy,
-      'editBy': editBy,
-      'entryCode': entryCode,
-      'source': source,
-      'sourceName': sourceName,
-      'priority': priority,
-      'platform': platform,
-      'statusId': statusId,
-      'siteNumber': siteNumber,
+      'proposedSiteName1': proposedSiteName1,
+      'proposedSiteName2': proposedSiteName2,
+      'proposedSiteName3': proposedSiteName3,
       'estimateDailyDieselSale': estimateDailyDieselSale,
       'estimateDailySuperSale': estimateDailySuperSale,
-      'estimateDailyHOBCSale': estimateDailyHOBCSale,
       'estimateLubricantSale': estimateLubricantSale,
+      'estimatedDailyHOBCSale': estimatedDailyHOBCSale,
       'expectedLeaseRentPerManth': expectedLeaseRentPerManth,
-      'nflFacilityAvailable': nflFacilityAvailable,
-      'nflFacilityName': nflFacilityName,
-      'truckCount': truckCount,
-      'carCount': carCount,
-      'bikeCount': bikeCount,
-      'busCount': busCount,
-      'npPersonName': npPersonName,
-      'joiningFees': joiningFees,
-      'topography': topography,
-      'dcNoc': dcNoc,
-      'explosive': explosive,
-      'amendmentExplosive': amendmentExplosive,
-      'appliedInExplosive': appliedInExplosive,
-      'aeConstructionApproval': aeConstructionApproval,
-      'aeSafetyCompletion': aeSafetyCompletion,
-      'aeKForm': aeKForm,
-      'aeAmendment': aeAmendment,
-      'aeConstructionStart': aeConstructionStart,
-      'aeConstructionUpdate': aeConstructionUpdate,
-      'hoto': hoto,
-      'lastStep': lastStep,
-      'ssRecommendationTmName': ssRecommendationTmName,
-      'ssTmRecommendation': ssTmRecommendation,
-      'ssTmRemarks': ssTmRemarks,
-      'ssRecommendationRmName': ssRecommendationRmName,
-      'ssRmRecommendation': ssRmRecommendation,
-      'ssRmRemarks': ssRmRemarks,
-      'ttRecommendationTmName': ttRecommendationTmName,
-      'ttTmRecommendation': ttTmRecommendation,
-      'ttTmRemarks': ttTmRemarks,
-      'ttRecommendationRmName': ttRecommendationRmName,
-      'ttRmRecommendation': ttRmRecommendation,
-      'ttRmRemarks': ttRmRemarks,
-      'truckKCount': truckKCount,
-      'siteStatusId': siteStatusId,
-      'drawingLayout': drawingLayout,
-      'issuanceOfDrawings': issuanceOfDrawings,
-      'changeStatusRemarks': changeStatusRemarks,
-      'constructionStartDate': constructionStartDate,
-      'constructionEndDate': constructionEndDate,
-      'constructionStatusInPercent': constructionStatusInPercent,
-      'constructionDone': constructionDone,
-      'surveyDealerProfileDone': surveyDealerProfileDone,
-      'trafficTradeDone': trafficTradeDone,
-      'feasibilityDone': feasibilityDone,
-      'negotiationDone': negotiationDone,
-      'mouSignOffDone': mouSignOffDone,
-      'joiningFeeDone': joiningFeeDone,
-      'franchiseAgreementDone': franchiseAgreementDone,
-      'feasibilityFinalizationDone': feasibilityFinalizationDone,
-      'explosiveLayoutDone': explosiveLayoutDone,
-      'drawingsDone': drawingsDone,
-      'topographyDone': topographyDone,
-      'issuanceOfDrawingsDone': issuanceOfDrawingsDone,
-      'appliedInExplosiveDone': appliedInExplosiveDone,
-      'dcNocDone': dcNocDone,
-      'capexDone': capexDone,
-      'leaseAgreementDone': leaseAgreementDone,
-      'hotoDone': hotoDone,
-      'inaugurationDone': inaugurationDone,
-      'numberOfOperationYear': numberOfOperationYear,
-      'trucPortPotentail': trucPortPotentail,
+      'truckPortPotential': truckPortPotential,
       'salamMartPotential': salamMartPotential,
       'resturantPotential': resturantPotential,
       'isThisConversionPump': isThisConversionPump,
       'currentOMCName': currentOMCName,
       'isThisDealerInvestedSite': isThisDealerInvestedSite,
+      'numberOfOperationYear': numberOfOperationYear,
       'isCurrentlyOperational': isCurrentlyOperational,
       'currentLeaseExpried': currentLeaseExpried,
       'dieselUGTSizeLiter': dieselUGTSizeLiter,
       'superUGTSizeLiter': superUGTSizeLiter,
       'numberOfDieselDispenser': numberOfDieselDispenser,
       'numberOfSuperDispenser': numberOfSuperDispenser,
+      'carCount': carCount,
+      'bikeCount': bikeCount,
+      'busCount': busCount,
       'currentlyCanopyCondition': currentlyCanopyCondition,
       'conditionOfDispensors': conditionOfDispensors,
       'conditionOfForecourt': conditionOfForecourt,
@@ -714,19 +812,110 @@ class ApplicationModel {
       'recommendationDetail': recommendationDetail,
       'negotiationStatus': negotiationStatus,
       'finalDecisionStatus': finalDecisionStatus,
-      'mouSignOff': mouSignOff,
+      'moUSignOff': moUSignOff,
       'leaseAgreement': leaseAgreement,
       'franchiseAgreement': franchiseAgreement,
       'capex': capex,
-      'success': success == true ? 1 : 0,
-      'message': message,
-      'recordId': recordId,
-      'accessLevel': accessLevel,
+      'entryCode': entryCode,
+      'source': source,
+      'sourceName': sourceName,
+      'priority': priority,
+      'platForm': platForm,
+      'npPersonName': npPersonName,
+      'joiningFees': joiningFees,
+      'topography': topography,
+      'dcnoc': dcnoc,
+      'explosive': explosive,
+      'amendmentExplosive': amendmentExplosive,
+      'appliedInexplosive': appliedInexplosive,
+      'aeConstructionApproval': aeConstructionApproval,
+      'aeSaftyCompletion': aeSaftyCompletion,
+      'aeKForm': aeKForm,
+      'aeAmendment': aeAmendment,
+      'aeConstructionStart': aeConstructionStart,
+      'aeConstructionUpdate': aeConstructionUpdate,
+      'hoto': hoto,
+      'lastStepDoneBefore': lastStepDoneBefore,
+      'ssRecommendationTMName': ssRecommendationTMName,
+      'sstmRecommendation': sstmRecommendation,
+      'sstmRemarks': sstmRemarks,
+      'ssRecommendationRMName': ssRecommendationRMName,
+      'ssrmRecommendation': ssrmRecommendation,
+      'ssrmRemarks': ssrmRemarks,
+      'ttRecommendationTMName': ttRecommendationTMName,
+      'tttmRecommendation': tttmRecommendation,
+      'tttmRemarks': tttmRemarks,
+      'ttRecommendationRMName': ttRecommendationRMName,
+      'ttrmRecommendation': ttrmRecommendation,
+      'ttrmRemarks': ttrmRemarks,
+      'drawingLayout': drawingLayout,
+      'issuanceOfDrawings': issuanceOfDrawings,
+      'changeStatusRemarks': changeStatusRemarks,
+      'constructionStartDate': constructionStartDate,
+      'constructionEndDate': constructionEndDate,
+      'constructionStatusInPercent': constructionStatusInPercent,
+      'surveynDealerProfileDone': surveynDealerProfileDone,
+      'trafficTradeDone': trafficTradeDone,
+      'feasibilityDone': feasibilityDone,
+      'negotiationDone': negotiationDone,
+      'mouSignOFFDone': mouSignOFFDone,
+      'joiningFeeDone': joiningFeeDone,
+      'franchiseAgreementDone': franchiseAgreementDone,
+      'feasibilityfinalizationDone': feasibilityfinalizationDone,
+      'explosiveLayoutDone': explosiveLayoutDone,
+      'drawingsDone': drawingsDone,
+      'topographyDone': topographyDone,
+      'issuanceofDrawingsDone': issuanceofDrawingsDone,
+      'appliedInExplosiveDone': appliedInExplosiveDone,
+      'dcnocDone': dcnocDone,
+      'capexDone': capexDone,
+      'leaseAgreementDone': leaseAgreementDone,
+      'hotoDone': hotoDone,
+      'inaugurationDone': inaugurationDone,
+      'constructionDone': constructionDone,
+      'statusId': statusId,
+      'trafficTradeDueDate': trafficTradeDueDate,
+      'trafficTradeDoneDate': trafficTradeDoneDate,
+      'feasibilityDueDate': feasibilityDueDate,
+      'feasibilityDoneDate': feasibilityDoneDate,
+      'negotiationDueDate': negotiationDueDate,
+      'negotiationDoneDate': negotiationDoneDate,
+      'feasibilityfinalizationDueDate': feasibilityfinalizationDueDate,
+      'feasibilityfinalizationDoneDate': feasibilityfinalizationDoneDate,
+      'mouSignOFFDueDate': mouSignOFFDueDate,
+      'mouSignOFFDoneDate': mouSignOFFDoneDate,
+      'joiningFeeDueDate': joiningFeeDueDate,
+      'joiningFeeDoneDate': joiningFeeDoneDate,
+      'franchiseAgreementDueDate': franchiseAgreementDueDate,
+      'franchiseAgreementDoneDate': franchiseAgreementDoneDate,
+      'explosiveLayoutDueDate': explosiveLayoutDueDate,
+      'explosiveLayoutDoneDate': explosiveLayoutDoneDate,
+      'issuanceofDrawingsDueDate': issuanceofDrawingsDueDate,
+      'issuanceofDrawingsDoneDate': issuanceofDrawingsDoneDate,
+      'topographyDueDate': topographyDueDate,
+      'topographyDoneDate': topographyDoneDate,
+      'drawingsDueDate': drawingsDueDate,
+      'drawingsDoneDate': drawingsDoneDate,
+      'capaxDueDate': capaxDueDate,
+      'capaxDoneDate': capaxDoneDate,
+      'appliedInExplosiveDueDate': appliedInExplosiveDueDate,
+      'appliedInExplosiveDoneDate': appliedInExplosiveDoneDate,
+      'dcnocDueDate': dcnocDueDate,
+      'dcnocDoneDate': dcnocDoneDate,
+      'leaseAgreementDueDate': leaseAgreementDueDate,
+      'leaseAgreementDoneDate': leaseAgreementDoneDate,
+      'constructionDueDate': constructionDueDate,
+      'constructionDoneDate': constructionDoneDate,
+      'hotoDueDate': hotoDueDate,
+      'hotoDoneDate': hotoDoneDate,
+      'inaugurationDueDate': inaugurationDueDate,
+      'inaugurationDoneDate': inaugurationDoneDate,
     };
   }
 
   static (List<String>, List<dynamic>) getWhereClauseAndArgs(
-    FilterSelectionState filters) {
+    FilterSelectionState filters,
+  ) {
     final whereConditions = <String>[];
     final whereArgs = <dynamic>[];
 
@@ -743,22 +932,48 @@ class ApplicationModel {
 
       if (filters.selectedStatusId != null) {
         if (filters.selectedStatusId!.split(",").length > 1) {
-          final statusIds = filters.selectedStatusId!
-              .split(",")
-              .map((e) => int.tryParse(e.trim()) ?? 0)
-              .toList();
-          final placeholders = List.filled(statusIds.length, '?').join(', ');
-          whereConditions.add('$alias.statusId IN ($placeholders)');
-          whereArgs.addAll(statusIds);
+          final statusIds = filters.selectedStatusId!.split(",");
+          String whereCond = '$alias.statusId IN (';
+          for (var i = 0; i < statusIds.length; i++) {
+            int? statusId = int.tryParse(statusIds[i].trim());
+            if (statusId != null) {
+              whereCond += '?';
+              if (i < statusIds.length - 1) {
+                whereCond += ', ';
+              }
+              whereArgs.add(statusId);
+            }
+          }
+          whereCond += ')';
+          whereConditions.add(whereCond);
         } else {
-          whereConditions.add('$alias.statusId = ?');
-          whereArgs.add(int.tryParse(filters.selectedStatusId!) ?? 0);
+          int? statusId = int.tryParse(filters.selectedStatusId!);
+          if (statusId != null) {
+            whereConditions.add('$alias.statusId = ?');
+            whereArgs.add(statusId);
+          }
         }
       }
 
-      if (!filters.applicationId.isNullOrEmpty) {
+      if (!filters.siteName.isNullOrEmpty) {
+        whereConditions.add('$alias.proposedSiteName1 LIKE ?');
+        whereArgs.add('%${filters.siteName}%');
+      }
+
+      if (!filters.dealerName.isNullOrEmpty) {
+        whereConditions.add('$alias.applicantName LIKE ?');
+        whereArgs.add('%${filters.dealerName}%');
+      }
+
+      if (!filters.dealerContact.isNullOrEmpty) {
+        whereConditions.add('$alias.contactNumber LIKE ?');
+        whereArgs.add('%${filters.dealerContact}%');
+      }
+
+      if (!filters.applicationId.isNullOrEmpty &&
+          int.tryParse(filters.applicationId!) != null) {
         whereConditions.add('$alias.applicationId = ?');
-        whereArgs.add(int.tryParse(filters.applicationId!) ?? 0);
+        whereArgs.add(int.parse(filters.applicationId!));
       }
 
       if (!filters.entryCode.isNullOrEmpty) {
@@ -774,20 +989,10 @@ class ApplicationModel {
       if (!filters.district.isNullOrEmpty) {
         whereConditions.add('$alias.district LIKE ?');
         whereArgs.add('%${filters.district}%');
-      }
-
-      if (!filters.dealerName.isNullOrEmpty) {
-        whereConditions.add('$alias.dealerName LIKE ?');
-        whereArgs.add('%${filters.dealerName}%');
-      }
-
-      if (!filters.dealerContact.isNullOrEmpty) {
-        whereConditions.add('$alias.dealerContact LIKE ?');
-        whereArgs.add('%${filters.dealerContact}%');
-      }
+      }      
 
       if (!filters.address.isNullOrEmpty) {
-        whereConditions.add('$alias.locationAddress LIKE ?');
+        whereConditions.add('$alias.siteAddress LIKE ?');
         whereArgs.add('%${filters.address}%');
       }
 
@@ -806,14 +1011,9 @@ class ApplicationModel {
         whereArgs.add('%${filters.sourceName}%');
       }
 
-      if (!filters.siteName.isNullOrEmpty) {
-        whereConditions.add('$alias.proposedSiteName1 LIKE ?');
-        whereArgs.add('%${filters.siteName}%');
-      }
-
       // Yes/No filters (stored as 0 or 1 in database)
       if (filters.surveyProfile != null) {
-        whereConditions.add('$alias.surveyDealerProfileDone = ?');
+        whereConditions.add('$alias.surveynDealerProfileDone = ?');
         whereArgs.add(filters.surveyProfile!.value);
       }
 
@@ -833,7 +1033,7 @@ class ApplicationModel {
       }
 
       if (filters.mouSign != null) {
-        whereConditions.add('$alias.mouSignOffDone = ?');
+        whereConditions.add('$alias.mouSignOFFDone = ?');
         whereArgs.add(filters.mouSign!.value);
       }
 
@@ -848,7 +1048,7 @@ class ApplicationModel {
       }
 
       if (filters.feasibilityFinalization != null) {
-        whereConditions.add('$alias.feasibilityFinalizationDone = ?');
+        whereConditions.add('$alias.feasibilityfinalizationDone = ?');
         whereArgs.add(filters.feasibilityFinalization!.value);
       }
 
@@ -868,7 +1068,7 @@ class ApplicationModel {
       }
 
       if (filters.issuanceOfDrawing != null) {
-        whereConditions.add('$alias.issuanceOfDrawingsDone = ?');
+        whereConditions.add('$alias.issuanceofDrawingsDone = ?');
         whereArgs.add(filters.issuanceOfDrawing!.value);
       }
 
@@ -878,7 +1078,7 @@ class ApplicationModel {
       }
 
       if (filters.dcNoc != null) {
-        whereConditions.add('$alias.dcNocDone = ?');
+        whereConditions.add('$alias.dcnocDone = ?');
         whereArgs.add(filters.dcNoc!.value);
       }
 
@@ -907,26 +1107,106 @@ class ApplicationModel {
         whereArgs.add(filters.inauguration!.value);
       }
 
-      // TODO: addDate is updated when some one change application data on Server.
       // Date filters
       if (filters.fromDate.isValidDate() && filters.toDate.isValidDate()) {
-        whereConditions.add('$alias.addDate BETWEEN ? AND ?');
+        whereConditions.add('$alias.applicationReceiveDate BETWEEN ? AND ?');
         whereArgs.add(filters.fromDate?.formatFromDDMMYYYToIsoDate());
         whereArgs.add(filters.toDate?.formatFromDDMMYYYToIsoDate());
       } else if (filters.fromDate.isValidDate()) {
-        whereConditions.add('$alias.addDate >= ?');
+        whereConditions.add('$alias.applicationReceiveDate >= ?');
         whereArgs.add(filters.fromDate?.formatFromDDMMYYYToIsoDate());
       } else if (filters.toDate.isValidDate()) {
-        whereConditions.add('$alias.addDate <= ?');
+        whereConditions.add('$alias.applicationReceiveDate <= ?');
         whereArgs.add(filters.toDate?.formatFromDDMMYYYToIsoDate());
       }
-
-      if (filters.condDate.isValidDate()) {
-        whereConditions.add('$alias.dateConducted = ?');
-        whereArgs.add(filters.condDate?.formatFromDDMMYYYToIsoDate());
-      }
     }
-
+    debugPrint('Where Conditions: $whereConditions');
+    debugPrint('Where Args: $whereArgs');
     return (whereConditions, whereArgs);
   }
+
+  static (String?, String?) getDueDateAndDoneDate(String submoduleName, ApplicationModel application) {
+    String? dueDate;
+    String? doneDate;
+
+    switch (submoduleName) {
+      case 'Survey & Dealer Profile':
+        dueDate = application.siteSurveyDealerProfileDueDate;
+        doneDate = application.siteSurveyDealerProfileDoneDate;
+        break;
+      case 'Traffic & Trade':
+        dueDate = application.trafficTradeDueDate;
+        doneDate = application.trafficTradeDoneDate;
+        break;
+      case 'Feasibility':
+        dueDate = application.feasibilityDueDate;
+        doneDate = application.feasibilityDoneDate;
+        break;
+      case 'Negotiations':
+        dueDate = application.negotiationDueDate;
+        doneDate = application.negotiationDoneDate;
+        break;
+      case 'Feasibility Finalizations':
+        dueDate = application.feasibilityfinalizationDueDate;
+        doneDate = application.feasibilityfinalizationDoneDate;
+        break;
+      case 'MOU Sign Off':
+        dueDate = application.mouSignOFFDueDate;
+        doneDate = application.mouSignOFFDoneDate;
+        break;
+      case 'Joining Fee':
+        dueDate = application.joiningFeeDueDate;
+        doneDate = application.joiningFeeDoneDate;
+        break;
+      case 'Franchise Agreement':
+        dueDate = application.franchiseAgreementDueDate;
+        doneDate = application.franchiseAgreementDoneDate;
+        break;
+      case 'Government Layout':
+        dueDate = application.explosiveLayoutDueDate;
+        doneDate = application.explosiveLayoutDoneDate;
+        break;
+      case 'Issuance of Drawings':
+        dueDate = application.issuanceofDrawingsDueDate;
+        doneDate = application.issuanceofDrawingsDoneDate;
+        break;
+      case 'Topography':
+        dueDate = application.topographyDueDate;
+        doneDate = application.topographyDoneDate;
+        break;
+      case 'Drawings':
+        dueDate = application.drawingsDueDate;
+        doneDate = application.drawingsDoneDate;
+        break;
+      case 'Capex':
+        dueDate = application.capaxDueDate;
+        doneDate = application.capaxDoneDate;
+        break;
+      case 'Applied In Explosive':
+        dueDate = application.appliedInExplosiveDueDate;
+        doneDate = application.appliedInExplosiveDoneDate;
+        break;
+      case 'DC NOC':
+        dueDate = application.dcnocDueDate;
+        doneDate = application.dcnocDoneDate;
+        break;
+      case 'Lease Agreement':
+        dueDate = application.leaseAgreementDueDate;
+        doneDate = application.leaseAgreementDoneDate;
+        break;
+      case 'Construction Activity':
+        dueDate = application.constructionDueDate;
+        doneDate = application.constructionDoneDate;
+        break;
+      case 'HOTO':
+        dueDate = application.hotoDueDate;
+        doneDate = application.hotoDoneDate;
+        break;
+      case 'Inauguration':
+        dueDate = application.inaugurationDueDate;
+        doneDate = application.inaugurationDoneDate;
+        break;
+    }
+    return (dueDate, doneDate);
+  } 
 }

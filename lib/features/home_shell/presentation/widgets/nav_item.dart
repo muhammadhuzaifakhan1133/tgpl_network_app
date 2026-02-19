@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
@@ -23,13 +24,13 @@ Widget buildNavItem({
         baseColor: AppColors.shimmerBaseColor,
         highlightColor: AppColors.shimmerHighlightColor,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(width: context.screenWidth * 0.06, height: context.screenWidth * 0.06, color: AppColors.grey.shade300),
-              const SizedBox(height: 4),
-              Container(width: context.screenWidth * 0.125, height: 12, color: AppColors.grey.shade300),
+              SizedBox(height: 4.h),
+              Container(width: context.screenWidth * 0.125, height: 12.h, color: AppColors.grey.shade300),
             ],
           ),
         ),
@@ -42,13 +43,13 @@ Widget buildNavItem({
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
         decoration: BoxDecoration(
           // Smooth color transition
           color: isSelected
               ? AppColors.primary.withOpacity(0.1)
               : AppColors.transparent,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(15.r),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -66,7 +67,7 @@ Widget buildNavItem({
                     height: context.screenWidth * 0.06,
                   ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             // Text color and style animation
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 300),

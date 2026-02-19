@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
@@ -29,6 +30,22 @@ class HomeShellView extends ConsumerWidget {
           ref.read(snackbarMessageProvider.notifier).state = null;
         });
       }
+      if (message?.startsWith("Data sync failed") ?? false) {
+        showDialog(context: context, 
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Data Sync Failed"),
+            content: SingleChildScrollView(child: Text(message!)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+        );
+      }
     });
     final state = ref.watch(homeShellControllerProvider);
     bool isLoading = state.isLoading;
@@ -36,14 +53,14 @@ class HomeShellView extends ConsumerWidget {
       body: navigationShell,
       backgroundColor: AppColors.scaffoldBackgroundColor,
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: EdgeInsets.symmetric(vertical: 8.h),
         decoration: BoxDecoration(
           color: AppColors.white,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.08),
-              blurRadius: 15,
-              offset: const Offset(0, 5),
+              blurRadius: 15.r,
+              offset: Offset(0, 5.h),
             ),
           ],
         ),
@@ -85,7 +102,7 @@ class HomeShellView extends ConsumerWidget {
                 color: navigationShell.currentIndex == 3
                     ? AppColors.primary
                     : AppColors.grey,
-                size: 20,
+                size: 20.w,
               ),
               label: "Sync Data",
               isLoading: isLoading,

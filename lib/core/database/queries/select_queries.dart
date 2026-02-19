@@ -2,7 +2,6 @@ import 'package:tgpl_network/common/models/logical_operator_enum.dart';
 import 'package:tgpl_network/core/database/app_database.dart';
 import 'package:tgpl_network/common/models/join_clause_model.dart';
 import 'package:tgpl_network/core/database/modules_db_conditions.dart';
-import 'package:tgpl_network/features/application_form/models/site_status_model.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
 
 class SelectDbQueries {
@@ -47,7 +46,9 @@ class SelectDbQueries {
 
   static String buildApplicationQuery({
     List<String>? whereConditions,
-    LogicalOperator operator = LogicalOperator.and,
+    // key is index of where condition and value is operator to be applied with next condition.
+    //-1 means AND with missing next condition, 0 means AND, 1 means OR
+    Map<int, LogicalOperator> operator = const {-1: LogicalOperator.and},
     String? orderBy,
     int? limit,
     int? offset,
@@ -56,24 +57,38 @@ class SelectDbQueries {
     return _buildApplicationsRawQuery(
       tableName: AppDatabase.applicationTable,
       tableAlias: ApplicationModel.alias,
-      selectColumns: [
-        if (selectColumns != null)
-          ...selectColumns
-        else
-          '${ApplicationModel.alias}.*',
-        '${SiteStatusModel.alias}.name as siteStatusName',
-      ],
-      joins: [
-        JoinClause(
-          type: JoinType.leftJoin,
-          tableName: AppDatabase.siteStatusTable,
-          tableAlias: SiteStatusModel.alias,
-          onCondition:
-              '${ApplicationModel.alias}.siteStatusId = ${SiteStatusModel.alias}.siteStatusId',
-        ),
-      ],
+      selectColumns: selectColumns,
+      // selectColumns: [
+      //   if (selectColumns != null)
+      //     ...selectColumns
+      //   else
+      //     '${ApplicationModel.alias}.*',
+      //   '${SiteStatusModel.alias}.name as siteStatusName',
+      // ],
+      // joins: [
+      //   JoinClause(
+      //     type: JoinType.leftJoin,
+      //     tableName: AppDatabase.siteStatusTable,
+      //     tableAlias: SiteStatusModel.alias,
+      //     onCondition:
+      //         '${ApplicationModel.alias}.siteStatusId = ${SiteStatusModel.alias}.siteStatusId',
+      //   ),
+      // ],
       whereClause: whereConditions != null && whereConditions.isNotEmpty
-          ? whereConditions.join(" ${operator.value} ")
+          ? whereConditions
+                .asMap()
+                .entries
+                .map((entry) {
+                  // don't add operator for last condition
+                  final index = entry.key;
+                  final condition = entry.value;
+                  final op =
+                      operator[index] ?? operator[-1] ?? LogicalOperator.and;
+                  return index == whereConditions.length - 1
+                      ? condition
+                      : '$condition ${op.value}';
+                })
+                .join(' ')
           : null,
       orderBy: orderBy,
       limit: limit,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:tgpl_network/common/providers/user_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/priorities_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/site_statuses_provider.dart';
@@ -34,13 +34,13 @@ class ApplicantInfoFormCard extends ConsumerWidget {
           title: "Applicant ID",
           hintText: state.applicantId ?? "e.g. 2196",
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Entry Code",
           hintText: state.entryCode ?? "e.g. TGPL-2196",
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Consumer(
           builder: (context, ref, _) {
             final dateConducted =
@@ -78,14 +78,15 @@ class ApplicantInfoFormCard extends ConsumerWidget {
             );
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "Conducted By",
           hintText: "e.g. Asif",
           readOnly: true,
-          initialValue: state.conductedBy ?? ref.read(userProvider).value?.userName,
+          initialValue:
+              state.conductedBy,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Consumer(
           builder: (context, ref, child) {
             final googleLocation = ref.watch(
@@ -105,6 +106,8 @@ class ApplicantInfoFormCard extends ConsumerWidget {
                 icon: AppImages.locationIconSvg,
                 iconColor: AppColors.black,
                 rightMargin: 5,
+                topMargin: 4,
+                bottomMargin: 4,
                 onTap: () async {
                   LocationData? selectedLocation = await ref
                       .read(goRouterProvider)
@@ -125,7 +128,7 @@ class ApplicantInfoFormCard extends ConsumerWidget {
             );
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Consumer(
           builder: (context, ref, child) {
             final selectedCity = ref.watch(
@@ -141,12 +144,13 @@ class ApplicantInfoFormCard extends ConsumerWidget {
               selectedItem: selectedCity,
               asyncProvider: cityNamesProvider,
               itemsBuilder: (cities) =>
-                  cities.map((city) => city.name).toList(),
+                  cities.map((city) => city).toList(),
+              displayString: (city) => city.name,
               onChanged: (value) {
                 if (value == null) return;
-                controller.updateLocation(city: value.toString());
+                controller.updateLocation(city: value);
               },
-              validator: (v) => v.validate(),
+              validator: (v) => v?.name.validate(),
               showClearButton: true,
               onClear: () {
                 controller.clearField('selectedCity');
@@ -154,7 +158,7 @@ class ApplicantInfoFormCard extends ConsumerWidget {
             );
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "District",
           hintText: "e.g. Lahore",
@@ -169,7 +173,7 @@ class ApplicantInfoFormCard extends ConsumerWidget {
             controller.clearField('district');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Consumer(
           builder: (context, ref, child) {
             final selectedSiteStatus = ref.watch(
@@ -197,7 +201,7 @@ class ApplicantInfoFormCard extends ConsumerWidget {
             );
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "NP. Name",
           hintText: "e.g. Kashif",
@@ -212,7 +216,7 @@ class ApplicantInfoFormCard extends ConsumerWidget {
             controller.clearField('npName');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "Source",
           hintText: "e.g. Dealer",
@@ -227,7 +231,7 @@ class ApplicantInfoFormCard extends ConsumerWidget {
             controller.clearField('source');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "Source Name",
           hintText: "e.g. TGPL Dealer",
@@ -242,7 +246,7 @@ class ApplicantInfoFormCard extends ConsumerWidget {
             controller.clearField('sourceName');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Consumer(
           builder: (context, ref, child) {
             final selectedPriority = ref.watch(

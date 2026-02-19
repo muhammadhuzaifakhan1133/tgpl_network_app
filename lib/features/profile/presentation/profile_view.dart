@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/providers/user_provider.dart';
 import 'package:tgpl_network/features/profile/presentation/widgets/account_settings_section.dart';
 import 'package:tgpl_network/features/profile/presentation/widgets/contact_information_section.dart';
@@ -22,15 +23,15 @@ class ProfileView extends ConsumerWidget {
         ProfileHeader(user: user),
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             children: [
-              const SizedBox(height: 30),
+              SizedBox(height: 30.h),
               ContactInformationSection(user: user),
-              const SizedBox(height: 28),
+              SizedBox(height: 28.h),
               AccountSettingsSection(),
-              const SizedBox(height: 28),
+              SizedBox(height: 28.h),
               SupportSection(),
-              const SizedBox(height: 30),
+              SizedBox(height: 30.h),
             ],
           ),
         ),

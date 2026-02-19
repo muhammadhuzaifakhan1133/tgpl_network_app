@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/providers/sync_status_provider.dart';
 import 'package:tgpl_network/common/widgets/action_container.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield.dart';
@@ -13,6 +14,7 @@ import 'package:tgpl_network/common/models/sync_enum.dart';
 class CustomAppBar extends ConsumerStatefulWidget {
   final String title;
   final Widget? subtitleWidget;
+  final TextEditingController? controller;
   final String subtitle;
   final bool showBackButton;
   final bool showSearchIcon;
@@ -29,6 +31,7 @@ class CustomAppBar extends ConsumerStatefulWidget {
     super.key,
     required this.title,
     this.subtitleWidget,
+    this.controller,
     required this.subtitle,
     this.showBackButton = false,
     this.showSearchIcon = false,
@@ -54,6 +57,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
   @override
   void dispose() {
     _searchFocusNode.dispose();
+    widget.controller?.dispose();
     super.dispose();
   }
 
@@ -61,16 +65,16 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: MediaQuery.of(context).padding.top + 20,
-        bottom: 20,
+        left: 20.h,
+        right: 20.h,
+        top: MediaQuery.of(context).padding.top + 20.h,
+        bottom: 20.h,
       ),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(50),
-          bottomRight: Radius.circular(50),
+          bottomLeft: Radius.circular(50.r),
+          bottomRight: Radius.circular(50.r),
         ),
       ),
       child: Row(
@@ -85,7 +89,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                   },
               padding: 12,
             ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           if (!isSearchFieldActive)
             Expanded(
               child: Row(
@@ -100,7 +104,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTextstyles.googleInter700black28.copyWith(
-                            fontSize: 20,
+                            fontSize: 20.sp,
                             color: AppColors.black2Color,
                           ),
                         ),
@@ -110,7 +114,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AppTextstyles.googleInter400Grey14
-                                  .copyWith(fontSize: 16),
+                                  .copyWith(fontSize: 16.sp),
                             ),
                       ],
                     ),
@@ -128,11 +132,11 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                             });
                           },
                           child: Container(
-                            height: 48,
-                            width: 48,
+                            height: 48.h,
+                            width: 48.w,
                             decoration: BoxDecoration(
                               color: AppColors.actionContainerColor,
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(16.r),
                             ),
                             child: Center(
                               child: Icon(
@@ -143,17 +147,17 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                           ),
                         ),
                       if (widget.showFilterIcon) ...[
-                        const SizedBox(width: 8),
-                        Stack(
-                          children: [
-                            GestureDetector(
-                              onTap: widget.onTapFilterIcon,
-                              child: Container(
-                                height: 48,
-                                width: 48,
+                        SizedBox(width: 8.w),
+                        GestureDetector(
+                          onTap: widget.onTapFilterIcon,
+                          child: Stack(
+                            children: [
+                              Container(
+                                height: 48.h,
+                                width: 48.w,
                                 decoration: BoxDecoration(
                                   color: AppColors.actionContainerColor,
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(16.r),
                                 ),
                                 child: Center(
                                   child: Icon(
@@ -162,32 +166,32 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                                   ),
                                 ),
                               ),
-                            ),
-                            if (widget.countofActiveFilters > 0)
-                              Positioned(
-                                right: 4,
-                                top: 4,
-                                child: Container(
-                                  padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.emailUsIconColor,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: AppColors.white,
-                                      width: 1.5,
+                              if (widget.countofActiveFilters > 0)
+                                Positioned(
+                                  right: 4.w,
+                                  top: 4.h,
+                                  child: Container(
+                                    padding: EdgeInsets.all(6.w),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.emailUsIconColor,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: AppColors.white,
+                                        width: 1.5.w,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      widget.countofActiveFilters.toString(),
+                                      style: AppTextstyles.googleInter700black28
+                                          .copyWith(
+                                            fontSize: 10.sp,
+                                            color: AppColors.white,
+                                          ),
                                     ),
                                   ),
-                                  child: Text(
-                                    widget.countofActiveFilters.toString(),
-                                    style: AppTextstyles.googleInter700black28
-                                        .copyWith(
-                                          fontSize: 10,
-                                          color: AppColors.white,
-                                        ),
-                                  ),
                                 ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                       if (widget.showResyncButton) ...[
@@ -204,30 +208,30 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                               },
                               label: const Text("Resync"),
                               icon: syncStatus == SyncStatus.syncing
-                                  ? const SizedBox(
-                                      width: 16,
-                                      height: 16,
+                                  ? SizedBox(
+                                      width: 16.w,
+                                      height: 16.h,
                                       child: CircularProgressIndicator(
                                         color: AppColors.white,
                                         strokeWidth: 2,
                                       ),
                                     )
-                                  : const Icon(Icons.refresh, size: 20),
+                                  : Icon(Icons.refresh, size: 20.w),
                               style: ElevatedButton.styleFrom(
                                 // backgroundColor: AppColors.primary,
                                 backgroundColor: AppColors.headerDarkBlueColor,
                                 foregroundColor: AppColors.white,
                                 textStyle: AppTextstyles.neutra700black32
                                     .copyWith(
-                                      fontSize: 16,
+                                      fontSize: 16.sp,
                                       color: AppColors.white,
                                     ),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 10,
-                                  horizontal: 15,
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 10.h,
+                                  horizontal: 15.w,
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(8.r),
                                 ),
                               ),
                             );
@@ -247,15 +251,16 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                   Expanded(
                     child: CustomTextField(
                       hintText: "Search",
-                      height: 50,
+                      height: 50.h,
                       backgroundColor: AppColors.actionContainerColor,
                       focusNode: _searchFocusNode,
+                      controller: widget.controller,
                       showClearButton: true,
                       onChanged: widget.onSearchChanged,
                       onClear: widget.onCrossSearch,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   TextButton(
                     child: const Text("Cancel"),
                     onPressed: () {

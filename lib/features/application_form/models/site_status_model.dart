@@ -1,11 +1,16 @@
-class SiteStatusModel {
+import 'package:equatable/equatable.dart';
+
+class SiteStatusModel extends Equatable {
   static const String alias = 'site';
 
    final int? id;
   final int siteStatusId;
   final String name;
 
-  SiteStatusModel({this.id, required this.siteStatusId, required this.name});
+  const SiteStatusModel({this.id, required this.siteStatusId, required this.name});
+
+  @override
+  List<Object?> get props => [siteStatusId, name];
 
   factory SiteStatusModel.fromAPIResponseMap(Map<String, dynamic> map) {
     return SiteStatusModel(siteStatusId: map['Id'], name: map['Name']);

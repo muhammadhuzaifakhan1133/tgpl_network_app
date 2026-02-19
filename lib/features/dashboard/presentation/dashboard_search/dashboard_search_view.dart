@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_search/dashboard_search_controller.dart';
@@ -16,7 +17,7 @@ class DashboardSearchView extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         child: Column(
           children: [
             Row(
@@ -28,7 +29,7 @@ class DashboardSearchView extends ConsumerWidget {
                   },
                   icon: Icon(Icons.arrow_back),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 Expanded(
                   child: CustomTextField(
                     hintText: 'Search modules and sub-modules',
@@ -43,7 +44,7 @@ class DashboardSearchView extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Expanded(
               child: Consumer(
                 builder: (context, ref, child) {

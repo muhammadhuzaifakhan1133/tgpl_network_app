@@ -19,14 +19,19 @@ class AuthRemoteDataSourceImpl implements AuthDataSource {
 
   @override
   Future<LoginResponseModel> login(LoginRequestModel request) async {
-    final body =
-        'username=${Uri.encodeComponent(request.username)}'
-        '&password=${Uri.encodeComponent(request.password)}'
-        '&grant_type=${Uri.encodeComponent(request.grantType)}';
-
+    final data = {
+      "username": request.username,
+      "password": request.password,
+      "grant_type": request.grantType,
+    };
+    String body = "";
+    for (var entry in data.entries) {
+      body += '&${entry.key}=${Uri.encodeComponent(entry.value)}';
+    }
+    body = body.substring(1); // Remove the leading '&'
     final response = await _dioClient.post(
       AppApis.loginEndpoint,
-      data: body, // 👈 raw string
+      data: body,
       options: Options(
         contentType: Headers.formUrlEncodedContentType,
       ),

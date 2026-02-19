@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_controller.dart';
 import 'package:tgpl_network/common/widgets/section_detail_card.dart';
@@ -9,7 +10,7 @@ class ApplicantInfoCard extends ConsumerWidget {
   final String applicantName;
   final String contactPerson;
   final String currentPresence;
-  final String emergencyContactPerson;
+  final String contactNumber;
   final String whatsappNumber;
 
   const ApplicantInfoCard({
@@ -17,7 +18,7 @@ class ApplicantInfoCard extends ConsumerWidget {
     required this.applicantName,
     required this.contactPerson,
     required this.currentPresence,
-    required this.emergencyContactPerson,
+    required this.contactNumber,
     required this.whatsappNumber,
   });
 
@@ -42,25 +43,25 @@ class ApplicantInfoCard extends ConsumerWidget {
           title: "Applicant Name",
           hintText: applicantName,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Contact Person",
           hintText: contactPerson,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "Currently Presence",
           hintText: currentPresence,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
-          title: "Contact Person",
-          hintText: emergencyContactPerson,
+          title: "Contact Number",
+          hintText: contactNumber,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           readOnly: true,
           title: "WhatsApp Number",

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
@@ -21,10 +22,10 @@ class DashboardModulesSection extends ConsumerWidget {
           alignment: Alignment.centerLeft,
           child: Text(
             "All Modules",
-            style: AppTextstyles.neutra700black32.copyWith(fontSize: 24),
+            style: AppTextstyles.neutra700black32.copyWith(fontSize: 24.sp),
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         for (int i = 0; i < modules.length; i++)
           _DashboardModuleContainer(
             module: modules[i],
@@ -115,13 +116,13 @@ class DashboardModuleContainerComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 19),
+      padding: EdgeInsets.only(bottom: 19.h),
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(16.4),
+          borderRadius: BorderRadius.circular(16.4.r),
         ),
         child: InkWell(
           onTap: onTap,
@@ -129,18 +130,18 @@ class DashboardModuleContainerComponent extends StatelessWidget {
             children: [
               if (icon != null) ...[
                 Container(
-                  height: 48,
-                  width: 48,
+                  height: 48.h,
+                  width: 48.w,
                   // margin: EdgeInsets.only(right: 16),
                   decoration: BoxDecoration(
                     color: color.withOpacity(0.082),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(16.r),
                   ),
                   child: Center(child: SvgPicture.asset(icon!, color: color)),
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: 16.w),
               ],
-              if (icon == null) const SizedBox(width: 8),
+              if (icon == null) SizedBox(width: 8.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,13 +150,13 @@ class DashboardModuleContainerComponent extends StatelessWidget {
                     Text(
                       title,
                       style: AppTextstyles.googleInter500LabelColor14.copyWith(
-                        fontSize: 15,
+                        fontSize: 15.sp,
                       ),
                     ),
                     Text(
                       subtitle,
                       style: AppTextstyles.googleInter400Grey14.copyWith(
-                        fontSize: 13,
+                        fontSize: 13.sp,
                       ),
                     ),
                   ],
@@ -165,15 +166,15 @@ class DashboardModuleContainerComponent extends StatelessWidget {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Container(
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w),
                     decoration: BoxDecoration(
                       color: color.withOpacity(0.082),
-                      borderRadius: BorderRadius.circular(50),
+                      borderRadius: BorderRadius.circular(50.r),
                     ),
                     child: Text(
                       "$count",
                       style: AppTextstyles.googleInter700black28.copyWith(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         color: color,
                       ),
                     ),

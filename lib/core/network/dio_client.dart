@@ -1,5 +1,6 @@
 // lib/core/network/dio_client.dart
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tgpl_network/common/providers/shared_prefs_provider.dart';
@@ -13,8 +14,7 @@ class DioClient {
   final Ref ref;
 
   DioClient(
-    this.ref,
-    {
+    this.ref, {
     Dio? dio,
     required String baseUrl,
     required SharedPreferences sharedPreferences,
@@ -28,10 +28,8 @@ class DioClient {
       ..options.receiveTimeout = const Duration(
         milliseconds: AppApis.receiveTimeout,
       );
-    _dio.options.headers = {
-      'Accept': 'application/json',
-    };
-    
+    _dio.options.headers = {'Accept': 'application/json'};
+
     // Add interceptors with SharedPreferences
     _dio.interceptors.addAll([
       AuthInterceptor(ref, sharedPreferences),
@@ -46,10 +44,12 @@ class DioClient {
     String path, {
     Map<String, dynamic>? queryParameters,
     Options? options,
+    ProgressCallback? onReceiveProgress,
   }) async {
     try {
       final response = await _dio.get(
         path,
+        onReceiveProgress: onReceiveProgress,
         queryParameters: queryParameters,
         options: options,
       );
@@ -65,11 +65,13 @@ class DioClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
+    ProgressCallback? onSendProgress,
   }) async {
     try {
       final response = await _dio.post(
         path,
         data: data,
+        onSendProgress: onSendProgress,
         queryParameters: queryParameters,
         options: options,
       );
@@ -121,6 +123,12 @@ class DioClient {
 
   // Error handling
   NetworkException _handleError(DioException error) {
+    if (kDebugMode) {
+      print('DIO ERROR TYPE: ${error.type}');
+      print('DIO ERROR MESSAGE: ${error.message}');
+      print('DIO ERROR RESPONSE: ${error.response}');
+      print('DIO ERROR: $error');
+    }
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
@@ -165,5 +173,9 @@ class DioClient {
 // Updated Riverpod provider
 final dioClientProvider = Provider<DioClient>((ref) {
   final sharedPrefs = ref.watch(sharedPreferencesProvider);
-  return DioClient(ref, baseUrl: AppApis.baseUrl, sharedPreferences: sharedPrefs);
+  return DioClient(
+    ref,
+    baseUrl: AppApis.baseUrl,
+    sharedPreferences: sharedPrefs,
+  );
 });

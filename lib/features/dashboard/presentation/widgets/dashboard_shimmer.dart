@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/shimmer_widget.dart';
 
 class DashboardShimmerView extends StatelessWidget {
@@ -10,31 +11,31 @@ class DashboardShimmerView extends StatelessWidget {
       children: [
         // Top white container
         Container(
-          padding: const EdgeInsets.all(20),
-          decoration: const BoxDecoration(
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+          decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(50),
-              bottomRight: Radius.circular(50),
+              bottomLeft: Radius.circular(50.r),
+              bottomRight: Radius.circular(50.r),
             ),
           ),
           child: Column(
-            children: const [
-              SizedBox(height: 10),
+            children: [
+              SizedBox(height: 10.h),
               HeaderProfileShimmer(),
-              SizedBox(height: 30),
+              SizedBox(height: 30.h),
               _GreetingTextShimmer(),
-              SizedBox(height: 20),
+              SizedBox(height: 20.h),
               _CountCardsShimmer(),
             ],
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
           child: Column(
-            children: const [
+            children: [
               SyncStatusCardShimmer(),
-              SizedBox(height: 20),
+              SizedBox(height: 20.h),
               _ModulesListShimmer(),
             ],
           ),
@@ -51,12 +52,12 @@ class HeaderProfileShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const ShimmerBox(
+        ShimmerBox(
           width: 48,
           height: 48,
           borderRadius: 16,
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,13 +93,13 @@ class _GreetingTextShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children: [
         ShimmerBox(
           width: 220,
           height: 28,
           borderRadius: 4,
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 8.h),
         ShimmerBox(
           width: 280,
           height: 16,
@@ -127,15 +128,15 @@ class _CountCardsShimmer extends StatelessWidget {
         Row(
           children: [
             Expanded(child: _card()),
-            const SizedBox(width: 16),
+            SizedBox(width: 16.w),
             Expanded(child: _card()),
           ],
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
         Row(
           children: [
             Expanded(child: _card()),
-            const SizedBox(width: 16),
+            SizedBox(width: 16.w),
             Expanded(child: _card()),
           ],
         ),
@@ -161,8 +162,8 @@ class _ModulesListShimmer extends StatelessWidget {
   const _ModulesListShimmer();
 
   Widget _moduleItem() {
-    return const Padding(
-      padding: EdgeInsets.only(bottom: 16),
+    return Padding(
+      padding: EdgeInsets.only(bottom: 16.h),
       child: ShimmerBox(
         width: double.infinity,
         height: 72,
@@ -175,7 +176,7 @@ class _ModulesListShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Align(
+        Align(
           alignment: Alignment.centerLeft,
           child: ShimmerBox(
             width: 120,
@@ -183,7 +184,7 @@ class _ModulesListShimmer extends StatelessWidget {
             borderRadius: 4,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         for (int i = 0; i < 5; i++) _moduleItem(),
       ],
     );

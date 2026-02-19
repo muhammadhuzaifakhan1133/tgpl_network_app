@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/common/providers/user_provider.dart';
 // import 'package:tgpl_network/common/models/application_model.dart';
@@ -8,30 +9,38 @@ import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/features/master_data/models/user_model.dart';
 import 'package:tgpl_network/features/module_applications/presentation/widgets/document_bottom_sheet.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 import 'package:tgpl_network/utils/extensions/datetime_extension.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
+import 'package:tgpl_network/utils/internet_connectivity.dart';
 import 'package:tgpl_network/utils/map_utils.dart';
+import 'package:tgpl_network/utils/show_snackbar.dart';
 
 class ModuleApplicationContainer extends ConsumerWidget {
   final ApplicationModel application;
   final String submoduleName;
+  final void Function(String applicationId)? onSyncApplication;
   const ModuleApplicationContainer({
     super.key,
     required this.application,
     required this.submoduleName,
+    this.onSyncApplication,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userProvider).requireValue!;
+    final user = ref.watch(userProvider).value;
+    if (user == null) {
+      return SizedBox.shrink();
+    }
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 13, vertical: 8),
-      margin: EdgeInsets.only(bottom: 14),
+      padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 8.h),
+      margin: EdgeInsets.only(bottom: 14.h),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.4),
+        borderRadius: BorderRadius.circular(16.4.r),
         color: AppColors.white,
       ),
       child: Column(
@@ -41,13 +50,13 @@ class ModuleApplicationContainer extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                application.entryCode ?? '',
+                application.entryCode ?? application.applicationId.toString(),
                 style: AppTextstyles.googleInter400Grey14,
               ),
               Container(
-                padding: EdgeInsets.symmetric(vertical: 1.5, horizontal: 8),
+                padding: EdgeInsets.symmetric(vertical: 1.5.h, horizontal: 8.w),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
+                  borderRadius: BorderRadius.circular(25.r),
                   color: AppColors.getPriorityColor(
                     application.priority ?? '',
                   ).withOpacity(0.08),
@@ -55,7 +64,7 @@ class ModuleApplicationContainer extends ConsumerWidget {
                 child: Text(
                   application.priority ?? '',
                   style: AppTextstyles.googleInter500LabelColor14.copyWith(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     color: AppColors.getPriorityColor(
                       application.priority ?? '',
                     ),
@@ -64,11 +73,11 @@ class ModuleApplicationContainer extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 5),
+          SizedBox(height: 5.h),
           Text(
-            "${application.dealerName}${application.proposedSiteName1 == null ? '' : ' | ${application.proposedSiteName1}'}",
+            "${application.applicantName}${application.proposedSiteName1 == null ? '' : ' | ${application.proposedSiteName1}'}",
             style: AppTextstyles.googleInter700black28.copyWith(
-              fontSize: 20,
+              fontSize: 20.sp,
               color: AppColors.black2Color,
             ),
           ),
@@ -77,131 +86,197 @@ class ModuleApplicationContainer extends ConsumerWidget {
               application.sourceName ?? '',
               style: AppTextstyles.googleInter400Grey14,
             ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Divider(color: AppColors.lightGrey),
-          const SizedBox(height: 6.75),
-          Row(
-            children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      AppImages.phoneIconSvg,
-                      color: AppColors.subHeadingColor,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        application.dealerContact ?? '',
-                        style: AppTextstyles.googleInter400Grey14.copyWith(
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      AppImages.locationIconSvg,
-                      color: AppColors.subHeadingColor,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        application.cityName ?? '',
-                        style: AppTextstyles.googleInter400Grey14.copyWith(
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6.75),
+          SizedBox(height: 6.75.h),
+          phoneAndLocationInfo(),
+          dueDateAndDoneDate(),
+          SizedBox(height: 6.75.h),
           Divider(color: AppColors.lightGrey),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  "Received: ${application.addDate?.formatTodMMMyyyy() ?? 'N/A'}",
-                  style: AppTextstyles.googleInter400LightGrey12,
-                ),
-              ),
-              actionContainer(
-                icon: AppImages.locationIconSvg,
-                onTap: () {
-                  MapUtils.openGoogleMap(
-                    application.latitude,
-                    application.longitude,
-                  );
-                },
-              ),
-              const SizedBox(width: 8),
-              actionContainer(
-                icon: AppImages.eyeIconSvg,
-                onTap: () {
-                  // send section to the detail view
-                  ref
-                      .read(goRouterProvider)
-                      .push(
-                        AppRoutes.applicationDetail(
-                          application.applicationId?.toString() ?? '',
-                        ),
-                      );
-                },
-              ),
-              if (submoduleName == "Survey & Dealer Profile" &&
-                  user.hasSurveyFormAccess) ...[
-                const SizedBox(width: 8),
-                actionContainer(
-                  icon: AppImages.formIconSvg,
-                  onTap: () {
-                    ref
-                        .read(goRouterProvider)
-                        .push(
-                          AppRoutes.surveyForm(
-                            application.applicationId?.toString() ?? '',
-                          ),
-                        );
-                  },
-                ),
-              ],
-              if (submoduleName == "Traffic & Trade" &&
-                  user.hasTrafficTradeFormAccess) ...[
-                const SizedBox(width: 8),
-                actionContainer(
-                  icon: AppImages.formIconSvg,
-                  onTap: () {
-                    ref
-                        .read(goRouterProvider)
-                        .push(
-                          AppRoutes.trafficTradeForm(
-                            application.applicationId?.toString() ?? '',
-                          ),
-                        );
-                  },
-                ),
-              ],
-              const SizedBox(width: 8),
-              actionContainer(
-                icon: AppImages.uploadIconSvg,
-                onTap: () {
-                  documentBottomSheet(
-                    context: context,
-                    application: application,
-                  );
-                },
-              ),
-            ],
-          ),
+          SizedBox(height: 8.h),
+          containerActions(ref, user, context),
         ],
       ),
     );
+  }
+
+  Widget dueDateAndDoneDate() {
+    var (dueDate, doneDate) = ApplicationModel.getDueDateAndDoneDate(submoduleName, application); 
+    if (dueDate == null) {
+      return SizedBox.shrink();
+    }
+    return Column(
+      children: [
+        SizedBox(height: 6.75.h),
+        Divider(color: AppColors.lightGrey),
+        SizedBox(height: 8.h),
+        Row(
+              children: [
+                Expanded(
+                    child: Text(
+                      "Due: ${dueDate.formatTodMMMyyyy()}",
+                      style: AppTextstyles.googleInter400Grey14,
+                    ),
+                  ),
+                // if done date is null and due date is passed then show overdue with no of days passed and if due date is not passed then show Done: pending
+                if (doneDate != null)
+                  Text(
+                    "Done: ${doneDate.formatTodMMMyyyy()}",
+                    style: AppTextstyles.googleInter400Grey14,
+                  )
+                else if ((DateTime.tryParse(dueDate)?.isBefore(DateTime.now()) ?? false))
+                  Text(
+                    "Overdue: ${DateTime.now().difference(DateTime.tryParse(dueDate)!).inDays} days",
+                    style: AppTextstyles.googleInter400Grey14.copyWith(
+                      color: AppColors.emailUsIconColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                else if ((DateTime.tryParse(dueDate)?.isAfter(DateTime.now()) ?? false))
+                  Text(
+                    "Done: Pending",
+                    style: AppTextstyles.googleInter400Grey14,
+                  )
+        
+              ],
+            ),
+      ],
+    );
+  }
+
+  Row phoneAndLocationInfo() {
+    return Row(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  SvgPicture.asset(
+                    AppImages.phoneIconSvg,
+                    color: AppColors.subHeadingColor,
+                  ),
+                  SizedBox(width: 8.w),
+                  Expanded(
+                    child: Text(
+                      application.whatsAppNumber ?? '',
+                      style: AppTextstyles.googleInter400Grey14.copyWith(
+                        fontSize: 13.sp,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Row(
+                children: [
+                  SvgPicture.asset(
+                    AppImages.locationIconSvg,
+                    color: AppColors.subHeadingColor,
+                  ),
+                  SizedBox(width: 8.w),
+                  Expanded(
+                    child: Text(
+                      application.cityName ?? '',
+                      style: AppTextstyles.googleInter400Grey14.copyWith(
+                        fontSize: 13.sp,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+  }
+
+  Row containerActions(WidgetRef ref, UserModel user, BuildContext context) {
+    return Row(
+          children: [
+            Expanded(
+              child: Text(
+                "Received: ${application.applicationReceiveDate?.formatTodMMMyyyy() ?? 'N/A'}",
+                style: AppTextstyles.googleInter400LightGrey12,
+              ),
+            ),
+            actionContainer(
+              icon: AppImages.locationIconSvg,
+              onTap: () {
+                MapUtils.openGoogleMap(
+                  application.latitude,
+                  application.longitude,
+                );
+              },
+            ),
+            SizedBox(width: 8.w),
+            actionContainer(
+              icon: AppImages.eyeIconSvg,
+              onTap: () {
+                // send section to the detail view
+                ref
+                    .read(goRouterProvider)
+                    .push(
+                      AppRoutes.applicationDetail(
+                        application.applicationId?.toString() ?? '',
+                      ),
+                    );
+              },
+            ),
+            if (submoduleName == "Survey & Dealer Profile" &&
+                                                 // TM (6) & RM (5) can only access survey form if they have survey form access in their permissions
+                user.hasSurveyFormAccess && [5, 6].contains(user.positionId)) ...[
+              SizedBox(width: 8.w),
+              actionContainer(
+                icon: AppImages.formIconSvg,
+                onTap: () async {
+                  final isSubmit = await ref
+                      .read(goRouterProvider)
+                      .push(
+                        AppRoutes.surveyForm(
+                          application.applicationId?.toString() ?? '',
+                        ),
+                      );
+                  if (isSubmit == true) {
+                    onSyncApplication?.call(application.applicationId.toString());
+                  }
+                },
+              ),
+            ],
+            if (submoduleName == "Traffic & Trade" &&
+                user.hasTrafficTradeFormAccess && [5, 6].contains(user.positionId)) ...[
+              SizedBox(width: 8.w),
+              actionContainer(
+                icon: AppImages.formIconSvg,
+                onTap: () async {
+                  final isSubmit = await ref
+                      .read(goRouterProvider)
+                      .push(
+                        AppRoutes.trafficTradeForm(
+                          application.applicationId?.toString() ?? '',
+                        ),
+                      );
+                  if (isSubmit == true) {
+                    onSyncApplication?.call(application.applicationId.toString());
+                  }
+                },
+              ),
+            ],
+            SizedBox(width: 8.w),
+            actionContainer(
+              icon: AppImages.uploadIconSvg,
+              onTap: () async {
+                if (await InternetConnectivity.hasInternet() && context.mounted) {
+                  documentBottomSheet(
+                  context: context,
+                  application: application,
+                );
+                } else {
+                  if (context.mounted) {
+                    showSnackBar(context, "Internet connection is required to view or upload documents");
+                  }
+                }
+              },
+            ),
+          ],
+        );
   }
 }

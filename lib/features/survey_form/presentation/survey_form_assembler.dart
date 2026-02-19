@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/common/providers/user_provider.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
 import 'package:tgpl_network/features/survey_form/models/survey_form_model.dart';
 import 'package:tgpl_network/features/survey_form/presentation/widgets/application_info/application_info_form_controller.dart';
@@ -10,7 +11,7 @@ class SurveyFormAssembler {
   static void dessembleFromApp(Ref ref, ApplicationModel app) {
     ref
         .read(applicationInfoFormControllerProvider.notifier)
-        .loadFromApplication(app);
+        .loadFromApplication(app, ref.read(userProvider).value?.userName);
     ref
         .read(contactAndDealerFormControllerProvider.notifier)
         .loadFromApplication(app);

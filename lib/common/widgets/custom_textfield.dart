@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController? controller;
@@ -63,6 +64,7 @@ class CustomTextField extends StatefulWidget {
 class _CustomTextFieldState extends State<CustomTextField> {
   late TextEditingController _internalController;
   late FocusNode _effectiveFocusNode;
+  String? _validationError;
 
   @override
   void initState() {
@@ -75,19 +77,21 @@ class _CustomTextFieldState extends State<CustomTextField> {
   }
 
   bool get _hasValue => _internalController.text.isNotEmpty;
+  bool get _hasError => _validationError != null || widget.errorText != null;
 
   Widget? _buildSuffixIcon() {
-    if (widget.showClearButton &&
-        (_hasValue || widget.readOnly)) {
+    if (widget.showClearButton && (_hasValue || widget.readOnly)) {
       return IconButton(
-        icon: const Icon(Icons.close, size: 18),
-        splashRadius: 18,
+        icon: Icon(Icons.close, size: 18.w),
+        splashRadius: 18.r,
         onPressed: () {
           widget.onClear?.call();
 
           _internalController.clear();
           widget.onChanged?.call('');
-          setState(() {});
+          setState(() {
+            _validationError = null; // Clear validation error
+          });
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _effectiveFocusNode.requestFocus();
@@ -109,7 +113,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
     super.dispose();
   }
 
-  // If parent passes a controller and later replaces it
   @override
   void didUpdateWidget(covariant CustomTextField oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -135,29 +138,42 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: widget.width,
-      height: widget.height,
+      height:
+          widget.height ??
+          (widget.multiline ? null : (_hasError ? 70.h : 46.h)),
       child: TextFormField(
         controller: _internalController,
-        // initialValue: widget.controller == null ? widget.initialValue : null,
         autofocus: widget.autoFocus,
         readOnly: widget.readOnly,
         onTap: widget.onTap,
         obscureText: widget.obscureText,
         focusNode: _effectiveFocusNode,
         onChanged: (v) {
-          setState(() {});
           widget.onChanged?.call(v);
         },
         decoration: InputDecoration(
           fillColor: widget.backgroundColor,
           filled: widget.backgroundColor != null,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 12.w,
+            vertical: widget.multiline ? 12.h : 0,
+          ),
           hint: widget.hint,
           hintText: widget.hintText,
           errorText: widget.errorText,
           suffixIcon: _buildSuffixIcon(),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
         ),
-        validator: widget.validator,
+        validator: (value) {
+          final error = widget.validator?.call(value);
+          // Schedule setState for after the validation completes
+          if (_validationError != error) {
+            setState(() {
+              _validationError = error;
+            });
+          }
+          return error;
+        },
         keyboardType: widget.multiline
             ? TextInputType.multiline
             : widget.keyboardType,
@@ -166,7 +182,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
             : (widget.textInputAction ?? TextInputAction.next),
         minLines: widget.multiline ? (widget.minLines ?? 3) : 1,
         maxLines: widget.multiline ? (widget.maxLines ?? 5) : 1,
-        onFieldSubmitted: (_) => widget.onFieldSubmitted?.call(),
+        onFieldSubmitted: (_) {
+          FocusScope.of(context).nextFocus();
+          widget.onFieldSubmitted?.call();
+        },
       ),
     );
   }

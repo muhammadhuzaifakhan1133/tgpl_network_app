@@ -41,7 +41,7 @@ class DatabaseHelper {
     await db.execute(CreateDbQueries.createApplicationTable);
 
     // Create index on statusId column
-    await db.execute(CreateDbQueries.createStatusIdIndexOnApplicationTable);
+    await db.execute(CreateDbQueries.createIndexesOnApplicationTable);
 
     // Cities Table
     await db.execute(CreateDbQueries.createCityTable);
@@ -51,10 +51,10 @@ class DatabaseHelper {
 
     // Master Lists Table (storing as JSON)
     await db.execute(CreateDbQueries.createMasterListsTable);
-    
+
     // User Info Table
     await db.execute(CreateDbQueries.createUserInfoTable);
-    
+
     // Site Status Table
     await db.execute(CreateDbQueries.createSiteStatusTable);
 
@@ -66,6 +66,11 @@ class DatabaseHelper {
 
     // Traffic Trade Forms Table
     await db.execute(CreateDbQueries.createTrafficTradeFormsTable);
+
+    //  Tables for TM and RM data & attachement categories
+    await db.execute(CreateDbQueries.createTmTable);
+    await db.execute(CreateDbQueries.createRmTable);
+    await db.execute(CreateDbQueries.attachmentCategoryTable);
   }
 
   Future<void> close() async {
@@ -74,12 +79,15 @@ class DatabaseHelper {
   }
 
   List<String> get masterDataTables => [
-        AppDatabase.applicationTable,
-        AppDatabase.cityTable,
-        AppDatabase.trafficTradeTable,
-        AppDatabase.masterListsTable,
-        AppDatabase.userInfoTable,
-      ];
+    AppDatabase.applicationTable,
+    AppDatabase.cityTable,
+    AppDatabase.trafficTradeTable,
+    AppDatabase.masterListsTable,
+    AppDatabase.rmTable,
+    AppDatabase.tmTable,
+    AppDatabase.userInfoTable,
+    AppDatabase.attachmentCategoryTable,
+  ];
 
   Future<void> clearAllTables() async {
     final db = await instance.database;
@@ -89,7 +97,6 @@ class DatabaseHelper {
     await db.delete(AppDatabase.surveyFormsTable);
     await db.delete(AppDatabase.trafficTradeFormsTable);
     await db.delete(AppDatabase.syncMetadataTable);
-    await db.delete(AppDatabase.userInfoTable);
     await db.delete(AppDatabase.siteStatusTable);
   }
 }

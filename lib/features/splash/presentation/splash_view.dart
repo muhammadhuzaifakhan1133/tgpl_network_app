@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/data/shared_prefs_data_source.dart';
 import 'package:tgpl_network/common/providers/shared_prefs_provider.dart';
+import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/pref_keys.dart';
 import 'package:tgpl_network/routes/app_router.dart';
@@ -57,13 +59,16 @@ class _SplashViewState extends ConsumerState<SplashView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(AppImages.logoGif),
-            fit: BoxFit.cover,
+      backgroundColor: AppColors.primary,
+      body: Center(
+        child: Container(
+          width: 234.w,
+          height: 234.h,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(AppImages.logoGif),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
       ),

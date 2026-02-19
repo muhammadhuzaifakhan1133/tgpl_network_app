@@ -41,7 +41,7 @@ class NearbySitesState {
           estimatedDailyLubricantSale: site.estimateLubricantSale.toString(),
           omcName: site.nfrName,
           isNfrFacility: site.nflFacilityAvailable,
-          nfrFacilities: site.nfrFacility.split(",").map((e) => e.trim()).toList(),
+          nfrFacilities: site.nfrFacility?.split(",").map((e) => e.trim()).toList() ?? [],
       )).toList() : [TrafficSiteModel()],
         totalSites = app.nearbyTrafficSites.isNotEmpty ? app.nearbyTrafficSites.length : 1;
   

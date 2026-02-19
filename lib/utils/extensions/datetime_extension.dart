@@ -1,5 +1,5 @@
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
-
+import 'package:intl/intl.dart';
 extension DatetimeExtension on DateTime {
   // e.g. 25/12/2023
   String formatToDDMMYYY() {
@@ -10,10 +10,12 @@ extension DatetimeExtension on DateTime {
 }
 
 extension StrDateTimeExtension2 on String? {
-   bool isValidDate() {
+  // 01/02/2026
+  bool isValidDate() {
     if (isNullOrEmpty) return false;
     try {
-      DateTime.parse(this!);
+      // DateTime.parse(this!);
+      DateFormat('dd/MM/yyyy').parseStrict(this!);
       return true;
     } catch (e) {
       return false;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/providers/auto_validate_form.dart';
 import 'package:tgpl_network/common/widgets/application_fields_shimmer_widget.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
@@ -107,17 +108,17 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
           : AutovalidateMode.disabled,
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
           child: Column(
             children: [
               const ApplicantInfoFormCard(),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               const ContactAndDealerFormCard(),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               const DealerProfileFormCard(),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               const SurveyRecommendationFormCard(),
-              const SizedBox(height: 30),
+              SizedBox(height: 30.h),
               Consumer(
                 builder: (context, ref, child) {
                   final isLoading =
@@ -142,7 +143,7 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
                   );
                 },
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
             ],
           ),
         ),
@@ -154,7 +155,7 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
     // Unfocus any active text field
     FocusScope.of(context).unfocus();
 
-    bool? success;
+    int? success;
 
     // Turn on auto-validation after first submit attempt
     if (!ref.read(autoValidateFormModeProvider)) {
@@ -175,14 +176,20 @@ class _SurveyFormViewState extends ConsumerState<SurveyFormView> {
 
     if (!mounted) return;
 
-    if (success == true) {
-      
+    if (success == 1) {
       showSnackBar(
         context,
         "Form submitted successfully!",
         bgColor: AppColors.onlineStatusColor,
       );
-      // Navigate back or to success screen
+      ref.read(goRouterProvider).pop(true);
+    }
+    if (success == 2) {
+      showSnackBar(
+        context,
+        "No internet connection. Form saved locally and will be submitted when you're back online.",
+        bgColor: AppColors.offlineStatusColor,
+      );
       ref.read(goRouterProvider).pop(true);
     }
   }

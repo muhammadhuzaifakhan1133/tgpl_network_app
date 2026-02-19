@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/features/master_data/providers/dealer_involvement_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/yes_no_na_values_provider.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
@@ -38,7 +39,7 @@ class DealerProfileFormCard extends ConsumerWidget {
             controller.clearField('isThisDealer');
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         CustomTextFieldWithTitle(
           title: "Platform",
           hintText: "Enter platform",
@@ -55,7 +56,7 @@ class DealerProfileFormCard extends ConsumerWidget {
         ),
         // BELOW ALL FIELDS ACTIVE ONLY WHEN IS THIS DEALER = YES
         if (isThisDealer == 'Yes') ...[
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           CustomTextFieldWithTitle(
             title:
                 "What other businesses does the dealer have, Mention # of business and types.",
@@ -74,7 +75,7 @@ class DealerProfileFormCard extends ConsumerWidget {
               controller.clearField('dealerBusinesses');
             },
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Consumer(
             builder: (context, ref, child) {
               final selectedDealerInvolvement = ref.watch(
@@ -101,7 +102,7 @@ class DealerProfileFormCard extends ConsumerWidget {
               );
             },
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Consumer(
             builder: (context, ref, _) {
               final isDealerReadyToInvest = ref.watch(
@@ -129,7 +130,7 @@ class DealerProfileFormCard extends ConsumerWidget {
               );
             },
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           CustomTextFieldWithTitle(
             title: "Why does the dealer want to convert to Taj?",
             hintText: "Enter dealer opinion",
@@ -145,7 +146,7 @@ class DealerProfileFormCard extends ConsumerWidget {
               controller.clearField('dealerOpinion');
             },
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           CustomTextFieldWithTitle(
             title:
                 "In case it is an operational site, what is the current salary of attendant / month",
@@ -160,7 +161,7 @@ class DealerProfileFormCard extends ConsumerWidget {
               controller.clearField('monthlySalary');
             },
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Consumer(
             builder: (context, ref, _) {
               final isDealerAgreedToFollowTgplStandards = ref.watch(

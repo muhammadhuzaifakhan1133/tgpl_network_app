@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
@@ -7,7 +8,6 @@ import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/welcome/presentation/widgets/welcome_card.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
-import 'package:tgpl_network/utils/extensions/screen_size_extension.dart';
 
 class WelcomeView extends ConsumerWidget {
   const WelcomeView({super.key});
@@ -18,22 +18,22 @@ class WelcomeView extends ConsumerWidget {
       backgroundColor: AppColors.white,
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Column(
             children: [
-              SizedBox(height: context.screenHeight * 0.15),
-              SvgPicture.asset(AppImages.tajLogoSvg, width: 50, height: 50),
-              const SizedBox(height: 28),
+              SizedBox(height: 120.5.h),
+              SvgPicture.asset(AppImages.tajLogoSvg, width: 46.w, height: 45.h),
+              SizedBox(height: 28.h),
               Text(
                 "Welcome to TGPL",
                 style: AppTextstyles.googleInter700black28,
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 5.h),
               Text(
                 "Please choose how you want to continue",
                 style: AppTextstyles.googleInter400black16,
               ),
-              const SizedBox(height: 28),
+              SizedBox(height: 40.h),
               WelcomeCard(
                 iconPath: AppImages.applyNewStationIconSvg,
                 iconColor: AppColors.applyNewStationIconColor,
@@ -43,7 +43,7 @@ class WelcomeView extends ConsumerWidget {
                   ref.read(goRouterProvider).push(AppRoutes.stationForm);
                 },
               ),
-              const SizedBox(height: 25),
+              SizedBox(height: 24.h),
               WelcomeCard(
                 iconPath: AppImages.locationIconSvg,
                 iconColor: AppColors.redLocationIconColor,

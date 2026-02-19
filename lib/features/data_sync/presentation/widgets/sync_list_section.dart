@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/data_sync/models/sync_item.dart';
@@ -66,19 +67,19 @@ class SyncListWidget extends ConsumerWidget {
       children: [
         // Section Header
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: EdgeInsets.symmetric(vertical: 8.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               RichText(
                 text: TextSpan(
                   text: sectionTitle,
-                  style: AppTextstyles.neutra700black32.copyWith(fontSize: 16),
+                  style: AppTextstyles.neutra700black32.copyWith(fontSize: 16.sp),
                   children: [
                     TextSpan(
                       text: '  (${items.length} items)',
                       style: AppTextstyles.neutra500grey12.copyWith(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                       ),
                     ),
                   ],
@@ -92,7 +93,7 @@ class SyncListWidget extends ConsumerWidget {
                       child: Text(
                         'Retry All',
                         style: AppTextstyles.neutra500grey12.copyWith(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           color: AppColors.syncedCountColor,
                         ),
                       ),
@@ -104,7 +105,7 @@ class SyncListWidget extends ConsumerWidget {
                         isCollapsed
                             ? Icons.keyboard_arrow_down
                             : Icons.keyboard_arrow_up,
-                        size: 20,
+                        size: 20.sp,
                       ),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
@@ -141,20 +142,20 @@ class SyncListWidget extends ConsumerWidget {
         }
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
+        margin: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.only(top: 12.h, left: 12.w, right: 12.w),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.r),
           // only left border colored
           border: Border(
-            left: BorderSide(color: _getSyncIconColor(item), width: 4),
+            left: BorderSide(color: _getSyncIconColor(item), width: 4.w),
           ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
+              blurRadius: 4.r,
+              offset: Offset(0, 2.h),
             ),
           ],
         ),
@@ -164,18 +165,18 @@ class SyncListWidget extends ConsumerWidget {
               children: [
                 // Icon
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
                   decoration: BoxDecoration(
                     color: _getSyncIconColor(item).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Icon(
                     _getSyncIcon(item),
                     color: _getSyncIconColor(item),
-                    size: 24,
+                    size: 24.sp,
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
 
                 // Title and Subtitle
                 Expanded(
@@ -185,18 +186,18 @@ class SyncListWidget extends ConsumerWidget {
                       Text(
                         item.title,
                         style: AppTextstyles.neutra500grey12.copyWith(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           color: AppColors.black2Color,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Text(item.subtitle, style: AppTextstyles.neutra500grey12),
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
 
                 // Status Action
                 _buildStatusWidget(item.status, item.id),
@@ -214,7 +215,7 @@ class SyncListWidget extends ConsumerWidget {
                   child: showAction
                       ? Column(
                           children: [
-                            const SizedBox(height: 5),
+                            SizedBox(height: 5.h),
                             const Divider(),
                             // const SizedBox(height: 5),
                             Row(
@@ -223,7 +224,7 @@ class SyncListWidget extends ConsumerWidget {
                                 // delete button
                                 IconButton(
                                   padding: EdgeInsets.zero,
-                                  iconSize: 20,
+                                  iconSize: 20.w,
                                   onPressed:
                                       item.status != SyncItemStatus.syncing
                                       ? () {
@@ -236,7 +237,7 @@ class SyncListWidget extends ConsumerWidget {
                                 // edit button
                                 IconButton(
                                   padding: EdgeInsets.zero,
-                                  iconSize: 20,
+                                  iconSize: 20.w,
                                   onPressed:
                                       item.status != SyncItemStatus.syncing
                                       ? () async {
@@ -273,7 +274,7 @@ class SyncListWidget extends ConsumerWidget {
                                 // retry button.
                                 IconButton(
                                   padding: EdgeInsets.zero,
-                                  iconSize: 20,
+                                  iconSize: 20.w,
                                   onPressed:
                                       item.status != SyncItemStatus.syncing &&
                                           onRetryItem != null
@@ -286,7 +287,7 @@ class SyncListWidget extends ConsumerWidget {
                             ),
                           ],
                         )
-                      : const SizedBox(height: 12),
+                      : SizedBox(height: 12.h),
                 );
               },
             ),
@@ -303,9 +304,9 @@ class SyncListWidget extends ConsumerWidget {
         return SizedBox.shrink();
 
       case SyncItemStatus.syncing:
-        return const SizedBox(
-          width: 20,
-          height: 20,
+        return SizedBox(
+          width: 20.w,
+          height: 20.h,
           child: CircularProgressIndicator(
             strokeWidth: 2,
             valueColor: AlwaysStoppedAnimation<Color>(
@@ -315,12 +316,12 @@ class SyncListWidget extends ConsumerWidget {
         );
 
       case SyncItemStatus.failed:
-        return Icon(Icons.error, color: AppColors.emailUsIconColor, size: 20);
+        return Icon(Icons.error, color: AppColors.emailUsIconColor, size: 20.w);
 
       case SyncItemStatus.success:
-        return const Icon(
+        return Icon(
           Icons.cloud_done,
-          size: 20,
+          size: 20.w,
           color: AppColors.inauguratedCountColor,
         );
     }

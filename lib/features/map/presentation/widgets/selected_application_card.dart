@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
@@ -15,9 +16,9 @@ class SelectedApplicationCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         color: AppColors.white,
       ),
       child: Column(
@@ -27,18 +28,18 @@ class SelectedApplicationCard extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "${application.entryCode} ${application.proposedSiteName1 != null ? '(${application.proposedSiteName1})' : ''}",
+                "${application.entryCode ?? application.applicationId} ${application.proposedSiteName1 != null ? '(${application.proposedSiteName1})' : ''}",
                 style: AppTextstyles.googleInter400Grey14.copyWith(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 5,
-                  horizontal: 15,
+                padding: EdgeInsets.symmetric(
+                  vertical: 5.h,
+                  horizontal: 15.w,
                 ),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
+                  borderRadius: BorderRadius.circular(25.r),
                   color: AppColors.getPriorityColor(
                     application.priority ?? '',
                   ).withOpacity(0.08),
@@ -46,7 +47,7 @@ class SelectedApplicationCard extends ConsumerWidget {
                 child: Text(
                   application.priority ?? '',
                   style: AppTextstyles.googleInter500LabelColor14.copyWith(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     color: AppColors.getPriorityColor(
                       application.priority ?? '',
                     ),
@@ -55,27 +56,27 @@ class SelectedApplicationCard extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
           Text(
-            application.dealerName ?? "N/A",
+            application.applicantName ?? "N/A",
             style: AppTextstyles.googleInter700black28.copyWith(
-              fontSize: 20,
+              fontSize: 20.sp,
               color: AppColors.black2Color,
             ),
           ),
           Row(
             children: [
               const Icon(Icons.location_on_outlined),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Expanded(
                 child: Text(
-                  application.locationAddress ?? "N/A",
+                  application.siteAddress ?? "N/A",
                   style: AppTextstyles.googleInter400Grey14,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 13),
+          SizedBox(height: 13.h),
           Row(
             children: [
               Expanded(
@@ -96,7 +97,7 @@ class SelectedApplicationCard extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Expanded(
                 child: CustomButton(
                   onPressed: () {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
@@ -14,9 +15,9 @@ class RegionalManagersSection extends StatelessWidget {
       children: [
         Text(
           "Regional Managers",
-          style: AppTextstyles.neutra700black32.copyWith(fontSize: 24),
+          style: AppTextstyles.neutra700black32.copyWith(fontSize: 24.sp),
         ),
-        const SizedBox(height: 5),
+        SizedBox(height: 5.h),
         _DashboardRegionalManagerCard(region: "Karachi Region", count: 52),
         _DashboardRegionalManagerCard(region: "Lahore Region", count: 34),
         _DashboardRegionalManagerCard(region: "Hyderabad Region", count: 28),
@@ -37,22 +38,22 @@ class _DashboardRegionalManagerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 57,
-      margin: EdgeInsets.only(bottom: 14),
+      height: 57.h,
+      margin: EdgeInsets.only(bottom: 14.h),
       width: double.infinity,
-      padding: EdgeInsets.only(top: 7.5, bottom: 7.5, left: 8, right: 15),
+      padding: EdgeInsets.only(top: 7.5.h, bottom: 7.5.h, left: 8.w, right: 15.w),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Row(
         children: [
           Container(
-            width: 40,
+            width: 40.w,
             height: double.infinity,
             decoration: BoxDecoration(
               color: AppColors.nextStep1Color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(16.4),
+              borderRadius: BorderRadius.circular(16.4.r),
             ),
             child: Center(
               child: SvgPicture.asset(
@@ -61,7 +62,7 @@ class _DashboardRegionalManagerCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,13 +71,13 @@ class _DashboardRegionalManagerCard extends StatelessWidget {
                 Text(
                   region,
                   style: AppTextstyles.googleInter500LabelColor14.copyWith(
-                    fontSize: 15,
+                    fontSize: 15.sp,
                   ),
                 ),
                 Text(
                   "In Process",
                   style: AppTextstyles.googleInter400Grey14.copyWith(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                   ),
                 ),
               ],
@@ -84,7 +85,7 @@ class _DashboardRegionalManagerCard extends StatelessWidget {
           ),
           Text(
             count.toString(),
-            style: AppTextstyles.googleInter700black28.copyWith(fontSize: 22),
+            style: AppTextstyles.googleInter700black28.copyWith(fontSize: 22.sp),
           ),
         ],
       ),

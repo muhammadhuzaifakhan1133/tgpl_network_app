@@ -8,6 +8,7 @@ import 'package:tgpl_network/common/providers/shared_prefs_provider.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/routes/app_router.dart';
 
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([

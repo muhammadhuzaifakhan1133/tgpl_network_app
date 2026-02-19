@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown.dart';
 import 'package:tgpl_network/common/widgets/custom_searchable_dropdown.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 /// 🔥 Alternative: Generic async dropdown that accepts either static list or provider
 class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
@@ -90,6 +92,8 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (title.isNotNullOrEmpty) ... [
+
         RichText(
           text: TextSpan(
             text: title,
@@ -100,14 +104,16 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
                   text: ' *',
                   style: AppTextstyles.googleJakarta500Grey12.copyWith(
                     color: Colors.red,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                   ),
                 ),
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
+        ],
         asyncState.when(
+          skipLoadingOnRefresh: false,
           data: (data) {
             final asyncItems = itemsBuilder!(data);
 
@@ -115,7 +121,7 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
               return CustomSearchableDropDown(
                 items: asyncItems,
                 onChanged: onChanged,
-                initialValue: selectedItem,
+                initialValue: asyncItems.contains(selectedItem) ? selectedItem : null,
                 displayString: displayString,
                 searchableStrings: searchableStrings,
                 validator: validator,
@@ -127,7 +133,7 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
 
             return CustomDropDown(
               items: asyncItems,
-              selectedItem: selectedItem,
+              selectedItem: asyncItems.contains(selectedItem) ? selectedItem : null,
               selectedItems: selectedItems,
               displayString: displayString,
               onChanged: onChanged,
@@ -146,7 +152,7 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
               return CustomSearchableDropDown<T>(
                 items: const [],
                 onChanged: onChanged,
-                initialValue: selectedItem,
+                initialValue: null,
                 displayString: displayString,
                 hintText:
                     loadingHintText ?? "Loading ${title.toLowerCase()}...",
@@ -156,7 +162,7 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
 
             return CustomDropDown<T>(
               items: const [],
-              selectedItem: selectedItem,
+              selectedItem: null,
               onChanged: onChanged,
               hintText: loadingHintText ?? "Loading ${title.toLowerCase()}...",
               isMultiSelect: isMultiSelect,
@@ -168,7 +174,7 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
               return CustomSearchableDropDown<T>(
                 items: const [],
                 onChanged: onChanged,
-                initialValue: selectedItem,
+                initialValue: null,
                 displayString: displayString,
                 hintText: "Error loading ${title.toLowerCase()}",
                 searchableStrings: (_) => [],
@@ -177,7 +183,7 @@ class SmartCustomDropDownWithTitle<T extends Object, D> extends ConsumerWidget {
 
             return CustomDropDown<T>(
               items: const [],
-              selectedItem: selectedItem,
+              selectedItem: null,
               onChanged: onChanged,
               hintText: "Error loading ${title.toLowerCase()}",
               isMultiSelect: isMultiSelect,
@@ -247,13 +253,13 @@ class _CustomDropDownWithTitle<T extends Object> extends StatelessWidget {
                   text: ' *',
                   style: AppTextstyles.googleJakarta500Grey12.copyWith(
                     color: Colors.red,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                   ),
                 ),
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         if (enableSearch)
           CustomSearchableDropDown(
             items: items,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/models/sync_enum.dart';
 import 'package:tgpl_network/common/providers/last_sync_time_provider.dart';
 import 'package:tgpl_network/common/providers/sync_status_provider.dart';
@@ -24,11 +25,11 @@ class DataSyncView extends ConsumerWidget {
           subtitle: "Manage your offline data",
           showResyncButton: true,
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20.h),
 
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: RefreshIndicator(
               onRefresh: () async {
                 // ignore: unused_result
@@ -57,7 +58,7 @@ class DataSyncView extends ConsumerWidget {
                       );
                     },
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
 
                   Row(
                     children: [
@@ -72,7 +73,7 @@ class DataSyncView extends ConsumerWidget {
                           label: 'Pending Upload',
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      SizedBox(width: 16.w),
                       Expanded(
                         child: SyncStatsCard(
                           icon: Icons.cloud_done,
@@ -86,7 +87,7 @@ class DataSyncView extends ConsumerWidget {
                     ],
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
 
                   Consumer(
                     builder: (context, ref, child) {
@@ -113,7 +114,7 @@ class DataSyncView extends ConsumerWidget {
                     },
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
 
                   Consumer(
                     builder: (context, ref, child) {

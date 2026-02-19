@@ -12,6 +12,7 @@ class AppFormAssembler {
 
     return ApplicationFormModel(
       applicantName: step1Form.applicantName,
+      emailAddress: step1Form.email,
       contactPerson: step1Form.contactPerson,
       currentlyPresence: step1Form.currentlyPresence,
       contactNumber: step1Form.contactNumber,
@@ -26,5 +27,11 @@ class AppFormAssembler {
       googleLocation: step3Form.googleLocation,
       address: step3Form.address,
     );
+  }
+
+  static void clearForm(Ref ref) {
+    ref.read(step1FormControllerProvider.notifier).reset();
+    ref.read(step2FormControllerProvider.notifier).reset();
+    ref.read(step3FormControllerProvider.notifier).reset();
   }
 }
