@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/core/database/app_database.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/core/database/queries/select_queries.dart';
 import 'package:tgpl_network/features/dashboard/models/dashboard_response_model.dart';
@@ -6,6 +7,7 @@ import 'package:tgpl_network/features/dashboard/models/dashboard_response_model.
 abstract class DashboardDataSource {
   Future<DashboardResponseModel> fetchDashboardData();
   Future<String> getLastSyncTime();
+  Future<bool> validateApplicationId(String applicationId);
 }
 
 class DashboardDataSourceImpl implements DashboardDataSource {
@@ -37,6 +39,20 @@ class DashboardDataSourceImpl implements DashboardDataSource {
       return result.first['lastSyncTime'] as String;
     } else {
       return "Never";
+    }
+  }
+
+  @override
+  Future<bool> validateApplicationId(String applicationId) async {
+    final db = await _databaseHelper.database;
+    final result = await db.rawQuery(
+      'SELECT COUNT(*) as count FROM ${AppDatabase.applicationTable} WHERE applicationId = ?',
+      [applicationId],
+    );
+    if (result.isNotEmpty) {
+      return (result.first['count'] as int) > 0;
+    } else {
+      return false;
     }
   }
 }

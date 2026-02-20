@@ -7,6 +7,7 @@ import 'package:tgpl_network/common/providers/sync_status_provider.dart';
 import 'package:tgpl_network/common/widgets/error_widget.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
+import 'package:tgpl_network/features/dashboard/presentation/widgets/application_search_field.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_count_containers.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_greeting_text.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_header_profile.dart';
@@ -46,77 +47,84 @@ class _DashboardView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        ref.invalidate(dashboardAsyncControllerProvider);
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
       },
-      child: ListView(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(50.r),
-                bottomRight: Radius.circular(50.r),
+      child: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(dashboardAsyncControllerProvider);
+        },
+        child: ListView(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(50.r),
+                  bottomRight: Radius.circular(50.r),
+                ),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(height: 10.h),
+                  DashboardHeaderProfile(),
+                  SizedBox(height: 30.h),
+                  DashboardGreetingText(),
+                  SizedBox(height: 10.h),
+                  ApplicationSearchField(),
+                  SizedBox(height: 10.h),
+                  DashboardCountContainers(),
+                  SizedBox(height: 10.h),
+                ],
               ),
             ),
-            child: Column(
-              children: [
-                SizedBox(height: 10.h),
-                DashboardHeaderProfile(),
-                SizedBox(height: 30.h),
-                DashboardGreetingText(),
-                SizedBox(height: 10.h),
-                DashboardCountContainers(),
-                SizedBox(height: 10.h),
-              ],
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
+              child: Column(
+                children: [
+                  // RegionalManagersSection(),
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final state = ref.watch(getLastSyncTimeProvider);
+                      final syncState = ref.watch(syncStatusProvider);
+                      return state.when(
+                        data: (lastSyncTime) => SyncStatusCard(
+                          status: syncState,
+                          lastSyncTime: lastSyncTime,
+                          onPressActionButton: () {
+                            ref
+                                .read(homeShellControllerProvider.notifier)
+                                .getMasterDataAndSaveLocally(
+                                  forcefulSync:
+                                      syncState == SyncStatus.synchronized,
+                                );
+                          },
+                        ),
+                        loading: () => SyncStatusCard(
+                          status: syncState,
+                          lastSyncTime: "Loading...",
+                        ),
+                        error: (e, st) => SyncStatusCard(
+                          status: syncState,
+                          lastSyncTime: "Never",
+                          onPressActionButton: () {
+                            ref
+                                .read(homeShellControllerProvider.notifier)
+                                .getMasterDataAndSaveLocally();
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 20.h),
+                  DashboardModulesSection(),
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
-            child: Column(
-              children: [
-                // RegionalManagersSection(),
-                Consumer(
-                  builder: (context, ref, child) {
-                    final state = ref.watch(getLastSyncTimeProvider);
-                    final syncState = ref.watch(syncStatusProvider);
-                    return state.when(
-                      data: (lastSyncTime) => SyncStatusCard(
-                        status: syncState,
-                        lastSyncTime: lastSyncTime,
-                        onPressActionButton: () {
-                          ref
-                              .read(homeShellControllerProvider.notifier)
-                              .getMasterDataAndSaveLocally(
-                                forcefulSync:
-                                    syncState == SyncStatus.synchronized,
-                              );
-                        },
-                      ),
-                      loading: () => SyncStatusCard(
-                        status: syncState,
-                        lastSyncTime: "Loading...",
-                      ),
-                      error: (e, st) => SyncStatusCard(
-                        status: syncState,
-                        lastSyncTime: "Never",
-                        onPressActionButton: () {
-                          ref
-                              .read(homeShellControllerProvider.notifier)
-                              .getMasterDataAndSaveLocally();
-                        },
-                      ),
-                    );
-                  },
-                ),
-                SizedBox(height: 20.h),
-                DashboardModulesSection(),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

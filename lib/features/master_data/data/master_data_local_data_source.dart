@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tgpl_network/core/database/queries/select_queries.dart';
+import 'package:tgpl_network/features/application_form/models/site_status_model.dart';
 import 'package:tgpl_network/features/master_data/models/attachment_category_model.dart';
 import 'package:tgpl_network/features/master_data/models/tm_rm_model.dart';
 import 'package:tgpl_network/features/master_data/models/user_model.dart';
@@ -35,6 +36,7 @@ abstract class MasterDataLocalDataSource {
   Future<List<TmRmModel>> getRmData();
   Future<List<AttachmentCategoryModel>> getAttachmentCategories();
   Future<UserModel?> getUserInfo();
+  Future<List<SiteStatusModel>> getSiteStatuses();
   // Future<void> clearAllData();
 }
 
@@ -100,9 +102,14 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
       await _insertInChunks(
         txn,
         AppDatabase.attachmentCategoryTable,
-        data.attachmentCategories
-            .map((e) => e.toDatabaseMap())
-            .toList(),
+        data.attachmentCategories.map((e) => e.toDatabaseMap()).toList(),
+        chunkSize,
+      );
+
+      await _insertInChunks(
+        txn,
+        AppDatabase.siteStatusTable,
+        data.siteStatusList.map((e) => e.toDatabaseMap()).toList(),
         chunkSize,
       );
 
@@ -282,10 +289,22 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
   @override
   Future<List<AttachmentCategoryModel>> getAttachmentCategories() async {
     final db = await _databaseHelper.database;
-    final List<Map<String, dynamic>> maps =
-        await db.query(AppDatabase.attachmentCategoryTable);
+    final List<Map<String, dynamic>> maps = await db.query(
+      AppDatabase.attachmentCategoryTable,
+    );
     return maps
         .map((map) => AttachmentCategoryModel.fromDatabaseMap(map))
+        .toList();
+  }
+
+  @override
+  Future<List<SiteStatusModel>> getSiteStatuses() async {
+    final db = await _databaseHelper.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      AppDatabase.siteStatusTable,
+    );
+    return maps
+        .map((map) => SiteStatusModel.fromDatabaseMap(map))
         .toList();
   }
 }

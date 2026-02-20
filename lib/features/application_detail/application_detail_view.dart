@@ -69,9 +69,10 @@ class _ApplicationDetailViewState extends ConsumerState<ApplicationDetailView>
           CustomAppBar(
             title: state.when(
               data: (details) =>
-                  details.application.entryCode ?? "Application Details",
+                  details.application.entryCode ??
+                  "App ID - ${widget.applicationId}",
               loading: () => "Loading...",
-              error: (error, stack) => "Application Details",
+              error: (error, stack) => "App ID - ${widget.applicationId}",
             ),
             subtitle: "Application Details",
             showBackButton: true,
@@ -181,7 +182,7 @@ class _ApplicationDetailViewState extends ConsumerState<ApplicationDetailView>
     if (context.mounted) {
       showSnackBar(context, 'Syncing application data...');
     }
-    
+
     // Trigger sync
     await ref
         .read(applicationDetailAsyncControllerProvider(applicationId).notifier)

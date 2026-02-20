@@ -83,52 +83,36 @@ class DashboardApplicationsCounts {
 
   DashboardApplicationsCounts.fromJson(Map<String, dynamic> json)
       : inProcess = json['inProcessCount'] ?? 0,
-        hold = (json['holdByDealerCount'] ?? 0) + (json['holdByTgplCount'] ?? 0),
+        hold = json['holdCount'] ?? 0,
         inaugurated = json['inauguratedCount'] ?? 0,
-        rejected = (json['rejectedByDealerCount'] ?? 0) + (json['rejectedByTgplCount'] ?? 0),
-        siteScreening = (json['openApplicationsCount'] ?? 0) +
-            (json['surveyAndDealerProfileCount'] ?? 0) +
-            (json['trafficAndTradeCount'] ?? 0),
+        rejected = json['rejectedCount'] ?? 0,
+        siteScreening = json['siteScreeningCount'] ?? 0,
         openApplications = json['openApplicationsCount'] ?? 0,
         surveyAndDealerProfile = json['surveyAndDealerProfileCount'] ?? 0,
         trafficAndTrade = json['trafficAndTradeCount'] ?? 0,
-        feasibility = (json['feasibilityCount'] ?? 0 ) +
-            (json['negotiationsCount'] ?? 0) +
-            (json['feasibilityFinalizationCount'] ?? 0),
-        feasibilityFeasibility = json['feasibilityCount'] ?? 0,
+        feasibility = json['feasibilityCount'] ?? 0,
+        feasibilityFeasibility = json['feasibilityFeasibilityCount'] ?? 0,
         negotiations = json['negotiationsCount'] ?? 0,
         feasibilityFinalization = json['feasibilityFinalizationCount'] ?? 0,
-        approvals = (json['mouSignOffCount'] ?? 0) +
-            (json['joiningFeeCount'] ?? 0) +
-            (json['franchiseAgreementCount'] ?? 0),
+        approvals = json['approvalsCount'] ?? 0,
         mouSignOff = json['mouSignOffCount'] ?? 0,
         joiningFee = json['joiningFeeCount'] ?? 0,
         franchiseAgreement = json['franchiseAgreementCount'] ?? 0,
-        layouts = (json['governmentLayoutCount'] ?? 0) +
-            (json['issuanceOfDrawingsCount'] ?? 0) +
-            (json['topographyCount'] ?? 0) +
-            (json['drawingCount'] ?? 0) +
-            (json['capexCount'] ?? 0),
+        layouts = json['layoutCount'] ?? 0,
         governmentLayout = json['governmentLayoutCount'] ?? 0,
         issuanceOfDrawings = json['issuanceOfDrawingsCount'] ?? 0,
         topography = json['topographyCount'] ?? 0,
         drawing = json['drawingCount'] ?? 0,
         capex = json['capexCount'] ?? 0,
-        documents = (json['appliedInExplosiveCount'] ?? 0) +
-            (json['dcNocCount'] ?? 0) +
-            (json['leaseAgreementCount'] ?? 0),
+        documents = json['documentsCount'] ?? 0,
         appliedInExplosive = json['appliedInExplosiveCount'] ?? 0,
         dcNoc = json['dcNocCount'] ?? 0,
         leaseAgreement = json['leaseAgreementCount'] ?? 0,
         construction = json['constructionCount'] ?? 0,
-        commissioning = (json['hotoCount'] ?? 0) + (json['inauguratedCount'] ?? 0),
+        commissioning = json['commissioningCount'] ?? 0,
         hoto = json['hotoCount'] ?? 0,
-        hisotry = json['inauguratedCount'] ?? 0 +
-             json['holdByDealerCount'] ?? 0 +
-             json['holdByTgplCount'] ?? 0 +
-             json['rejectedByDealerCount'] ?? 0 +
-             json['rejectedByTgplCount'] ?? 0,
-        inauguration = json['inauguratedCount'] ?? 0,
+        hisotry = json['historyCount'] ?? 0,
+        inauguration = json['inaugurationCount'] ?? 0,
         holdByDealer = json['holdByDealerCount'] ?? 0,
         holdByTgpl = json['holdByTgplCount'] ?? 0,
         rejectedByDealer = json['rejectedByDealerCount'] ?? 0,

@@ -56,4 +56,9 @@ class DashboardAsyncController extends AsyncNotifier<DashboardResponseModel> {
     final dashboardDataSource = ref.read(dashboardDataSourceProvider);
     return await dashboardDataSource.fetchDashboardData();
   }
+
+  Future<bool> validateApplicationId(String applicationId) async {
+    final dashboardDataSource = ref.read(dashboardDataSourceProvider);
+    return await dashboardDataSource.validateApplicationId(applicationId);
+  }
 }

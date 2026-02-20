@@ -24,6 +24,54 @@ class ApplicationStatusContainer extends ConsumerWidget {
     required this.index,
   });
 
+  TextStyle getStatusTextStyle(bool status, bool isOverdue, bool isInProgress) {
+    if (status) {
+      return AppTextstyles.googleInter600black18.copyWith(
+        fontSize: 12.sp,
+        color: AppColors.nextStep2Color,
+      );
+    } else if (isOverdue) {
+      return AppTextstyles.googleInter600black18.copyWith(
+        fontSize: 12.sp,
+        color: AppColors.white,
+      );
+    } else if (isInProgress) {
+      return AppTextstyles.googleInter600black18.copyWith(
+        fontSize: 12.sp,
+        color: AppColors.nextStep1Color,
+      );
+    } else {
+      return AppTextstyles.googleInter600black18.copyWith(
+        fontSize: 12.sp,
+        color: AppColors.emailUsIconColor,
+      );
+    }
+  }
+
+  Color getStatusBackgroundColor(bool status, bool isOverdue, bool isInProgress) {
+    if (status) {
+      return AppColors.nextStep2Color.withOpacity(0.082);
+    } else if (isOverdue) {
+      return AppColors.emailUsIconColor;
+    } else if (isInProgress) {
+      return AppColors.nextStep1Color.withOpacity(0.1);
+    } else {
+      return AppColors.emailUsIconColor.withOpacity(0.082);
+    }
+  }
+
+  String getStatusText(bool status, bool isOverdue, bool isInProgress) {
+    if (status) {
+      return "Completed";
+    } else if (isOverdue) {
+      return "Overdue";
+    } else if (isInProgress) {
+      return "In Progress";
+    } else {
+      return "Pending";
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appStatuses = ref.read(appStatusesProvider(application));
@@ -150,23 +198,19 @@ class ApplicationStatusContainer extends ConsumerWidget {
                                 padding: EdgeInsets.symmetric(horizontal: 6.w),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(25.r),
-                                  color: appStatuses[i].status
-                                      ? AppColors.nextStep2Color.withOpacity(
-                                          0.082,
-                                        )
-                                      : AppColors.emailUsIconColor.withOpacity(
-                                          0.082,
-                                        ),
+                                  color: getStatusBackgroundColor(
+                                    appStatuses[i].status,
+                                    appStatuses[i].isOverdue,
+                                    appStatuses[i].isInProgress,
+                                  ),
                                 ),
                                 child: Text(
-                                  appStatuses[i].status ? "Yes" : "No",
-                                  style: AppTextstyles.googleInter600black18
-                                      .copyWith(
-                                        fontSize: 12.sp,
-                                        color: appStatuses[i].status
-                                            ? AppColors.nextStep2Color
-                                            : AppColors.emailUsIconColor,
-                                      ),
+                                  getStatusText(
+                                    appStatuses[i].status,
+                                    appStatuses[i].isOverdue,
+                                    appStatuses[i].isInProgress,
+                                  ),
+                                  style: getStatusTextStyle(appStatuses[i].status, appStatuses[i].isOverdue, appStatuses[i].isInProgress),
                                 ),
                               ),
                             ],

@@ -25,8 +25,6 @@ import 'package:tgpl_network/features/master_data/providers/tm_rm_names_provider
 import 'package:tgpl_network/features/master_data/providers/trade_area_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/yes_no_na_values_provider.dart';
 import 'package:tgpl_network/features/module_applications/presentation/module_applications_controller.dart';
-import 'package:tgpl_network/features/application_form/data/app_form_dropdowns_local_data_source.dart';
-import 'package:tgpl_network/features/application_form/data/app_form_dropdowns_remote_data_source.dart';
 import 'package:tgpl_network/features/survey_form/presentation/survey_form_controller.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/traffic_trade_form_controller.dart';
 import 'package:tgpl_network/utils/internet_connectivity.dart';
@@ -259,16 +257,17 @@ class HomeShellController extends AsyncNotifier<void> {
         .read(masterDataRemoteDataSourceProvider)
         .getMasterDataFromApi(username: username);
 
-    final dropdownValues = await ref
-        .read(appFormDropdownsRemoteDataSourceProvider)
-        .fetchAppFormDropdownValues();
+    // Now Site Status list is part of master data, so no need to fetch separately.
+    // final dropdownValues = await ref
+    //     .read(appFormDropdownsRemoteDataSourceProvider)
+    //     .fetchAppFormDropdownValues();
 
     ref.read(snackbarMessageProvider.notifier).state =
         'Data fetched successfully. Saving locally...';
 
-    await ref
-        .read(appFormDropdownsLocalDataSourceProvider)
-        .saveSiteStatuses(dropdownValues.siteStatuses);
+    // await ref
+    //     .read(appFormDropdownsLocalDataSourceProvider)
+    //     .saveSiteStatuses(dropdownValues.siteStatuses);
 
     await ref
         .read(masterDataLocalDataSourceProvider)
