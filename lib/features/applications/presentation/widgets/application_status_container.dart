@@ -6,6 +6,7 @@ import 'package:tgpl_network/common/widgets/custom_button.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_images.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
+import 'package:tgpl_network/features/applications/models/application_status.dart';
 import 'package:tgpl_network/features/applications/presentation/application_controller.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
 import 'package:tgpl_network/routes/app_router.dart';
@@ -24,51 +25,28 @@ class ApplicationStatusContainer extends ConsumerWidget {
     required this.index,
   });
 
-  TextStyle getStatusTextStyle(bool status, bool isOverdue, bool isInProgress) {
-    if (status) {
-      return AppTextstyles.googleInter600black18.copyWith(
-        fontSize: 12.sp,
-        color: AppColors.nextStep2Color,
-      );
-    } else if (isOverdue) {
-      return AppTextstyles.googleInter600black18.copyWith(
-        fontSize: 12.sp,
-        color: AppColors.white,
-      );
-    } else if (isInProgress) {
-      return AppTextstyles.googleInter600black18.copyWith(
-        fontSize: 12.sp,
-        color: AppColors.nextStep1Color,
-      );
-    } else {
-      return AppTextstyles.googleInter600black18.copyWith(
-        fontSize: 12.sp,
-        color: AppColors.emailUsIconColor,
-      );
-    }
-  }
-
-  Color getStatusBackgroundColor(bool status, bool isOverdue, bool isInProgress) {
-    if (status) {
-      return AppColors.nextStep2Color.withOpacity(0.082);
-    } else if (isOverdue) {
-      return AppColors.emailUsIconColor;
-    } else if (isInProgress) {
-      return AppColors.nextStep1Color.withOpacity(0.1);
-    } else {
-      return AppColors.emailUsIconColor.withOpacity(0.082);
-    }
-  }
-
-  String getStatusText(bool status, bool isOverdue, bool isInProgress) {
-    if (status) {
-      return "Completed";
-    } else if (isOverdue) {
-      return "Overdue";
-    } else if (isInProgress) {
-      return "In Progress";
-    } else {
-      return "Pending";
+  TextStyle getStatusTextStyle(ApplicationStatusType status) {
+    switch (status) {
+      case ApplicationStatusType.completed:
+        return AppTextstyles.googleInter600black18.copyWith(
+          fontSize: 12.sp,
+          color: AppColors.nextStep2Color,
+        );
+      case ApplicationStatusType.overdue:
+        return AppTextstyles.googleInter600black18.copyWith(
+          fontSize: 12.sp,
+          color: AppColors.emailUsIconColor,
+        );
+      case ApplicationStatusType.inProgress:
+        return AppTextstyles.googleInter600black18.copyWith(
+          fontSize: 12.sp,
+          color: AppColors.nextStep1Color,
+        );
+      case ApplicationStatusType.notStarted:
+        return AppTextstyles.googleInter600black18.copyWith(
+          fontSize: 12.sp,
+          color: AppColors.inactiveStatusColor,
+        );
     }
   }
 
@@ -127,7 +105,9 @@ class ApplicationStatusContainer extends ConsumerWidget {
           ),
           Text(
             application.applicantName.toString(),
-            style: AppTextstyles.googleInter700black28.copyWith(fontSize: 20.sp),
+            style: AppTextstyles.googleInter700black28.copyWith(
+              fontSize: 20.sp,
+            ),
           ),
           Row(
             children: [
@@ -149,7 +129,9 @@ class ApplicationStatusContainer extends ConsumerWidget {
               ),
               SizedBox(width: 5.w),
               Text(
-                application.applicationReceiveDate.toString().formatTodMMMyyyy(),
+                application.applicationReceiveDate
+                    .toString()
+                    .formatTodMMMyyyy(),
                 style: AppTextstyles.googleInter400Grey14.copyWith(
                   fontSize: 13.sp,
                 ),
@@ -164,9 +146,8 @@ class ApplicationStatusContainer extends ConsumerWidget {
                   child: Container(
                     margin: EdgeInsets.only(right: 5.w),
                     decoration: BoxDecoration(
-                      color: appStatuses[i].status
-                          ? AppColors.nextStep2Color
-                          : AppColors.inactiveStatusColor,
+                      color: appStatuses[i]
+                          .getStatusBackgroundColor(1),
                       borderRadius: BorderRadius.circular(30.r),
                     ),
                     height: 6,
@@ -198,19 +179,14 @@ class ApplicationStatusContainer extends ConsumerWidget {
                                 padding: EdgeInsets.symmetric(horizontal: 6.w),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(25.r),
-                                  color: getStatusBackgroundColor(
-                                    appStatuses[i].status,
-                                    appStatuses[i].isOverdue,
-                                    appStatuses[i].isInProgress,
-                                  ),
+                                  color: appStatuses[i]
+                                      .getStatusBackgroundColor(),
                                 ),
                                 child: Text(
-                                  getStatusText(
+                                  appStatuses[i].getStatusText(),
+                                  style: getStatusTextStyle(
                                     appStatuses[i].status,
-                                    appStatuses[i].isOverdue,
-                                    appStatuses[i].isInProgress,
                                   ),
-                                  style: getStatusTextStyle(appStatuses[i].status, appStatuses[i].isOverdue, appStatuses[i].isInProgress),
                                 ),
                               ),
                             ],

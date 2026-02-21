@@ -6,6 +6,7 @@ import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/application_detail/application_detail_controller.dart';
 import 'package:tgpl_network/features/application_detail/data/application_stage_model.dart';
 import 'package:tgpl_network/features/application_detail/widgets/application_stage_shimmer_view.dart';
+import 'package:tgpl_network/features/applications/models/application_status.dart';
 
 class ApplicationStagesView extends ConsumerWidget {
   final String applicationId;
@@ -21,7 +22,9 @@ class ApplicationStagesView extends ConsumerWidget {
     if (progressSummary == null) {
       return const ApplicationStagesShimmer();
     }
-
+    final appStatuses = ref
+        .read(applicationDetailAsyncControllerProvider(applicationId).notifier)
+        .appStatuses;
     return SingleChildScrollView(
       padding: EdgeInsets.all(20.w),
       child: Column(
@@ -29,16 +32,19 @@ class ApplicationStagesView extends ConsumerWidget {
         children: [
           // Progress Summary Card
           _buildProgressSummaryCard(
-            completedStages: progressSummary.completedStages,
+            completedStages: progressSummary.completedCount,
             totalStages: progressSummary.totalStages,
             percentage: progressSummary.completionPercentage,
+            appStatuses: appStatuses,
           ),
           SizedBox(height: 20.h),
 
           // Filter Tabs
           _buildFilterTabs(
-            pendingCount: progressSummary.pendingStages,
-            completedCount: progressSummary.completedStages,
+            notStartedCount: progressSummary.notStartedCount,
+            completedCount: progressSummary.completedCount,
+            inProgressCount: progressSummary.inProgressCount,
+            overdueCount: progressSummary.overdueCount,
           ),
           SizedBox(height: 20.h),
 
@@ -53,6 +59,7 @@ class ApplicationStagesView extends ConsumerWidget {
     required int completedStages,
     required int totalStages,
     required double percentage,
+    required List<ApplicationStatus> appStatuses,
   }) {
     return Container(
       padding: EdgeInsets.all(20.w),
@@ -75,7 +82,7 @@ class ApplicationStagesView extends ConsumerWidget {
                         '$completedStages',
                         style: AppTextstyles.neutra700black224.copyWith(
                           fontSize: 36.sp,
-                          color: AppColors.primary,
+                          color: AppColors.nextStep2Color,
                         ),
                       ),
                       Text(
@@ -101,7 +108,7 @@ class ApplicationStagesView extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '$percentage%',
+                    '${percentage.toStringAsFixed(0)}%',
                     style: AppTextstyles.neutra700black224.copyWith(
                       fontSize: 28.sp,
                     ),
@@ -119,16 +126,31 @@ class ApplicationStagesView extends ConsumerWidget {
             ],
           ),
           SizedBox(height: 16.h),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10.r),
-            child: LinearProgressIndicator(
-              value: percentage / 100,
-              minHeight: 8.h,
-              backgroundColor: const Color(0xFF2A3150),
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.primary,
-              ),
-            ),
+          // ClipRRect(
+          //   borderRadius: BorderRadius.circular(10.r),
+          //   child: LinearProgressIndicator(
+          //     value: percentage / 100,
+          //     minHeight: 8.h,
+          //     backgroundColor: const Color(0xFF2A3150),
+          //     valueColor: const AlwaysStoppedAnimation<Color>(
+          //       AppColors.primary,
+          //     ),
+          //   ),
+          // ),
+          Row(
+            children: [
+              for (int i = 0; i < appStatuses.length; i++)
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(right: 5.w),
+                    decoration: BoxDecoration(
+                      color: appStatuses[i].getStatusBackgroundColor(1),
+                      borderRadius: BorderRadius.circular(30.r),
+                    ),
+                    height: 6,
+                  ),
+                ),
+            ],
           ),
         ],
       ),
@@ -136,12 +158,16 @@ class ApplicationStagesView extends ConsumerWidget {
   }
 
   Widget _buildFilterTabs({
-    required int pendingCount,
+    required int notStartedCount,
     required int completedCount,
+    required int inProgressCount,
+    required int overdueCount,
   }) {
     final filters = [
       'All Tasks',
-      'Pending ($pendingCount)',
+      'Overdue ($overdueCount)',
+      'In Progress ($inProgressCount)',
+      'Not Started ($notStartedCount)',
       'Completed ($completedCount)',
     ];
 
@@ -205,10 +231,14 @@ class ApplicationStagesView extends ConsumerWidget {
         );
         // Filter stages based on selected filter
         List<ApplicationStageModel> filteredStages = stages;
-        if (selectedFilter.startsWith('Pending')) {
-          filteredStages = stages.where((s) => s.isPending).toList();
+        if (selectedFilter.startsWith('Not Started')) {
+          filteredStages = stages.where((s) => s.status.status == ApplicationStatusType.notStarted).toList();
+        } else if (selectedFilter.startsWith('In Progress')) {
+          filteredStages = stages.where((s) => s.status.status == ApplicationStatusType.inProgress).toList();
+        }  else if (selectedFilter.startsWith('Overdue')) {
+          filteredStages = stages.where((s) => s.status.status == ApplicationStatusType.overdue).toList();
         } else if (selectedFilter.startsWith('Completed')) {
-          filteredStages = stages.where((s) => s.isCompleted).toList();
+          filteredStages = stages.where((s) => s.status.status == ApplicationStatusType.completed).toList();
         }
         return GridView.builder(
           shrinkWrap: true,
@@ -229,7 +259,6 @@ class ApplicationStagesView extends ConsumerWidget {
   }
 
   Widget _buildStageCard(ApplicationStageModel stage) {
-    final isCompleted = stage.isCompleted;
 
     return Container(
       padding: EdgeInsets.all(16.w),
@@ -237,9 +266,7 @@ class ApplicationStagesView extends ConsumerWidget {
         color: AppColors.white,
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: isCompleted
-              ? AppColors.primary.withOpacity(0.3)
-              : Colors.transparent,
+          color: stage.status.getStatusBackgroundColor(1),
           width: 1,
         ),
       ),
@@ -253,22 +280,18 @@ class ApplicationStagesView extends ConsumerWidget {
                 width: 8.w,
                 height: 8.h,
                 decoration: BoxDecoration(
-                  color: isCompleted
-                      ? AppColors.primary
-                      : AppColors.inactiveColor,
+                  color: stage.status.getStatusBackgroundColor(1),
                   shape: BoxShape.circle,
                 ),
               ),
               SizedBox(width: 8.w),
               Expanded(
                 child: Text(
-                  isCompleted ? 'COMPLETED' : 'PENDING',
+                  stage.status.getStatusText(),
                   style: AppTextstyles.googleInter600black18.copyWith(
                     fontSize: 10.sp,
                     letterSpacing: 0.5,
-                    color: isCompleted
-                        ? AppColors.primary
-                        : AppColors.inactiveColor,
+                    color: stage.status.getStatusBackgroundColor(1),
                   ),
                 ),
               ),
@@ -324,9 +347,6 @@ class ApplicationStagesView extends ConsumerWidget {
               Text(
                 stage.completedDate ?? '-',
                 style: AppTextstyles.googleInter600black18.copyWith(
-                  color: isCompleted
-                      ? AppColors.primary
-                      : AppColors.inactiveColor,
                   fontSize: 11.sp,
                 ),
               ),

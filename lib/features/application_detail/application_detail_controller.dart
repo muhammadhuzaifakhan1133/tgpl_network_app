@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/features/application_detail/data/application_detail_data_source.dart';
 import 'package:tgpl_network/features/application_detail/data/application_stage_model.dart';
+import 'package:tgpl_network/features/applications/models/application_status.dart';
 import 'package:tgpl_network/features/applications/presentation/application_controller.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
 
@@ -196,14 +197,17 @@ class ApplicationDetailAsyncController
   final String applicationId;
   ApplicationDetailAsyncController({required this.applicationId});
 
+  List<ApplicationStatus>  appStatuses = [];
+
   @override
   Future<ApplicationDetailValues> build() async {
     final applicationDataSource = ref.read(applicationDetailDataSourceProvider);
     final application = await applicationDataSource.getApplicationDetail(
       applicationId,
     );
+    appStatuses = ref.read(appStatusesProvider(application));
     final progressSummary = ApplicationProgressSummary.fromApplicationStatuses(
-      ref.read(appStatusesProvider(application)),
+      appStatuses,
     );
     return ApplicationDetailValues(
       application: application,

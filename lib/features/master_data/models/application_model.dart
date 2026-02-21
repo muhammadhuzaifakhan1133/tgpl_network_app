@@ -930,29 +930,21 @@ class ApplicationModel {
         whereArgs.add(filters.selectedPriority);
       }
 
-      if (filters.selectedStatusId != null) {
-        if (filters.selectedStatusId!.split(",").length > 1) {
-          final statusIds = filters.selectedStatusId!.split(",");
-          String whereCond = '$alias.statusId IN (';
-          for (var i = 0; i < statusIds.length; i++) {
-            int? statusId = int.tryParse(statusIds[i].trim());
-            if (statusId != null) {
-              whereCond += '?';
-              if (i < statusIds.length - 1) {
-                whereCond += ', ';
-              }
-              whereArgs.add(statusId);
-            }
+      if (filters.selectedStatus != null &&
+          filters.selectedStatus!.statusIds.isNotEmpty) {
+        // if (filters.selectedStatusId!.split(",").length > 1) {
+        final statusIds = filters.selectedStatus!.statusIds;
+        String whereCond = '$alias.statusId IN (';
+        for (var i = 0; i < statusIds.length; i++) {
+          int statusId = statusIds[i];
+          whereCond += '?';
+          if (i < statusIds.length - 1) {
+            whereCond += ', ';
           }
-          whereCond += ')';
-          whereConditions.add(whereCond);
-        } else {
-          int? statusId = int.tryParse(filters.selectedStatusId!);
-          if (statusId != null) {
-            whereConditions.add('$alias.statusId = ?');
-            whereArgs.add(statusId);
-          }
+          whereArgs.add(statusId);
         }
+        whereCond += ')';
+        whereConditions.add(whereCond);
       }
 
       if (!filters.siteName.isNullOrEmpty) {
@@ -989,7 +981,7 @@ class ApplicationModel {
       if (!filters.district.isNullOrEmpty) {
         whereConditions.add('$alias.district LIKE ?');
         whereArgs.add('%${filters.district}%');
-      }      
+      }
 
       if (!filters.address.isNullOrEmpty) {
         whereConditions.add('$alias.siteAddress LIKE ?');
@@ -1125,7 +1117,10 @@ class ApplicationModel {
     return (whereConditions, whereArgs);
   }
 
-  static (String?, String?) getDueDateAndDoneDate(String submoduleName, ApplicationModel application) {
+  static (String?, String?) getDueDateAndDoneDate(
+    String submoduleName,
+    ApplicationModel application,
+  ) {
     String? dueDate;
     String? doneDate;
 
@@ -1208,5 +1203,5 @@ class ApplicationModel {
         break;
     }
     return (dueDate, doneDate);
-  } 
+  }
 }

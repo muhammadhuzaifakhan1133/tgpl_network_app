@@ -69,6 +69,8 @@ class _ModuleApplicationsViewState
               },
             ),
             SizedBox(height: 15.h),
+            _filterAndSortRow(),
+            SizedBox(height: 15.h),
             Expanded(
               child: Consumer(
                 builder: (context, ref, child) {
@@ -142,6 +144,18 @@ class _ModuleApplicationsViewState
         ),
       ),
     );
+  }
+
+  Widget _filterAndSortRow() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          
+        ],
+      ),
+    );    
   }
 
   CustomAppBar _moduleApplicationCustomBar({

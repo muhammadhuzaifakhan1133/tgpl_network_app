@@ -92,10 +92,9 @@ class HomeShellController extends AsyncNotifier<void> {
       state = const AsyncValue.data(null);
       // Sync in background without blocking (if necessary)
       _syncInBackground();
-      return;
+    } else {
+      await _syncDataIfInternetAvailable();
     }
-
-    await _syncDataIfInternetAvailable();
   }
 
   void _listenToConnectivityChanges() {
@@ -107,12 +106,13 @@ class HomeShellController extends AsyncNotifier<void> {
         isInitialCheck = false;
         return;
       }
-      if (status == InternetStatus.connected) {
-        // Internet is back online
-        await getMasterDataAndSaveLocally();
-      } else {
-        // Internet is offline
-        ref.read(syncStatusProvider.notifier).state = SyncStatus.offline;
+      switch (status) {
+        case InternetStatus.connected:
+          await getMasterDataAndSaveLocally();
+          break;
+        case InternetStatus.disconnected:
+          ref.read(syncStatusProvider.notifier).state = SyncStatus.offline;
+          break;
       }
     });
   }
@@ -181,7 +181,7 @@ class HomeShellController extends AsyncNotifier<void> {
       if (isPendingFormsExist || shouldSyncMasterData) {
         ref.read(syncStatusProvider.notifier).state = SyncStatus.syncing;
       }
-      
+
       if (isPendingFormsExist) {
         await _syncPendingForms();
       }
