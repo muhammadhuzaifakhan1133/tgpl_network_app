@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:tgpl_network/common/models/logical_operator_enum.dart';
 import 'package:tgpl_network/core/database/queries/select_queries.dart';
 import 'package:tgpl_network/features/application_form/models/site_status_model.dart';
 import 'package:tgpl_network/features/master_data/models/attachment_category_model.dart';
@@ -171,11 +172,11 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
     pageSize ??= ApplicationModel.pageSize;
     final db = await _databaseHelper.database;
 
-    var whereConditions = <String>[];
+    var whereConditions = "";
     var whereArgs = <dynamic>[];
 
     if (filters != null) {
-      final whereData = ApplicationModel.getWhereClauseAndArgs(filters);
+      final whereData = ApplicationModel.getWhereClauseAndArgs(filters, LogicalOperator.and);
       whereConditions = whereData.$1;
       whereArgs = whereData.$2;
     }

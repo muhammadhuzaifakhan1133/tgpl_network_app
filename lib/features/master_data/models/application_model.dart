@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:tgpl_network/common/models/logical_operator_enum.dart';
 import 'package:tgpl_network/common/models/sort_order_direction_enum.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_state.dart';
 import 'package:tgpl_network/common/models/yes_no_enum_with_extension.dart';
@@ -913,8 +914,9 @@ class ApplicationModel {
     };
   }
 
-  static (List<String>, List<dynamic>) getWhereClauseAndArgs(
+  static (String, List<dynamic>) getWhereClauseAndArgs(
     FilterSelectionState filters,
+    [LogicalOperator operator = LogicalOperator.or]
   ) {
     final whereConditions = <String>[];
     final whereArgs = <dynamic>[];
@@ -1114,7 +1116,7 @@ class ApplicationModel {
     }
     debugPrint('Where Conditions: $whereConditions');
     debugPrint('Where Args: $whereArgs');
-    return (whereConditions, whereArgs);
+    return (whereConditions.join(' ${operator.value} '), whereArgs);
   }
 
   static (String?, String?) getDueDateAndDoneDate(

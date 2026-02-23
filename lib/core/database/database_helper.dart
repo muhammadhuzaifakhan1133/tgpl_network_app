@@ -87,6 +87,7 @@ class DatabaseHelper {
     AppDatabase.tmTable,
     AppDatabase.userInfoTable,
     AppDatabase.attachmentCategoryTable,
+    AppDatabase.siteStatusTable,
   ];
 
   Future<void> clearAllTables() async {

@@ -23,6 +23,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.nextStep1Color,
           moduleIcon: AppImages.locationIconSvg,
           dbCondition: ModulesDbConditions.siteScreeningOpenApplications,
+          dueDateDbColumnName: "siteSurveyDealerProfileDueDate",
         ),
         SubModuleModel(
           title: "Survey & Dealer Profile",
@@ -31,6 +32,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.nextStep1Color,
           moduleIcon: AppImages.locationIconSvg,
           dbCondition: ModulesDbConditions.siteScreeningSurveyAndDealerProfile,
+          dueDateDbColumnName: "siteSurveyDealerProfileDueDate",
         ),
         SubModuleModel(
           title: "Traffic & Trade",
@@ -39,6 +41,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.nextStep1Color,
           moduleIcon: AppImages.locationIconSvg,
           dbCondition: ModulesDbConditions.siteScreeningTrafficAndTrade,
+          dueDateDbColumnName: "trafficTradeDueDate",
         ),
       ],
     ),
@@ -55,6 +58,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.nextStep2Color,
           moduleIcon: AppImages.feasibilityIconSvg,
           dbCondition: ModulesDbConditions.feasibilityFeasibility,
+          dueDateDbColumnName: "feasibilityDueDate",
         ),
         SubModuleModel(
           title: "Negotiations",
@@ -63,6 +67,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.nextStep2Color,
           moduleIcon: AppImages.feasibilityIconSvg,
           dbCondition: ModulesDbConditions.feasibilityNegotiations,
+          dueDateDbColumnName: "negotiationDueDate",
         ),
         SubModuleModel(
           title: "Feasibility Finalizations",
@@ -71,6 +76,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.nextStep2Color,
           moduleIcon: AppImages.feasibilityIconSvg,
           dbCondition: ModulesDbConditions.feasibilityFeasibilityFinalizations,
+          dueDateDbColumnName: "feasibilityfinalizationDueDate",
         ),
       ],
     ),
@@ -87,6 +93,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.inProcessCountColor,
           moduleIcon: AppImages.inauguratedIconSvg,
           dbCondition: ModulesDbConditions.approvalsMouSignOff,
+          dueDateDbColumnName: "mouSignOFFDueDate",
         ),
         SubModuleModel(
           title: "Joining Fee",
@@ -95,6 +102,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.inProcessCountColor,
           moduleIcon: AppImages.inauguratedIconSvg,
           dbCondition: ModulesDbConditions.approvalsJoiningFee,
+          dueDateDbColumnName: "joiningFeeDueDate",
         ),
         SubModuleModel(
           title: "Franchise Agreement",
@@ -103,6 +111,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.inProcessCountColor,
           moduleIcon: AppImages.inauguratedIconSvg,
           dbCondition: ModulesDbConditions.approvalsFranchiseAgreement,
+          dueDateDbColumnName: "franchiseAgreementDueDate",
         ),
       ],
     ),
@@ -119,6 +128,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.emailUsIconColor,
           moduleIcon: AppImages.layoutIconSvg,
           dbCondition: ModulesDbConditions.layoutsGovernmentLayout,
+          dueDateDbColumnName: "explosiveLayoutDueDate",
         ),
         SubModuleModel(
           title: "Issuance of Drawings",
@@ -127,6 +137,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.emailUsIconColor,
           moduleIcon: AppImages.layoutIconSvg,
           dbCondition: ModulesDbConditions.layoutsIssuanceOfDrawings,
+          dueDateDbColumnName: "issuanceofDrawingsDueDate",
         ),
         SubModuleModel(
           title: "Topography",
@@ -135,6 +146,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.emailUsIconColor,
           moduleIcon: AppImages.layoutIconSvg,
           dbCondition: ModulesDbConditions.layoutsTopography,
+          dueDateDbColumnName: "topographyDueDate",
         ),
         SubModuleModel(
           title: "Drawings",
@@ -143,6 +155,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.emailUsIconColor,
           moduleIcon: AppImages.layoutIconSvg,
           dbCondition: ModulesDbConditions.layoutsDrawing,
+          dueDateDbColumnName: "drawingsDueDate",
         ),
         SubModuleModel(
           title: "Capex",
@@ -151,6 +164,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.emailUsIconColor,
           moduleIcon: AppImages.layoutIconSvg,
           dbCondition: ModulesDbConditions.layoutsCapex,
+          dueDateDbColumnName: "capaxDueDate",
         ),
       ],
     ),
@@ -167,6 +181,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.nextStep1Color,
           moduleIcon: AppImages.applyNewStationIconSvg,
           dbCondition: ModulesDbConditions.documentsAppliedInExplosive,
+          dueDateDbColumnName: "appliedInExplosiveDueDate",
         ),
         SubModuleModel(
           title: "DC NOC",
@@ -175,6 +190,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.nextStep1Color,
           moduleIcon: AppImages.applyNewStationIconSvg,
           dbCondition: ModulesDbConditions.documentsDcNoc,
+          dueDateDbColumnName: "dcnocDueDate",
         ),
         SubModuleModel(
           title: "Lease Agreement",
@@ -183,6 +199,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.nextStep1Color,
           moduleIcon: AppImages.applyNewStationIconSvg,
           dbCondition: ModulesDbConditions.documentsLeaseAgreement,
+          dueDateDbColumnName: "leaseAgreementDueDate",
         ),
       ],
     ),
@@ -199,6 +216,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.nextStep2Color,
           moduleIcon: AppImages.constructionIconSvg,
           dbCondition: ModulesDbConditions.construction,
+          dueDateDbColumnName: "constructionDueDate",
         ),
       ],
     ),
@@ -215,6 +233,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.commissioningColor,
           moduleIcon: AppImages.commissionIconSvg,
           dbCondition: ModulesDbConditions.commissioningHoto,
+          dueDateDbColumnName: "hotoDueDate",
         ),
         SubModuleModel(
           title: "Inaugurations",
@@ -223,6 +242,7 @@ final modulesProvider = Provider<List<ModuleModel>>((ref) {
           moduleColor: AppColors.commissioningColor,
           moduleIcon: AppImages.commissionIconSvg,
           dbCondition: ModulesDbConditions.commissioningInaugrations,
+          dueDateDbColumnName: "inaugurationDueDate",
         ),
       ],
     ),

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
 import 'package:tgpl_network/common/widgets/empty_applications_view.dart';
 import 'package:tgpl_network/common/widgets/error_widget.dart';
+import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/module_applications/presentation/module_applications_controller.dart';
@@ -28,7 +29,7 @@ class _ModuleApplicationsViewState
   @override
   void initState() {
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
+      if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent) {
         ref
             .read(
@@ -69,8 +70,6 @@ class _ModuleApplicationsViewState
               },
             ),
             SizedBox(height: 15.h),
-            _filterAndSortRow(),
-            SizedBox(height: 15.h),
             Expanded(
               child: Consumer(
                 builder: (context, ref, child) {
@@ -81,57 +80,80 @@ class _ModuleApplicationsViewState
                   return state.when(
                     skipLoadingOnRefresh: false,
                     data: (data) {
-                      if (data.applications.isEmpty) {
-                        return ApplicationsEmptyState(
-                          reason: data.searchQuery?.isNotEmpty ?? false
-                              ? EmptyApplicationsReason.noSearchResults
-                              : EmptyApplicationsReason.noData,
-                          onClearFilters: () {
-                            _searchController.clear();
-                            final controller = ref.read(
-                              moduleApplicationsAsyncControllerProvider(
-                                widget.subModule,
-                              ).notifier,
-                            );
-                            controller.clearSearch();
-                          },
-                        );
-                      }
-                      return RefreshIndicator(
-                        onRefresh: () async {
-                          ref.invalidate(
-                            moduleApplicationsAsyncControllerProvider(
-                              widget.subModule,
+                      return Column(
+                        children: [
+                          _filterAndSortRow(
+                            overdueCount: data.totalOverDueCount,
+                            inProgressCount: data.totalInProgressCount,
+                            showFilters: ref.read(moduleApplicationsAsyncControllerProvider(widget.subModule).notifier).showFilter,
+                          ),
+                          SizedBox(height: 12.h),
+                          if (data.applyingFilter)
+                            ModuleApplicationsShimmer(),
+                          if (data.applications.isEmpty &&
+                              !data.applyingFilter)
+                            Expanded(
+                              child: ApplicationsEmptyState(
+                                reason: data.searchQuery?.isNotEmpty ?? false
+                                    ? EmptyApplicationsReason.noSearchResults
+                                    : EmptyApplicationsReason.noData,
+                                onClearFilters: () {
+                                  _searchController.clear();
+                                  final controller = ref.read(
+                                    moduleApplicationsAsyncControllerProvider(
+                                      widget.subModule,
+                                    ).notifier,
+                                  );
+                                  controller.clearSearch();
+                                },
+                              ),
                             ),
-                          );
-                        },
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          itemCount:
-                              data.applications.length +
-                              (data.hasMoreData ? 1 : 0),
-                          padding: EdgeInsets.symmetric(horizontal: 20.w),
-                          itemBuilder: (context, index) {
-                            if (index == data.applications.length) {
-                              return const ModuleApplicationShimmerCard();
-                            }
-                            return ModuleApplicationContainer(
-                              application: data.applications[index],
-                              submoduleName: widget.subModule.title,
-                              onSyncApplication: (String applicationId) async {
-                                if (await InternetConnectivity.hasInternet()) {
-                                  ref
-                                      .read(
-                                        moduleApplicationsAsyncControllerProvider(
-                                          widget.subModule,
-                                        ).notifier,
-                                      )
-                                      .syncApplication(applicationId);
-                                }
-                              },
-                            );
-                          },
-                        ),
+                          if (data.applications.isNotEmpty &&
+                              !data.applyingFilter)
+                            Expanded(
+                              child: RefreshIndicator(
+                                onRefresh: () async {
+                                  ref.invalidate(
+                                    moduleApplicationsAsyncControllerProvider(
+                                      widget.subModule,
+                                    ),
+                                  );
+                                },
+                                child: ListView.builder(
+                                  controller: _scrollController,
+                                  itemCount:
+                                      data.applications.length +
+                                      (data.hasMoreData ? 1 : 0),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 20.w,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    if (index == data.applications.length) {
+                                      return const ModuleApplicationShimmerCard();
+                                    }
+                                    return ModuleApplicationContainer(
+                                      application: data.applications[index],
+                                      submoduleName: widget.subModule.title,
+                                      onSyncApplication:
+                                          (String applicationId) async {
+                                            if (await InternetConnectivity.hasInternet()) {
+                                              ref
+                                                  .read(
+                                                    moduleApplicationsAsyncControllerProvider(
+                                                      widget.subModule,
+                                                    ).notifier,
+                                                  )
+                                                  .syncApplication(
+                                                    applicationId,
+                                                  );
+                                            }
+                                          },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                        ],
                       );
                     },
                     error: (e, s) => errorWidget(e.toString()),
@@ -146,16 +168,77 @@ class _ModuleApplicationsViewState
     );
   }
 
-  Widget _filterAndSortRow() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          
-        ],
-      ),
-    );    
+  Widget _filterAndSortRow({
+    required int overdueCount,
+    required int inProgressCount,
+    bool showFilters = true,
+  }) {
+    final filters = [
+      'All',
+      'Overdue ($overdueCount)',
+      'In Progress ($inProgressCount)',
+    ];
+    return showFilters
+        ? Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: Consumer(
+              builder: (context, ref, _) {
+                final selectedFilter = ref.watch(
+                  selectedTabProviderForModuleApplications,
+                );
+                return SizedBox(
+                  height: 36.h,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: filters.length,
+                    separatorBuilder: (context, index) => SizedBox(width: 12.w),
+                    itemBuilder: (context, index) {
+                      final filter = filters[index];
+                      final isSelected = selectedFilter == filter;
+
+                      return GestureDetector(
+                        onTap: () {
+                          ref
+                              .read(
+                                moduleApplicationsAsyncControllerProvider(
+                                  widget.subModule,
+                                ).notifier,
+                              )
+                              .onSelectedTabChange(filter);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20.w,
+                            vertical: 8.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? AppColors.primary
+                                : AppColors.white,
+                            borderRadius: BorderRadius.circular(20.r),
+                          ),
+                          child: Center(
+                            child: Text(
+                              filter,
+                              style: isSelected
+                                  ? AppTextstyles.neutra700black224.copyWith(
+                                      fontSize: 13.sp,
+                                      color: AppColors.white,
+                                    )
+                                  : AppTextstyles.neutra700black224.copyWith(
+                                      fontSize: 13.sp,
+                                    ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+          )
+        : SizedBox();
   }
 
   CustomAppBar _moduleApplicationCustomBar({

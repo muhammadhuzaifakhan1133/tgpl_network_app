@@ -77,12 +77,6 @@ class HomeShellController extends AsyncNotifier<void> {
 
   @override
   Future<void> build() async {
-    _listenToConnectivityChanges();
-
-    ref.onDispose(() {
-      _connectivitySubscription?.cancel();
-    });
-
     final lastSyncTime = await ref.read(getLastSyncTimeProvider.future);
 
     final isFirstTime = lastSyncTime.isEmpty || lastSyncTime == "Never";
@@ -91,10 +85,21 @@ class HomeShellController extends AsyncNotifier<void> {
     if (!isFirstTime) {
       state = const AsyncValue.data(null);
       // Sync in background without blocking (if necessary)
-      _syncInBackground();
+      if (await shouldAutoSync(ref)) {
+        await _syncInBackground();
+      } else {
+        ref.read(syncStatusProvider.notifier).state = SyncStatus.synchronized;
+        ref.read(snackbarMessageProvider.notifier).state = 'Data is up to date.';
+      }
     } else {
       await _syncDataIfInternetAvailable();
     }
+
+    _listenToConnectivityChanges();
+
+    ref.onDispose(() {
+      _connectivitySubscription?.cancel();
+    });
   }
 
   void _listenToConnectivityChanges() {
@@ -159,7 +164,7 @@ class HomeShellController extends AsyncNotifier<void> {
   bool _isAutoSyncRunning = false;
 
   /// 🔥 Even better: Check if there are actually pending forms before syncing
-  Future<void> getMasterDataAndSaveLocally({bool forcefulSync = false}) async {
+  Future<void> getMasterDataAndSaveLocally() async {
     if (_isAutoSyncRunning) return;
     _isAutoSyncRunning = true;
 
@@ -171,28 +176,28 @@ class HomeShellController extends AsyncNotifier<void> {
       return;
     }
 
-    // Check if master data sync is needed
-    final shouldSyncMasterData = await shouldAutoSync(ref) || forcefulSync;
-
+    ref.read(syncStatusProvider.notifier).state = SyncStatus.syncing;
     try {
-
       // Sync pending forms first
       final isPendingFormsExist = await hasPendingForms();
-      if (isPendingFormsExist || shouldSyncMasterData) {
-        ref.read(syncStatusProvider.notifier).state = SyncStatus.syncing;
-      }
 
       if (isPendingFormsExist) {
         await _syncPendingForms();
       }
-
-      // Sync master data (only if needed)
-      if (shouldSyncMasterData) {
         await _syncMasterData();
+
+      // // Sync master data (only if needed)
+      // if (shouldSyncMasterData) {
+      //   await _syncMasterData();
+      // } else {
+      //   ref.read(snackbarMessageProvider.notifier).state = isPendingFormsExist
+      //       ? 'Pending forms synced. Master data is up to date.'
+      //       : 'All data is up to date.';
+      // }
+      if (isPendingFormsExist) {
+        ref.read(snackbarMessageProvider.notifier).state = 'Master data and pending forms synced successfully.';
       } else {
-        ref.read(snackbarMessageProvider.notifier).state = isPendingFormsExist
-            ? 'Pending forms synced. Master data is up to date.'
-            : 'All data is up to date.';
+        ref.read(snackbarMessageProvider.notifier).state = 'Master data synchronized successfully.';
       }
 
       ref.read(syncStatusProvider.notifier).state = SyncStatus.synchronized;

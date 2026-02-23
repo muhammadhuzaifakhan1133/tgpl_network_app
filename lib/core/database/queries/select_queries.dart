@@ -1,8 +1,8 @@
-import 'package:tgpl_network/common/models/logical_operator_enum.dart';
 import 'package:tgpl_network/core/database/app_database.dart';
 import 'package:tgpl_network/common/models/join_clause_model.dart';
 import 'package:tgpl_network/core/database/modules_db_conditions.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 
 class SelectDbQueries {
   static String selectDashboardCounts =
@@ -53,11 +53,14 @@ class SelectDbQueries {
       LIMIT 1
     ''';
 
+  static const String temp =
+      '''
+      SELECT Count(*)
+      FROM ${AppDatabase.applicationTable} WHERE surveynDealerProfileDone = 0 AND siteSurveyDealerProfileDoneDate IS NOT NULL
+    ''';
+
   static String buildApplicationQuery({
-    List<String>? whereConditions,
-    // key is index of where condition and value is operator to be applied with next condition.
-    //-1 means AND with missing next condition, 0 means AND, 1 means OR
-    Map<int, LogicalOperator> operator = const {-1: LogicalOperator.and},
+    String? whereConditions,
     String? orderBy,
     int? limit,
     int? offset,
@@ -83,22 +86,7 @@ class SelectDbQueries {
       //         '${ApplicationModel.alias}.siteStatusId = ${SiteStatusModel.alias}.siteStatusId',
       //   ),
       // ],
-      whereClause: whereConditions != null && whereConditions.isNotEmpty
-          ? whereConditions
-                .asMap()
-                .entries
-                .map((entry) {
-                  // don't add operator for last condition
-                  final index = entry.key;
-                  final condition = entry.value;
-                  final op =
-                      operator[index] ?? operator[-1] ?? LogicalOperator.and;
-                  return index == whereConditions.length - 1
-                      ? condition
-                      : '$condition ${op.value}';
-                })
-                .join(' ')
-          : null,
+      whereClause: whereConditions.isNotNullOrEmpty ? whereConditions : null,
       orderBy: orderBy,
       limit: limit,
       offset: offset,

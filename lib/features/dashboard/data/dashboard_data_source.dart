@@ -2,12 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tgpl_network/core/database/app_database.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/core/database/queries/select_queries.dart';
+import 'package:tgpl_network/features/dashboard/models/application_suggestions.dart';
 import 'package:tgpl_network/features/dashboard/models/dashboard_response_model.dart';
 
 abstract class DashboardDataSource {
   Future<DashboardResponseModel> fetchDashboardData();
   Future<String> getLastSyncTime();
-  Future<bool> validateApplicationId(String applicationId);
+  Future<List<ApplicationSuggestion>> fetchSearchSuggestions(String query, String field);
 }
 
 class DashboardDataSourceImpl implements DashboardDataSource {
@@ -23,15 +24,13 @@ class DashboardDataSourceImpl implements DashboardDataSource {
       final moduleAppsCount = DashboardApplicationsCounts.fromJson(
         result.first,
       );
-      return DashboardResponseModel(
-        counts: moduleAppsCount,
-      );
+      return DashboardResponseModel(counts: moduleAppsCount);
     } else {
       throw Exception('No dashboard data found');
     }
   }
 
-   @override
+  @override
   Future<String> getLastSyncTime() async {
     final db = await _databaseHelper.database;
     final result = await db.rawQuery(SelectDbQueries.selectLastSyncTime);
@@ -43,17 +42,16 @@ class DashboardDataSourceImpl implements DashboardDataSource {
   }
 
   @override
-  Future<bool> validateApplicationId(String applicationId) async {
+  Future<List<ApplicationSuggestion>> fetchSearchSuggestions(
+    String query,
+    String field,
+  ) async {
     final db = await _databaseHelper.database;
     final result = await db.rawQuery(
-      'SELECT COUNT(*) as count FROM ${AppDatabase.applicationTable} WHERE applicationId = ?',
-      [applicationId],
+      'SELECT applicationId, applicantName, proposedSiteName1 FROM ${AppDatabase.applicationTable} WHERE $field LIKE ? LIMIT 10',
+      ['%$query%'],
     );
-    if (result.isNotEmpty) {
-      return (result.first['count'] as int) > 0;
-    } else {
-      return false;
-    }
+    return result.map((row) => ApplicationSuggestion.fromJson(row)).toList();
   }
 }
 
