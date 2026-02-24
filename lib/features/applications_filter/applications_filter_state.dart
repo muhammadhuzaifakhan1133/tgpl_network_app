@@ -1,4 +1,4 @@
-import 'package:tgpl_network/common/providers/statuses_provider.dart';
+import 'package:tgpl_network/common/models/app_status_category.dart';
 import 'package:tgpl_network/utils/extensions/nullable_fields_helper.dart';
 import 'package:tgpl_network/common/models/yes_no_enum_with_extension.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';

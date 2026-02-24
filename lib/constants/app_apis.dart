@@ -1,6 +1,7 @@
 class AppApis {
-  static const String baseUrl = "http://ecoservice.babarmoin.com:8087"; // Local Test Server
-  // static const String baseUrl = "https://tauditor.coltech.co"; // Live Production Server
+  // static const String baseUrl = "http://192.168.0.61:8087"; // Local Test Server
+  // static const String baseUrl = "http://ecoservice.babarmoin.com:8087"; // Local Test Server
+  static const String baseUrl = "https://tauditor.coltech.co"; // Live Production Server
   static const int connectionTimeout = 30000;
   static const int receiveTimeout = 30000;
   static const String loginEndpoint = "/token";

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:tgpl_network/common/providers/statuses_provider.dart';
+import 'package:tgpl_network/common/models/app_status_category.dart';
 import 'package:tgpl_network/features/map/data/map_data_source.dart';
 import 'package:tgpl_network/features/map/presentation/widgets/site_marker_widget.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';

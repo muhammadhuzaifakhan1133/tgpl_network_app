@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/common/providers/statuses_provider.dart';
+import 'package:tgpl_network/common/models/app_status_category.dart';
+import 'package:tgpl_network/common/models/logical_operator_enum.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/core/database/queries/select_queries.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_state.dart';
@@ -27,7 +28,7 @@ class MapDataSource {
       selectedStatus: status,
     );
 
-    final whereData = ApplicationModel.getWhereClauseAndArgs(filters);
+    final whereData = ApplicationModel.getWhereClauseAndArgs(filters, LogicalOperator.and);
 
     while (true) {
       final mainQuery = SelectDbQueries.buildApplicationQuery(

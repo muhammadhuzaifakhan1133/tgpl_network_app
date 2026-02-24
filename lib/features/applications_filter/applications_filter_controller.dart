@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tgpl_network/common/providers/statuses_provider.dart';
+import 'package:tgpl_network/common/models/app_status_category.dart';
 import 'applications_filter_state.dart';
 import 'package:tgpl_network/common/models/yes_no_enum_with_extension.dart';
 
