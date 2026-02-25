@@ -1,3 +1,4 @@
+import 'package:tgpl_network/common/models/app_status_category.dart';
 import 'package:tgpl_network/utils/extensions/nullable_fields_helper.dart';
 import 'package:tgpl_network/common/models/yes_no_enum_with_extension.dart';
 import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
@@ -5,7 +6,7 @@ import 'package:tgpl_network/utils/extensions/string_validation_extension.dart';
 class FilterSelectionState {
   final String? selectedPriority;
   final String? selectedCity;
-  final String? selectedStatusId;
+  final AppStatusCategory? selectedStatus;
 
   final YesNo? surveyProfile;
   final YesNo? trafficTrade;
@@ -45,7 +46,7 @@ class FilterSelectionState {
   const FilterSelectionState({
     this.selectedPriority,
     this.selectedCity,
-    this.selectedStatusId,
+    this.selectedStatus,
     this.surveyProfile,
     this.trafficTrade,
     this.feasibility,
@@ -83,7 +84,7 @@ class FilterSelectionState {
   FilterSelectionState copyWith({
     String? selectedPriority,
     String? selectedCity,
-    String? selectedStatusId,
+    AppStatusCategory? selectedStatus,
     YesNo? surveyProfile,
     YesNo? trafficTrade,
     YesNo? feasibility,
@@ -131,10 +132,10 @@ class FilterSelectionState {
         selectedCity,
         this.selectedCity,
       ),
-      selectedStatusId: fieldsToNull.apply(
-        'selectedStatusId',
-        selectedStatusId,
-        this.selectedStatusId,
+      selectedStatus: fieldsToNull.apply(
+        'selectedStatus',
+        selectedStatus,
+        this.selectedStatus,
       ),
       surveyProfile: fieldsToNull.apply(
         'surveyProfile',
@@ -231,7 +232,7 @@ class FilterSelectionState {
     int count = 0;
     if (selectedPriority != null) count++;
     if (selectedCity != null) count++;
-    if (selectedStatusId != null) count++;
+    if (selectedStatus != null) count++;
     if (surveyProfile != null) count++;
     if (trafficTrade != null) count++;
     if (feasibility != null) count++;

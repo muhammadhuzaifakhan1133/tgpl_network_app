@@ -7,6 +7,13 @@ class CityModel extends Equatable {
 
   CityModel({this.id, required this.cityId, required this.name});
 
+  const CityModel.all()
+      : id = null,
+        cityId = -1,
+        name = 'All Cities';
+      
+  bool get isAll => cityId == -1;
+
   @override
   List<Object?> get props => [cityId, name];
 

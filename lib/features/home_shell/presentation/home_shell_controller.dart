@@ -25,8 +25,6 @@ import 'package:tgpl_network/features/master_data/providers/tm_rm_names_provider
 import 'package:tgpl_network/features/master_data/providers/trade_area_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/yes_no_na_values_provider.dart';
 import 'package:tgpl_network/features/module_applications/presentation/module_applications_controller.dart';
-import 'package:tgpl_network/features/application_form/data/app_form_dropdowns_local_data_source.dart';
-import 'package:tgpl_network/features/application_form/data/app_form_dropdowns_remote_data_source.dart';
 import 'package:tgpl_network/features/survey_form/presentation/survey_form_controller.dart';
 import 'package:tgpl_network/features/traffic_trade_form/presentation/traffic_trade_form_controller.dart';
 import 'package:tgpl_network/utils/internet_connectivity.dart';
@@ -79,12 +77,6 @@ class HomeShellController extends AsyncNotifier<void> {
 
   @override
   Future<void> build() async {
-    _listenToConnectivityChanges();
-
-    ref.onDispose(() {
-      _connectivitySubscription?.cancel();
-    });
-
     final lastSyncTime = await ref.read(getLastSyncTimeProvider.future);
 
     final isFirstTime = lastSyncTime.isEmpty || lastSyncTime == "Never";
@@ -93,11 +85,21 @@ class HomeShellController extends AsyncNotifier<void> {
     if (!isFirstTime) {
       state = const AsyncValue.data(null);
       // Sync in background without blocking (if necessary)
-      _syncInBackground();
-      return;
+      if (await shouldAutoSync(ref)) {
+        await _syncInBackground();
+      } else {
+        ref.read(syncStatusProvider.notifier).state = SyncStatus.synchronized;
+        ref.read(snackbarMessageProvider.notifier).state = 'Data is up to date.';
+      }
+    } else {
+      await _syncDataIfInternetAvailable();
     }
 
-    await _syncDataIfInternetAvailable();
+    _listenToConnectivityChanges();
+
+    ref.onDispose(() {
+      _connectivitySubscription?.cancel();
+    });
   }
 
   void _listenToConnectivityChanges() {
@@ -109,12 +111,13 @@ class HomeShellController extends AsyncNotifier<void> {
         isInitialCheck = false;
         return;
       }
-      if (status == InternetStatus.connected) {
-        // Internet is back online
-        await getMasterDataAndSaveLocally();
-      } else {
-        // Internet is offline
-        ref.read(syncStatusProvider.notifier).state = SyncStatus.offline;
+      switch (status) {
+        case InternetStatus.connected:
+          await getMasterDataAndSaveLocally();
+          break;
+        case InternetStatus.disconnected:
+          ref.read(syncStatusProvider.notifier).state = SyncStatus.offline;
+          break;
       }
     });
   }
@@ -161,7 +164,7 @@ class HomeShellController extends AsyncNotifier<void> {
   bool _isAutoSyncRunning = false;
 
   /// 🔥 Even better: Check if there are actually pending forms before syncing
-  Future<void> getMasterDataAndSaveLocally({bool forcefulSync = false}) async {
+  Future<void> getMasterDataAndSaveLocally() async {
     if (_isAutoSyncRunning) return;
     _isAutoSyncRunning = true;
 
@@ -173,28 +176,28 @@ class HomeShellController extends AsyncNotifier<void> {
       return;
     }
 
-    // Check if master data sync is needed
-    final shouldSyncMasterData = await shouldAutoSync(ref) || forcefulSync;
-
+    ref.read(syncStatusProvider.notifier).state = SyncStatus.syncing;
     try {
-
       // Sync pending forms first
       final isPendingFormsExist = await hasPendingForms();
-      if (isPendingFormsExist || shouldSyncMasterData) {
-        ref.read(syncStatusProvider.notifier).state = SyncStatus.syncing;
-      }
-      
+
       if (isPendingFormsExist) {
         await _syncPendingForms();
       }
-
-      // Sync master data (only if needed)
-      if (shouldSyncMasterData) {
         await _syncMasterData();
+
+      // // Sync master data (only if needed)
+      // if (shouldSyncMasterData) {
+      //   await _syncMasterData();
+      // } else {
+      //   ref.read(snackbarMessageProvider.notifier).state = isPendingFormsExist
+      //       ? 'Pending forms synced. Master data is up to date.'
+      //       : 'All data is up to date.';
+      // }
+      if (isPendingFormsExist) {
+        ref.read(snackbarMessageProvider.notifier).state = 'Master data and pending forms synced successfully.';
       } else {
-        ref.read(snackbarMessageProvider.notifier).state = isPendingFormsExist
-            ? 'Pending forms synced. Master data is up to date.'
-            : 'All data is up to date.';
+        ref.read(snackbarMessageProvider.notifier).state = 'Master data synchronized successfully.';
       }
 
       ref.read(syncStatusProvider.notifier).state = SyncStatus.synchronized;
@@ -259,16 +262,17 @@ class HomeShellController extends AsyncNotifier<void> {
         .read(masterDataRemoteDataSourceProvider)
         .getMasterDataFromApi(username: username);
 
-    final dropdownValues = await ref
-        .read(appFormDropdownsRemoteDataSourceProvider)
-        .fetchAppFormDropdownValues();
+    // Now Site Status list is part of master data, so no need to fetch separately.
+    // final dropdownValues = await ref
+    //     .read(appFormDropdownsRemoteDataSourceProvider)
+    //     .fetchAppFormDropdownValues();
 
     ref.read(snackbarMessageProvider.notifier).state =
         'Data fetched successfully. Saving locally...';
 
-    await ref
-        .read(appFormDropdownsLocalDataSourceProvider)
-        .saveSiteStatuses(dropdownValues.siteStatuses);
+    // await ref
+    //     .read(appFormDropdownsLocalDataSourceProvider)
+    //     .saveSiteStatuses(dropdownValues.siteStatuses);
 
     await ref
         .read(masterDataLocalDataSourceProvider)

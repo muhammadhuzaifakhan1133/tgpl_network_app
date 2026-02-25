@@ -1,19 +1,21 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/common/models/app_status_category.dart';
+import 'package:tgpl_network/common/models/logical_operator_enum.dart';
 import 'package:tgpl_network/core/database/database_helper.dart';
 import 'package:tgpl_network/core/database/queries/select_queries.dart';
 import 'package:tgpl_network/features/applications_filter/applications_filter_state.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
+import 'package:tgpl_network/features/master_data/models/city_model.dart';
 
 class MapDataSource {
   final DatabaseHelper _databaseHelper;
 
   MapDataSource(this._databaseHelper);
 
-  
   Future<List<ApplicationModel>> getApplicationsForMap({
-    required String cityName,
-    required String statusId,
+    required CityModel city,
+    required AppStatusCategory status,
   }) async {
     final db = await _databaseHelper.database;
 
@@ -22,14 +24,13 @@ class MapDataSource {
     int offset = 0;
 
     FilterSelectionState filters = FilterSelectionState(
-      selectedCity: cityName,
-      selectedStatusId: statusId,
+      selectedCity: city.isAll ? null : city.name,
+      selectedStatus: status,
     );
 
-    final whereData = ApplicationModel.getWhereClauseAndArgs(filters);
+    final whereData = ApplicationModel.getWhereClauseAndArgs(filters, LogicalOperator.and);
 
     while (true) {
-
       final mainQuery = SelectDbQueries.buildApplicationQuery(
         whereConditions: whereData.$1,
         orderBy: ApplicationModel.orderBy,

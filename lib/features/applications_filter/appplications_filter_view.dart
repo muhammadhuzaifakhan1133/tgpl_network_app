@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
 import 'package:tgpl_network/features/master_data/providers/priorities_provider.dart';
-import 'package:tgpl_network/features/master_data/providers/statuses_provider.dart';
+import 'package:tgpl_network/common/providers/statuses_provider.dart';
 import 'package:tgpl_network/common/widgets/custom_app_bar.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown_with_title.dart';
 import 'package:tgpl_network/common/widgets/custom_textfield_with_title.dart';
@@ -185,35 +185,25 @@ class FilterScreen extends ConsumerWidget {
                               final statuses = ref.read(statusesProvider);
                               final selectedStatus = ref.watch(
                                 filterSelectionProvider.select(
-                                  (s) => s.selectedStatusId,
+                                  (s) => s.selectedStatus,
                                 ),
                               );
                               return Expanded(
                                 child: SmartCustomDropDownWithTitle(
                                   title: "Status",
-                                  items: statuses.entries
-                                      .map((e) => e.key)
-                                      .toList(),
+                                  items: statuses,
                                   hintText: "Status",
                                   onChanged: (v) {
                                     if (v == null) return;
                                     controller.updateDropdown(
-                                      statusId: statuses[v]!,
+                                      status: v,
                                     );
                                   },
-                                  selectedItem: selectedStatus != null
-                                      ? statuses.entries
-                                            .firstWhere(
-                                              (entry) =>
-                                                  entry.value == selectedStatus,
-                                            )
-                                            .key
-                                      : null,
-                                  showClearButton:
-                                      !selectedStatus.isNullOrEmpty,
+                                  selectedItem: selectedStatus,
+                                  showClearButton: true,
                                   onClear: () {
                                     controller.clearFields([
-                                      "selectedStatusId",
+                                      "selectedStatus",
                                     ]);
                                   },
                                 ),

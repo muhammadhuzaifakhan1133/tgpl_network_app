@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:tgpl_network/constants/app_colors.dart';
+import 'package:tgpl_network/common/models/app_status_category.dart';
 import 'package:tgpl_network/features/map/data/map_data_source.dart';
 import 'package:tgpl_network/features/map/presentation/widgets/site_marker_widget.dart';
 import 'package:tgpl_network/features/master_data/models/application_model.dart';
@@ -17,7 +17,9 @@ final selectedSiteProvider = StateProvider<ApplicationModel?>((ref) => null);
 // Selected city provider
 final selectedCityForMapProvider = StateProvider<CityModel?>((ref) => null);
 
-final selectedStatusForMapProvider = StateProvider<String?>((ref) => null);
+final selectedStatusForMapProvider = StateProvider<AppStatusCategory?>(
+  (ref) => null,
+);
 
 final markerGenerationProgressProvider = StateProvider<double?>((ref) => null);
 
@@ -34,15 +36,15 @@ class MapMarkersController extends AsyncNotifier<List<Marker>> {
   Future<List<Marker>> build() async {
     // Watch for city changes - rebuilds when city changes;
     CityModel? selectedCity = ref.watch(selectedCityForMapProvider);
-    String? selectedStatus = ref.watch(selectedStatusForMapProvider);
+    AppStatusCategory? selectedStatus = ref.watch(selectedStatusForMapProvider);
 
     if (selectedCity != null && selectedStatus != null) {
       // Increment operation ID to cancel previous operations
       _currentOperationId++;
 
       return _generateMarkers(
-        cityName: selectedCity.name.toString(),
-        statusId: selectedStatus,
+        selectedCity: selectedCity,
+        selectedStatus: selectedStatus,
         operationId: _currentOperationId,
       );
     }
@@ -50,8 +52,8 @@ class MapMarkersController extends AsyncNotifier<List<Marker>> {
   }
 
   Future<List<Marker>> _generateMarkers({
-    required String cityName,
-    required String statusId,
+    required CityModel selectedCity,
+    required AppStatusCategory selectedStatus,
     required int operationId,
   }) async {
     final mapDataSource = ref.read(mapDataSourceProvider);
@@ -63,8 +65,8 @@ class MapMarkersController extends AsyncNotifier<List<Marker>> {
     }
 
     final apps = await mapDataSource.getApplicationsForMap(
-      cityName: cityName,
-      statusId: statusId,
+      city: selectedCity,
+      status: selectedStatus,
     );
 
     // Check if cancelled after fetching
@@ -77,7 +79,7 @@ class MapMarkersController extends AsyncNotifier<List<Marker>> {
 
     ref.read(markerGenerationProgressProvider.notifier).state = 0;
     debugPrint(
-      'Generating markers for ${apps.length} applications in city: $cityName',
+      'Generating markers for ${apps.length} applications in city: ${selectedCity.name}',
     );
 
     final List<Marker> markers = [];
@@ -107,17 +109,31 @@ class MapMarkersController extends AsyncNotifier<List<Marker>> {
           return [];
         }
 
-        final color = AppColors.getApplicationStatusColor(app.statusId ?? 18);
-        final key = '${color.value}_${app.entryCode}';
+        final color = AppStatusCategory.getColorForStatusId(app.statusId ?? 18);
+        String key = '${color.value}_${app.entryCode}';
 
-        // Check cache first
+        if (selectedCity.isAll ||
+            selectedStatus.type == AppStatusCategoryType.all) {
+          key = '${color.value}';
+          if (!_markerCache.containsKey(key)) {
+            _markerCache[key] = await SiteMapMarker(
+              color: color,
+              label: "",
+            ).toBitmapDescriptor();
+          }
+        }
+
         BitmapDescriptor icon;
+        // Check cache first
         if (_markerCache.containsKey(key)) {
           icon = _markerCache[key]!;
         } else {
           icon = await SiteMapMarker(
             color: color,
-            label: app.proposedSiteName1 ?? app.entryCode ?? app.applicationId.toString(),
+            label:
+                app.proposedSiteName1 ??
+                app.entryCode ??
+                app.applicationId.toString(),
           ).toBitmapDescriptor();
           _markerCache[key] = icon;
         }
@@ -132,11 +148,10 @@ class MapMarkersController extends AsyncNotifier<List<Marker>> {
             },
           ),
         );
-      // Update progress
-      ref.read(markerGenerationProgressProvider.notifier).state =
-          (markers.length / apps.length);
+        // Update progress
+        ref.read(markerGenerationProgressProvider.notifier).state =
+            (markers.length / apps.length);
       }
-
 
       // Yield to UI thread between batches
       await Future.delayed(Duration.zero);
@@ -155,7 +170,7 @@ class MapMarkersController extends AsyncNotifier<List<Marker>> {
     ref.read(selectedCityForMapProvider.notifier).state = city;
   }
 
-  void onChangeStatus(String? status) {
+  void onChangeStatus(AppStatusCategory? status) {
     ref.read(selectedSiteProvider.notifier).state = null;
     ref.read(markerGenerationProgressProvider.notifier).state = null;
     ref.read(selectedStatusForMapProvider.notifier).state = status;

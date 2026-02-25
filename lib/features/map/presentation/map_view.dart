@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:tgpl_network/common/models/app_status_category.dart';
 import 'package:tgpl_network/common/widgets/custom_dropdown.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/map/presentation/map_controller.dart';
 import 'package:tgpl_network/features/map/presentation/widgets/selected_application_card.dart';
+import 'package:tgpl_network/features/master_data/models/city_model.dart';
 import 'package:tgpl_network/features/master_data/providers/city_names_provider.dart';
-import 'package:tgpl_network/features/master_data/providers/statuses_provider.dart';
+import 'package:tgpl_network/common/providers/statuses_provider.dart';
 
 class MapView extends ConsumerWidget {
   const MapView({super.key});
@@ -94,13 +96,8 @@ class MapView extends ConsumerWidget {
           builder: (context, ref, _) {
             final selectedStatusId = ref.watch(selectedStatusForMapProvider);
             final markerCount = markersAsync.value?.length ?? 0;
-
+            Color statusColor = selectedStatusId?.color ?? AppColors.labelColor;
             // Get color based on selected status, default to label color
-            final statusColor = selectedStatusId != null
-                ? AppColors.getApplicationStatusColor(
-                    int.tryParse(selectedStatusId.split(",").first) ?? 18,
-                  )
-                : AppColors.labelColor;
             return Container(
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
               decoration: BoxDecoration(
@@ -145,29 +142,19 @@ class MapView extends ConsumerWidget {
         builder: (context, ref, _) {
           final statuses = ref.watch(statusesProvider);
           final selectedStatusId = ref.watch(selectedStatusForMapProvider);
-          return CustomDropDown(
-            items: statuses.keys.toList(),
+          return CustomDropDown<AppStatusCategory>(
+            items: statuses,
+            displayString: (item) => item.type.displayName,
             backgroundColor: AppColors.white,
             itemTextStyle: (statusEntry) {
-              final statusIds = statuses[statusEntry];
-              final statusId =
-                  int.tryParse(statusIds?.split(",").first ?? '') ?? 18;
-              return TextStyle(
-                color: AppColors.getApplicationStatusColor(statusId),
-              );
+              return TextStyle(color: statusEntry.color);
             },
-            selectedItem: selectedStatusId == null
-                ? null
-                : statuses.entries
-                      .firstWhere((entry) => entry.value == selectedStatusId)
-                      .key,
+            selectedItem: selectedStatusId,
             hintText: 'Select Status',
             onChanged: (statusEntry) {
-              // ref.read(selectedStatusForMapProvider.notifier).state =
-              //     statuses[statusEntry!]!;
               ref
                   .read(mapMarkersProvider.notifier)
-                  .onChangeStatus(statuses[statusEntry!]!);
+                  .onChangeStatus(statusEntry);
             },
           );
         },
@@ -183,7 +170,10 @@ class MapView extends ConsumerWidget {
           final selectedCity = ref.watch(selectedCityForMapProvider);
           return CustomDropDown(
             items: citiesAsync.when(
-              data: (cities) => cities,
+              data: (cities) => [
+                const CityModel.all(),
+                ...cities,
+              ],
               error: (e, s) => [],
               loading: () => [],
             ),

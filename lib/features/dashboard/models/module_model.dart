@@ -7,7 +7,13 @@ class ModuleModel {
   final String icon;
   final List<SubModuleModel> subModules;
 
-  ModuleModel({required this.title, required this.count, required this.color, required this.icon, required this.subModules});
+  ModuleModel({
+    required this.title,
+    required this.count,
+    required this.color,
+    required this.icon,
+    required this.subModules,
+  });
 }
 
 class SubModuleModel {
@@ -17,6 +23,15 @@ class SubModuleModel {
   final Color moduleColor;
   final String moduleIcon;
   final String dbCondition;
+  final String? dueDateDbColumnName;
 
-  SubModuleModel({required this.title, required this.count, required this.moduleName, required this.moduleColor, required this.moduleIcon, required this.dbCondition});
+  SubModuleModel({
+    required this.title,
+    required this.count,
+    required this.moduleName,
+    required this.moduleColor,
+    required this.moduleIcon,
+    required this.dbCondition,
+    this.dueDateDbColumnName,
+  });
 }

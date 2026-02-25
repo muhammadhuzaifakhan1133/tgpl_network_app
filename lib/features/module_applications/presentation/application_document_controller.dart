@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/features/module_applications/data/module_application_documents_data_source.dart';
 import 'package:tgpl_network/features/module_applications/models/document_model.dart';
 import 'package:tgpl_network/features/master_data/models/attachment_category_model.dart';
-import 'package:tgpl_network/features/module_applications/data/module_applications_data_source.dart';
 
 final applicationDocumentControllerProvider = NotifierProvider.family
     .autoDispose<
@@ -47,7 +47,9 @@ class ApplicationDocumentState {
     bool clearCategory = false,
   }) {
     return ApplicationDocumentState(
-      selectedDocumentType: clearCategory ? null : selectedDocumentType ?? this.selectedDocumentType,
+      selectedDocumentType: clearCategory
+          ? null
+          : selectedDocumentType ?? this.selectedDocumentType,
       pickedFile: clearFile ? null : pickedFile ?? this.pickedFile,
       fileName: clearFile ? null : fileName ?? this.fileName,
       isUploading: isUploading ?? this.isUploading,
@@ -88,50 +90,54 @@ class ApplicationDocumentController extends Notifier<ApplicationDocumentState> {
   }
 
   Future<void> uploadDocument({
-  required String title,
-  required String detail,
-  required String userName,
-}) async {
-  if (state.pickedFile == null || state.selectedDocumentType == null) return;
+    required String title,
+    required String detail,
+    required String userName,
+  }) async {
+    if (state.pickedFile == null || state.selectedDocumentType == null) return;
 
-  state = state.copyWith(isUploading: true, uploadProgress: 0.0, uploadSuccess: null);
+    state = state.copyWith(
+      isUploading: true,
+      uploadProgress: 0.0,
+      uploadSuccess: null,
+    );
 
-  try {
-    final success = await ref
-        .read(moduleApplicationsDataSourceProvider)
-        .uploadDocument(
-          applicationId: applicationId,
-          categoryId: state.selectedDocumentType!.id.toString(),
-          title: title,
-          detail: detail,
-          userName: userName,
-          file: state.pickedFile!,
-          onSendProgress: (sent, total) {
-            if (total != -1) {
-              state = state.copyWith(uploadProgress: sent / total);
-            }
-          },
+    try {
+      final success = await ref
+          .read(moduleApplicationDocumentsDataSourceProvider)
+          .uploadDocument(
+            applicationId: applicationId,
+            categoryId: state.selectedDocumentType!.id.toString(),
+            title: title,
+            detail: detail,
+            userName: userName,
+            file: state.pickedFile!,
+            onSendProgress: (sent, total) {
+              if (total != -1) {
+                state = state.copyWith(uploadProgress: sent / total);
+              }
+            },
+          );
+
+      if (success) {
+        // Clear everything on success
+        state = ApplicationDocumentState(uploadSuccess: true);
+        ref.invalidate(documentAsyncControllerProvider(applicationId));
+      } else {
+        state = state.copyWith(
+          isUploading: false,
+          uploadSuccess: false,
+          uploadErrorMessage: 'Upload failed. Please try again.',
         );
-
-    if (success) {
-      // Clear everything on success
-      state = ApplicationDocumentState(uploadSuccess: true);
-      ref.invalidate(documentAsyncControllerProvider(applicationId));
-    } else {
+      }
+    } catch (e) {
       state = state.copyWith(
         isUploading: false,
         uploadSuccess: false,
-        uploadErrorMessage: 'Upload failed. Please try again.',
+        uploadErrorMessage: e.toString(),
       );
     }
-  } catch (e) {
-    state = state.copyWith(
-      isUploading: false,
-      uploadSuccess: false,
-      uploadErrorMessage: e.toString(),
-    );
   }
-}
 }
 
 final documentAsyncControllerProvider =
@@ -153,7 +159,9 @@ class DocumentAsyncController extends AsyncNotifier<List<DocumentModel>> {
   }
 
   Future<List<DocumentModel>> getApplicationDocuments() {
-    return ref.read(moduleApplicationsDataSourceProvider).getApplicationDocuments(applicationId);
+    return ref
+        .read(moduleApplicationDocumentsDataSourceProvider)
+        .getApplicationDocuments(applicationId);
   }
 }
 
@@ -190,9 +198,12 @@ class DownloadDocumentState {
 }
 
 // Add this provider + notifier
-final downloadDocumentProvider = NotifierProvider.family<DownloadDocumentNotifier, DownloadDocumentState, String>(
-      (documentId) => DownloadDocumentNotifier(documentId),
-    );
+final downloadDocumentProvider =
+    NotifierProvider.family<
+      DownloadDocumentNotifier,
+      DownloadDocumentState,
+      String
+    >((documentId) => DownloadDocumentNotifier(documentId));
 
 class DownloadDocumentNotifier extends Notifier<DownloadDocumentState> {
   final String documentId;
@@ -206,12 +217,14 @@ class DownloadDocumentNotifier extends Notifier<DownloadDocumentState> {
 
     try {
       final file = await ref
-          .read(moduleApplicationsDataSourceProvider)
+          .read(moduleApplicationDocumentsDataSourceProvider)
           .downloadDocument(
             documentUrl,
             fileName,
             onReceiveProgress: (received, total) {
-              debugPrint('Download progress for document $documentId: received=$received, total=$total');
+              debugPrint(
+                'Download progress for document $documentId: received=$received, total=$total',
+              );
               if (total != -1) {
                 state = state.copyWith(progress: received / total);
               }

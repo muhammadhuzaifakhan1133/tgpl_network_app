@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgpl_network/common/models/app_status_category.dart';
 import 'applications_filter_state.dart';
 import 'package:tgpl_network/common/models/yes_no_enum_with_extension.dart';
 
@@ -13,11 +14,11 @@ class FilterController extends Notifier<FilterSelectionState> {
     return const FilterSelectionState();
   }
 
-  void updateDropdown({String? city, String? priority, String? statusId}) {
+  void updateDropdown({String? city, String? priority, AppStatusCategory? status}) {
     state = state.copyWith(
       selectedCity: city,
       selectedPriority: priority,
-      selectedStatusId: statusId,
+      selectedStatus: status,
     );
   }
 

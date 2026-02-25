@@ -16,7 +16,7 @@ class ApplicationDetailDataSource {
   Future<ApplicationModel> getApplicationDetail(String applicationId) async {
     final db = await _databaseHelper.database;
     final String mainQuery = SelectDbQueries.buildApplicationQuery(
-      whereConditions: ['${ApplicationModel.alias}.applicationId = ?'],
+      whereConditions: '${ApplicationModel.alias}.applicationId = ?',
     );
     final result = await db.rawQuery(mainQuery, [applicationId]);
 
