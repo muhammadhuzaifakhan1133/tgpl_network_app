@@ -19,48 +19,58 @@ class DashboardHeaderProfile extends ConsumerWidget {
     if (user == null) return SizedBox.shrink();
     return Row(
       children: [
-        Container(
-          height: 48.h,
-          width: 48.w,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16.r),
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [AppColors.nextStep1Color, AppColors.headerDarkBlueColor],
+        InkWell(
+          onTap: () {
+            ref.read(goRouterProvider).push(AppRoutes.profile);
+          },
+          child: Container(
+            height: 48.h,
+            width: 48.w,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.r),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [AppColors.nextStep1Color, AppColors.headerDarkBlueColor],
+              ),
             ),
-          ),
-          child: Center(
-            child: Text(
-              user.userName[0],
-              style: AppTextstyles.googleInter700black28.copyWith(
-                fontSize: 20.sp,
-                color: AppColors.white,
+            child: Center(
+              child: Text(
+                user.userName[0],
+                style: AppTextstyles.googleInter700black28.copyWith(
+                  fontSize: 20.sp,
+                  color: AppColors.white,
+                ),
               ),
             ),
           ),
         ),
         SizedBox(width: 12.w),
         Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                user.userName,
-                style: AppTextstyles.googleInter700black28.copyWith(
-                  fontSize: 20.sp,
-                  color: AppColors.black2Color,
+          child: InkWell(
+            onTap: () {
+              ref.read(goRouterProvider).push(AppRoutes.profile);
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  user.userName,
+                  style: AppTextstyles.googleInter700black28.copyWith(
+                    fontSize: 20.sp,
+                    color: AppColors.black2Color,
+                  ),
                 ),
-              ),
-              Text(
-                user.positionName,
-                style: AppTextstyles.googleInter400Grey14.copyWith(
-                  fontSize: 16.sp,
-                  color: AppColors.black2Color,
+                Text(
+                  user.positionName,
+                  style: AppTextstyles.googleInter400Grey14.copyWith(
+                    fontSize: 16.sp,
+                    color: AppColors.black2Color,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         actionContainer(

@@ -8,6 +8,7 @@ class AppRoutes {
   static const String dashboard = "/dashboard";
   static const String applications = "/applications";
   static const String map = "/map";
+  static const String auditDashboard = "/audit_dashboard";
   static const String profile = "/profile";
   static const String changePassword = "/change_password";
   static const String moduleApplications = "/module_applications";
@@ -18,4 +19,6 @@ class AppRoutes {
   static String syncData = "/sync_data";
   static String applicationsFilter = "/applications_filter";
   static String dashboardSearch = "/dashboard_search";
+  static String auditTemplateSelection = "/audit_template_selection";
+  static String auditPerform = "/audit_perform";
 }

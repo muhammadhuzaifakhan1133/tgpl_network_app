@@ -1,6 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:tgpl_network/features/audit_dashboard/presentation/audit_dashboard_view.dart';
+import 'package:tgpl_network/features/audit_perform/presentation/audit_perform_view.dart';
+import 'package:tgpl_network/features/audit_template_selection/presentation/audit_template_selection_view.dart';
 import 'package:tgpl_network/features/change_password/presentation/change_password_view.dart';
 import 'package:tgpl_network/features/dashboard/models/module_model.dart';
 import 'package:tgpl_network/features/home_shell/presentation/home_shell_view.dart';
@@ -61,7 +64,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.login,
         builder: (context, state) => const LoginView(),
-
+      ),
+      GoRoute(
+        path: AppRoutes.profile,
+        builder: (context, state) => const ProfileView(),
+      ),
+      GoRoute(
+        path: AppRoutes.auditTemplateSelection,
+        builder: (context, state) => const AuditTemplateSelectionView(),
+      ),
+      GoRoute(
+        path: AppRoutes.auditPerform,
+        builder: (context, state) => const AuditPerformView(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -103,8 +117,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: AppRoutes.profile,
-                builder: (context, state) => ProfileView(),
+                path: AppRoutes.auditDashboard,
+                builder: (context, state) => const AuditDashboardView(),
               ),
             ],
           ),
@@ -112,7 +126,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.changePassword,
-        builder: (context, state) => ChangePasswordView(),
+        builder: (context, state) => const ChangePasswordView(),
       ),
       GoRoute(
         path: AppRoutes.moduleApplications,

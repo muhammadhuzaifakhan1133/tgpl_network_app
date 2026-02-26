@@ -22,20 +22,21 @@ class ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 30.h, horizontal: 20.w),
+      padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(50.r),
-          bottomRight: Radius.circular(50.r),
-        ),
+        // borderRadius: BorderRadius.only(
+        //   bottomLeft: Radius.circular(50.r),
+        //   bottomRight: Radius.circular(50.r),
+        // ),
+        borderRadius: BorderRadius.circular(20.r),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Container(
-            height: 80.h,
-            width: 80.w,
+            height: 50.h,
+            width: 50.w,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.r),
               gradient: LinearGradient(
@@ -63,18 +64,24 @@ class ProfileHeader extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  user.userName,
-                  style: AppTextstyles.googleInter700black28.copyWith(
-                    fontSize: 20.sp,
-                    color: AppColors.black2Color,
-                  ),
-                ),
-                Text(
-                  user.positionName,
-                  style: AppTextstyles.googleInter400Grey14.copyWith(
-                    fontSize: 16.sp,
-                    color: AppColors.black2Color,
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: user.userName,
+                        style: AppTextstyles.googleInter700black28.copyWith(
+                          fontSize: 20.sp,
+                          color: AppColors.black2Color,
+                        ),
+                      ),
+                      TextSpan(
+                        text: " (${user.positionName})",
+                        style: AppTextstyles.googleInter400Grey14.copyWith(
+                          fontSize: 16.sp,
+                          color: AppColors.black2Color,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Text(

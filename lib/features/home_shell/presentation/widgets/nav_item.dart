@@ -62,7 +62,7 @@ Widget buildNavItem({
                   iconWidget ??
                   SvgPicture.asset(
                     iconPath,
-                    color: isSelected ? AppColors.primary : null,
+                    color: isSelected ? AppColors.primary : AppColors.grey,
                     width: context.screenWidth * 0.06,
                     height: context.screenWidth * 0.06,
                   ),

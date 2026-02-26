@@ -27,6 +27,7 @@ class CustomTextField extends StatefulWidget {
   final bool showClearButton;
   final VoidCallback? onClear;
   final bool autoFocus;
+  final Widget? prefixIcon;
 
   const CustomTextField({
     super.key,
@@ -55,6 +56,7 @@ class CustomTextField extends StatefulWidget {
     this.showClearButton = false,
     this.onClear,
     this.autoFocus = false,
+    this.prefixIcon,
   });
 
   @override
@@ -152,6 +154,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           widget.onChanged?.call(v);
         },
         decoration: InputDecoration(
+          prefixIcon: widget.prefixIcon,
           fillColor: widget.backgroundColor,
           filled: widget.backgroundColor != null,
           contentPadding: EdgeInsets.symmetric(

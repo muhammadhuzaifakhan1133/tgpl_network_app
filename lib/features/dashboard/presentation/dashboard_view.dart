@@ -7,7 +7,7 @@ import 'package:tgpl_network/common/widgets/error_widget.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/features/dashboard/presentation/dashboard_controller.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/application_search_field.dart';
-import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_count_containers.dart';
+import 'package:tgpl_network/features/dashboard/presentation/widgets/main_dashboard_count_containers.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_greeting_text.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_header_profile.dart';
 import 'package:tgpl_network/features/dashboard/presentation/widgets/dashboard_module_sections.dart';
@@ -74,7 +74,7 @@ class _DashboardView extends ConsumerWidget {
                   SizedBox(height: 10.h),
                   ApplicationSearchField(),
                   SizedBox(height: 10.h),
-                  DashboardCountContainers(),
+                  MainDashboardCountContainers(),
                   SizedBox(height: 10.h),
                 ],
               ),

@@ -112,8 +112,9 @@ class HomeShellView extends ConsumerWidget {
             ),
             buildNavItem(
               index: 4,
-              iconPath: AppImages.profileInactiveSvg,
-              label: "Profiles",
+              // icon related to audit
+              iconPath: AppImages.auditNavIconSvg,
+              label: "Audit",
               isLoading: isLoading,
               context: context,
               navigationShell: navigationShell,
