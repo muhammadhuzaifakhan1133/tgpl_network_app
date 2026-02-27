@@ -1,24 +1,32 @@
 import 'package:tgpl_network/features/audit_perform/models/audit_question_option.dart';
+import 'package:tgpl_network/features/audit_perform/models/audit_question_response.dart';
 import 'package:tgpl_network/features/audit_perform/models/question_type.dart';
 
 class AuditQuestion {
-  final String questionId;
+  final int questionId;
   final String questionText;
   final bool isRequired;
   final QuestionType questionType;
   final List<AuditQuestionOption> options;
   final int pageId;
-  final int sectionId;
+  final AuditQuestionResponse response;
+  final int order;
+  final int? conditionQuestionId;
+  final String? conditionQuestionResponseValue;
 
   AuditQuestion({
     required this.questionId,
     required this.questionText,
     required this.isRequired,
-    required String questionType,
+    required this.questionType,
     this.options = const [],
     required this.pageId,
-    required this.sectionId,
-  }) : questionType = getQuestionType(questionType);
+    AuditQuestionResponse? response,
+    this.conditionQuestionId,
+    this.conditionQuestionResponseValue,
+    required this.order,
+  }) : response = response ?? AuditQuestionResponse(questionId: questionId);
+  // : questionType = getQuestionType(questionType);
 
   static QuestionType getQuestionType(String questionType) {
     switch (questionType.toLowerCase()) {
@@ -32,7 +40,7 @@ class AuditQuestion {
         return QuestionType.multipleChoice;
       case "multiplechoicemultiselection":
         return QuestionType.multipleChoiceMultiSelection;
-      // case "checkbox": will be handled as multipleChoiceMultiSelection
+      // case "checkbox": will be handled as multipleChoice (Yes/No)
       //   return QuestionType.checkbox;
       case "datetime":
         return QuestionType.datetime;

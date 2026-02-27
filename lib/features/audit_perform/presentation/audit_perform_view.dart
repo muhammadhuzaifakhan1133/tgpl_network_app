@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tgpl_network/features/audit_perform/presentation/widgets/page_title.dart';
 
 class AuditPerformView extends StatelessWidget {
   const AuditPerformView({super.key});
@@ -8,7 +9,7 @@ class AuditPerformView extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          
+          AuditPerformPageTitle(),
         ],
       ),
     );

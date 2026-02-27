@@ -1,13 +1,13 @@
 class AuditQuestionOption {
-  final String optionId;
+  final int optionId;
   final String optionText;
-  final int scoreValue;
   final bool isRedFlag;
-
+  final int scoreValue;
   AuditQuestionOption({
     required this.optionId,
     required this.optionText,
-    required this.scoreValue,
-    required this.isRedFlag,
-  });
+    int? scoreValue,
+    bool? isRedFlag,
+  }): scoreValue = scoreValue ?? 0,
+      isRedFlag = isRedFlag ?? false;
 }

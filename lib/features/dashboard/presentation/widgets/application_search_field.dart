@@ -7,26 +7,13 @@ import 'package:tgpl_network/features/dashboard/presentation/dashboard_controlle
 import 'package:tgpl_network/routes/app_router.dart';
 import 'package:tgpl_network/routes/app_routes.dart';
 
-class ApplicationSearchField extends ConsumerStatefulWidget {
-  const ApplicationSearchField({super.key});
+class ApplicationSearchField extends ConsumerWidget {
+  ApplicationSearchField({super.key});
+  
+  late final TextEditingController _searchController;
 
   @override
-  ConsumerState<ApplicationSearchField> createState() =>
-      _ApplicationSearchFieldState();
-}
-
-class _ApplicationSearchFieldState
-    extends ConsumerState<ApplicationSearchField> {
-  TextEditingController _searchController = TextEditingController();
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(dashboardControllerProvider.notifier);
     return Row(
       children: [
@@ -54,7 +41,8 @@ class _ApplicationSearchFieldState
               }
               return controller.fetchSearchSuggestions(query);
             },
-            optionIndicatorColor: (item) => AppStatusCategory.getColorForStatusId(item.statusId),
+            optionIndicatorColor: (item) =>
+                AppStatusCategory.getColorForStatusId(item.statusId),
           ),
         ),
       ],
