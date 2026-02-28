@@ -25,7 +25,10 @@ class AuditPage {
     for (var question in questions) {
       if (question.options.any((o) => o.scoreValue > 0)) {
         if (question.conditionQuestionId == null) {
-          scoredQuestions++;
+          // check response
+          if (question.options.any((o) => o.optionText == question.response.responseValue && o.scoreValue > 0)) {
+            scoredQuestions++;
+          }
         } else {
           // find the condition question
           var conditionQuestion = questions.firstWhere(
@@ -43,7 +46,10 @@ class AuditPage {
             // check if condition is met
             if (conditionQuestion.response.responseValue ==
                 question.conditionQuestionResponseValue) {
-              scoredQuestions++;
+              // check response
+              if (question.options.any((o) => o.optionText == question.response.responseValue && o.scoreValue > 0)) {
+                scoredQuestions++;
+              }
             }
           }
         }

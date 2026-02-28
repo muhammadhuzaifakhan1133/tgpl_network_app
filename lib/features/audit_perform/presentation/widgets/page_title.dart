@@ -4,12 +4,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgpl_network/constants/app_colors.dart';
 import 'package:tgpl_network/constants/app_textstyles.dart';
 import 'package:tgpl_network/features/audit_perform/presentation/audit_perform_controller.dart';
+import 'package:tgpl_network/features/audit_perform/presentation/widgets/table_of_contents_dialog.dart';
+import 'package:tgpl_network/routes/app_router.dart';
 
-class AuditPerformPageTitle extends StatelessWidget {
-  const AuditPerformPageTitle({super.key});
+class AuditPerformPageTitle extends ConsumerWidget {
+  final int totalPages;
+  const AuditPerformPageTitle({super.key, required this.totalPages});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final auditPerformState = ref
+        .read(auditPerformControllerProvider)
+        .requireValue;
     return Container(
       constraints: BoxConstraints(minHeight: 80.h),
       padding: EdgeInsets.symmetric(vertical: 10.h),
@@ -28,24 +34,28 @@ class AuditPerformPageTitle extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: Icon(Icons.arrow_back_ios, color: AppColors.black),
+            child: IconButton(
+              onPressed: () {
+                ref.read(goRouterProvider).pop();
+              },
+              icon: Icon(Icons.arrow_back_ios, color: AppColors.black)),
           ),
           // page title
           Expanded(
             child: InkWell(
-              onTap: () {
-                List<String> pageTitles = [
-                  "Page 1 Title long long long long long long title",
-                  "Page 2 Title",
-                  "Page 3 Title",
-                  "Page 4 Title",
-                  "Page 5 Title",
-                  "Page 6 Title",
-                  "Page 7 Title",
-                  "Page 8 Title",
-                  "Page 9 Title",
-                ];
-                tableOfContentsDialog(context, pageTitles);
+              onTap: () async {
+                List<String> pageTitles = auditPerformState.pages
+                    .map((page) => page.title)
+                    .toList();
+                final selectedIndex = await tableOfContentsDialog(
+                  context,
+                  pageTitles,
+                );
+                if (selectedIndex != null) {
+                  ref
+                      .read(currentAuditPerformPageIndexProvider.notifier)
+                      .goToPage(selectedIndex, pageTitles.length);
+                }
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -54,13 +64,20 @@ class AuditPerformPageTitle extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       // I want the title to take as much line as possible to fit -> means title should be move to next line if it is too long
-                      Expanded(
-                        child: Text(
-                          "Title Page long long long long long long title",
-                          textAlign: TextAlign.center,
-                          style: AppTextstyles.googleInter700black28.copyWith(
-                            fontSize: 15.sp,
-                          ),
+                      Flexible(
+                        child: Consumer(
+                          builder: (context, ref, _) {
+                            return Text(
+                              auditPerformState
+                                  .pages[ref.watch(
+                                    currentAuditPerformPageIndexProvider,
+                                  )]
+                                  .title,
+                              textAlign: TextAlign.center,
+                              style: AppTextstyles.googleInter700black28
+                                  .copyWith(fontSize: 15.sp),
+                            );
+                          },
                         ),
                       ),
                       // dropdown icon
@@ -69,11 +86,21 @@ class AuditPerformPageTitle extends StatelessWidget {
                   ),
                   Consumer(
                     builder: (context, ref, _) {
-                      final state = ref.watch(auditPerformControllerProvider).requireValue;
-                      final currentPageIndex = ref.watch(currentAuditPerformPageIndexProvider);
-                      final currentPage = state.pages[currentPageIndex];
+                      final currentPageIndex = ref.watch(
+                        currentAuditPerformPageIndexProvider,
+                      );
+                      final currentPage = ref
+                          .watch(auditPerformControllerProvider.select((s) => s.requireValue.pages[currentPageIndex]));
+                      String scoreText;
+                      if (currentPage.totalScoreQuestions == 0) {
+                        scoreText = "";
+                      } else {
+                        final score = currentPage.score;
+                        scoreText =
+                            "- ${currentPage.totalScoredQuestions}/${currentPage.totalScoreQuestions} - (${((score.$2 / score.$1) * 100).toStringAsFixed(0)}%)";
+                      }
                       return Text(
-                        "Page ${currentPageIndex + 1}/${state.pages.length} - ${currentPage.totalScoreQuestions}/${currentPage.totalScoredQuestions}",
+                        "Page ${currentPageIndex + 1}/$totalPages $scoreText",
                         style: AppTextstyles.googleInter400black16.copyWith(
                           fontSize: 13.sp,
                         ),
@@ -92,7 +119,7 @@ class AuditPerformPageTitle extends StatelessWidget {
               child: Text(
                 "Save as Draft",
                 style: AppTextstyles.googleInter400black16.copyWith(
-                  color: AppColors.primary,
+                  color: AppColors.nextStep1Color,
                   fontSize: 12.sp,
                 ),
               ),
@@ -100,51 +127,6 @@ class AuditPerformPageTitle extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Future<dynamic> tableOfContentsDialog(
-    BuildContext context,
-    List<String> pageTitles,
-  ) {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Table of Contents"),
-          // listview to show page titles with page number
-          content: Container(
-            width: double.maxFinite,
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: pageTitles.length,
-              separatorBuilder: (context, index) => Divider(),
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(
-                    pageTitles[index],
-                    style: AppTextstyles.googleInter700black28.copyWith(
-                      fontSize: 16.sp,
-                    ),
-                  ),
-                  onTap: () {
-                    // navigate to selected page
-                    Navigator.of(context).pop();
-                  },
-                );
-              },
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Close"),
-            ),
-          ],
-        );
-      },
     );
   }
 }

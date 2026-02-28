@@ -166,7 +166,7 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
   @override
   Future<List<ApplicationModel>> getApplications({
     FilterSelectionState? filters,
-    int page = 1,
+    int? page = 1,
     int? pageSize,
   }) async {
     pageSize ??= ApplicationModel.pageSize;
@@ -184,8 +184,8 @@ class MasterDataLocalDataSourceImpl implements MasterDataLocalDataSource {
     final mainQuery = SelectDbQueries.buildApplicationQuery(
       whereConditions: whereConditions,
       orderBy: ApplicationModel.orderBy,
-      limit: pageSize,
-      offset: (page - 1) * pageSize,
+      limit: page != null ? pageSize : null,
+      offset: page != null ? (page - 1) * pageSize : null,
     );
 
     final List<Map<String, dynamic>> applicationsResult = await db.rawQuery(

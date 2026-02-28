@@ -5,31 +5,31 @@ final statusesProvider = Provider<List<AppStatusCategory>>((ref) {
   return [
     AppStatusCategory(
       type: AppStatusCategoryType.all,
-      statusIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+      statusIds: AppStatusCategoryType.all.statusIds,
     ),
     AppStatusCategory(
       type: AppStatusCategoryType.inProcess,
-      statusIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      statusIds: AppStatusCategoryType.inProcess.statusIds,
     ),
     AppStatusCategory(
       type: AppStatusCategoryType.inaugurated,
-      statusIds: [13],
+      statusIds: AppStatusCategoryType.inaugurated.statusIds,
     ),
     AppStatusCategory(
       type: AppStatusCategoryType.rejectedByTGPL,
-      statusIds: [14],
+      statusIds: AppStatusCategoryType.rejectedByTGPL.statusIds,
     ),
     AppStatusCategory(
       type: AppStatusCategoryType.holdByDealer,
-      statusIds: [15],
+      statusIds: AppStatusCategoryType.holdByDealer.statusIds,
     ),
     AppStatusCategory(
       type: AppStatusCategoryType.holdByTGPL,
-      statusIds: [16],
+      statusIds: AppStatusCategoryType.holdByTGPL.statusIds,
     ),
     AppStatusCategory(
       type: AppStatusCategoryType.rejectedByDealer,
-      statusIds: [17],
+      statusIds: AppStatusCategoryType.rejectedByDealer.statusIds,
     ),
   ];
 });
